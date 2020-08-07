@@ -1480,8 +1480,8 @@ div.tocify {
 </div>
 
 
-<div id="what-will-be-the-samedifferent-across-iterations" class="section level1">
-<h1><span class="header-section-number">1</span> What will be the same/different across iterations</h1>
+<div id="constants-and-differences-across-iterations-of-educ-152" class="section level1">
+<h1><span class="header-section-number">1</span> Constants and differences across iterations of EDUC 152</h1>
 <div id="things-that-will-be-constant" class="section level2">
 <h2><span class="header-section-number">1.1</span> Things that will be constant</h2>
 <ul>
@@ -1498,21 +1498,86 @@ div.tocify {
 </ul></li>
 <li>Instructor of record will have full discretion over the final project</li>
 <li>required textbook and readings</li>
-</ul>
-</div>
-</div>
-<div id="course-description-ozans-version" class="section level1">
-<h1><span class="header-section-number">2</span> Course description [ozan’s version]</h1>
-<p>This course introduces students to applied linear regression analysis with a focus on program evaluation. Program evaluation is the main methodological strategy used to assess the impact of programs, policies, and interventions. The primary purpose of regression analysis in program evaluation research is to assess the causal effect of one intervention (the independent variable of interest) on an educational outcome (the dependent variable) in observational settings where random assignment to the independent variable of interest is not possible. The course will focus on learning regression with a continuous dependent variable, one independent variable of interest, and control variables to evaluate the effect of some program, policy, and/or intervention. We will devote substantial time to interpreting and visualizing regression output, as well as cover measures of model fit, multicollinearity, non-linear relationships (i.e., polynomials and logs), and interaction effects.</p>
-<div id="final-project-ozan" class="section level2">
-<h2><span class="header-section-number">2.1</span> Final project [ozan]</h2>
-<p>Explain topic for final project;</p>
+<li>course website and communication
 <ul>
-<li>provide tentative timeline for final project</li>
+<li>e.g., I will likely use github for course websit, communication with instructor, communication between students</li>
+</ul></li>
 </ul>
 </div>
-<div id="course-topics-ozan" class="section level2">
-<h2><span class="header-section-number">2.2</span> course topics [ozan]</h2>
+</div>
+<div id="final-project-ozan" class="section level1">
+<h1><span class="header-section-number">2</span> Final project [ozan]</h1>
+<p>Overview</p>
+<ul>
+<li>The entire class votes on a topic for the final research project. Then students complete project on this topic in groups of 3</li>
+<li>final product
+<ul>
+<li>answers a causal question about effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></li>
+<li>contains the following sections [minimum]
+<ul>
+<li>introduction</li>
+<li>literature review</li>
+<li>methods (including data, sample, variables)</li>
+<li>preliminary results</li>
+</ul></li>
+<li>final project written as a .Rmd file</li>
+</ul></li>
+<li>In most weeks, part of their homework assignments will be related to final project
+<ul>
+<li>e.g., choose specific research question</li>
+</ul></li>
+</ul>
+<div id="potential-timeline-for-final-project" class="section level2">
+<h2><span class="header-section-number">2.1</span> Potential timeline for final project</h2>
+<ol style="list-style-type: decimal">
+<li>Introduce final project
+<ul>
+<li>homework assigned:
+<ul>
+<li>what topic do you want to study (examing a causal relationship)?</li>
+<li>optional: any data sources you think are relevant<br />
+</li>
+</ul></li>
+</ul></li>
+<li>Students form groups of 3 for final project
+<ul>
+<li>homework assigned:</li>
+</ul></li>
+<li>Ozan introduce potential topics and data sources for final project
+<ul>
+<li>homework assigned:
+<ul>
+<li>student groups vote on final project topic (a couple days before next class)</li>
+</ul></li>
+</ul></li>
+<li>Discuss chosen final project topic and data sources
+<ul>
+<li>discuss potential specific research questions groups may choose</li>
+<li>introduce potential datasets (using R)</li>
+<li>homework assigned:
+<ul>
+<li>come up w/ research questions</li>
+<li>identify data sources and variables</li>
+</ul></li>
+</ul></li>
+<li>in class ?
+<ul>
+<li>homework assignment
+<ul>
+<li>revise research question and data sources based on feedback from instructor</li>
+</ul></li>
+</ul></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li>[finals week] final paper due</li>
+</ol>
+</div>
+</div>
+<div id="course-topics-ozans-section" class="section level1">
+<h1><span class="header-section-number">3</span> course topics [ozan’s section]</h1>
 <ol style="list-style-type: decimal">
 <li>Introduction
 <ul>
@@ -1527,28 +1592,21 @@ div.tocify {
 <ul>
 <li>introduce relevant programming concepts</li>
 </ul></li>
-<li>student homework assignment:
-<ul>
-<li>what topic do you want to study (examing a causal relationship)?</li>
-<li>optional: any data sources you think are relevant</li>
-</ul></li>
 </ul></li>
 <li>Rubin’s causal model and why experiments work
 <ul>
 <li>counterfacturals</li>
 <li>cross sectional vs. longitudinal research designs</li>
 <li>random assignment experiments as creating comparison group that represents the counterfactual</li>
-<li>causal inference in the absence of experiments</li>
+<li>causal inference in the absence of experiments
+<ul>
 <li>quasi experimental designs (isolate exogenous variation in X)</li>
 <li>correlational designs that have purpose of estimating correlational relationship</li>
 <li>regressipon as an observational design to estimate causal relationship</li>
+</ul></li>
 <li>Doing stuff in R
 <ul>
 <li>introduce relevant programming concepts</li>
-</ul></li>
-<li>Final project
-<ul>
-<li>students form groups of 3 for final project</li>
 </ul></li>
 </ul></li>
 <li>Fundamentals of inference I
@@ -1560,7 +1618,7 @@ div.tocify {
 <li>standard deviation</li>
 <li>distributions, properties of distributions
 <ul>
-<li>e.g., normal, skewed;</li>
+<li>e.g., normal, skewed; standard normal distribution; “empirical rule” for normal distributions</li>
 </ul></li>
 <li>sampling distribution</li>
 <li>standard error</li>
@@ -1569,14 +1627,6 @@ div.tocify {
 <ul>
 <li>introduce relevant programming concepts</li>
 <li>group activity applying theoretical concepts to data using R functions</li>
-</ul></li>
-<li>Final project
-<ul>
-<li>Ozan introduce potential topics and data sources for final project</li>
-</ul></li>
-<li>student homework assignment:
-<ul>
-<li>student groups vote on final project topic (a couple days before next class)</li>
 </ul></li>
 </ul></li>
 <li>Fundamentals of inference II
@@ -1593,16 +1643,6 @@ div.tocify {
 <li>introduce relevant programming concepts</li>
 <li>group activity applying theoretical concepts to data using R functions</li>
 </ul></li>
-<li>Discuss final project topic and data sources
-<ul>
-<li>potential specific research questions</li>
-<li>introduce data sources</li>
-</ul></li>
-<li>homework
-<ul>
-<li>come up w/ research questions</li>
-<li>identify data sources and variables</li>
-</ul></li>
 </ul></li>
 <li>Introduction to bivariate regression
 <ul>
@@ -1610,8 +1650,7 @@ div.tocify {
 <li>Correlation
 <ul>
 <li>Scatterplots</li>
-<li>slope</li>
-<li>best fit line</li>
+<li>slope; best fit line</li>
 </ul></li>
 <li>Population linear regression model
 <ul>
@@ -1625,75 +1664,132 @@ div.tocify {
 </ul></li>
 <li>Estimation
 <ul>
-<li>Sample regression line</li>
-<li>Ordinary least squares</li>
+<li>Ordinary least squares estimator</li>
+<li>OLS prediction line</li>
 </ul></li>
 <li>Doing stuff in R
 <ul>
 <li>introduce relevant programming concepts</li>
 <li>group activity applying theoretical concepts to data using R functions</li>
 </ul></li>
-<li>homework
+</ul></li>
+<li>Prediction and measures of model fit
 <ul>
-<li>revise research questions; revise data sources and variables</li>
+<li>Prediction, based on OLS prediction line</li>
+<li>Measures of model fit
+<ul>
+<li>e.g., total sum of squares; explained sum of squares, sum of squared residuals; <span class="math inline">\(R^2\)</span>; standard error of the regression</li>
 </ul></li>
 </ul></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
+<li>Hypothesis testing and confidence intervals for <span class="math inline">\(\beta_1\)</span>
+<ul>
+<li>Interpretation of <span class="math inline">\(\hat{\beta}_1\)</span>
+<ul>
+<li>when <span class="math inline">\(X\)</span> is a continuous variable</li>
+</ul></li>
+<li>Hypothesis testing
+<ul>
+<li>Review steps in hypothesis testing about population regression coefficient <span class="math inline">\(\beta_1\)</span>
+<ul>
+<li>mirrors steps in hypothesis testing about population mean <span class="math inline">\(\mu\)</span></li>
+</ul></li>
+<li>Standard error of <span class="math inline">\(\hat{\beta}_1\)</span></li>
+<li>Sampling distribution of <span class="math inline">\(\hat{\beta}_1\)</span></li>
+<li>t-test</li>
+</ul></li>
+<li>Confidence intervals about <span class="math inline">\(\beta_1\)</span></li>
+<li>Doing stuff in R
+<ul>
+<li>lecture/group activity to introduce and practice relevant programming skills<br />
+</li>
+</ul></li>
+</ul></li>
+<li>Categorical X variables and introduction to multivariate regression
+<ul>
+<li>Modeling categorical X variables
+<ul>
+<li>e.g., variable <span class="math inline">\(X\)</span> has <span class="math inline">\(c\)</span> categories, represented by <span class="math inline">\(c-1\)</span> dichotomous indicators in regression equation and one “base category” omitted from regression</li>
+</ul></li>
+<li>Interpretation of <span class="math inline">\(\hat{\beta}_1\)</span> when <span class="math inline">\(X\)</span> is categorical (w/ respect to reference)</li>
+<li>Multivariate regression
+<ul>
+<li>Population multivariate regression model</li>
+<li>Interpretation of <span class="math inline">\(\hat{\beta}_k\)</span> in multivariate regression model</li>
+<li>Hypothesis testing about <span class="math inline">\(\beta_k\)</span> (same as before)</li>
+</ul></li>
+<li>Interpretation of regression results tables in journal articles</li>
+<li>Doing stuff in R
+<ul>
+<li>lecture/group activity to introduce and practice relevant programming skills</li>
+</ul></li>
+</ul></li>
+<li>OLS assumptions and omitted variable bias
+<ul>
+<li>Importance of assumptions in statistical inference</li>
+<li>OLS assumptions
+<ul>
+<li>OLS assumption 1, omitted variable bias (most attention)</li>
+<li>heteroskedasticity, robust standard errors</li>
+</ul></li>
+<li>Doing stuff in R
+<ul>
+<li>e.g., creating publication-ready tables</li>
+</ul></li>
+</ul></li>
+<li>Additional topics [likely won’t have time to cover more than one of these]
+<ul>
+<li>creating descriptive results (tables and figures) for prior to regression results</li>
+<li>linear probability model</li>
+<li>non-linear regression models
+<ul>
+<li>polynomials (e.g., <span class="math inline">\(X^2\)</span>)</li>
+<li>interaction effects
+<ul>
+<li>categorical <span class="math inline">\(X\)</span> by categorical <span class="math inline">\(Z\)</span>; continous <span class="math inline">\(X\)</span> by categorical <span class="math inline">\(Z\)</span>; etc.</li>
+</ul></li>
+<li>log models
+<ul>
+<li>linear-log; log-linear; log-log</li>
+</ul></li>
+</ul></li>
+</ul></li>
 </ol>
-<p>The course will consist of X units</p>
-<ul>
-<li>Unit 1: Fundamentals of statistical theory
-<ul>
-<li>sampling distribution</li>
-<li>central limit theorem</li>
-<li>standard error</li>
-<li>hypothesis testing</li>
-</ul></li>
-<li>Unit 2: regression for causal inference
-<ul>
-<li>Rubin’s causal model</li>
-<li>why experiments work</li>
-</ul></li>
-</ul>
 </div>
+<div id="course-description-ozans-version" class="section level1">
+<h1><span class="header-section-number">4</span> Course description [ozan’s version]</h1>
+<p>This course introduces students to applied linear regression analysis with a focus on program evaluation. Program evaluation is the main methodological strategy used to assess the impact of programs, policies, and interventions. The primary purpose of regression analysis in program evaluation research is to assess the causal effect of one intervention (the independent variable of interest) on an educational outcome (the dependent variable) in observational settings where random assignment to the independent variable of interest is not possible. The course will focus on learning regression with a continuous dependent variable, one independent variable of interest, and control variables to evaluate the effect of some program, policy, and/or intervention. We will devote substantial time to interpreting and visualizing regression output, as well as cover measures of model fit, multicollinearity, non-linear relationships (i.e., polynomials and logs), and interaction effects.</p>
 </div>
 <div id="tentative-outline" class="section level1">
-<h1><span class="header-section-number">3</span> Tentative outline</h1>
+<h1><span class="header-section-number">5</span> Tentative outline</h1>
 <div id="week-1-introduction" class="section level2">
-<h2><span class="header-section-number">3.1</span> Week 1: Introduction</h2>
+<h2><span class="header-section-number">5.1</span> Week 1: Introduction</h2>
 </div>
 <div id="week-2-fundamentals-of-statistics-1" class="section level2">
-<h2><span class="header-section-number">3.2</span> Week 2: fundamentals of statistics 1</h2>
+<h2><span class="header-section-number">5.2</span> Week 2: fundamentals of statistics 1</h2>
 </div>
 <div id="week-3-fundamentals-of-statistics-2" class="section level2">
-<h2><span class="header-section-number">3.3</span> Week 3: fundamentals of statistics 2</h2>
+<h2><span class="header-section-number">5.3</span> Week 3: fundamentals of statistics 2</h2>
 </div>
 <div id="week-4" class="section level2">
-<h2><span class="header-section-number">3.4</span> Week 4:</h2>
+<h2><span class="header-section-number">5.4</span> Week 4:</h2>
 </div>
 <div id="week-5" class="section level2">
-<h2><span class="header-section-number">3.5</span> Week 5:</h2>
+<h2><span class="header-section-number">5.5</span> Week 5:</h2>
 </div>
 <div id="week-6" class="section level2">
-<h2><span class="header-section-number">3.6</span> Week 6:</h2>
+<h2><span class="header-section-number">5.6</span> Week 6:</h2>
 </div>
 <div id="week-7" class="section level2">
-<h2><span class="header-section-number">3.7</span> Week 7:</h2>
+<h2><span class="header-section-number">5.7</span> Week 7:</h2>
 </div>
 <div id="week-8" class="section level2">
-<h2><span class="header-section-number">3.8</span> Week 8:</h2>
+<h2><span class="header-section-number">5.8</span> Week 8:</h2>
 </div>
 <div id="week-9" class="section level2">
-<h2><span class="header-section-number">3.9</span> Week 9:</h2>
+<h2><span class="header-section-number">5.9</span> Week 9:</h2>
 </div>
 <div id="week-10" class="section level2">
-<h2><span class="header-section-number">3.10</span> Week 10:</h2>
+<h2><span class="header-section-number">5.10</span> Week 10:</h2>
 </div>
 </div>
 
