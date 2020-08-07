@@ -1,6 +1,6 @@
 ---
-title: "EDUC 152, Course Outline"
-author: 
+title: "EDUC 152, Course Brainstorm"
+author: Ozan Jaquette
 date: 
 urlcolor: blue
 output: 
@@ -19,27 +19,110 @@ output:
     
 ---
 
-# Constants and differences across iterations of EDUC 152
+Link to this html file:
 
-## Things that will be constant
+- [https://rucla-ed.github.io/educ152/educ152_outline.html](https://rucla-ed.github.io/educ152/educ152_outline.html)
 
-- The course will focus on learning multivariate regression
-- The course will have a final project
+# Across sections of EDUC 152
 
-## Things that may differ
+## Constant across sections
+
+- Course will focus on multivariate regression
+- Course will have a final project that requires students to apply regression analysis to answer a research question
+
+## Variation across sections
+
+Course quality will benefit from faculty being able to tailor the course towards their disciplinary and methodological orientation. Instructor of record will have discretion over the following:
 
 - Approach to introducing regression
-  - some may introduce regression from the perspective of program evaluation/causal inference; others may introduce regression from a different disciplinary perspective
-- Instructor of record will have full discretion over the final project
-- required textbook and readings
+  - some sections may introduce regression from the perspective of program evaluation/causal inference 
+  - disciplinary orientation of the course may differ depending on instructor (e.g., psychology, economics)
+- Requirements for the final project
+- Required textbook and readings
 - course website and communication
-  - e.g., I will likely use github for course websit, communication with instructor, communication between students
+  - e.g., CCLE vs. different course management software
 
-# Final project [ozan]
+As a rough estimate, 70-80% of course content will be the same across sections
 
-Overview 
+# Spring 2021 section, Jaquette
 
-- The entire class votes on a topic for the final research project. Then students complete project on this topic in groups of 3
+## Course description
+
+This course introduces students to applied linear regression analysis with a focus on program evaluation.  Program evaluation is the main methodological strategy used to assess the impact of programs, policies, and interventions. The primary purpose of regression analysis in program evaluation research is to assess the causal effect of one intervention  (the independent variable of interest) on an educational outcome (the dependent variable) in observational settings where random assignment to the independent variable of interest is not possible. The course will focus on learning regression with a continuous dependent variable, one independent variable of interest, and control variables to evaluate the effect of some program, policy, and/or intervention. We will devote substantial time to interpreting and visualizing regression output, as well as cover measures of model fit, multicollinearity, and non-linear relationships. [ADD SENTENCE ABOUT FINAL PROJECT]
+
+## Why emphasize causal inference?
+
+I've taught introduction to regression many times, both as a graduate student TA and a primary instructor. I came to the conclusion that students become better researchers when they learn regression from a causal rather than a correlational perspective.
+
+Holding aside prediction for the movement, researchers usually use regression to:
+
+- Make causal statements about the relationship between $X$ and $Y$ *OR*
+- Make statements about correlational relationships, that is conditional correlations between one or more $X$ variables and outcome, $Y$
+
+Both applications of regression  -- causal and exploratory -- are important. Establishing causal relationships is usually more difficult, requiring careful consideration of assumptions and a modeling strategy entirely focused on estimating the causal relationship between one particular independent variable of intrest and the outcome. As experience researchers, we know when we are conducting causal vs. correlational analyses. However, students learing regression often view all relationships estimated in a regression model as causal ones.  Therefore, I believe that teaching students regression with an emphasis on the goal of causal inference prepares students to do high-quality causal research and exploratory research. This approach has the added benefit of preparing students for more advanced work in causal inference (e.g., experimental design, quasi-experimental methods)
+
+Teaching regression with a focus on causal inference means that we estimate the causal relationship between one $X$ variable of interest an an outcome, with additional covariates included in order to reduce omitted variable bias. By contrast, when we use regression for the purpose of understanding correlational relationships, we are interested in the relationship between an outcome and many $X$ variables.
+
+The narrow analytic focus of causal analyses improves the craft of scholarship in student final projects. Good empirical research tends to be focused rather than being substantively interested in the relationship between an outcome and two dozen other variables. During the course, we will do close reads of several high-quality empirical journal articles. For their final paper, students will write the introduction/framing, literature review, and the methodology all around this particular X-Y relationship. This level of analytic focus enables students to write high-quality, engaging sections that practice some of the strategies students learn from reading published pieces. Over the last decade, many student papers from my introduction to regression courses later became published in peer-reviewed journals.
+
+## Course structure
+
+How we will use our time:
+
+- Lecture will focus on introducing statistics concepts and applying them in _R_
+  - Application in _R_ will be intergrated throughout lecture rather than at the end or in a separate lab section
+  - Students given html lectures, .Rmd files, _R_ code, data prior to lecture. So they can run code in _R_ as they work through lecture.
+- Group work and (occasionally) solo work asking students to use course concepts/skills accomplish a practical research task
+- Discussion (small group and class-wide) of empirical research we read
+
+Online vs. face-to-face
+
+- Assuming online instruction for Spring 2021 section, I will likely record brief video lectures discusing the most important/difficult concepts in the lecture html/.Rmd files
+- Students will be asked to watch video and work through lecture prior to class
+- Synchronous class time will be shortened. 
+  - Will include Q&A discussion about course content and empirical research we read.
+  - The majority of time will be spent on some practical challenge done in groups
+
+## Assessments/homework
+
+__Homework__
+
+Course will have weekly homework assignments.
+
+Homework will generally include three types of questions:
+
+- Questions about theory, concepts
+- Questions asking students to do stuff in R
+- Questions asking students to make progress on ther final project
+  
+This is an applied regression course that also takes learning the theory/concepts seriously. Therefore, homework assignments will ask students to apply course concepts to real data using _R_, with an emphasis on developing competence in substantive tasks common in research analyst positions (e.g., conducting regression analyses, creating publication-ready tables, interpeting results)
+
+__Other assessments__
+
+Beyond weekly homework, the major course assessment is the final project, which they will develop throughout the quarter and will be due during finals week.
+
+Given the final project, the course will not have a mid-term or final exam.
+
+An alternative to a final project (e.g., in first iteration of course), would be 3-4 problem sets throughout the quarter. These problem sets would -- for the most part -- replace weekly houmework and would be the primay assessment throughout the course. Problem sets will differ from weekly problem sets in that they are designed to be challenging, more substantive, and a deeper dive into applying the analytic tools we are learning.
+
+## Final project
+
+Final project alternatives I considered
+
+- Each group of 2-3 students chooses their own research question, working with instructor on developing the question and finding feasible data sources
+- The entire class does the same broad research project, we identify dataset(s) to study this topic; students work in groups of 2-3 to choose their specific research question, and analyze the research question
+- 3-4 substantive challenging problem sets over the course of the quarter instead of a final research project
+
+Overview of final research project
+
+- The entire class does the same broad research project, we identify dataset(s) to study this topic; students work in groups of 2-3 to choose their specific research question, and analyze the research question
+
+- The entire class votes on which broad topic for the final research project (e.g., effect of bilingual education programs, effect of student race on school disciplinary punishments)
+    - First, Students will list research topics they are interested in
+    - Next, We will identify which research topics can be studied using publicly available data
+    - Then we vote
+- Then students complete project on this topic in groups of two or three
+- Instructor will acquire relevant datasets; during lecture/activities, we will use these datasets
 - final product
     - answers a causal question about effect of $X$ on $Y$
     - contains the following sections [minimum]
@@ -47,11 +130,12 @@ Overview
       - literature review
       - methods (including data, sample, variables)
       - preliminary results
+    - considers construct validity, internal and external validity concerns
     - final project written as a .Rmd file
 - In most weeks, part of their homework assignments will be related to final project
     - e.g., choose specific research question
 
-## Potential timeline for final project
+Potential timeline for final project, by week
 
 1. Introduce final project
     - homework assigned:
@@ -68,18 +152,22 @@ Overview
     - homework assigned:
       - come up w/ research questions
       - identify data sources and variables
-1. in class ?
-    - homework assignment
+1. Dveloping research questions, construct validity, internal and external validity concerns
+    - homework assigned:
       - revise research question and data sources based on feedback from instructor
+1. Choosing analysis sample
+1. Choosing variables to represent concepts
+1. ....      
+      
+      
+Paper due during finals week
 
-1. 
-1. 
-1. 
-1. 
-1. 
-11. [finals week] final paper due
 
-# course topics [ozan's section]
+## Tentative course topics and schedule
+
+Warnings: this is simultaneously over-detailed and a bit hap-hazardly organized. I was trying to make sure I didn't miss things but also not put too much in a single week.
+
+Note: In most weeks, lecture/group work will include learning and applying new skills in $R$
 
 1. Introduction
     - syllabus
@@ -89,8 +177,9 @@ Overview
       - do in groups of 3 (groups can decide on specific resarch question)
     - Doing stuff in R
       - introduce relevant programming concepts
-1. Rubin's causal model and why experiments work
-    - counterfacturals
+1. Introduction to causal inference: Rubin's Causal Model and why experiments work
+    - [*Note: I do causal inference in week 2 because learning these concepts early helps students develop better research questions for their final projects*]
+    - counterfacturals and Rubin's Causal Model
     - cross sectional vs. longitudinal research designs
     - random assignment experiments as creating comparison group that represents the counterfactual
     - causal inference in the absence of experiments
@@ -165,6 +254,7 @@ Overview
     - Doing stuff in R
       - lecture/group activity to introduce and practice relevant programming skills
 1. OLS assumptions and omitted variable bias
+    - Bias, efficiency
     - Importance of assumptions in statistical inference
     - OLS assumptions
       - OLS assumption 1, omitted variable bias (most attention)
@@ -181,31 +271,5 @@ Overview
       - log models
         - linear-log; log-linear; log-log
 
-# Course description [ozan's version]
-
-This course introduces students to applied linear regression analysis with a focus on program evaluation.  Program evaluation is the main methodological strategy used to assess the impact of programs, policies, and interventions. The primary purpose of regression analysis in program evaluation research is to assess the causal effect of one intervention  (the independent variable of interest) on an educational outcome (the dependent variable) in observational settings where random assignment to the independent variable of interest is not possible. The course will focus on learning regression with a continuous dependent variable, one independent variable of interest, and control variables to evaluate the effect of some program, policy, and/or intervention. We will devote substantial time to interpreting and visualizing regression output, as well as cover measures of model fit, multicollinearity, non-linear relationships (i.e., polynomials and logs), and interaction effects. 
 
 
-
-
-# Tentative outline
-
-## Week 1: Introduction 
-
-## Week 2: fundamentals of statistics 1
-
-## Week 3: fundamentals of statistics 2
-
-## Week 4: 
-
-## Week 5: 
-
-## Week 6: 
-
-## Week 7: 
-
-## Week 8: 
-
-## Week 9: 
-
-## Week 10: 
