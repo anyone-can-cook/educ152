@@ -1,0 +1,89 @@
+---
+title: "EDUC 152: course title"
+author: Ozan Jaquette
+date: 
+urlcolor: blue
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+    keep_md: true # may be helpful for storing on github
+    
+---
+
+Link to this html file:
+
+- [https://rucla-ed.github.io/educ152/educ152_outline.html](https://rucla-ed.github.io/educ152/educ152_outline.html)
+
+# Short description
+
+# Extended description
+
+# Course topics and learning outcomes
+
+## Course topics
+## Course learning outcomes
+
+# How to succeed in this course (expectations for students)
+
+# Creating an Inclusive Classroom Community 
+
+(Instructor, TA, and Community Expectations)
+
+## Respect for diversity
+
+# Course website and communication
+
+## Course website
+## Course discussion
+## Communication with instructor and TA
+
+# Course materials
+
+## Textbooks/reading
+
+## Software
+
+# Assignments and grading
+
+## Assignments
+
+### Problem sets
+### Attendance and participation
+
+## Grading scale
+
+# Course schedule
+# Course policies
+
+? Put inclusive environment/respect for diversity stuff here or in its own level-1 heading
+
+## Classroom environment
+## Online Collaboration/Netiquette
+## Academic accomodations
+## Academic integrity
+
+# Campus resources
+
+Counseling
+Discrimination
+Sexual harassment
+LGBTQ resource center
+International students
+Undocumented students
+Student legal services
+Students with dependents
+Gender inclusive restrooms
+Campus accessibility
+Center for accessible education
+Counseling and Psychological Services (CAPS)
+Title IX Resources
+Undergraduate Writing Center
