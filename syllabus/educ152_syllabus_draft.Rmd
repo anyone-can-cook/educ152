@@ -170,6 +170,17 @@ The primary course assessments are four problem sets, including the final capsto
 
 # Course schedule
 
+1. Introduction
+1. Fundamentals of statistical inference I (sampling distributions and central limit theorem)
+1. Fundamentals of statistical inference II (hypothesis testing)
+1. Principles of causal inference: Rubin's Causal Model and why experiments work
+1. Introduction to bivariate regression
+1. Prediction and measures of model fit
+1. Hypothesis testing and confidence intervals for $\beta_1$
+1. Categorical X variables and introduction to multivariate regression
+1. Using regression for causal inference: OLS assumptions and omitted variable bias
+1. Creating tables and graphs of descriptive statistics and regression results
+
 # Course policies
 
 ? Put inclusive environment/respect for diversity here or in its own level-1 heading

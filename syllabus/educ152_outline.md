@@ -272,6 +272,6 @@ Note: In most weeks, lecture/group work will include learning and applying new s
         - categorical $X$ by categorical $Z$; continous $X$ by categorical $Z$; etc.
       - log models
         - linear-log; log-linear; log-log
-
+1. Creating tables and graphs of descriptive statistics and regression results
 
 
