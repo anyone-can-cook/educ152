@@ -22,6 +22,7 @@ output:
 - EDUC152: Regression for education policy analysis
 - Quarter and year
 - X units
+- Link to syllabus: [https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html](https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html)
 
 # Short course description
 
