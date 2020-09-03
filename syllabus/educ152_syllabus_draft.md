@@ -1,6 +1,6 @@
 ---
-title: "EDUC 152: course title"
-author: Ozan Jaquette
+title: "Syllabus, EDUC152"
+author: 
 date: 
 urlcolor: blue
 output: 
@@ -19,18 +19,69 @@ output:
     
 ---
 
-Link to this html file:
+- EDUC152: Regression for education policy analysis
+- Quarter and year
+- X units
 
-- [https://rucla-ed.github.io/educ152/educ152_outline.html](https://rucla-ed.github.io/educ152/educ152_outline.html)
+# Short course description
 
-# Short description
+This course introduces students to regression analysis as a tool for policy analysis. The course emphasizes using regression to answer causal research questions that will inform policy decisions. These research questions may be traditional (e.g., the effect of student-teacher ratio on achievement) or critical (e.g., the effect of racial salience on how white university admissions officers respond to inquiries from Black prospective students). The course will begin by introducing concepts of statistical inference necessary for hypothesis testing. Next, we will learn the fundamentals of multiple regression, the principles of casual inference, how to (and how not to) use regression to answer causal research questions, and how to critically assess empirical research.  The course integrates theory and application using the **_R_** programming language. Students will learn and be assessed through four problem sets. The final capstone problem set requires students to conduct all facets of a causal regression analysis, from research question and variable collection to modeling, presentation, and interpretation.
 
-# Extended description
+# Instructor and teaching assistant
 
-# Course topics and learning outcomes
+## Instructor
 
-## Course topics
-## Course learning outcomes
+- Ozan Jaquette
+- Pronouns: he/him/his
+- Office: Moore Hall, room 3038
+- email: [ozanj@ucla.edu](ozanj@ucla.edu)
+- Office hours:
+  - Zoom ofice hours TBA
+  - And by appointment
+
+
+## Teaching assistant
+
+- name
+- Pronouns: 
+- email:
+- Office hours:
+
+# Extended course description
+
+Policy debates in education are substantially influenced by research that answers causal research questions, which follow the form “what is the effect of X on Y.” Regression is the most widely-used quantitative methodology to answer causal, and also non-causal, research questions. This course introduces students to regression, with an emphasis on using regression to answer causal research questions and on critically assessing empirical research that uses regression.  These skills are expected for most education research and education policy analysis positions.
+
+The course integrates statistical theory and application using the **_R_** programming language.  Students will work through asynchronous video lectures and lectures slides on their own. These lectures introduces statistical theory, introduces the relevant programming skills, and provides the code and real-world data so that students can practice conducting and interpreting statistical analyses. Course topics will include: fundamental statistical concepts of statistical inference; principles of causal inference; and fundamentals of multiple regression.  During class time, students will work in groups to solve practical research challenges and we will discuss and deconstruct empirical research that uses regression analysis. The primary course assessments are four problem sets -- including the final capstone problem set -- which will be completed in groups. Each problem set will require students to apply knowledge of statistical concepts, and conduct substantive statistical analyses around a particular research question. 
+
+
+
+The course embraces using regression to answer traditional research questions (e.g., the effect of student-teacher ratio on achievement) and critical research questions (e.g., the effect of racial salience -- as presented in email text -- on how white university admissions officers respond to inquiries from Black prospective students). The skills this course teaches are valued by employers and are valued in the process of applying to graduate schools. After completing this course, students will be prepared to take more advanced causal inference coursework (e.g., quasi-experimental methods) and coursework that teaches the programming and data manipulation skills necessary to create analysis datasets for real research projects.
+
+
+# Course learning goals
+
+__Big-picture (conceptual) learning goals__
+
+1. Understand principles of statistical inference for hypothesis testing
+1. Understand the fundamentals of multiple regression analysis and the assumptions that must be satisfied to make inferences from these results
+1. Understand how to interpret multiple regression results in policy-relevant, non-technical language.
+1. Understand the principles of causal inference, including why experiments work and how to use regression to answer causal research questions
+1. Understand and critically evaluate empirical research that attempts to use regression to make causal statements
+
+__Skill-based learning goals__
+
+1. Conduct regression analysis using R
+1. Develop proficiency in basic data management skills, including simple descriptive statistics to investigate variables/data quality and creating analysis variables
+1. Use R/Rstudio/RMarkdown to produce documents containing research results, including
+    - Creating papers and policy reports with references
+    - Creating tables that summarize regression results
+    - Creating tables and graphs of descriptive statistics
+
+
+
+
+
+
 
 # How to succeed in this course (expectations for students)
 
@@ -43,12 +94,27 @@ Link to this html file:
 # Course website and communication
 
 ## Course website
+
+- Using github. 
+
 ## Course discussion
+
+- Use github issues/groups for all questions related to course content
+
 ## Communication with instructor and TA
+
+- Email to instructor/TA for personal and sensitive issues
 
 # Course materials
 
-## Textbooks/reading
+## Textbooks
+
+TBA, but will chose one or two free books
+
+## Other reading
+
+Links to reading on course website
+
 
 ## Software
 
@@ -57,14 +123,18 @@ Link to this html file:
 ## Assignments
 
 ### Problem sets
+
+The primary course assessments are four problem sets, including the final capstone problem set.  Each problem set will require students to apply knowledge of statistical concepts, conduct substantive statistical analyses, present and interpret results. Problem sets will also be designed to introduce students to some of the thorny data challenges that inevitably arise in real research projects.  The final, capstone problem set will require students to conduct the major components of an empirical regression analysis, from research question and variable collection to modeling, presentation, and interpretation. Additionally, the capstone problem set will require students to critically evaluate an empirical journal article that utilized the same data sources to answer the same research question.
+
 ### Attendance and participation
 
 ## Grading scale
 
 # Course schedule
+
 # Course policies
 
-? Put inclusive environment/respect for diversity stuff here or in its own level-1 heading
+? Put inclusive environment/respect for diversity here or in its own level-1 heading
 
 ## Classroom environment
 ## Online Collaboration/Netiquette
