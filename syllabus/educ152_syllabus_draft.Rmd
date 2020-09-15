@@ -19,14 +19,16 @@ output:
     
 ---
 
-- EDUC152: Regression for education policy analysis
+- EDUC152: Regression for education research
 - Quarter and year
-- X units
+- 4 units
 - Link to syllabus: [https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html](https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html)
 
 # Short course description
 
-This course introduces students to regression analysis as a tool for policy analysis. The course emphasizes using regression to answer causal research questions that will inform policy decisions. These research questions may be traditional (e.g., the effect of student-teacher ratio on achievement) or critical (e.g., the effect of racial salience on how white university admissions officers respond to inquiries from Black prospective students). The course will begin by introducing concepts of statistical inference necessary for hypothesis testing. Next, we will learn the fundamentals of multiple regression, the principles of casual inference, how to (and how not to) use regression to answer causal research questions, and how to critically assess empirical research.  The course integrates theory and application using the **_R_** programming language. Students will learn and be assessed through four problem sets. The final capstone problem set requires students to conduct all facets of a causal regression analysis, from research question and variable collection to modeling, presentation, and interpretation.
+This course introduces students to regression as a tool to answer questions about education. Regression is the most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, the assumptions regression relies on, the limitations of our data, and how particular variables (e.g., “race” and “gender”) are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas.  Therefore, EDUC250 teaches the fundamentals concepts of regression analysis and how these concepts can be thoughtfully applied to answer different kinds of research questions, with a particular emphasis on explicitly critical research questions. The course also emphasizes how to understand and critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
+\\
+THIS DESCRIPTION IS A BIT OVER WORD LIMIT. I'LL GET DOWN BELOW WORD LIMIT FOLLOWING FEEDBACK
 
 # Instructor and teaching assistant
 
@@ -50,7 +52,7 @@ This course introduces students to regression analysis as a tool for policy anal
 
 # Extended course description
 
-Policy debates in education are substantially influenced by research that answers causal research questions, which follow the form “what is the effect of X on Y.” Regression is the most widely-used quantitative methodology to answer causal, and also non-causal, research questions. This course introduces students to regression, with an emphasis on using regression to answer causal research questions and on critically assessing empirical research that uses regression.  These skills are expected for most education research and education policy analysis positions.
+Regression is the most widely-used quantitative methodology to answer causal, and also non-causal, research questions. This section of EDUC152 will introduce students to regression with a focus on using regression to answer causal research questions, which typicaly follow the form “what is the effect of X on Y.” The course also emphasizes undersanding how to read and critically assess empirical research that uses regression.
 
 The course integrates statistical theory and application using the **_R_** programming language.  Students will work through asynchronous video lectures and lectures slides on their own. These lectures introduces statistical theory, introduces the relevant programming skills, and provides the code and real-world data so that students can practice conducting and interpreting statistical analyses. Course topics will include: fundamental statistical concepts of statistical inference; principles of causal inference; and fundamentals of multiple regression.  During class time, students will work in groups to solve practical research challenges and we will discuss and deconstruct empirical research that uses regression analysis. The primary course assessments are four problem sets -- including the final capstone problem set -- which will be completed in groups. Each problem set will require students to apply knowledge of statistical concepts, and conduct substantive statistical analyses around a particular research question. 
 
@@ -63,22 +65,39 @@ The course embraces using regression to answer traditional research questions (e
 
 # Course learning goals
 
+```{r, eval = FALSE, include = FALSE}
+UNDERGRADUATE MAJOR LEARNING GOALS
+
+Ability to Analyze Education in Social and Political Contexts
+Students will demonstrate an understanding of the educational landscape. NO
+Students will develop an understanding of the science of learning and human development in educational settings. NO
+Students will demonstrate an understanding of education and educational institutions in social, cultural, and historical contexts and the impact of these contexts on educational ideals and practices, and on society as a whole. NO
+Students will demonstrate an understanding of organizational cultures and dynamics and the ability to analyze and critique global, national, and local educational policies for effective leadership in promoting equity and liberation rather than stratification and oppression. MAYBE
+Skills for Effecting Change
+Students will demonstrate the ability to interpret social data and research and to critically evaluate research studies. YES
+Students will demonstrate the ability to apply these understandings to imagine, assess, and implement solutions to specific problems in education. MAYBE
+Students will demonstrate the ability to communicate clearly and cogently. YES
+
+Core Values
+Students will demonstrate an understanding of multiple perspectives, diversity, pluralism, and social justice. MAYBE.
+
+
+```
+
 __Big-picture (conceptual) learning goals__
 
 1. Understand principles of statistical inference for hypothesis testing
 1. Understand the fundamentals of multiple regression analysis and the assumptions that must be satisfied to make inferences from these results
-1. Understand how to interpret multiple regression results in policy-relevant, non-technical language.
+1. Understand how to interpret multiple regression results and communicate these results in non-technical language.
+1. Develop thoughtfulness about the ethical and social dimensions of using regression for education research, for example critically examining how race variables are created and how they are incorporated into regression analyses
 1. Understand the principles of causal inference, including why experiments work and how to use regression to answer causal research questions
-1. Understand and critically evaluate empirical research that attempts to use regression to make causal statements
+1. Understand and critically evaluate empirical research that uses regression to answer research questions
 
 __Skill-based learning goals__
 
 1. Conduct regression analysis using R
-1. Develop proficiency in basic data management skills, including simple descriptive statistics to investigate variables/data quality and creating analysis variables
-1. Use R/Rstudio/RMarkdown to produce documents containing research results, including
-    - Creating papers and policy reports with references
-    - Creating tables that summarize regression results
-    - Creating tables and graphs of descriptive statistics
+1. Develop proficiency in basic data management skills, including simple descriptive statistics to investigate data quality and creating analysis variables
+1. Use RMarkdown to produce documents containing research results, including: graphical visualizations; tables of descriptive statistics and regression results; and in-text citations and APA formatted reference lists
 
 ```{r, eval = FALSE, include = FALSE}
 1. Understand principles of statistical inference for hypothesis testing, including:
@@ -120,9 +139,21 @@ __Skill-based learning goals__
 
 
 
+# Course structure and how to succeed
 
+## Course structure
 
-# How to succeed in this course (expectations for students)
+Each week, the course will be structured around asynchronous (pre-class) lectures and one synchronous workshop-style class meeting per week. Weekly homework will consist of students working through the lectures on their own and a modest amount of required reading. Written homework will consist of four "problem sets." Students will complete the first three problem sets in groups. Students will complete the final capstone problem set, due during finals week, on their own.
+
+1. __Asynchronous (pre-class) lectures__. Weekly asynchronous lectures will be posted on the course website with the expectation that students work through the lecture in advance of our weekly synchronous class meeting. Lecture materials will consist of three types of resources: first, detailed lecture slides (PDF or HTML) introducing the statistical theory, programming skills, and sample code; second, short videos (e.g., 15 to 30 total minutes per week) that provide a high-level discussion of important and/or challenging concepts from the lecture slides, but not a line-by-line recitation of the lecture; and, third, the .Rmd file that created the PDF/html lecture slides. This .Rmd file will contain all "code chunks" and links to all data utilized in the lecture. Thus, students will be able to "learn by doing" in that they can run R code on their own computer while they work through lecture materials on their own.
+1. __Synchronous workshop-style class meetings.__ We will have one synchronous class meeting per week. Typically, these meetings will begin with a discussion of concepts students found difficult or confusing from the lecture materials. However, the bulk of class time will be devoted to students working in groups on a substantive question or challenge posed by the instructor. For example, students may be asked to create analysis variables from survey data in the presence of skip patterns or how we could improve on the analyses conducted in a research article students read prior to class. While students work in groups, the instructor and TA will visit with each group to answer questions and talk through ideas.
+
+## How to succeed in this class
+
+Prior to our in-class meetings, students should work through lecture materials on their own. We recommend treating the lecture materials as an active learning experience, in which students run *R* code on their computer instead of merely reading text on the slide. Additionally, we recommend that students ask questions on the course github website when they are having difficulty with the material.
+
+With respect to written work, the problem sets -- described below -- will be substantive and are intended to be challenging. Students who devote time each week working through the lecture materials will be better prepared for the problem sets. We recommend starting the problem sets early. This way students will have plenty of time to ask for help on questions they find challenging.
+
 
 # Creating an Inclusive Classroom Community 
 
@@ -165,6 +196,18 @@ Links to reading on course website
 
 The primary course assessments are four problem sets, including the final capstone problem set.  Each problem set will require students to apply knowledge of statistical concepts, conduct substantive statistical analyses, present and interpret results. Problem sets will also be designed to introduce students to some of the thorny data challenges that inevitably arise in real research projects.  The final, capstone problem set will require students to conduct the major components of an empirical regression analysis, from research question and variable collection to modeling, presentation, and interpretation. Additionally, the capstone problem set will require students to critically evaluate an empirical journal article that utilized the same data sources to answer the same research question.
 
+COMMENTS
+
+- recommmendation on how challenging
+  - make first problem set credit/no credit
+  - make them short but challenging;
+  - take time in class to work on the problem set
+  - make the first couple of problem sets that have a lot of hints;
+- think about how grades would be distributed throughout; you can't give everyone an A;
+- maybe giving students an opportunity to revise?
+- Rashmita: Lucrecia's example of "ED471-Project 3 - Spring 2019" problem set is  problem set is 
+
+
 ### Attendance and participation
 
 ## Grading scale
@@ -183,8 +226,6 @@ The primary course assessments are four problem sets, including the final capsto
 1. Creating tables and graphs of descriptive statistics and regression results
 
 # Course policies
-
-? Put inclusive environment/respect for diversity here or in its own level-1 heading
 
 ## Classroom environment
 ## Online Collaboration/Netiquette
