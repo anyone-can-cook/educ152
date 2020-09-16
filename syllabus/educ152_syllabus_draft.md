@@ -107,17 +107,22 @@ With respect to written work, the problem sets -- described below -- will be sub
 
 (Instructor, TA, and Community Expectations)
 
-## Respect for diversity
+## Respect for diversity  
+
+
 
 # Course website and communication
 
 ## Course website
 
-- Using github. 
+- All course related material can be found on the class GitHub repository [here]...  
 
 ## Course discussion
 
-- Use github issues/groups for all questions related to course content
+- We will be using GitHub teams and issues for announcements and class discussion.  
+
+    - __GitHub teams__: The teaching team will post all class announcements using GitHub teams. 
+    - __GitHub issues__: 
 
 ## Communication with instructor and TA
 
@@ -169,19 +174,61 @@ COMMENTS
 
 ## Grading scale
 
-| Letter Grade | Percentage |
-| --- | --- |
-| A+ | 99-100\% |
-| A | 93-98.9\% |
-| A- | 90-92.9\% |
-| B+ | 87-89.9\% |
-| B | 83-86.9\% |
-| B- | 80-82.9\% |
-| C+ | 77-79.9\% |
-| C | 73-76.9\% |
-| C- | 70-72.9\% |
-| D | 60-69.9\% |
-| F | 0-59.9\% |
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; ">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Letter Grade </th>
+   <th style="text-align:left;"> Percentage </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> A+ </td>
+   <td style="text-align:left;"> 99-100% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:left;"> 93-98.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> A- </td>
+   <td style="text-align:left;"> 90-92.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> B+ </td>
+   <td style="text-align:left;"> 87-89.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> B </td>
+   <td style="text-align:left;"> 83-86.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> B- </td>
+   <td style="text-align:left;"> 80-82.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> C+ </td>
+   <td style="text-align:left;"> 77-79.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> C </td>
+   <td style="text-align:left;"> 73-76.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> C- </td>
+   <td style="text-align:left;"> 70-72.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> D </td>
+   <td style="text-align:left;"> 60-69.9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> F </td>
+   <td style="text-align:left;"> 0-59.9% </td>
+  </tr>
+</tbody>
+</table>
+
 
 # Course schedule
 
@@ -219,9 +266,12 @@ Students needing academic accommodations based on a disability should contact th
 
 ## Academic integrity
 
-- UCLA policy
-  - UCLA is a community of scholars. In this community, all members including faculty, staff and students alike are responsible for maintaining standards of academic honesty. As a student and member of the University community, you are here to get an education and are, therefore, expected to demonstrate integrity in your academic endeavors. You are evaluated on your own merits. Cheating, plagiarism, collaborative work, multiple submissions without the permission of the professor, or other kinds of academic dishonesty are considered unacceptable behavior and will result in formal disciplinary proceedings.
-- This class
+__UCLA policy__  
+
+  - UCLA is a community of scholars. In this community, all members including faculty, staff and students alike are responsible for maintaining standards of academic honesty. As a student and member of the University community, you are here to get an education and are, therefore, expected to demonstrate integrity in your academic endeavors. You are evaluated on your own merits. Cheating, plagiarism, collaborative work, multiple submissions without the permission of the professor, or other kinds of academic dishonesty are considered unacceptable behavior and will result in formal disciplinary proceedings.  
+  
+__This class__  
+
   - Given that 90% of course grade is based on weekly problem sets, the primary academic honesty concern that could come up in this class is copying problem set solutions from somebody else and passing this in as your own work.
 
 
@@ -229,32 +279,33 @@ Students needing academic accommodations based on a disability should contact th
 
 **Counseling**
 
-This is a multidisciplinary student mental health center for the UCLA campus. CAPS offers an array of free services including individual counseling. If you suspect you are experiencing mental health problems or just need someone to talk to, you can make an appointment at John Wooden Center West, facing Drake Stadium, second floor, 310-825-0768. http://www.counseling.ucla.edu
+- This is a multidisciplinary student mental health center for the UCLA campus. CAPS offers an array of free services including individual counseling. If you suspect you are experiencing mental health problems or just need someone to talk to, you can make an appointment at John Wooden Center West, facing Drake Stadium, second floor, 310-825-0768. http://www.counseling.ucla.edu
 
 **Discrimination**
 
-UCLA is committed to maintaining a campus community that provides the stronget possible support for the intellectual and personal growth of all its members- students, faculty, and staff. Acts intended to create a hostile climate are unacceptable. To file an online incident report, visit: https://equity.ucla.edu/report-an-incident/  
+- UCLA is committed to maintaining a campus community that provides the stronget possible support for the intellectual and personal growth of all its members- students, faculty, and staff. Acts intended to create a hostile climate are unacceptable. To file an online incident report, visit: https://equity.ucla.edu/report-an-incident/  
 
 **Sexual harassment**
 
 Title IX prohibits gender discrimination, including sexual harassment, domestic and dating violence, sexual assault, and stalking.  If you have experienced sexual harassment or sexual violence, there are a variety of resources to assist you.  
 
-- CONFIDENTIAL RESOURCES:You can receive confidential support and advocacy at the CARE Advocacy Office for Sexual and Gender-Based Violence, A233 Murphy Hall, CAREadvocate\@careprogram.ucla.edu, (310) 206-2465. Counseling and Psychological Services (CAPS) also provides confidential counseling to all students and can be reached 24/7 at (310) 825-0768.  
-- NON-CONFIDENTIAL RESOURCES: You can also report sexual violence or sexual harassment directly to the University's Title IX Coordinator, 2255 Murphy Hall, titleix\@conet.ucla.edu, (310) 206-3417. Reports to law enforcement can be made to UCPD at (310) 825-1491. These offices may be required to pursue an official investigation.
+- __CONFIDENTIAL RESOURCES__:You can receive confidential support and advocacy at the CARE Advocacy Office for Sexual and Gender-Based Violence, A233 Murphy Hall, CAREadvocate\@careprogram.ucla.edu, (310) 206-2465. Counseling and Psychological Services (CAPS) also provides confidential counseling to all students and can be reached 24/7 at (310) 825-0768.  
+
+- __NON-CONFIDENTIAL RESOURCES__: You can also report sexual violence or sexual harassment directly to the University's Title IX Coordinator, 2255 Murphy Hall, titleix\@conet.ucla.edu, (310) 206-3417. Reports to law enforcement can be made to UCPD at (310) 825-1491. These offices may be required to pursue an official investigation.
 
 *Faculty and TAs are required under the UC Policy on Sexual Violence and Sexual Harassment to inform the Title IX Coordinator should they become aware that you or any other student has experienced sexual violence or sexual harassment.*  
 
 **LGBTQ resource center**
 
-This resource center provides a range of education and advocacy services supporting intersectional identity development. It fosters unity; wellness; and an open, safe, inclusive environment for lesbian, gay, bisexual, intersex, transgender, queer, asexual, questioning, and same-gender-loving students, their families, and the entire campus community. Find it in the Student Activities Center, or via email lgbt\@lgbt.ucla.edu. Visit their website for more information: https://www.lgbt.ucla.edu/  
+- This resource center provides a range of education and advocacy services supporting intersectional identity development. It fosters unity; wellness; and an open, safe, inclusive environment for lesbian, gay, bisexual, intersex, transgender, queer, asexual, questioning, and same-gender-loving students, their families, and the entire campus community. Find it in the Student Activities Center, or via email lgbt\@lgbt.ucla.edu. Visit their website for more information: https://www.lgbt.ucla.edu/  
 
 **International students**
 
-The Dashew Center provides a range of programs to promote cross-cultural learning, language improvement, and cultural adjustment. Their programs include trips in the LA area, performances, and on-campus events and workshops. Visit their website for more information: https://www.internationalcenter.ucla.edu/  
+- The Dashew Center provides a range of programs to promote cross-cultural learning, language improvement, and cultural adjustment. Their programs include trips in the LA area, performances, and on-campus events and workshops. Visit their website for more information: https://www.internationalcenter.ucla.edu/  
 
 **Undocumented students**
 
-This program provides a safe space for undergraduate and graduate undocument students. USP supports the UndocuBruin community through personalized services and resources, programs, and workshops. Visit their website for more information: https://www.usp.ucla.edu/  
+- This program provides a safe space for undergraduate and graduate undocument students. USP supports the UndocuBruin community through personalized services and resources, programs, and workshops. Visit their website for more information: https://www.usp.ucla.edu/  
 
 **Student legal services**
 
@@ -281,15 +332,15 @@ For more information visit their website: https://www.swd.ucla.edu/
 
 **Lactation Rooms** 
 
-[Map to lactation rooms on campus](https://ucla.app.box.com/v/2019-lactation-map)  
+- [Map to lactation rooms on campus](https://ucla.app.box.com/v/2019-lactation-map)  
 
 **Gender Inclusive restrooms**  
 
-[Map to gender inclusive restrooms](https://www.lgbt.ucla.edu/Portals/38/Documents/All-Gender%20Restroom%20Map_F15.pdf)  
+- [Map to gender inclusive restrooms](https://www.lgbt.ucla.edu/Portals/38/Documents/All-Gender%20Restroom%20Map_F15.pdf)  
 
 **Campus accessibility**  
 
-[Campus accessibility map](http://map.ucla.edu/downloads/pdf/Access_08_21_15.pdf)
+- [Campus accessibility map](http://map.ucla.edu/downloads/pdf/Access_08_21_15.pdf)
 
 ## Center for accessible education
 
