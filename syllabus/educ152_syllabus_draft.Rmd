@@ -3,7 +3,10 @@ title: "Syllabus, EDUC152"
 author: 
 date: 
 urlcolor: blue
-output: 
+output:
+  # word_document:
+  #   toc: no
+  #   toc_depth: '3'
   html_document:
     toc: true
     toc_depth: 3
@@ -26,7 +29,7 @@ output:
 
 # Short course description
 
-This course introduces students to regression as a tool to answer questions about education. Regression is the most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, the assumptions regression relies on, the limitations of our data, and how particular variables (e.g., “race” and “gender”) are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas.  Therefore, EDUC250 teaches the fundamentals concepts of regression analysis and how these concepts can be thoughtfully applied to answer different kinds of research questions, with a particular emphasis on explicitly critical research questions. The course also emphasizes how to understand and critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
+This course introduces students to regression as a tool to answer questions about education. Regression is the most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, the assumptions regression relies on, the limitations of our data, and how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas.  Therefore, EDUC250 teaches the fundamentals concepts of regression analysis and how these concepts can be thoughtfully applied to answer different kinds of research questions, with a particular emphasis on explicitly critical research questions. The course also emphasizes how to understand and critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
 \\
 THIS DESCRIPTION IS A BIT OVER WORD LIMIT. I'LL GET DOWN BELOW WORD LIMIT FOLLOWING FEEDBACK
 
@@ -37,22 +40,22 @@ THIS DESCRIPTION IS A BIT OVER WORD LIMIT. I'LL GET DOWN BELOW WORD LIMIT FOLLOW
 - Ozan Jaquette
 - Pronouns: he/him/his
 - Office: Moore Hall, room 3038
-- email: [ozanj@ucla.edu](ozanj@ucla.edu)
+- Email: [ozanj@ucla.edu](ozanj@ucla.edu)
 - Office hours:
-  - Zoom ofice hours TBA
+  - Zoom office hours TBA
   - And by appointment
 
 
 ## Teaching assistant
 
-- name
+- Name
 - Pronouns: 
-- email:
+- Email:
 - Office hours:
 
 # Extended course description
 
-Regression is the most widely-used quantitative methodology to answer causal, and also non-causal, research questions. This section of EDUC152 will introduce students to regression with a focus on using regression to answer causal research questions, which typicaly follow the form “what is the effect of X on Y.” The course also emphasizes undersanding how to read and critically assess empirical research that uses regression.
+Regression is the most widely-used quantitative methodology to answer causal, and also non-causal, research questions. This section of EDUC152 will introduce students to regression with a focus on using regression to answer causal research questions, which typicaly follow the form "what is the effect of X on Y." The course also emphasizes undersanding how to read and critically assess empirical research that uses regression.
 
 The course integrates statistical theory and application using the **_R_** programming language.  Students will work through asynchronous video lectures and lectures slides on their own. These lectures introduces statistical theory, introduces the relevant programming skills, and provides the code and real-world data so that students can practice conducting and interpreting statistical analyses. Course topics will include: fundamental statistical concepts of statistical inference; principles of causal inference; and fundamentals of multiple regression.  During class time, students will work in groups to solve practical research challenges and we will discuss and deconstruct empirical research that uses regression analysis. The primary course assessments are four problem sets -- including the final capstone problem set -- which will be completed in groups. Each problem set will require students to apply knowledge of statistical concepts, and conduct substantive statistical analyses around a particular research question. 
 
@@ -181,12 +184,21 @@ With respect to written work, the problem sets -- described below -- will be sub
 
 TBA, but will chose one or two free books
 
+<!--
+Book Ben recommended
+- [Learning Statistics with R](https://learningstatisticswithr.com/) by Danielle Navarro
+-->
+
 ## Other reading
 
 Links to reading on course website
 
 
 ## Software
+
+- **_[R](https://cloud.r-project.org/)_**, statistical programming language
+- **[RStudio](https://rstudio.com/products/rstudio/download/)**, integrated development environment for R
+- **[Git and GitHub](https://github.com/Rucla-ed/rclass2/raw/master/_resources/todo/educ263_todo.pdf)**
 
 # Assignments and grading
 
@@ -212,6 +224,20 @@ COMMENTS
 
 ## Grading scale
 
+| Letter Grade | Percentage |
+| --- | --- |
+| A+ | 99-100\% |
+| A | 93-98.9\% |
+| A- | 90-92.9\% |
+| B+ | 87-89.9\% |
+| B | 83-86.9\% |
+| B- | 80-82.9\% |
+| C+ | 77-79.9\% |
+| C | 73-76.9\% |
+| C- | 70-72.9\% |
+| D | 60-69.9\% |
+| F | 0-59.9\% |
+
 # Course schedule
 
 1. Introduction
@@ -228,23 +254,131 @@ COMMENTS
 # Course policies
 
 ## Classroom environment
+
+With respect to the course material, learning the essential skills of programming is hard! This stuff feels overwhelming to me all the time. So it is important that we all create an environment where students feel comfortable asking questions and talking about what they did not understand. Discomfort is part of the learning process. Unburdern yourself from the weight of being an "expert" and just focus on improving, helping your classmates improve, and helping your instructors improve.
+
+With respect to classroom environment, let's work together to create an environment that is relaxed, supportive, and where students feel comfortable voicing any concerns they have. Be mindful that words and body language affect people. Express your thoughts in a way that doesn’t make people feel excluded and does not make disparaging generalizations about any group.  As an instructor, I am responsible for setting an example through my own conduct.
+
 ## Online Collaboration/Netiquette
+
+You will communicate with instructors and peers virtually through a variety of tools such as GitHub, email, and web conferencing. The following guidelines will enable everyone in the course to participate and collaborate in a productive, safe environment.
+
+-	Be professional, courteous, and respectful as you would in a physical classroom.
+-	Online communication lacks the nonverbal cues that provide much of the meaning and nuances in face-to-face conversations. Choose your words carefully, phrase your sentences clearly, and stay on topic.
+-	It is expected that students may disagree with the research presented or the opinions of their fellow classmates. To disagree is fine but to disparage others’ views is unacceptable. All comments should be kept civil and thoughtful. 
+
 ## Academic accomodations
+
+Students needing academic accommodations based on a disability should contact the Center for Accessible Education (CAE) at (310)825-1501 (located in Murphy Hall A255). When possible, students should contact the CAE within the first two weeks of the term as reasonable notice is needed to coordinate accommodations. For more information visit https://www.cae.ucla.edu/.
+
+
 ## Academic integrity
+
+- UCLA policy
+  - UCLA is a community of scholars. In this community, all members including faculty, staff and students alike are responsible for maintaining standards of academic honesty. As a student and member of the University community, you are here to get an education and are, therefore, expected to demonstrate integrity in your academic endeavors. You are evaluated on your own merits. Cheating, plagiarism, collaborative work, multiple submissions without the permission of the professor, or other kinds of academic dishonesty are considered unacceptable behavior and will result in formal disciplinary proceedings.
+- This class
+  - Given that 90% of course grade is based on weekly problem sets, the primary academic honesty concern that could come up in this class is copying problem set solutions from somebody else and passing this in as your own work.
+
 
 # Campus resources
 
-Counseling
-Discrimination
-Sexual harassment
-LGBTQ resource center
-International students
-Undocumented students
-Student legal services
-Students with dependents
-Gender inclusive restrooms
-Campus accessibility
-Center for accessible education
-Counseling and Psychological Services (CAPS)
-Title IX Resources
-Undergraduate Writing Center
+**Counseling**
+
+This is a multidisciplinary student mental health center for the UCLA campus. CAPS offers an array of free services including individual counseling. If you suspect you are experiencing mental health problems or just need someone to talk to, you can make an appointment at John Wooden Center West, facing Drake Stadium, second floor, 310-825-0768. http://www.counseling.ucla.edu
+
+**Discrimination**
+
+UCLA is committed to maintaining a campus community that provides the stronget possible support for the intellectual and personal growth of all its members- students, faculty, and staff. Acts intended to create a hostile climate are unacceptable. To file an online incident report, visit: https://equity.ucla.edu/report-an-incident/  
+
+**Sexual harassment**
+
+Title IX prohibits gender discrimination, including sexual harassment, domestic and dating violence, sexual assault, and stalking.  If you have experienced sexual harassment or sexual violence, there are a variety of resources to assist you.  
+
+- CONFIDENTIAL RESOURCES:You can receive confidential support and advocacy at the CARE Advocacy Office for Sexual and Gender-Based Violence, A233 Murphy Hall, CAREadvocate\@careprogram.ucla.edu, (310) 206-2465. Counseling and Psychological Services (CAPS) also provides confidential counseling to all students and can be reached 24/7 at (310) 825-0768.  
+- NON-CONFIDENTIAL RESOURCES: You can also report sexual violence or sexual harassment directly to the University's Title IX Coordinator, 2255 Murphy Hall, titleix\@conet.ucla.edu, (310) 206-3417. Reports to law enforcement can be made to UCPD at (310) 825-1491. These offices may be required to pursue an official investigation.
+
+*Faculty and TAs are required under the UC Policy on Sexual Violence and Sexual Harassment to inform the Title IX Coordinator should they become aware that you or any other student has experienced sexual violence or sexual harassment.*  
+
+**LGBTQ resource center**
+
+This resource center provides a range of education and advocacy services supporting intersectional identity development. It fosters unity; wellness; and an open, safe, inclusive environment for lesbian, gay, bisexual, intersex, transgender, queer, asexual, questioning, and same-gender-loving students, their families, and the entire campus community. Find it in the Student Activities Center, or via email lgbt\@lgbt.ucla.edu. Visit their website for more information: https://www.lgbt.ucla.edu/  
+
+**International students**
+
+The Dashew Center provides a range of programs to promote cross-cultural learning, language improvement, and cultural adjustment. Their programs include trips in the LA area, performances, and on-campus events and workshops. Visit their website for more information: https://www.internationalcenter.ucla.edu/  
+
+**Undocumented students**
+
+This program provides a safe space for undergraduate and graduate undocument students. USP supports the UndocuBruin community through personalized services and resources, programs, and workshops. Visit their website for more information: https://www.usp.ucla.edu/  
+
+**Student legal services**
+
+UCLA student legal services provides a range of legal support to all registered and enrolled UCLA students. Some of their services include:  
+
+- Landlord/Tenant Relations
+- Accident and Injury Problems
+- Domestic Violence and Harassment
+- Divorces and Other Family Law Matter  
+
+For more information visit their website: http://www.studentlegal.ucla.edu/index.php
+
+**Students with dependents**
+
+UCLA Students with Dependents provides support to UCLA studens who are parents, guardians, and caregivers. Some of their services include:  
+
+- Information, referrals, and support to navigate UCLA (childcare, family housing, financial aid)
+- Access to information about resources within the larger community
+- On-site application and verification for CalFresh (food stamps) & MediCal and assistance with Cal Works/GAIN
+- A quiet study space
+- Family friendly graduation celebration in June  
+
+For more information visit their website: https://www.swd.ucla.edu/
+
+**Lactation Rooms** 
+
+[Map to lactation rooms on campus](https://ucla.app.box.com/v/2019-lactation-map)  
+
+**Gender Inclusive restrooms**  
+
+[Map to gender inclusive restrooms](https://www.lgbt.ucla.edu/Portals/38/Documents/All-Gender%20Restroom%20Map_F15.pdf)  
+
+**Campus accessibility**  
+
+[Campus accessibility map](http://map.ucla.edu/downloads/pdf/Access_08_21_15.pdf)
+
+## Center for accessible education
+
+Students needing academic accommodations based on a disability should contact the Center for Accessible Education (CAE). When possible, students should contact the CAE within the first two weeks of the term as reasonable notice is needed to coordinate accommodations. For more information visit www.cae.ucla.edu.
+
+Located in A255 Murphy Hall: (310) 825-1501, TDD (310) 206-6083; http://www.cae.ucla.edu/
+
+-	Due to COVID-19, the CAE office is closed for in-person meetings.
+-	CAE counselor, resources, and services are still available via email / virtual appointment.
+-	Stay up-to-date with CAE newsletters & announcements at https://www.cae.ucla.edu/announcements-events/student
+
+
+## Counseling and Psychological Services (CAPS)
+
+As a student you may experience a range of issues that can cause barriers to learning, such as strained relationships, increased anxiety, alcohol/drug problems, depression, difficulty concentrating and/or lack of motivation. These mental health concerns or stressful events may lead to diminished academic performance or reduce a student's ability to participate in daily activities. UC offers services to assist you with addressing these and other concerns you may be experiencing. If you or someone you know are suffering from any of the aforementioned conditions, consider utilizing the confidential mental health services available on campus.
+
+Students in distress may speak directly with a counselor 24/7 at (310) 825-0768, or may call 911; located in Wooden Center West; www.caps.ucla.edu
+
+-	CAPS is open and has transitioned to Telehealth services ONLY.
+-	Open Mon – Thurs: 8 am-6 pm and Fri: 8 am-5 pm.
+-	As always, 24/7 crisis support is always available by phone at (310) 825-0768.
+
+
+## Title IX Resources
+
+Title IX prohibits gender discrimination, including sexual harassment, domestic and dating violence, sexual assault, and stalking. If you have experienced sexual harassment or sexual violence, you can receive confidential support and advocacy at the CARE Advocacy Office for Sexual and Gender-Based Violence, located on the A-level of Murphy Hall (Room A233). More information is available here: https://www.sexualviolence.ucla.edu/Get-Help. In addition, Counseling and Psychological Services (CAPS) provides confidential counseling to all students and can be reached 24/7 at (310) 825-0768. You can also report sexual violence or sexual harassment directly to the University's Title IX Coordinator, 2255 Murphy Hall, titleix\@conet.ucla.edu, (310) 206-3417. Reports to law enforcement can be made to UCPD at (310) 825-1491.
+
+
+## Undergraduate Writing Center
+
+Peer learning facilitators (PLFs) are undergraduates who understand the challenges of writing at UCLA. Scheduled appointment and walk-in options are available, see www.wp.ucla.edu/uwc for more information about writing programs and to get assistance with your writing.
+
+-	Due to COVID-19, all physical UWC offices will be closed until further notice.
+-	All UWC appointments are now online via Zoom and Google Docs.
+-	Offer virtual drop-in appointments Mon – Thurs from 10am-9pm, Fri from 10am-3pm and Sun from 6-9pm.
+
+For additional campus resources and student services, please review [this document](https://ucla.app.box.com/s/st51pify842ouoc24ae2r80s9sesavmy). 

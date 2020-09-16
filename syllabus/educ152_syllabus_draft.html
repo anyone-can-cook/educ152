@@ -1263,22 +1263,6 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
-  }
-});
-</script>
 
 
 
@@ -1514,10 +1498,10 @@ div.tocify {
 <li>Ozan Jaquette</li>
 <li>Pronouns: he/him/his</li>
 <li>Office: Moore Hall, room 3038</li>
-<li>email: <a href="ozanj@ucla.edu">ozanj@ucla.edu</a></li>
+<li>Email: <a href="ozanj@ucla.edu">ozanj@ucla.edu</a></li>
 <li>Office hours:
 <ul>
-<li>Zoom ofice hours TBA</li>
+<li>Zoom office hours TBA</li>
 <li>And by appointment</li>
 </ul></li>
 </ul>
@@ -1525,9 +1509,9 @@ div.tocify {
 <div id="teaching-assistant" class="section level2">
 <h2><span class="header-section-number">2.2</span> Teaching assistant</h2>
 <ul>
-<li>name</li>
+<li>Name</li>
 <li>Pronouns:</li>
-<li>email:</li>
+<li>Email:</li>
 <li>Office hours:</li>
 </ul>
 </div>
@@ -1605,6 +1589,10 @@ div.tocify {
 <div id="textbooks" class="section level2">
 <h2><span class="header-section-number">8.1</span> Textbooks</h2>
 <p>TBA, but will chose one or two free books</p>
+<!--
+Book Ben recommended
+- [Learning Statistics with R](https://learningstatisticswithr.com/) by Danielle Navarro
+-->
 </div>
 <div id="other-reading" class="section level2">
 <h2><span class="header-section-number">8.2</span> Other reading</h2>
@@ -1612,6 +1600,11 @@ div.tocify {
 </div>
 <div id="software" class="section level2">
 <h2><span class="header-section-number">8.3</span> Software</h2>
+<ul>
+<li><strong><em><a href="https://cloud.r-project.org/">R</a></em></strong>, statistical programming language</li>
+<li><strong><a href="https://rstudio.com/products/rstudio/download/">RStudio</a></strong>, integrated development environment for R</li>
+<li><strong><a href="https://github.com/Rucla-ed/rclass2/raw/master/_resources/todo/educ263_todo.pdf">Git and GitHub</a></strong></li>
+</ul>
 </div>
 </div>
 <div id="assignments-and-grading" class="section level1">
@@ -1641,6 +1634,60 @@ div.tocify {
 </div>
 <div id="grading-scale" class="section level2">
 <h2><span class="header-section-number">9.2</span> Grading scale</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Letter Grade</th>
+<th>Percentage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A+</td>
+<td>99-100%</td>
+</tr>
+<tr class="even">
+<td>A</td>
+<td>93-98.9%</td>
+</tr>
+<tr class="odd">
+<td>A-</td>
+<td>90-92.9%</td>
+</tr>
+<tr class="even">
+<td>B+</td>
+<td>87-89.9%</td>
+</tr>
+<tr class="odd">
+<td>B</td>
+<td>83-86.9%</td>
+</tr>
+<tr class="even">
+<td>B-</td>
+<td>80-82.9%</td>
+</tr>
+<tr class="odd">
+<td>C+</td>
+<td>77-79.9%</td>
+</tr>
+<tr class="even">
+<td>C</td>
+<td>73-76.9%</td>
+</tr>
+<tr class="odd">
+<td>C-</td>
+<td>70-72.9%</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td>60-69.9%</td>
+</tr>
+<tr class="odd">
+<td>F</td>
+<td>0-59.9%</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="course-schedule" class="section level1">
@@ -1662,20 +1709,115 @@ div.tocify {
 <h1><span class="header-section-number">11</span> Course policies</h1>
 <div id="classroom-environment" class="section level2">
 <h2><span class="header-section-number">11.1</span> Classroom environment</h2>
+<p>With respect to the course material, learning the essential skills of programming is hard! This stuff feels overwhelming to me all the time. So it is important that we all create an environment where students feel comfortable asking questions and talking about what they did not understand. Discomfort is part of the learning process. Unburdern yourself from the weight of being an “expert” and just focus on improving, helping your classmates improve, and helping your instructors improve.</p>
+<p>With respect to classroom environment, let’s work together to create an environment that is relaxed, supportive, and where students feel comfortable voicing any concerns they have. Be mindful that words and body language affect people. Express your thoughts in a way that doesn’t make people feel excluded and does not make disparaging generalizations about any group. As an instructor, I am responsible for setting an example through my own conduct.</p>
 </div>
 <div id="online-collaborationnetiquette" class="section level2">
 <h2><span class="header-section-number">11.2</span> Online Collaboration/Netiquette</h2>
+<p>You will communicate with instructors and peers virtually through a variety of tools such as GitHub, email, and web conferencing. The following guidelines will enable everyone in the course to participate and collaborate in a productive, safe environment.</p>
+<ul>
+<li>Be professional, courteous, and respectful as you would in a physical classroom.</li>
+<li>Online communication lacks the nonverbal cues that provide much of the meaning and nuances in face-to-face conversations. Choose your words carefully, phrase your sentences clearly, and stay on topic.</li>
+<li>It is expected that students may disagree with the research presented or the opinions of their fellow classmates. To disagree is fine but to disparage others’ views is unacceptable. All comments should be kept civil and thoughtful.</li>
+</ul>
 </div>
 <div id="academic-accomodations" class="section level2">
 <h2><span class="header-section-number">11.3</span> Academic accomodations</h2>
+<p>Students needing academic accommodations based on a disability should contact the Center for Accessible Education (CAE) at (310)825-1501 (located in Murphy Hall A255). When possible, students should contact the CAE within the first two weeks of the term as reasonable notice is needed to coordinate accommodations. For more information visit <a href="https://www.cae.ucla.edu/" class="uri">https://www.cae.ucla.edu/</a>.</p>
 </div>
 <div id="academic-integrity" class="section level2">
 <h2><span class="header-section-number">11.4</span> Academic integrity</h2>
+<ul>
+<li>UCLA policy
+<ul>
+<li>UCLA is a community of scholars. In this community, all members including faculty, staff and students alike are responsible for maintaining standards of academic honesty. As a student and member of the University community, you are here to get an education and are, therefore, expected to demonstrate integrity in your academic endeavors. You are evaluated on your own merits. Cheating, plagiarism, collaborative work, multiple submissions without the permission of the professor, or other kinds of academic dishonesty are considered unacceptable behavior and will result in formal disciplinary proceedings.</li>
+</ul></li>
+<li>This class
+<ul>
+<li>Given that 90% of course grade is based on weekly problem sets, the primary academic honesty concern that could come up in this class is copying problem set solutions from somebody else and passing this in as your own work.</li>
+</ul></li>
+</ul>
 </div>
 </div>
 <div id="campus-resources" class="section level1">
 <h1><span class="header-section-number">12</span> Campus resources</h1>
-<p>Counseling Discrimination Sexual harassment LGBTQ resource center International students Undocumented students Student legal services Students with dependents Gender inclusive restrooms Campus accessibility Center for accessible education Counseling and Psychological Services (CAPS) Title IX Resources Undergraduate Writing Center</p>
+<p><strong>Counseling</strong></p>
+<p>This is a multidisciplinary student mental health center for the UCLA campus. CAPS offers an array of free services including individual counseling. If you suspect you are experiencing mental health problems or just need someone to talk to, you can make an appointment at John Wooden Center West, facing Drake Stadium, second floor, 310-825-0768. <a href="http://www.counseling.ucla.edu" class="uri">http://www.counseling.ucla.edu</a></p>
+<p><strong>Discrimination</strong></p>
+<p>UCLA is committed to maintaining a campus community that provides the stronget possible support for the intellectual and personal growth of all its members- students, faculty, and staff. Acts intended to create a hostile climate are unacceptable. To file an online incident report, visit: <a href="https://equity.ucla.edu/report-an-incident/" class="uri">https://equity.ucla.edu/report-an-incident/</a></p>
+<p><strong>Sexual harassment</strong></p>
+<p>Title IX prohibits gender discrimination, including sexual harassment, domestic and dating violence, sexual assault, and stalking. If you have experienced sexual harassment or sexual violence, there are a variety of resources to assist you.</p>
+<ul>
+<li>CONFIDENTIAL RESOURCES:You can receive confidential support and advocacy at the CARE Advocacy Office for Sexual and Gender-Based Violence, A233 Murphy Hall, CAREadvocate@careprogram.ucla.edu, (310) 206-2465. Counseling and Psychological Services (CAPS) also provides confidential counseling to all students and can be reached 24/7 at (310) 825-0768.<br />
+</li>
+<li>NON-CONFIDENTIAL RESOURCES: You can also report sexual violence or sexual harassment directly to the University’s Title IX Coordinator, 2255 Murphy Hall, titleix@conet.ucla.edu, (310) 206-3417. Reports to law enforcement can be made to UCPD at (310) 825-1491. These offices may be required to pursue an official investigation.</li>
+</ul>
+<p><em>Faculty and TAs are required under the UC Policy on Sexual Violence and Sexual Harassment to inform the Title IX Coordinator should they become aware that you or any other student has experienced sexual violence or sexual harassment.</em></p>
+<p><strong>LGBTQ resource center</strong></p>
+<p>This resource center provides a range of education and advocacy services supporting intersectional identity development. It fosters unity; wellness; and an open, safe, inclusive environment for lesbian, gay, bisexual, intersex, transgender, queer, asexual, questioning, and same-gender-loving students, their families, and the entire campus community. Find it in the Student Activities Center, or via email lgbt@lgbt.ucla.edu. Visit their website for more information: <a href="https://www.lgbt.ucla.edu/" class="uri">https://www.lgbt.ucla.edu/</a></p>
+<p><strong>International students</strong></p>
+<p>The Dashew Center provides a range of programs to promote cross-cultural learning, language improvement, and cultural adjustment. Their programs include trips in the LA area, performances, and on-campus events and workshops. Visit their website for more information: <a href="https://www.internationalcenter.ucla.edu/" class="uri">https://www.internationalcenter.ucla.edu/</a></p>
+<p><strong>Undocumented students</strong></p>
+<p>This program provides a safe space for undergraduate and graduate undocument students. USP supports the UndocuBruin community through personalized services and resources, programs, and workshops. Visit their website for more information: <a href="https://www.usp.ucla.edu/" class="uri">https://www.usp.ucla.edu/</a></p>
+<p><strong>Student legal services</strong></p>
+<p>UCLA student legal services provides a range of legal support to all registered and enrolled UCLA students. Some of their services include:</p>
+<ul>
+<li>Landlord/Tenant Relations</li>
+<li>Accident and Injury Problems</li>
+<li>Domestic Violence and Harassment</li>
+<li>Divorces and Other Family Law Matter</li>
+</ul>
+<p>For more information visit their website: <a href="http://www.studentlegal.ucla.edu/index.php" class="uri">http://www.studentlegal.ucla.edu/index.php</a></p>
+<p><strong>Students with dependents</strong></p>
+<p>UCLA Students with Dependents provides support to UCLA studens who are parents, guardians, and caregivers. Some of their services include:</p>
+<ul>
+<li>Information, referrals, and support to navigate UCLA (childcare, family housing, financial aid)</li>
+<li>Access to information about resources within the larger community</li>
+<li>On-site application and verification for CalFresh (food stamps) &amp; MediCal and assistance with Cal Works/GAIN</li>
+<li>A quiet study space</li>
+<li>Family friendly graduation celebration in June</li>
+</ul>
+<p>For more information visit their website: <a href="https://www.swd.ucla.edu/" class="uri">https://www.swd.ucla.edu/</a></p>
+<p><strong>Lactation Rooms</strong></p>
+<p><a href="https://ucla.app.box.com/v/2019-lactation-map">Map to lactation rooms on campus</a></p>
+<p><strong>Gender Inclusive restrooms</strong></p>
+<p><a href="https://www.lgbt.ucla.edu/Portals/38/Documents/All-Gender%20Restroom%20Map_F15.pdf">Map to gender inclusive restrooms</a></p>
+<p><strong>Campus accessibility</strong></p>
+<p><a href="http://map.ucla.edu/downloads/pdf/Access_08_21_15.pdf">Campus accessibility map</a></p>
+<div id="center-for-accessible-education" class="section level2">
+<h2><span class="header-section-number">12.1</span> Center for accessible education</h2>
+<p>Students needing academic accommodations based on a disability should contact the Center for Accessible Education (CAE). When possible, students should contact the CAE within the first two weeks of the term as reasonable notice is needed to coordinate accommodations. For more information visit www.cae.ucla.edu.</p>
+<p>Located in A255 Murphy Hall: (310) 825-1501, TDD (310) 206-6083; <a href="http://www.cae.ucla.edu/" class="uri">http://www.cae.ucla.edu/</a></p>
+<ul>
+<li>Due to COVID-19, the CAE office is closed for in-person meetings.</li>
+<li>CAE counselor, resources, and services are still available via email / virtual appointment.</li>
+<li>Stay up-to-date with CAE newsletters &amp; announcements at <a href="https://www.cae.ucla.edu/announcements-events/student" class="uri">https://www.cae.ucla.edu/announcements-events/student</a></li>
+</ul>
+</div>
+<div id="counseling-and-psychological-services-caps" class="section level2">
+<h2><span class="header-section-number">12.2</span> Counseling and Psychological Services (CAPS)</h2>
+<p>As a student you may experience a range of issues that can cause barriers to learning, such as strained relationships, increased anxiety, alcohol/drug problems, depression, difficulty concentrating and/or lack of motivation. These mental health concerns or stressful events may lead to diminished academic performance or reduce a student’s ability to participate in daily activities. UC offers services to assist you with addressing these and other concerns you may be experiencing. If you or someone you know are suffering from any of the aforementioned conditions, consider utilizing the confidential mental health services available on campus.</p>
+<p>Students in distress may speak directly with a counselor 24/7 at (310) 825-0768, or may call 911; located in Wooden Center West; www.caps.ucla.edu</p>
+<ul>
+<li>CAPS is open and has transitioned to Telehealth services ONLY.</li>
+<li>Open Mon – Thurs: 8 am-6 pm and Fri: 8 am-5 pm.</li>
+<li>As always, 24/7 crisis support is always available by phone at (310) 825-0768.</li>
+</ul>
+</div>
+<div id="title-ix-resources" class="section level2">
+<h2><span class="header-section-number">12.3</span> Title IX Resources</h2>
+<p>Title IX prohibits gender discrimination, including sexual harassment, domestic and dating violence, sexual assault, and stalking. If you have experienced sexual harassment or sexual violence, you can receive confidential support and advocacy at the CARE Advocacy Office for Sexual and Gender-Based Violence, located on the A-level of Murphy Hall (Room A233). More information is available here: <a href="https://www.sexualviolence.ucla.edu/Get-Help" class="uri">https://www.sexualviolence.ucla.edu/Get-Help</a>. In addition, Counseling and Psychological Services (CAPS) provides confidential counseling to all students and can be reached 24/7 at (310) 825-0768. You can also report sexual violence or sexual harassment directly to the University’s Title IX Coordinator, 2255 Murphy Hall, titleix@conet.ucla.edu, (310) 206-3417. Reports to law enforcement can be made to UCPD at (310) 825-1491.</p>
+</div>
+<div id="undergraduate-writing-center" class="section level2">
+<h2><span class="header-section-number">12.4</span> Undergraduate Writing Center</h2>
+<p>Peer learning facilitators (PLFs) are undergraduates who understand the challenges of writing at UCLA. Scheduled appointment and walk-in options are available, see www.wp.ucla.edu/uwc for more information about writing programs and to get assistance with your writing.</p>
+<ul>
+<li>Due to COVID-19, all physical UWC offices will be closed until further notice.</li>
+<li>All UWC appointments are now online via Zoom and Google Docs.</li>
+<li>Offer virtual drop-in appointments Mon – Thurs from 10am-9pm, Fri from 10am-3pm and Sun from 6-9pm.</li>
+</ul>
+<p>For additional campus resources and student services, please review <a href="https://ucla.app.box.com/s/st51pify842ouoc24ae2r80s9sesavmy">this document</a>.</p>
+</div>
 </div>
 
 
