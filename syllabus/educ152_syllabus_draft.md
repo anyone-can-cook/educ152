@@ -149,7 +149,7 @@ With respect to written work, the problem sets -- described below -- will be sub
 
 - [R for Data Science](https://r4ds.had.co.nz/) by Garrett Grolemund and Hadley Wickham [**FREE!**]
 
-Links to other required and optional reading will be on the course website
+Links to other required and optional reading will be on the course website [link]
 
 
 **Required software**
@@ -187,6 +187,9 @@ You will work in groups for the first three problem sets. **However, it is impor
 Late submissions will lose 20% (i.e., max grade becomes 80%). Problem sets not submitted by XXXX will not receive points. You will not lose points for late submission if you cannot submit a problem set due to an unexpected emergency. But please contact the instructor by email as soon as you can so we can work out a plan.
 
 We strongly recommend using GitHub issues to ask questions you have about problem sets. Instructors will do our best to reply quickly with helpful hints/explanations and we encourage members of the class to do the same.
+
+More detailed problem set guidelines can be found here [link]
+
 <!-- -
 
 COMMENTS FROM THE UNDERGRAD STATS COMMITTEE
