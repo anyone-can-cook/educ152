@@ -170,18 +170,36 @@ With respect to written work, the problem sets -- described below -- will be sub
 
 ## Course website
 
-- All course related material can be found on the class GitHub repository [here]...  
+- All course related material can be found on the class website [here]. Pre-recorded lecture videos, lecture slides (pdf, html), and .Rmd files will be posted on the class website under the associated sections. Additional resources (e.g. syllabus) may also be posted on the class website. Class announcements and discussion will be conducted on GitHub (see below). 
 
 ## Course discussion
 
-- We will be using GitHub teams and issues for announcements and class discussion.  
+- We will be using GitHub teams for class announcements.    
 
-    - __GitHub teams__: The teaching team will post all class announcements using GitHub teams. 
-    - __GitHub issues__: 
+    - __GitHub teams__: The teaching team will post all class announcements using GitHub teams. The GitHub team discussions feature allows for quick and seamless communication to all members of an organization or team-- in this case, to all students with a GitHub account enrolled in the course. Some features include: 
+        1. The class team can be viewed and [`@mentioned`](https://docs.github.com/en/articles/basic-writing-and-formatting-syntax/#mentioning-people-and-teams) by all students enrolled in the class and part of the organization.  
+        2. Posts can include code snippets, links, images, and references to issues which make them ideal for this class discussion and participation. 
+<br>    
+    [![](https://github.blog/wp-content/uploads/2017/11/32954856-4ba160e4-cb82-11e7-92f6-3e573c8a0821.gif?resize=1028%2C454)](https://github.blog/2017-11-20-introducing-team-discussions/)
+
+*Credit: [Introducing team discussions](https://github.blog/2017-11-20-introducing-team-discussions/)*  
+
+- We will be using GitHub issues for questions and class discussion.
+
+    - __GitHub issues__: GitHub issues are traditionally used by collaborators of a repository for managing tasks for a project. Our rational for using issues is twofold: 1) help track and organize questions related to course material and problem sets and 2) promote classroom participation. Students are encouraged to contribute to issues by posting questions, sharing helpful resources, and/or taking a stab at answering questions posted on issues. Some features include: 
+    
+        1. Adding labels  
+        2. Assigning or mentioning users to an issue 
+        3. Referencing other issues  
+<br>
+        [![](https://github.blog/wp-content/uploads/2016/07/6629b442-42c7-11e6-954b-88a57821a36a.gif?fit=1994%2C1000){width=80%}](https://github.blog/2016-07-05-reorder-issues-within-a-milestone/)
+    
+    
+*Credit: [Mastering Issues](https://guides.github.com/features/issues/), [Reorder issues within a milestone](https://github.blog/2016-07-05-reorder-issues-within-a-milestone/)*  
 
 ## Communication with instructor and TA
 
-- Email to instructor/TA for personal and sensitive issues
+- If you have a personal question or issue, you can email the instructor or TA directly. Additionally, we are available for office hours or by appointment if there is anything you would like to discuss with us in private. 
 
 # Course materials
 
