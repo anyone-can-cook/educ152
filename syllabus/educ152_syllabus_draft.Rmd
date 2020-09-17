@@ -24,14 +24,12 @@ output:
 
 - EDUC152: Regression for education research
 - Quarter and year
-- 4 units
+- 5 units
 - Link to syllabus: [https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html](https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html)
 
 # Short course description
 
-This course introduces students to regression as a tool to answer questions about education. Regression is the most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, the assumptions regression relies on, the limitations of our data, and how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas.  Therefore, EDUC250 teaches the fundamentals concepts of regression analysis and how these concepts can be thoughtfully applied to answer different kinds of research questions, with a particular emphasis on explicitly critical research questions. The course also emphasizes how to understand and critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
-\\
-THIS DESCRIPTION IS A BIT OVER WORD LIMIT. I'LL GET DOWN BELOW WORD LIMIT FOLLOWING FEEDBACK
+This course introduces students to regression as a tool to answer questions about education. Regression is the most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas.  Therefore, EDUC250 teaches the fundamentals concepts of regression analysis and how these concepts can be thoughtfully applied to answer different kinds of research questions, with a particular emphasis on explicitly critical research questions. The course also emphasizes how to understand and critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
 
 # Instructor and teaching assistant
 
@@ -54,6 +52,8 @@ THIS DESCRIPTION IS A BIT OVER WORD LIMIT. I'LL GET DOWN BELOW WORD LIMIT FOLLOW
 - Office hours:
 
 # Extended course description
+
+[HAVE NOT UPDATED SINCE LAST MEETING]
 
 Regression is the most widely-used quantitative methodology to answer causal, and also non-causal, research questions. This section of EDUC152 will introduce students to regression with a focus on using regression to answer causal research questions, which typicaly follow the form "what is the effect of X on Y." The course also emphasizes undersanding how to read and critically assess empirical research that uses regression.
 
@@ -158,14 +158,6 @@ Prior to our in-class meetings, students should work through lecture materials o
 With respect to written work, the problem sets -- described below -- will be substantive and are intended to be challenging. Students who devote time each week working through the lecture materials will be better prepared for the problem sets. We recommend starting the problem sets early. This way students will have plenty of time to ask for help on questions they find challenging.
 
 
-# Creating an Inclusive Classroom Community 
-
-(Instructor, TA, and Community Expectations)
-
-## Respect for diversity  
-
-
-
 # Course website and communication
 
 ## Course website
@@ -203,35 +195,56 @@ With respect to written work, the problem sets -- described below -- will be sub
 
 # Course materials
 
-## Textbooks
+**Required books**
 
-TBA, but will chose one or two free books
+- [Learning Statistics with R](https://learningstatisticswithr.com/) by Danielle Navarro [**FREE!**]
+- [R Markdown: The Definative Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, and Garrett Grolemund [**FREE!**]
 
-<!--
-Book Ben recommended
-- [Learning Statistics with R](https://learningstatisticswithr.com/) by Danielle Navarro
+**Optional books**
+
+- [R for Data Science](https://r4ds.had.co.nz/) by Garrett Grolemund and Hadley Wickham [**FREE!**]
+
+Links to other required and optional reading will be on the course website
+
+
+**Required software**
+
+- **_[R](https://cloud.r-project.org/)_**, statistical programming language [**FREE!**]
+- **[RStudio](https://rstudio.com/products/rstudio/download/)**, integrated development environment for R  [**FREE!**]
+
+<!-- -
+**[Git and GitHub](https://github.com/Rucla-ed/rclass2/raw/master/_resources/todo/educ263_todo.pdf)**  [**FREE!**] 
 -->
 
-## Other reading
-
-Links to reading on course website
-
-
-## Software
-
-- **_[R](https://cloud.r-project.org/)_**, statistical programming language
-- **[RStudio](https://rstudio.com/products/rstudio/download/)**, integrated development environment for R
-- **[Git and GitHub](https://github.com/Rucla-ed/rclass2/raw/master/_resources/todo/educ263_todo.pdf)**
 
 # Assignments and grading
 
+Course grade will be based on the following components:
+
+- Problem set 1, 15%
+- Problem set 2, 15%
+- Problem set 3, 15%
+- Problem set 4, 30%
+- In-class group activities, 15%
+- Attendance and participation, 10%
+
 ## Assignments
 
-### Problem sets
+### Problem sets (75 percent of total grade)
 
-The primary course assessments are four problem sets, including the final capstone problem set.  Each problem set will require students to apply knowledge of statistical concepts, conduct substantive statistical analyses, present and interpret results. Problem sets will also be designed to introduce students to some of the thorny data challenges that inevitably arise in real research projects.  The final, capstone problem set will require students to conduct the major components of an empirical regression analysis, from research question and variable collection to modeling, presentation, and interpretation. Additionally, the capstone problem set will require students to critically evaluate an empirical journal article that utilized the same data sources to answer the same research question.
+The primary course assessments are four problem sets. The first three problem sets are each worth 15% of the course grade and students will work in groups. The final, capstone problem set is worth 30% and students will work alone. 
 
-COMMENTS
+Each problem set will require students to apply knowledge of statistical concepts, conduct substantive statistical analyses, present and interpret results. Other questions will introduce students to some of the thorny data challenges that inevitably arise in real research projects. The capstone problem set will require students to conduct the major components of an empirical regression analysis, from research question and variable collection to modeling, presentation, and interpretation. Additionally, the capstone problem set will require students to critically evaluate an empirical journal article that utilized the same data sources to answer the same research question.
+
+
+You will work in groups for the first three problem sets. **However, it is important that you understand how to do the problem set on your own, rather than copying the solution developed by group members.**  Each student will submit their own R script or .Rmd file. Since you will be working together, it is understandable that answers for some questions will be the same as your group members. However, if I find compelling evidence that a student merely copied solutions from a classmate, I will consider this a violation of academic integrity and that student will receive a zero for the homework assignment.
+
+Late submissions will lose 20% (i.e., max grade becomes 80%). Problem sets not submitted by XXXX will not receive points. You will not lose points for late submission if you cannot submit a problem set due to an unexpected emergency. But please contact the instructor by email as soon as you can so we can work out a plan.
+
+We strongly recommend using GitHub issues to ask questions you have about problem sets. Instructors will do our best to reply quickly with helpful hints/explanations and we encourage members of the class to do the same.
+<!-- -
+
+COMMENTS FROM THE UNDERGRAD STATS COMMITTEE
 
 - recommmendation on how challenging
   - make first problem set credit/no credit
@@ -242,8 +255,17 @@ COMMENTS
 - maybe giving students an opportunity to revise?
 - Rashmita: Lucrecia's example of "ED471-Project 3 - Spring 2019" problem set is  problem set is 
 
+-->
 
-### Attendance and participation
+## In-class group activities (15 percent of total grade)
+
+During most synchronous class sessions, students will work on a group activity or challenge that applies concepts and skills we are learning. For example, Run a statistical test in *R* and use the test results object to create a formatted table that you insert into a .Rmd file. Or, write a draft critique of the methodology of a published research paper. Students will submit their work at the end of class. 
+Most of these tasks cannot be fully completed. The goal is to get students thinking. Students will be graded largely based on effort.
+
+## Attendance and Participation (10 percent of total grade)
+
+Students are expected to participate in the weekly class meetings by being attentive, supportive, by asking questions, or by answering questions posed by others on zoom. Additionally, students can receive strong participation grades by asking questions and answering questions on GitHub issues. 
+
 
 ## Grading scale
 
@@ -264,6 +286,8 @@ kable(grade,col.names = c("Letter Grade", "Percentage"), escape = F) %>%
 
 # Course schedule
 
+[HAVE NOT UPDATED SINCE LAST MEETING]
+
 1. Introduction
 1. Fundamentals of statistical inference I (sampling distributions and central limit theorem)
 1. Fundamentals of statistical inference II (hypothesis testing)
@@ -279,17 +303,20 @@ kable(grade,col.names = c("Letter Grade", "Percentage"), escape = F) %>%
 
 ## Classroom environment
 
-With respect to the course material, learning the essential skills of programming is hard! This stuff feels overwhelming to me all the time. So it is important that we all create an environment where students feel comfortable asking questions and talking about what they did not understand. Discomfort is part of the learning process. Unburdern yourself from the weight of being an "expert" and just focus on improving, helping your classmates improve, and helping your instructors improve.
+<!-- 
+# Creating an Inclusive Classroom Community 
+(Instructor, TA, and Community Expectations)
+## Respect for diversity  
+ -->
 
-With respect to classroom environment, let's work together to create an environment that is relaxed, supportive, and where students feel comfortable voicing any concerns they have. Be mindful that words and body language affect people. Express your thoughts in a way that doesn’t make people feel excluded and does not make disparaging generalizations about any group.  As an instructor, I am responsible for setting an example through my own conduct.
+We all have a responsibility to ensure that every member of the class feels valued and safe. 
+Be mindful that our words and body language affects others in ways we not fully understand. We have a responsibility to express our ideas in a way that doesn't make disparaging generalizations and doesn't make people feel excluded. As an instructor, I am responsible for setting an example through my own conduct.
 
-## Online Collaboration/Netiquette
+Learning regression, while trying to get a handle on R and unfamiliar data can feel overwhelming! We must create an environment where students feel comfortable asking questions and talking about what they did not understand. Discomfort is part of the learning process. Unburdern yourself from the weight of being an "expert." Focus your energy on improving and helping your classmates improve.
 
-You will communicate with instructors and peers virtually through a variety of tools such as GitHub, email, and web conferencing. The following guidelines will enable everyone in the course to participate and collaborate in a productive, safe environment.
+##  Towards an anti-racist learning experience
 
--	Be professional, courteous, and respectful as you would in a physical classroom.
--	Online communication lacks the nonverbal cues that provide much of the meaning and nuances in face-to-face conversations. Choose your words carefully, phrase your sentences clearly, and stay on topic.
--	It is expected that students may disagree with the research presented or the opinions of their fellow classmates. To disagree is fine but to disparage others’ views is unacceptable. All comments should be kept civil and thoughtful. 
+Every course should be an anti-racist course, even when the subject matter is broadly oriented. In this course we’ll engage with research that reflect systemic gaps based on race, ethnicity, immigration status, and gender identity, among other aspects of identity. We will discuss whether the language, the framing, the analyses, and even the research question of a study contribute to problematic beliefs. If so, how can we do better? It is also critical that we acknowledge that the social and economic marginalization reflected in data is rooted in systemic oppression that upholds opportunity for some at the expense of others. We should all be thinking about our own role in upholding these systems.
 
 ## Academic accomodations
 
@@ -304,7 +331,7 @@ __UCLA policy__
   
 __This class__  
 
-  - Given that 90% of course grade is based on weekly problem sets, the primary academic honesty concern that could come up in this class is copying problem set solutions from somebody else and passing this in as your own work.
+  - Given that 75% of course grade is based on problem sets, the primary academic honesty concern that could come up in this class is copying problem set solutions from somebody else and passing this in as your own work.
 
 
 # Campus resources
