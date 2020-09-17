@@ -73,9 +73,12 @@ __Big-picture (conceptual) learning goals__
 1. Understand principles of statistical inference for hypothesis testing
 1. Understand the fundamentals of multiple regression analysis and the assumptions that must be satisfied to make inferences from these results
 1. Understand how to interpret multiple regression results and communicate these results in non-technical language.
-1. Develop thoughtfulness about the ethical and social dimensions of using regression for education research, for example critically examining how race variables are created and how they are incorporated into regression analyses
+1. Develop thoughtfulness about the ethical and social dimensions of using regression for education research
 1. Understand the principles of causal inference, including why experiments work and how to use regression to answer causal research questions
 1. Understand and critically evaluate empirical research that uses regression to answer research questions
+<!-- 
+, for example critically examining how race variables are created and how they are incorporated into regression analyses
+ -->
 
 __Skill-based learning goals__
 
