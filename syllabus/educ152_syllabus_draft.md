@@ -25,14 +25,14 @@ output:
 - EDUC152. Introduction to quantitative research in education: Regression analysis
 - Quarter and year
 - 5 units
-- Link to syllabus: [https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html](https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html)
-- Link to course website: 
+- Link to syllabus: [https://anyone-can-cook.github.io/educ152/syllabus/educ152_syllabus_draft.html](https://anyone-can-cook.github.io/educ152/syllabus/educ152_syllabus_draft.html)
+- Link to course website: [https://anyone-can-cook.github.io/educ152](https://anyone-can-cook.github.io/educ152)
 - Link to course Slack workspace: 
 
 # Short course description
 
-https://docs.google.com/document/d/1IrC3I9qVG5OvJQjyw3m1eh9MRPI1865foQmwv7e8GII/edit
-This course introduces students to regression as a tool to answer questions about education. Regression is commonly used to answer questions about "association claims" -- the relationship between variables -- and "causal claims" -- the causal effect of one variable on another. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, EDUC152 introduces students to fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address important questions about education. The course also trains students how to read and critically assess research that uses regression. ECUC152 integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive take-home assignments, including the final, capstone assignment.
+
+EDUC 152 introduces students to regression as a tool to answer questions about education. Regression is commonly used to answer questions about "association claims" -- the relationship between variables -- and "causal claims" -- the causal effect of one variable on another. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, the course emphasizes learning fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address different kinds of questions about education. The course also trains students how to read and critically assess research that uses regression. ECUC152 integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive take-home assignments, including the final, capstone assignment.
 
 
 
@@ -107,7 +107,7 @@ Prior to our in-class meetings, students should work through lecture materials o
 
 With respect to written work, the problem sets -- described below -- will be substantive and are intended to be challenging. Students who devote time each week working through the lecture materials will be better prepared for the problem sets. We recommend starting the problem sets early. This way students will have plenty of time to ask for help on questions they find challenging.
 
-## Classroom environment
+# Classroom environment
 
 <!-- 
 # Creating an Inclusive Classroom Community 
@@ -124,17 +124,12 @@ Learning regression, while trying to get a handle on R and unfamiliar data can f
 
 Every course should be an anti-racist course, even when the subject matter is broadly oriented. In this course we’ll engage with research that reflect systemic gaps based on race, ethnicity, immigration status, and gender identity, among other aspects of identity. We will discuss whether the language, the framing, the analyses, and even the research question of a study contribute to problematic beliefs. If so, how can we do better? It is also critical that we acknowledge that the social and economic marginalization reflected in data is rooted in systemic oppression that upholds opportunity for some at the expense of others. We should all be thinking about our own role in upholding these systems.
 
-COMMENT
-
-- WHERE IS THIS ACTUALLY LEARNED AND ASSESSED IN THE COURSE STRUCTURE; AND MAYBE AS A LEARNING GOAL
-- PROVIDE AN ILLUSTRATIVE READING THAT GETS AT THIS; 
-
 
 # Course website and communication
 
 ## Course website
 
-All course related material can be found on the class website [here]. Pre-recorded lecture videos, lecture slides (pdf, html), and .Rmd files will be posted on the class website under the associated sections. Additional resources (e.g. syllabus) may also be posted on the class website. Class announcements and discussion will be conducted on GitHub (see below). 
+All course related material can be found on the [course website](https://anyone-can-cook.github.io/educ152). Pre-recorded lecture videos, lecture slides (pdf, html), and .Rmd files will be posted on the class website under the associated sections. Additional resources (e.g. syllabus) may also be posted on the class website. Class announcements and discussion will be conducted on GitHub (see below). 
 
 ## Course communication and online discussion
 
