@@ -96,30 +96,18 @@ Students will demonstrate an understanding of multiple perspectives, diversity, 
 
 __Big-picture (conceptual) learning goals__
 
-1. Understand principles of statistical inference for hypothesis testing
-1. Understand the fundamentals of multiple regression analysis and the assumptions that must be satisfied to make inferences from these results
-1. Understand how to interpret multiple regression results and communicate these results in non-technical language.
-1. Develop thoughtfulness about the ethical and social dimensions of using regression for education research
-1. Understand the principles of causal inference, including why experiments work and how to use regression to answer causal research questions
+1. Apply principles of statistical inference to state and test hypotheses
+1. Know the fundamental concepts of multiple regression analysis and the assumptions that must be satisfied to make inferences from regression results
+1. Interpret regression results and communicate these results in non-technical language.
+1. Understand the principles of causal inference, including why experiments yield unbiased estimates of causal effects and how to use regression to answer causal research questions
+1. Understand ethical concerns and problematic practices common in regression-based research, be able to identify these concerns and practices in empirical research, and reflect on how you want to approach these issues in your own work
 1. Understand and critically evaluate empirical research that uses regression to answer research questions
-
-COOMMENTS
-
-- systematically replace understand with more active verbs;
-- Understand principles of statistical inference for hypothesis testing – be able to apply principles of statistical inference to conduct hypothesis tests
-- Understand the fundamentals of multiple regression analysis and the assumptions that must be satisfied to make inferences from these results – be able to conduct multiple regression analysis, starting by listing and checking the necessary assumptions
-- Understand how to interpret multiple regression results and communicate these results in non-technical language – be able to interpret and communicate…
-
-
-<!-- 
-, for example critically examining how race variables are created and how they are incorporated into regression analyses
- -->
 
 __Skill-based learning goals__
 
 1. Estimate linear regression models using R
 1. Develop proficiency in basic data management skills, including simple descriptive statistics to investigate data quality and creating analysis variables
-1. Use RMarkdown to produce documents containing research results, including: graphical visualizations; tables of descriptive statistics and regression results; and in-text citations and APA formatted reference lists
+1. Create documents using RMarkdown and Rstudio that contain research results, including: graphical visualizations; tables of descriptive statistics and regression results; and in-text citations and APA formatted reference lists
 
 ```{r, eval = FALSE, include = FALSE}
 1. Understand principles of statistical inference for hypothesis testing, including:
