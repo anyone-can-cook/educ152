@@ -57,13 +57,19 @@ EDUC 152 introduces students to regression as a tool to answer questions about e
 - Email:
 - Office hours:
 
-# Extended course description [REVISE]
+# Extended course description  [NEED TO REVISE]
 
 
 Regression is the most widely-used quantitative methodology to answer causal, and also non-causal, research questions. This section of EDUC152 will introduce students to regression with a focus on using regression to answer causal research questions, which typicaly follow the form "what is the effect of X on Y." The course also emphasizes undersanding how to read and critically assess empirical research that uses regression.
 
-The course integrates statistical theory and application using the **_R_** programming language.  Students will work through asynchronous video lectures and lectures slides on their own. These lectures introduces statistical theory, introduces the relevant programming skills, and provides the code and real-world data so that students can practice conducting and interpreting statistical analyses. Course topics will include: fundamental statistical concepts of statistical inference; principles of causal inference; and fundamentals of multiple regression.  During class time, students will work in groups to solve practical research challenges and we will discuss and deconstruct empirical research that uses regression analysis. The primary course assessments are four problem sets -- including the final capstone problem set -- which will be completed in groups. Each problem set will require students to apply knowledge of statistical concepts, and conduct substantive statistical analyses around a particular research question. 
+The course integrates statistical theory and application using the **_R_** programming language.  Students will work through asynchronous video lectures and lectures slides on their own. These lectures introduces statistical theory, introduces the relevant programming skills, and provides the code and real-world data so that students can practice conducting and interpreting statistical analyses. 
 
+[REVISE LIST OF COURSE TOPICS SO THAT THEY ARE PRESENTED WITHIN THE ASSOCIATED BROADER UNIT. UNITS: 
+__UNIT 1: STATISTICAL INFERENCE ABOUT DESCRIPTIVE CLAIMS__
+__UNIT 2: FUNDAMENTALS OF REGRESSION, FOR ASSOCIATION CLAIMS__
+__UNIT 3. REGRESSION FOR CAUSAL CLAIMS__
+]
+Course topics will include: fundamental statistical concepts of statistical inference; principles of causal inference; and fundamentals of multiple regression.  During class time, students will work in groups to solve practical research challenges and we will discuss and deconstruct empirical research that uses regression analysis. The primary course assessments are four problem sets -- including the final capstone problem set -- which will be completed in groups. Each problem set will require students to apply knowledge of statistical concepts, and conduct substantive statistical analyses around a particular research question. 
 
 
 The course embraces using regression to answer traditional research questions (e.g., the effect of student-teacher ratio on achievement) and critical research questions (e.g., the effect of racial salience -- as presented in email text -- on how white university admissions officers respond to inquiries from Black prospective students). The skills this course teaches are valued by employers and are valued in the process of applying to graduate schools. After completing this course, students will be prepared to take more advanced causal inference coursework (e.g., quasi-experimental methods) and coursework that teaches the programming and data manipulation skills necessary to create analysis datasets for real research projects.
@@ -108,7 +114,7 @@ Each week, the course will be structured around asynchronous (pre-class) lecture
 
 ## How to succeed in this class
 
-Prior to our in-class meetings, students should work through lecture materials on their own. We recommend treating the lecture materials as an active learning experience, in which students run *R* code on their computer instead of merely reading text on the slide. Additionally, we recommend that students ask questions on the course github website when they are having difficulty with the material.
+Prior to our in-class meetings, students should work through lecture materials on their own. We recommend treating the lecture materials as an active learning experience, in which students run *R* code on their computer instead of merely reading text on the slide. Additionally, we recommend that students ask questions on the course website when they are having difficulty with the material.
 
 With respect to written work, the problem sets -- described below -- will be substantive and are intended to be challenging. Students who devote time each week working through the lecture materials will be better prepared for the problem sets. We recommend starting the problem sets early. This way students will have plenty of time to ask for help on questions they find challenging.
 
@@ -131,7 +137,7 @@ Every course should be an anti-racist course, even when the subject matter is br
 
 ## Course website
 
-All course related material can be found on the [course website](https://anyone-can-cook.github.io/educ152). Pre-recorded lecture videos, lecture slides (pdf, html), and .Rmd files will be posted on the class website under the associated sections. Additional resources (e.g. syllabus) may also be posted on the class website. Class announcements and discussion will be conducted on GitHub (see below). 
+All course related material can be found on the [course website](https://anyone-can-cook.github.io/educ152). Pre-recorded lecture videos, lecture slides (pdf, html), and .Rmd files will be posted on the class website under the associated sections. Additional resources (e.g. syllabus) may also be posted on the class website. 
 
 ## Course communication and online discussion
 
@@ -187,7 +193,7 @@ You will work in groups for the first three problem sets. **However, it is impor
 
 Late submissions will lose 20% (i.e., max grade becomes 80%). Problem sets not submitted by XXXX will not receive points. You will not lose points for late submission if you cannot submit a problem set due to an unexpected emergency. But please contact the instructor by email as soon as you can so we can work out a plan.
 
-We strongly recommend using GitHub issues to ask questions you have about problem sets. Instructors will do our best to reply quickly with helpful hints/explanations and we encourage members of the class to do the same.
+We strongly recommend using the course Slack workspace to ask questions you have about problem sets. Instructors will do our best to reply quickly with helpful hints/explanations and we encourage members of the class to do the same.
 
 Link to problem set expectations and helpful resources [HERE](https://github.com/ozanj/rclass/raw/master/lectures/problemset_resources.pdf)
 
@@ -218,7 +224,7 @@ Most of these tasks cannot be fully completed. The goal is to get students think
 
 ## Attendance and Participation (10 percent of total grade)
 
-Students are expected to participate in the weekly class meetings by being attentive, supportive, by asking questions, or by answering questions posed by others on zoom. Additionally, students can receive strong participation grades by asking questions and answering questions on GitHub issues. 
+Students are expected to participate in the weekly class meetings by being attentive, supportive, by asking questions, or by answering questions posed by others on zoom. Additionally, students can receive strong participation grades by asking questions and answering questions posed by classmates on Slack. 
 
 
 ## Grading scale
@@ -285,11 +291,11 @@ Students are expected to participate in the weekly class meetings by being atten
 Below is an overview of the tentative course schedule, which is subject to change at the discretion of the instructor. Topics may be cut if we need to devote more time to learning the most central topics. It is unlikely that additional topics will be added. The official course schedule, required reading, and optional reading will be posted on the [course website](https://anyone-can-cook.github.io/educ152).
 
 
-__UNIT 1: BASICS OF STATISTICAL INFERENCE, FOR DESCRIPTIVE CLAIMS__
+__UNIT 1: STATISTICAL INFERENCE ABOUT DESCRIPTIVE CLAIMS__
 
 1. Introduction
-1. Fundamentals of statistical inference I (sampling distributions and central limit theorem)
-1. Fundamentals of statistical inference II (hypothesis testing)
+1. Statistical inference I (sampling distributions and central limit theorem)
+1. Statistical inference II (hypothesis testing)
 
 __UNIT 2: FUNDAMENTALS OF REGRESSION, FOR ASSOCIATION CLAIMS__
 
@@ -302,26 +308,140 @@ __UNIT 2: FUNDAMENTALS OF REGRESSION, FOR ASSOCIATION CLAIMS__
 
 __UNIT 3. REGRESSION FOR CAUSAL CLAIMS__
 
-9. Principles of causal inference: Rubin's Causal Model and why experiments work
+9. Principles of causal inference: Rubin's Causal Model and why experiments yield unbiased estimates of causal effects
 1. Using regression for causal inference: OLS assumptions and omitted variable bias
 
 
-COMMENTS
-- ON UNITS, FROM GLORY
-  - "The kinds of quant research claims we discuss in ED 150 are descriptive claims, association claims, causal claims. ED 150 alum will find it helpful - I think - if you're able to reference these (especially the second two) when you talk about internal validity and transition from your unit on "regression as a descriptive tool" to your unit on "regression as a causal tool.""
-- WANTING TO SEE EXAMPLES OF EMPIRICAL READING; 
-- REPLACE "WHY EXPERIMENTS WORK" WITH SOMETHING ELSE; 
-1. Creating tables and graphs of descriptive statistics and regression results
-x. when to come up with 
-FOR CDAS, NEED TO EXPAND THIS OUT
+FOR CRYSTAL OR PATRICIA: PLEASE MODIFY THE COURSE WEBSITE AS FOLLOWS
 
-- they want to see course readings;
-  - should show readings on the technical skills you want students to use
-- they want to see specific assignments;
-- submit to CDAS by next wednesday; 
-- will there be a weeek 
-- associational claims vs. causal claims;
-  - research design
+- website should have following level-1 headings
+    - Lectures (by unit and topic)
+    - Weekly reading
+    - Problem sets
+- in lectures (by unit and topic), add one more lay of nesting for the units that individual lectures fall under. 
+  - for example:
+    - UNIT 1: STATISTICAL INFERENCE, DESCRIPTIVE CLAIMS
+      - statistical inference I (sampling distributions and central limit theorem)
+      - Statistical inference II (hypothesis testing)
+      - etc.
+    - UNIT 2: REGRESSION FOR ASSOCIATION CLAIMS
+    - UNIT 3: REGRESSION FOR CAUSAL CLAIMS
+  - Might even look better if title of unit is not a collapsable; just have unit number and abbreviated name in CAPS and bold
+- in lectures (by unit and topic) need to add a short list of big topics covered in each lecture
+  - this is primarily for the course approval process. the curriculum committee (CDAS) wants to see topics for each class expanded out. we will probably delete this from website later 
+  - example:
+    - statistical inference 1
+      - lecture topics: 
+        - goals of inferential statistics; standard deviation; distributions; sampling distribution; standard error; central limit theorem
+- Problem sets:
+  - Problem set 1. Hypothesis testing about descriptive claims (due prior to week 4 in-class meeting)
+  - Problem set 2. Estimation, prediction, and model fit (due prior to week 6 in-class meeting)
+  - Problem set 3. Hypothesis testing, interpretation of continuous and categorical X, and multivariate regression (due prior to week 8 in-class meeeting)
+  - Problem set 4 (capstone). Assessing regression research and ethical concerns; causal inference; variable creation (due during finals week)
+- Reading:
+  - later I'll create separate lists of required and optional reading for each week
+  - for now we'll just have a list of chapters/articles for each week, with the assumption that anything there is required
+  - as of now, the "core" textbook for the class is [Learning Statistics with R](https://learningstatisticswithr.com/) by Danielle Navarro
+    - can you choose chapters/sections of chapters to assign for each week; look at the detailed list of topics below and just choose chapters/sections that seem most in line w/ those
+  - reading for week entitle "Reading and assessing research that uses regression; Ethical concerns and problematic practices associated with regression"
+    - Here is one article we will assign: Covarrubias, A., & Vélez, V. (2013). Critical race quantitative intersectionality Handbook of Critical Race Theory in Education: Routledge.
+      - https://www.routledgehandbooks.com/doi/10.4324/9780203155721.ch20
+  - Throughout the quarter I'll also be teaching technical stuff like:
+    - programming concepts/skills
+    - how to do stuff in RMarkdown (e.g., in text citations, formatting results, inserting tables/figures). If you can add reading associated w/ those types of skills as you see fit that would be fabulous!
+
+
+
+DETAILED LIST OF TOPICS [PASTED FROM AN OLDER DOCUMENT]
+
+1. Introduction
+    - syllabus
+    - Discussion of causal vs. correlational relationships
+    - Doing stuff in R
+      - introduce relevant programming concepts
+1. Fundamentals of inference I
+    - Brief review of of goal in inferential statistics
+      - e.g., population parameters vs. point estimates; correlational vs. causal relationships
+    - standard deviation
+    - distributions, properties of distributions
+      - e.g., normal, skewed; standard normal distribution; "empirical rule" for normal distributions
+    - sampling distribution
+    - standard error
+    - central limit theorem
+1. Fundamentals of inference II    
+    - Hypothesis testing
+      - stating null and alternative hypotheses
+      - one sided vs. two-sided
+      - e.g., estimate population mean $\mu$
+    - Practice all steps of hypothesis testing [group activity?]
+    - Doing stuff in R
+      - introduce relevant programming concepts
+      - group activity applying theoretical concepts to data using R functions
+1. Introduction to bivariate regression
+    - Covariance
+    - Correlation
+      - Scatterplots
+      - slope; best fit line
+    - Population linear regression model
+      - Population regression coefficient
+      - Population intercept
+      - error term, residuals
+    - main things we do in regression analysis
+      - estimation, prediction, hypothesis testing
+    - Estimation
+      - Ordinary least squares estimator
+      - OLS prediction line
+    - Doing stuff in R
+      - introduce relevant programming concepts
+      - group activity applying theoretical concepts to data using R functions
+1. Prediction and measures of model fit
+    - Prediction, based on OLS prediction line
+    - Measures of model fit
+      - e.g., total sum of squares; explained sum of squares, sum of squared residuals; $R^2$; standard error of the regression
+1. Hypothesis testing and confidence intervals for $\beta_1$
+    - Interpretation of $\hat{\beta}_1$
+      - when $X$ is a continuous variable
+    - Hypothesis testing
+      - Review steps in hypothesis testing about population regression coefficient $\beta_1$
+        - mirrors steps in hypothesis testing about population mean $\mu$
+      - Standard error of $\hat{\beta}_1$
+      - Sampling distribution of $\hat{\beta}_1$
+      - t-test
+    - Confidence intervals about $\beta_1$
+    - Doing stuff in R
+      - lecture/group activity to introduce and practice relevant programming skills    
+1. Categorical X variables and introduction to multivariate regression
+    - Modeling categorical X variables 
+      - e.g., variable $X$ has $c$ categories, represented by $c-1$ dichotomous indicators in regression equation and one "base category" omitted from regression
+    - Interpretation of $\hat{\beta}_1$ when $X$ is categorical (w/ respect to reference)
+    - Multivariate regression
+      - Population multivariate regression model
+      - Interpretation of $\hat{\beta}_k$ in multivariate regression model
+      - Hypothesis testing about $\beta_k$ (same as before)
+    - Interpretation of regression results tables in journal articles
+    - Doing stuff in R
+      - lecture/group activity to introduce and practice relevant programming skills
+1. Reading and assessing research that uses regression; Ethical concerns and problematic practices associated with regression
+    - need to flesh this out more
+1. Introduction to causal inference: Rubin's Causal Model and why experiments work
+    - [*Note: I do causal inference in week 2 because learning these concepts early helps students develop better research questions for their final projects*]
+    - counterfacturals and Rubin's Causal Model
+    - cross sectional vs. longitudinal research designs
+    - random assignment experiments as creating comparison group that represents the counterfactual
+    - causal inference in the absence of experiments
+      - quasi experimental designs (isolate exogenous variation in X)
+      - correlational designs that have purpose of estimating correlational relationship
+      - regressipon as an observational design to estimate causal relationship
+    - Doing stuff in R
+      - introduce relevant programming concepts
+1. Using Regression for causal inference; OLS assumptions and omitted variable bias
+    - Bias, efficiency
+    - Importance of assumptions in statistical inference
+    - OLS assumptions
+      - OLS assumption 1, omitted variable bias (most attention)
+      - heteroskedasticity, robust standard errors
+    - Doing stuff in R      
+      - e.g., creating publication-ready tables
 
 # Course policies
 
