@@ -22,14 +22,21 @@ output:
     
 ---
 
-- EDUC152: Regression for education research
+- EDUC152. Introduction to quantitative research in education: Regression analysis
 - Quarter and year
 - 5 units
 - Link to syllabus: [https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html](https://rucla-ed.github.io/educ152/syllabus/educ152_syllabus_draft.html)
 
 # Short course description
 
-This course introduces students to regression as a tool to answer questions about education. Regression is the most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas.  Therefore, EDUC250 teaches the fundamentals concepts of regression analysis and how these concepts can be thoughtfully applied to answer different kinds of research questions, with a particular emphasis on explicitly critical research questions. The course also emphasizes how to understand and critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
+This course introduces students to regression as a tool to answer questions about education. Regression is a most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, EDUC152 teaches the fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address important questions about education. The course also emphasizes how to critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
+
+COMMENTS:
+
+- preferred: with a equity and social justice;
+- "replace questions that have implications for equity and social justice"
+- ED152 
+ - , with a particular emphasis on explicitly critical research questions
 
 # Instructor and teaching assistant
 
