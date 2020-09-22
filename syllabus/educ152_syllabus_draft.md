@@ -30,14 +30,10 @@ output:
 # Short course description
 
 
-This course introduces students to regression as a tool to answer questions about education. Regression is a most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, EDUC152 teaches the fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address important questions about education. The course also emphasizes how to critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
+This course introduces students to regression as a tool to answer questions about education. Regression is commonly used to answer questions about (A) "association claims" -- about the relationship between variables -- and (B) "causal claims" -- about the causal effect of one variable on another. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, EDUC152 introduces students to fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address important questions about education. The course also trains students how to read and critically assess research that uses regression. ECUC152 integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive take-home assignments, including the final, capstone assignment.
 
-COMMENTS:
 
-- preferred: with a equity and social justice;
-- "replace questions that have implications for equity and social justice"
-- ED152 
- - , with a particular emphasis on explicitly critical research questions
+
 
 # Instructor and teaching assistant
 
@@ -287,43 +283,43 @@ Students are expected to participate in the weekly class meetings by being atten
   </tr>
   <tr>
    <td style="text-align:left;"> A </td>
-   <td style="text-align:left;"> 93-98.9% </td>
+   <td style="text-align:left;"> 93&lt;99% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> A- </td>
-   <td style="text-align:left;"> 90-92.9% </td>
+   <td style="text-align:left;"> 90&lt;93% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> B+ </td>
-   <td style="text-align:left;"> 87-89.9% </td>
+   <td style="text-align:left;"> 87&lt;90% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> B </td>
-   <td style="text-align:left;"> 83-86.9% </td>
+   <td style="text-align:left;"> 83&lt;87% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> B- </td>
-   <td style="text-align:left;"> 80-82.9% </td>
+   <td style="text-align:left;"> 80&lt;83% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> C+ </td>
-   <td style="text-align:left;"> 77-79.9% </td>
+   <td style="text-align:left;"> 77&lt;80% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> C </td>
-   <td style="text-align:left;"> 73-76.9% </td>
+   <td style="text-align:left;"> 73&lt;77% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> C- </td>
-   <td style="text-align:left;"> 70-72.9% </td>
+   <td style="text-align:left;"> 70&lt;73% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> D </td>
-   <td style="text-align:left;"> 60-69.9% </td>
+   <td style="text-align:left;"> 60&lt;70% </td>
   </tr>
   <tr>
    <td style="text-align:left;"> F </td>
-   <td style="text-align:left;"> 0-59.9% </td>
+   <td style="text-align:left;"> 0&lt;60% </td>
   </tr>
 </tbody>
 </table>

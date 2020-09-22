@@ -30,14 +30,12 @@ output:
 # Short course description
 
 
-This course introduces students to regression as a tool to answer questions about education. Regression is a most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, EDUC152 teaches the fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address important questions about education. The course also emphasizes how to critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
+This course introduces students to regression as a tool to answer questions about education. Regression is commonly used to answer questions about (A) "association claims" -- about the relationship between variables -- and (B) "causal claims" -- about the causal effect of one variable on another. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, EDUC152 introduces students to fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address important questions about education. The course also trains students how to read and critically assess research that uses regression. ECUC152 integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive take-home assignments, including the final, capstone assignment.
 
-COMMENTS:
+```{r, eval = FALSE, include = FALSE}
+#This course introduces students to regression as a tool to answer questions about education. Regression is a most commonly used quantitative method in education research and can be  used to answer many causal research questions and descriptive research questions. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, EDUC152 teaches the fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address important questions about education. The course also emphasizes how to critically assess research that uses regression. The course integrates theory and application using the **_R_** programming language. Students will be assessed through four substantive assignments, including the final, capstone assignment in which students will conduct the major steps in the life-cycle of a regression research project.
+```
 
-- preferred: with a equity and social justice;
-- "replace questions that have implications for equity and social justice"
-- ED152 
- - , with a particular emphasis on explicitly critical research questions
 
 # Instructor and teaching assistant
 
@@ -333,7 +331,7 @@ library(kableExtra)
 library(tidyverse)
 
 lg <- c("A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F")
-nv <- c("99-100%", "93-98.9%", "90-92.9%", "87-89.9%", "83-86.9%", "80-82.9%", "77-79.9%", "73-76.9%", "70-72.9%", "60-69.9%", "0-59.9%")
+nv <- c("99-100%", "93<99%", "90<93%", "87<90%", "83<87%", "80<83%", "77<80%", "73<77%", "70<73%", "60<70%", "0<60%")
 
 grade <- tibble(lg, nv)
 
