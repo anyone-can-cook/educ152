@@ -153,7 +153,7 @@ If you have a personal question or issue, please send a message to the instructo
 
 - [R for Data Science](https://r4ds.had.co.nz/) by Garrett Grolemund and Hadley Wickham [**FREE!**]
 
-Links to other required and optional reading will be on the course website [link]
+Links to other required and optional reading will be on the [course website](https://anyone-can-cook.github.io/educ152/).
 
 
 **Required software**
@@ -282,7 +282,7 @@ Students are expected to participate in the weekly class meetings by being atten
 </table>
 
 
-# Course schedule [REVISE]
+# Course schedule
 
 
 Below is an overview of the tentative course schedule, which is subject to change at the discretion of the instructor. Topics may be cut if we need to devote more time to learning the most central topics. It is unlikely that additional topics will be added. The official course schedule, required reading, and optional reading will be posted on the [course website](https://anyone-can-cook.github.io/educ152).
@@ -303,142 +303,10 @@ __UNIT 2: FUNDAMENTALS OF REGRESSION, FOR ASSOCIATION CLAIMS__
 1. Reading and assessing research that uses regression; Ethical concerns and problematic practices associated with regression
 
 
-__UNIT 3. REGRESSION FOR CAUSAL CLAIMS__
+__UNIT 3: REGRESSION FOR CAUSAL CLAIMS__
 
 9. Principles of causal inference: Rubin's Causal Model and why experiments yield unbiased estimates of causal effects
 1. Using regression for causal inference: OLS assumptions and omitted variable bias
-
-
-FOR CRYSTAL OR PATRICIA: PLEASE MODIFY THE COURSE WEBSITE AS FOLLOWS
-
-- website should have following level-1 headings
-    - Lectures (by unit and topic)
-    - Weekly reading
-    - Problem sets
-- in lectures (by unit and topic), add one more lay of nesting for the units that individual lectures fall under. 
-  - for example:
-    - UNIT 1: STATISTICAL INFERENCE, DESCRIPTIVE CLAIMS
-      - statistical inference I (sampling distributions and central limit theorem)
-      - Statistical inference II (hypothesis testing)
-      - etc.
-    - UNIT 2: REGRESSION FOR ASSOCIATION CLAIMS
-    - UNIT 3: REGRESSION FOR CAUSAL CLAIMS
-  - Might even look better if title of unit is not a collapsable; just have unit number and abbreviated name in CAPS and bold
-- in lectures (by unit and topic) need to add a short list of big topics covered in each lecture
-  - this is primarily for the course approval process. the curriculum committee (CDAS) wants to see topics for each class expanded out. we will probably delete this from website later 
-  - example:
-    - statistical inference 1
-      - lecture topics: 
-        - goals of inferential statistics; standard deviation; distributions; sampling distribution; standard error; central limit theorem
-- Problem sets:
-  - Problem set 1. Hypothesis testing about descriptive claims (due prior to week 4 in-class meeting)
-  - Problem set 2. Estimation, prediction, and model fit (due prior to week 6 in-class meeting)
-  - Problem set 3. Hypothesis testing, interpretation of continuous and categorical X, and multivariate regression (due prior to week 8 in-class meeeting)
-  - Problem set 4 (capstone). Assessing regression research and ethical concerns; causal inference; variable creation (due during finals week)
-- Reading:
-  - later I'll create separate lists of required and optional reading for each week
-  - for now we'll just have a list of chapters/articles for each week, with the assumption that anything there is required
-  - as of now, the "core" textbook for the class is [Learning Statistics with R](https://learningstatisticswithr.com/) by Danielle Navarro
-    - can you choose chapters/sections of chapters to assign for each week; look at the detailed list of topics below and just choose chapters/sections that seem most in line w/ those
-  - reading for week entitle "Reading and assessing research that uses regression; Ethical concerns and problematic practices associated with regression"
-    - Here is one article we will assign: Covarrubias, A., & Vélez, V. (2013). Critical race quantitative intersectionality Handbook of Critical Race Theory in Education: Routledge.
-      - https://www.routledgehandbooks.com/doi/10.4324/9780203155721.ch20
-  - Throughout the quarter I'll also be teaching technical stuff like:
-    - programming concepts/skills
-    - how to do stuff in RMarkdown (e.g., in text citations, formatting results, inserting tables/figures). If you can add reading associated w/ those types of skills as you see fit that would be fabulous!
-
-
-
-DETAILED LIST OF TOPICS [PASTED FROM AN OLDER DOCUMENT]
-
-1. Introduction
-    - syllabus
-    - Discussion of causal vs. correlational relationships
-    - Doing stuff in R
-      - introduce relevant programming concepts
-1. Fundamentals of inference I
-    - Brief review of of goal in inferential statistics
-      - e.g., population parameters vs. point estimates; correlational vs. causal relationships
-    - standard deviation
-    - distributions, properties of distributions
-      - e.g., normal, skewed; standard normal distribution; "empirical rule" for normal distributions
-    - sampling distribution
-    - standard error
-    - central limit theorem
-1. Fundamentals of inference II    
-    - Hypothesis testing
-      - stating null and alternative hypotheses
-      - one sided vs. two-sided
-      - e.g., estimate population mean $\mu$
-    - Practice all steps of hypothesis testing [group activity?]
-    - Doing stuff in R
-      - introduce relevant programming concepts
-      - group activity applying theoretical concepts to data using R functions
-1. Introduction to bivariate regression
-    - Covariance
-    - Correlation
-      - Scatterplots
-      - slope; best fit line
-    - Population linear regression model
-      - Population regression coefficient
-      - Population intercept
-      - error term, residuals
-    - main things we do in regression analysis
-      - estimation, prediction, hypothesis testing
-    - Estimation
-      - Ordinary least squares estimator
-      - OLS prediction line
-    - Doing stuff in R
-      - introduce relevant programming concepts
-      - group activity applying theoretical concepts to data using R functions
-1. Prediction and measures of model fit
-    - Prediction, based on OLS prediction line
-    - Measures of model fit
-      - e.g., total sum of squares; explained sum of squares, sum of squared residuals; $R^2$; standard error of the regression
-1. Hypothesis testing and confidence intervals for $\beta_1$
-    - Interpretation of $\hat{\beta}_1$
-      - when $X$ is a continuous variable
-    - Hypothesis testing
-      - Review steps in hypothesis testing about population regression coefficient $\beta_1$
-        - mirrors steps in hypothesis testing about population mean $\mu$
-      - Standard error of $\hat{\beta}_1$
-      - Sampling distribution of $\hat{\beta}_1$
-      - t-test
-    - Confidence intervals about $\beta_1$
-    - Doing stuff in R
-      - lecture/group activity to introduce and practice relevant programming skills    
-1. Categorical X variables and introduction to multivariate regression
-    - Modeling categorical X variables 
-      - e.g., variable $X$ has $c$ categories, represented by $c-1$ dichotomous indicators in regression equation and one "base category" omitted from regression
-    - Interpretation of $\hat{\beta}_1$ when $X$ is categorical (w/ respect to reference)
-    - Multivariate regression
-      - Population multivariate regression model
-      - Interpretation of $\hat{\beta}_k$ in multivariate regression model
-      - Hypothesis testing about $\beta_k$ (same as before)
-    - Interpretation of regression results tables in journal articles
-    - Doing stuff in R
-      - lecture/group activity to introduce and practice relevant programming skills
-1. Reading and assessing research that uses regression; Ethical concerns and problematic practices associated with regression
-    - need to flesh this out more
-1. Introduction to causal inference: Rubin's Causal Model and why experiments work
-    - [*Note: I do causal inference in week 2 because learning these concepts early helps students develop better research questions for their final projects*]
-    - counterfacturals and Rubin's Causal Model
-    - cross sectional vs. longitudinal research designs
-    - random assignment experiments as creating comparison group that represents the counterfactual
-    - causal inference in the absence of experiments
-      - quasi experimental designs (isolate exogenous variation in X)
-      - correlational designs that have purpose of estimating correlational relationship
-      - regressipon as an observational design to estimate causal relationship
-    - Doing stuff in R
-      - introduce relevant programming concepts
-1. Using Regression for causal inference; OLS assumptions and omitted variable bias
-    - Bias, efficiency
-    - Importance of assumptions in statistical inference
-    - OLS assumptions
-      - OLS assumption 1, omitted variable bias (most attention)
-      - heteroskedasticity, robust standard errors
-    - Doing stuff in R      
-      - e.g., creating publication-ready tables
 
 # Course policies
 
