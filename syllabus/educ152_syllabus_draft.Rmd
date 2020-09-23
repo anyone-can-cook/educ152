@@ -59,33 +59,6 @@ EDUC 152 introduces students to regression as a tool to answer questions about e
 - Email:
 - Office hours:
 
-# Extended course description  [NEED TO REVISE]
-
-
-Regression is the most widely-used quantitative methodology to answer causal, and also non-causal, research questions. This section of EDUC152 will introduce students to regression with a focus on using regression to answer causal research questions, which typicaly follow the form "what is the effect of X on Y." The course also emphasizes undersanding how to read and critically assess empirical research that uses regression.
-
-The course integrates statistical theory and application using the **_R_** programming language.  Students will work through asynchronous video lectures and lectures slides on their own. These lectures introduces statistical theory, introduces the relevant programming skills, and provides the code and real-world data so that students can practice conducting and interpreting statistical analyses. 
-
-[REVISE LIST OF COURSE TOPICS SO THAT THEY ARE PRESENTED WITHIN THE ASSOCIATED BROADER UNIT. UNITS: 
-__UNIT 1: STATISTICAL INFERENCE ABOUT DESCRIPTIVE CLAIMS__
-__UNIT 2: FUNDAMENTALS OF REGRESSION, FOR ASSOCIATION CLAIMS__
-__UNIT 3. REGRESSION FOR CAUSAL CLAIMS__
-]
-Course topics will include: fundamental statistical concepts of statistical inference; principles of causal inference; and fundamentals of multiple regression.  During class time, students will work in groups to solve practical research challenges and we will discuss and deconstruct empirical research that uses regression analysis. The primary course assessments are four problem sets -- including the final capstone problem set -- which will be completed in groups. Each problem set will require students to apply knowledge of statistical concepts, and conduct substantive statistical analyses around a particular research question. 
-
-
-The course embraces using regression to answer traditional research questions (e.g., the effect of student-teacher ratio on achievement) and critical research questions (e.g., the effect of racial salience -- as presented in email text -- on how white university admissions officers respond to inquiries from Black prospective students). The skills this course teaches are valued by employers and are valued in the process of applying to graduate schools. After completing this course, students will be prepared to take more advanced causal inference coursework (e.g., quasi-experimental methods) and coursework that teaches the programming and data manipulation skills necessary to create analysis datasets for real research projects.
-
-## Prerequisites
-
-The prerequisites for EDUC 152 are:
-
-- EDUC 150 (Introduction to Quantitative Research in Education: Claims and Evidence) __OR__ EDUC 151 (Introduction to Quantitative Research in Education: Introduction to Measurement and Assessment in Education)
-- Basic familiarity with *R*, the programming language and software environment we will use
-
-Students who have not completed EDUC 150 or EDUC 151 but who have completed a different introductory statistics course can enroll in EDUC 152 with instructor consent.
-
-
 # Course learning goals
 
 ```{r, eval = FALSE, include = FALSE}
@@ -122,14 +95,30 @@ __Skill-based learning goals__
 1. Develop proficiency in basic data management skills, including simple descriptive statistics to investigate data quality and creating analysis variables
 1. Create documents using RMarkdown and Rstudio that contain research results, including: graphical visualizations; tables of descriptive statistics and regression results; and in-text citations and APA formatted reference lists
 
-# Course structure and how to succeed
+# Extended course description and how to succeed
+
+Regression is a quantitative methodology commonly used to answer questions about the “association” between variables and questions about the causal effect of one variable on another.  Association research questions examine the relationship between variables. For example, what is the relationship between property values and school expenditure per student. However, the existence of an association relationship does not necessarily mean that the value of one variable affects the value of the other. For example, we would expect to observe a positive relationship between ice cream sales and sunglasses sales in a city, but it is unlikely that ice cream sales have a positive causal effect on sunglasses sales. Rather, the temperature and intensity of the sun are likely driving sales of both ice cream and sunglasses. Causal research questions attempt to isolate the causal effect of one variable on another and can usually be stated in the form, “what is the effect of X on Y.” For example, what is the effect of reducing the number of students per class on student learning outcomes?
+
+This course teaches the fundamental principles of regression analysis and the application of these principles to questions about education. Using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., "race" and "gender") are incorporated into analyses. Therefore, the course emphasizes how the principles of regression can be thoughtfully applied to analyze association research questions and causal research questions. 
+
+The course integrates statistical theory and application using the **_R_** programming language. The course consists of three units: first, the basics of statistical inference necessary for hypothesis testing; second, the fundamental principles of regression, applied to questions of association; and, third, using regression to answer causal research questions.
+
+The primary course assessments are four “problem sets.” Each problem set will require students to apply knowledge of statistical concepts, and conduct substantive statistical analyses around a particular research question. Students will complete the first three problem sets in groups. Students will complete the final capstone problem set, due during finals week, on their own.
 
 ## Course structure
 
-Each week, the course will be structured around asynchronous (pre-class) lectures and one synchronous workshop-style class meeting per week. Weekly homework will consist of students working through the lectures on their own and a modest amount of required reading. Written homework will consist of four "problem sets." Students will complete the first three problem sets in groups. Students will complete the final capstone problem set, due during finals week, on their own.
+Each week, the course will be structured around asynchronous (pre-class) lectures and one synchronous workshop-style class meeting per week. Weekly reading homework will consist of students working through the lectures on their own and a modest amount of required reading.
+
+<!-- -
+Students will work through asynchronous video lectures and lectures slides on their own. These lectures introduce statistical theory, the relevant programming skills, and provide  code and real-world data so that students can practice running code on their own computer. 
+
+During synchronous class time students will work in groups to practice a new skill (e.g., creating .Rmd files with in-text citations and references), solve a practical research challenge (e.g., create analysis variables from survey data), or deconstruct empirical research articles we read.
+-->
+
+
 
 1. __Asynchronous (pre-class) lectures__. Weekly asynchronous lectures will be posted on the course website with the expectation that students work through the lecture in advance of our weekly synchronous class meeting. Lecture materials will consist of three types of resources: first, detailed lecture slides (PDF or HTML) introducing the statistical theory, programming skills, and sample code; second, short videos (e.g., 15 to 30 total minutes per week) that provide a high-level discussion of important and/or challenging concepts from the lecture slides, but not a line-by-line recitation of the lecture; and, third, the .Rmd file that created the PDF/html lecture slides. This .Rmd file will contain all "code chunks" and links to all data utilized in the lecture. Thus, students will be able to "learn by doing" in that they can run R code on their own computer while they work through lecture materials on their own.
-1. __Synchronous workshop-style class meetings.__ We will have one synchronous class meeting per week. Typically, these meetings will begin with a discussion of concepts students found difficult or confusing from the lecture materials. However, the bulk of class time will be devoted to students working in groups on a substantive question or challenge posed by the instructor. For example, students may be asked to create analysis variables from survey data in the presence of skip patterns or how we could improve on the analyses conducted in a research article students read prior to class. While students work in groups, the instructor and TA will visit with each group to answer questions and talk through ideas.
+1. __Synchronous workshop-style class meetings.__ We will have one synchronous class meeting per week. Typically, these meetings will begin with a discussion of concepts students found difficult or confusing from the lecture materials. The majority of class time will be devoted to students working in groups on a substantive activity posed by the instructor, for example: practice a new skill, like creating .Rmd files with in-text citations and references); solve a practical research challenge, like create analysis variables from survey data in the presence of skip patterns; or deconstruct and critique empirical research articles we read prior to class.  While students work in groups, the instructor and TA will visit with each group to answer questions and talk through ideas.
 
 ## How to succeed in this class
 
@@ -139,6 +128,14 @@ With respect to written work, the problem sets -- described below -- will be sub
 
 Concepts introduced earlier in the quarter will be utilized later in the quarter. For example, in the beginning of the quarter we learn how to test hypotheses about descriptive claims (e.g., test a hypothesis about average household income). Later in the quarter we will utilize these same concepts to test hypotheses about regression models. Therefore, please seek help if you feel confused about new concepts introduced in a given week so that you do not feel confused when these concepts reappear later in the quarter.
 
+## Prerequisites
+
+The prerequisites for EDUC 152 are:
+
+- EDUC 150 (Introduction to Quantitative Research in Education: Claims and Evidence) __OR__ EDUC 151 (Introduction to Quantitative Research in Education: Introduction to Measurement and Assessment in Education)
+- Basic familiarity with *R*, the programming language and software environment we will use
+
+Students who have not completed EDUC 150 or EDUC 151 but who have completed a different introductory statistics course can enroll in EDUC 152 with instructor consent.
 
 # Classroom environment
 
