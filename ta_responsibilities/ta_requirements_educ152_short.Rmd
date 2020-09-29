@@ -1,0 +1,21 @@
+---
+title: "TA requirements for EDUC 152, short"
+author: "Ozan Jaquette"
+output: word_document
+---
+
+**ED 152: Intro to Quantitative Research in Education: Regression Analysis**
+
+This course introduces students to regression as a tool to answer questions about education. Regression is commonly used to answer questions about “association claims” – the relationship between variables – and “causal claims” – the causal effect of one variable on another. However, using regression appropriately requires thoughtfulness about what kinds of questions regression can answer, about the assumptions regression relies on, about the limitations of our data, and about how particular variables (e.g., “race” and “gender”) are incorporated into analyses. Otherwise, regression results may be biased and may reify rather than interrogate problematic ideas. Therefore, the course emphasizes learning fundamental concepts of regression analysis and how these concepts can be thoughtfully applied to address different kinds of questions about education. The course also trains students how to read and critically assess research that uses regression. The course integrates theory and application using the R programming language. Students will be assessed through four substantive take-home assignments, including a final, capstone assignment.
+ 
+**TA Position available**: 1 TA position in Spring 2021
+ 
+**Course Schedule**: TBD
+ 
+**TA Responsibilities** (not to exceed an average of 10 hours total per week): supporting students in R; grading assignments and providing individualized student feedback; update course website (e.g., modifying required weekly reading) which is created using Github Pages; serving as the primary contact point for student questions / concerns; attend ad-hoc planning meetings with instructor; assist instructor in developing lectures, homework assignments, and "in-class" small group activities
+ 
+**Skills Required**: Proficiency in R, R studio, and R markdown, git, github, basic html and css, Slack
+ 
+**Knowledge Required**: Principles of statistical inference to state and test hypotheses; principles of causal inference; concepts of multiple regression analysis; 
+ 
+**Prerequisites**: EDUC 230 A, B, and C (or equivalent training). 

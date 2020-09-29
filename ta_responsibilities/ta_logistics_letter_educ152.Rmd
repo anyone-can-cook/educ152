@@ -1,0 +1,54 @@
+---
+title: "TA logistics letter, EDUC 152"
+author: "Ozan Jaquette"
+output: word_document
+---
+
+
+
+__1. How is your TA supposed to spend their 110 hours? (On average, 10 hours/week for 11 weeks)__
+
+Regular tasks during the quarter (~ 10 hours / week)
+
+- Attend synchronous class sessions and help students during small-group break-out sessions (~ 1.5 hours)
+- Read assigned readings (~2 hours)
+- Grade assignments (~ 3 hours)
+- Communicate with students (e.g., answer student questions on slack, follow up with students who missed class) (1.5 hours)
+- Hold office hours (1 hour)
+- Attend ad-hoc course planning meetings with instructor (~0.5 hours)
+- Update course website (created using Github Pages) (~0.5 hours)
+
+
+Additional tasks during the quarter (only if assisting with these tasks will not put TA over average of 10 hours per week)
+
+- Assist instructor in developing lectures
+- Assist instructor in developing homework assignments
+- Assist instructor in planning activities for synchronous "in-class" sessions
+
+Before the Quarter (~3 hours)
+
+- Participate in team planning meeting (2 hours)
+- With instructor, develop grading rubric for assignments (1 hour)
+
+After the quarter (~ 5 hours)
+
+- grade final problem set
+
+__2. If your TA leads a discussion section, what’s supposed to happen during that time (e.g., new learning, fielding student questions, activities to reinforce lecture, worktime on group projects)?__
+
+NA. course does not have a discussion section.
+
+**If** the TA has interest, they can lead development of a lecture and/or record the video lecture. However, these tasks are the responsibility of the instructor and TA should only take this on (e.g., for one week) if they would like to do this as part of their professional development.
+
+__3. If your TA leads a discussion section, will a lesson plan be provided or is it your TA’s responsibility to design one? If the latter, roughly how much of your TA’s contract hours (10 / week) are set aside for this?__
+
+NA. course does not have a discussion section.
+
+__4. For the course assignments and assessments, will the rubric / grading scheme be provided by the instructor or co-created by the instructor and TA?__
+
+Co-created by instructor and TA
+
+__5. If there are multiple TAs and one has TAed for the course before, does this “veteran TA” have different duties than the others?__
+
+NA. course only has one TA.
+
