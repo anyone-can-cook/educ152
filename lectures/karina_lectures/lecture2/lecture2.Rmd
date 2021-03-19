@@ -1,25 +1,21 @@
 ---
-title: Introduction to Multivariate Regression & Econometrics # potentially push to header
-subtitle:  HED 612
-author: Lecture 2
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
 
@@ -31,7 +27,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 
 # Prep
 
-### Download Data and Open R Script
+## Download Data and Open R Script
 
 _If you had trouble installing R/ R Studio, let me know before moving forward_
 
@@ -50,7 +46,7 @@ _Download Data and Open R Script_
     - file >>> open file... >>> [navigate to lecture 2 folder] >>> lecture2.R
 
 
-### Review Homework 
+## Review Homework 
 
 - Every week we will spend 10-15 min s a class or in groups reviewing the problem set you just submitted
 - Problem Set #1 Common Questions [review as a class]
@@ -68,7 +64,7 @@ _Download Data and Open R Script_
 
 
 
-###  Today and Next Week  
+##  Today and Next Week  
 
 __Today__
 
@@ -92,7 +88,7 @@ __Next Week__
 
 # Review of Statistics
 
-### Statistical Inference
+## Statistical Inference
 
 _Goal of statistical inference is to infer something about the population from a sample_
 
@@ -117,7 +113,7 @@ __Point Estimate__:  numeric value generated from calculating an estimator from 
 
 
 
-### Parameters and Point Estimates
+## Parameters and Point Estimates
 
 Introductory statistics class
 
@@ -134,7 +130,7 @@ Multivariate regression class
 - RQs: What is the effect of living in residence halls on GPA?
 
 
-### Notation for Parameters 
+## Notation for Parameters 
 
 Population Parameters
 
@@ -158,7 +154,7 @@ Estimators of Population Parameters (two general approaches)
     - $\bar{Y}$: "Y bar" refers to the estimate of $\mu_Y$
     - $s_X$: "S of X" refers to the estimate of $\sigma_X$
 
-### Data Sources 
+## Data Sources 
 
 __Experimental Data__: obtained from experiments designed to assess the causal effect of a "treatment" on an outcome
 
@@ -173,7 +169,7 @@ __Observational Data__: obtained from surveys, administrative records [focus of 
 - researchers have/had no control on the "treatment"
 - e.g., Beginning Postsecondary Students Longitudinal Study, High School Longitudinal Study, National Education Longitudinal Study
 
-### Data Types
+## Data Types
 
 __Cross sectional data__: data on different "observations" (e.g., students, classrooms, universities) for a single point in time [focus of this course]
 
@@ -190,7 +186,7 @@ __Longitudinal Data__ (or panel data): data on multiple "observations" at multip
 - e.g., Beginning Postsecondary Students Longitudinal Study, High School Longitudinal Study, National Education Longitudinal Study
 
 
-### Variables
+## Variables
 
 __Continuous Variables__
 
@@ -207,7 +203,7 @@ __Discrete Variables__ (or categorical variables)
 - Can be nominal (school type), ordinal (likert scale), and quantitative (number of children)
 
 
-### Measures of Central Tendency: Sample Mean
+## Measures of Central Tendency: Sample Mean
 
 Sample mean of Y or denoted as $\bar{Y}$
 
@@ -228,7 +224,7 @@ Other measures of central tendency:
 - Mode
 
 
-### Measures of Dispersion: Standard Deviation
+## Measures of Dispersion: Standard Deviation
 
 
 Sample standard deviation of Y or denoted as $\hat\sigma_Y$
@@ -252,7 +248,7 @@ Other measures of dispersion:
 - Range
 
 
-### Sample Mean & Standard Deviation
+## Sample Mean & Standard Deviation
 
 Substantive interpretation(s):
 
@@ -260,9 +256,6 @@ Substantive interpretation(s):
 - Which distribution has the greatest standard deviation and lowest standard deviation?
 
 ![](distributions.png)
-
-
-### Sample Mean & Standard Deviation
 
 Substantive interpretation(s):
 
@@ -272,7 +265,7 @@ Consider the SAT scores of students at a large, public high school and the SAT s
 
 - Which do you think has a larger standard deviation?
 
-### Sampling Distribution & Central Limit Theorem
+## Sampling Distribution & Central Limit Theorem
 
 Many of the statistical tests we use (e.g., t-tests, confidence intervals) assume that populations we work with are normally distributed.
 
@@ -286,10 +279,6 @@ An appropriate sample size and _Central Limit Theorem_ can help us get around th
 \medskip
 __Central Limit Theorem__: No matter the distribution of our population parameter, given a suffficiently large sample size, the sampling distribution of the estimate (e.g., mean) for a variable will approximate a normal distribution. 
 
-
-
-### Sampling Distribution & Central Limit Theorem 
-
 Sampling Distribution
 
 - __Mean of Sample Means__ ($\bar{Y}_Y$) = population mean ($\mu_Y$)
@@ -302,18 +291,17 @@ Sampling Distribution
 Interactive presentation [link](http://onlinestatbook.com/stat_sim/sampling_dist/)
 
 
-<!-- ### Bias and Precision -->
+<!-- ## Bias and Precision -->
 <!-- __Unbiased point estimate__: an estimator for a particular random sample is unbiased if its distribution centers around the population parameter (mean of sample means) -->
 
 <!-- __Precise point estimate__: an estimator is precise if it does not vary considerably from sample to sample (low SE) -->
 
 <!-- \includegraphics[width=200pt]{precision-bias.png} -->
 
-# 10 Min Break
 
 # R Basics
 
-### R Script Basics
+## R Script Basics
 
 Go to the lecture2.R script I had you download before class
 
@@ -331,7 +319,7 @@ __Comments__
 - `" "` Will comment out anything between the quotation marks (multiple lines)
 
 
-### Tidyverse 
+## Tidyverse 
 
 - R sytanx for this class will all be given to you. 
 - For problem sets, you often will get an example of the code you need to run in the lecture or directly in the instructions; you'll often use that code as template for you the specific task you are working on
@@ -340,9 +328,6 @@ __Comments__
 - All code (very few exceptions) will be written in the "tidyverse" way as opposed to base R
   - Base R: the "default" coding approach to R; it can be very inefficient
   - Tidyverse: most popular way to write R code that does simple tasks (everything we do in this class is considered simple)
-
-### Tidyverse 
-
 - Most distinctive part of Tidyverse approach to R syntax is using pipes or piping operator `%>%`
   - Allows for "sequential computations" or multiple commands/tasks in the same line of code
   - I usually think of the words "AND THEN" every time I see a pipe

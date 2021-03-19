@@ -1,25 +1,21 @@
 ---
-title: Introduction to Multivariate Regression & Econometrics # potentially push to header
-subtitle:  HED 612
-author: Lecture 1
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
 
@@ -32,7 +28,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 # Student Introductions 
 
 
-### Student introductions
+## Student introductions
 
 1. Preferred name
 1. Preferred pronouns
@@ -43,7 +39,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 
 # About your instructor
 
-### Karina Salazar, instructor
+## Karina Salazar, instructor
 
 My start in statistical analysis 
 
@@ -73,7 +69,7 @@ My start in statistical analysis
   
 
 
-### Enrollment Management Research Program 
+## Enrollment Management Research Program 
 
 - Grew tired of mainstream access inequality policy discourse...
   - Onus on students, families, and K-12 schools
@@ -101,7 +97,7 @@ Examples:
 
 # What is Econometrics?
 
-### Econometrics (also "Program Evaluation", Causal Inference)
+## Econometrics (also "Program Evaluation", Causal Inference)
 
 __Econometrics__ is the main methodological strategy used to assess the impact of programs, policies, and interventions.
 
@@ -122,11 +118,11 @@ Causal relationships vs. descriptive statistics
 
 
 
-### Example 
+## Example 
 
 ![](abor.png)
 
-### Econometrics & Regression
+## Econometrics & Regression
 
 __Regression is used to answer both descriptive and causal questions__
  
@@ -153,17 +149,9 @@ _If you decide not to pursue econometrics research_:
 
 
 
-# Course logistics
-
-### Course logistics
-
-- follow the syllabus
-
-# 10 MINUTE BREAK
-
 # What is R
 
-### What is R
+## What is R
 
 According to the Inter-university consortium for political and social research [(ICPSR)](https://www.icpsr.umich.edu/icpsrweb/content/shared/ICPSR/faqs/what-is-r.html):
 
@@ -171,7 +159,7 @@ According to the Inter-university consortium for political and social research [
 
 - For more info visit [R-project.org](https://www.r-project.org/about.html)
 
-### Base R vs. R packages
+## Base R vs. R packages
 
 There are "default" packages that come with [R](https://stat.ethz.ch/R-manual/R-devel/library/base/html/00Index.html). Some of these include:  
 
@@ -187,7 +175,7 @@ And there are [R packages](http://r-pkgs.had.co.nz/intro.html) developed and sha
 
 more about these in later weeks...
 
-<!-- ### Installing and Loading R packages -->
+<!-- ## Installing and Loading R packages -->
 <!-- You only need to install a package once. To install an R package use `install.package()` function. -->
 <!-- ```{r warning=FALSE, message=FALSE} -->
 <!-- #install.packages("tidyverse") -->
@@ -198,16 +186,16 @@ more about these in later weeks...
 <!-- library(tidyverse) -->
 <!-- ``` -->
 
-### RStudio
+## RStudio
 
 "[RStudio](https://www.rstudio.com/products/rstudio/features/) is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management."
 
 ![](pane_layout.png)
 
-### R Markdown
+## R Markdown
 [R Markdown](https://rmarkdown.rstudio.com/) produces dynamic output formats in html, pdf, MS Word, dashboards, Beamer presentations, etc.
 
-### Why R? Capabilities of R
+## Why R? Capabilities of R
 - [Modeling](http://r-statistics.co/Linear-Regression.html)
 - [Graphs](https://ggplot2.tidyverse.org/)
 - [Presentation](https://bookdown.org/yihui/rmarkdown/presentations.html)
@@ -223,7 +211,7 @@ more about these in later weeks...
 For more info [visit](https://bookdown.org/yihui/rmarkdown/)
 
 
-### Modeling
+## Modeling
 
 Run just about any modeling technique! This course will focus on linear regression...
 
@@ -253,7 +241,7 @@ extract_eq(mod1, use_coefs = TRUE)
 ```
 
 
-### Graphs 
+## Graphs 
 - Create graphs with [ggplot2](https://ggplot2.tidyverse.org/) package 
 
 ```{r echo=FALSE, warning=FALSE}
@@ -281,22 +269,22 @@ gg <- ggplot(midwest, aes(x=area, y=poptotal)) +
 plot(gg)
 ```
 
-### Journal articles
+## Journal articles
 - Journal articles with [rticles](https://github.com/rstudio/rticles) package
 ![](rticles.png)
 
-### Interactive web apps
+## Interactive web apps
 - Interactive web apps with [shiny](http://shiny.rstudio.com/) package
 ![](shiny.png)
 
-### Mapping 
+## Mapping 
 - Mapping with [sf](http://strimas.com/r/tidy-sf/) package & ggplot
 ![](sf.png)
 
 
 # R Basics
 
-### R as a calculator
+## R as a calculator
 
 ```{r}
 5
@@ -304,7 +292,7 @@ plot(gg)
 10*3
 ```
 
-### Executing commands in R
+## Executing commands in R
 
 ```{r}
 5
@@ -321,7 +309,7 @@ Three ways to execute commands in R
     - This is just a text file full of R commands
     - Can execute one command at a time, several commands at a time, or the entire script
 
-### Assignment
+## Assignment
 
 __Assignment__ means creating a variable -- or more generally, an "object" -- and assigning values to it
 
@@ -341,7 +329,7 @@ b
 
 # Directories and filepaths 
 
-### Working directory
+## Working directory
 
 __(Current) Working directory__
 
@@ -359,7 +347,7 @@ getwd()
 list.files()
 ```
 
-<!-- ### Working directory, "Code chunks" vs. "console" and "R scripts" -->
+<!-- ## Working directory, "Code chunks" vs. "console" and "R scripts" -->
 
 <!-- When you run __code chunks__ in RMarkdown files (.Rmd), the working directory is set to the filepath where the .Rmd file is stored -->
 
@@ -376,7 +364,7 @@ list.files()
 <!-- getwd() -->
 <!-- ``` -->
 
-### Absolute vs. relative filepath  
+## Absolute vs. relative filepath  
 **Absolute file path**:  The absolute file path is the complete list of directories needed to locate a file or folder.  
 `setwd("Users/Karina/rclass/lectures/lecture2")`
 
@@ -395,7 +383,7 @@ list.files()
 
 # Create "R project" and directory structure
 
-### What is an R project? Why are you doing this?
+## What is an R project? Why are you doing this?
 
 What is an "R project"?
 
@@ -408,7 +396,7 @@ Why am I asking you to create R project and download a specific directory struct
 - Sometimes these .R scripts point to certain sub-folders in order to open data
 - If you create the R project and create directory structure I recommend, you will be able to run .R scripts from your own computer without making any changes to file-paths! 
 
-### Follow these steps to create "R project" and directory structure
+## Follow these steps to create "R project" and directory structure
 
 1. Download the zip folder on D2L: 
     - Unzip the folder: this is a shell of the file directory you should use for this class
@@ -418,7 +406,7 @@ Why am I asking you to create R project and download a specific directory struct
     - In "Create project as subdirectory of", click browse and:
         - save the R Project within the hed612 folder (same general folder as data and lectures) 
 
-### After you follow these steps
+## After you follow these steps
 
 - You can add any additional sub-folders you want to the "HED612" folder
     - e.g., "syllabus", "homework"
@@ -427,8 +415,6 @@ Why am I asking you to create R project and download a specific directory struct
 
 
 # Next Week
-
-### Next Week
 
 Next week will focus on reviewing intro statistics
 

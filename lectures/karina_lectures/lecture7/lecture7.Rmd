@@ -1,25 +1,21 @@
 ---
-title: Introduction to Multivariate Regression & Econometrics # potentially push to header
-subtitle:  HED 612
-author: Lecture 7
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
 
@@ -27,8 +23,9 @@ output:
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 ```
 
+# Prep
 
-### Download Data and Open R Script
+## Download Data and Open R Script
 
 We'll be using GSS and CA Data!
 
@@ -41,7 +38,7 @@ We'll be using GSS and CA Data!
     - file >>> open file... >>> [navigate to lecture 7 folder] >>> lecture7.R
 
 
-### Schedule
+## Schedule
 
 __What we have done:__
 
@@ -77,7 +74,7 @@ __3/17/2021: Intro to Multivariate Regression__
 
 
 
-### General Regression Purposes
+## General Regression Purposes
 
 Things we generally do with regression:
 
@@ -97,7 +94,7 @@ Things we generally do with regression:
 
 
 
-### Population Regression Model and OLS Prediction Line
+## Population Regression Model and OLS Prediction Line
 
 RQ: What is the effect of student-teacher ratio (X) on student test scores (Y)
 
@@ -117,7 +114,7 @@ $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
   - We use residuals to understand how good our predictions are! (SER)
   
   
-### Interpretation of $\hat{\beta_1}$ for Continous X
+## Interpretation of $\hat{\beta_1}$ for Continous X
 
 __OLS Prediction Line or "OLS Regression Line" (with estimates)__:
 $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$ 
@@ -128,7 +125,7 @@ __Interpretation of $\hat{\beta_1}$__
 
 - General interpretation  [always true!]
   - The average effect of a one-unit increase in X is associated with a $\hat{\beta_1}$ unit change (negative = decrease or positive = increase) in Y
-```{r, results='hide', echo=FALSE, message=FALSE, warning=FALSE}
+```{r, results='hide', echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
 library(haven) 
 library(tidyverse) 
 library(labelled)
@@ -138,7 +135,7 @@ caschool<- read_dta("../../data/ca/caschool-v2.dta")
 
 ```
 
-```{r}
+```{r, eval=FALSE}
   summary(mod1)
 ```
   
@@ -147,7 +144,7 @@ caschool<- read_dta("../../data/ca/caschool-v2.dta")
 <!--   - The average effect of one-unit increase in X is associated with a XXX increase in Y -->
  
  
-### Point and Interval Estimation
+## Point and Interval Estimation
 
 - Paramater
   - A summary of the population; usually unknown
@@ -169,7 +166,7 @@ caschool<- read_dta("../../data/ca/caschool-v2.dta")
 
 # Confidence Intervals
 
-### Confidence intervals about $\beta_1$
+## Confidence intervals about $\beta_1$
 
 - General formula for confidence intervals
   - (point estimate) $\pm$ z*SE(point estimate)
@@ -196,7 +193,7 @@ Confidence Interval | Z-Score
   - e.g., 99% CI instead of 95%
 
 
-### Confidence Interval in R
+## Confidence Interval in R
 
 RQ: What is the effect of district average income (in $000s) (X) on student test scores (Y)?
 
@@ -214,7 +211,7 @@ Run regression in R
 \medskip
 Use `confint()` in R to calculate CI 
 
-### Confidence Intervals and Hypothesis Testing
+## Confidence Intervals and Hypothesis Testing
 
 We always test same null hypothesis
 
@@ -234,7 +231,7 @@ Relationship between confidence intervals and hypothesis tests about $\beta_1$
     - If 99% CI does not contain zero (our value associated with the null), then p-value for $H_0$ is less than .01
 
 
-### Student Exercise #1 
+## Student Exercise #1 
 
 Using CA Schools data:
 RQ: What is the effect of student teacher ratio (X) on test scores (Y)?
@@ -250,7 +247,7 @@ RQ: What is the effect of student teacher ratio (X) on test scores (Y)?
 5. Calculate the 99% on your own using $\hat{\beta_1}$ and SE($\hat{\beta_1}$). 
 
 
-### Student Exercise #1 [Solutions!]
+## Student Exercise #1 [Solutions!]
 
 1. Write out population regression model for the effect of student teacher ratio on district test scores?
 - $Y_i = \beta_0 + \beta_1X_i + u_i$
@@ -275,7 +272,7 @@ RQ: What is the effect of student teacher ratio (X) on test scores (Y)?
 
 # Creating variables in R
 
-###  Creating "analysis" variables in R
+##  Creating "analysis" variables in R
 - Quantitative researchers really need two different skills
   - __Statistics__: learning how to run and interpret apppropriate statistical tests/methods according to RQs; learning how to apply findings to answer RQs; draw recommendations and implications from statistical findings
   - __Data Management__: proficiency in fundamental data management and manipulation tasks like managing data in their raw forms, creating variables, combining multiple datasets, manipulation or reshaping data, etc. 
@@ -286,7 +283,7 @@ RQ: What is the effect of student teacher ratio (X) on test scores (Y)?
   - We'll start on learning this via creating a dummy variable; then in following weeks we will create variables with 2+ categories
 
 
-### "Coneptual" Process for Creating "analysis" variables in R
+## "Coneptual" Process for Creating "analysis" variables in R
 
 1. Investigating values and patterns of variables from “input data”
 2. Identifying and cleaning errors or values that need to be changed
@@ -296,7 +293,7 @@ RQ: What is the effect of student teacher ratio (X) on test scores (Y)?
 \medskip
 - Example: Create a new dummy variable (`ba_degree`) for whether a respondent has at least a Bachelor's degree (`ba_degree`= 1) or less than a Bachelor's degree (`ba_degree`= 0)
 
-### Creating variables in R
+## Creating variables in R
 
 Task: Create a new dummy version of the variable `degree` called `ba_degree`
 
@@ -322,8 +319,6 @@ __Step 2: Identifying and cleaning errors or values that need to be changed__
   - Our `degree` variable is actually clean already! All missing categories are already coded to `NA` (they were previously IAP=-8, DK=-9, and NA=-7 )
   - We'll practice this step next week on a variable that is not so clean!
 
-
-### Creating variables in R
 
 Task: Create a new dummy variable (`ba_degree`) 
 
@@ -356,11 +351,9 @@ Warning: You will ONLY use the assignment operator `<-` within Steps 2 and Steps
   - show in R
 
 
-# 10 Minute Break
-
 # Interpretation of $\hat{\beta_1}$ with Categorical X
 
-### Interpretation of $\hat{\beta_1}$ with Categorical X
+## Interpretation of $\hat{\beta_1}$ with Categorical X
 
 - Many independent variables of interest are categorical rather than continous
 
@@ -381,7 +374,7 @@ Many program evaluation questions involve a categorical independent variable of 
   - What is the effect of class size (small vs large) on student learning? 
 
 
-### General Steps for Regression with Categorical X
+## General Steps for Regression with Categorical X
 
 - Identify categories of X and choose a reference group
 - Create 0/1 variables for each group
@@ -391,7 +384,7 @@ Many program evaluation questions involve a categorical independent variable of 
 
 
 
-### Interpretation of $\hat{\beta_1}$ with Categorical X
+## Interpretation of $\hat{\beta_1}$ with Categorical X
 
 - Y = income and X = college graduate (BA or higher)
 - Choose the "reference group" or "base level"; this is who all other groups will be compared to (similar to ANOVA)
@@ -416,7 +409,7 @@ Many program evaluation questions involve a categorical independent variable of 
 - Specific interpretation of $\hat{\beta_1}=21090.2$
   - the average effect of having a **BA or higher** as opposed to having **less than a BA**, on average, is associated with a $21,090.20 increase in annual income
 
-### Same Interpretation of $\hat{\beta_1}$
+## Same Interpretation of $\hat{\beta_1}$
 
 - Generic interpretation of $\hat{\beta_1}$ when X=continuous
   - The average effect of a one-unit increase in X is a $\hat{\beta_1}$ unit change in the value of Y
@@ -431,7 +424,7 @@ So interpretation of $\hat{\beta_1}$ for categorical X is the same as for contin
 - In both cases $\hat{\beta_1}$ is the effect of a one unit increase in X
 - But in categorical, X can only increase one unit (from X=0 to X=1)
 
-### Interpretation of $\hat{\beta_1}$ with Categorical X
+## Interpretation of $\hat{\beta_1}$ with Categorical X
 
 - What if we switch our reference category so that X is now a dummy variable where:
   - X=0 are BA or Higher
@@ -453,7 +446,7 @@ So interpretation of $\hat{\beta_1}$ for categorical X is the same as for contin
 
 
 
-### Interpretation of $\hat{\beta_1}$ with Categorical X (more than 2 categories!)
+## Interpretation of $\hat{\beta_1}$ with Categorical X (more than 2 categories!)
 
 - What is the effect of respondent political party on income?
   - Categories: democrat, republican, independent, unknown party
@@ -477,8 +470,6 @@ So interpretation of $\hat{\beta_1}$ for categorical X is the same as for contin
   - $\hat{Y_i} = 24476 + 6184*X_{1i} + (-1736)*X_{2i} + (-3335)*X_{3i}$ 
 
 
-### Interpretation of $\hat{\beta_1}$ with Categorical X (more than 2 categories!)
-
 - __Interpretation of $\hat{\beta_1}$: 6184__
   - Generic (for categorical): the average effect of being [specific non-reference category] as opposed to [reference category] is associated with a $\hat{\beta_1}$ change in Y
   - Specific for this example: the average effect of being republican as opposed to being a democrat is associated with a $6,184 increase in annual income
@@ -487,7 +478,7 @@ So interpretation of $\hat{\beta_1}$ for categorical X is the same as for contin
 - __Interpretation of $\hat{\beta_3}$: -3335__; the average effect of having an unknown political party as opposed to being a democrat is associated with a $3,335 decrease in annual income (but not significant!)
 
 
-### Prediction with Categorical X (more than 2 categories!)
+## Prediction with Categorical X (more than 2 categories!)
 
 - Prediction with categorical X works the exact same way!
 - Show on Whiteboard
@@ -495,7 +486,7 @@ So interpretation of $\hat{\beta_1}$ for categorical X is the same as for contin
   - OLS Line with estimates
   - Calculate predicted income for republicans, independents, democrats
 
-### R Shortcut for Creating Dummies for Vars with 2+ categories
+## R Shortcut for Creating Dummies for Vars with 2+ categories
 
 - It's a pain to create dummy versions for all categorical variables with 2+ categories
   - Some categorical variables can have many categories, which means you have to create as many dummy variables as you have categories (ugh!)
@@ -508,10 +499,10 @@ So interpretation of $\hat{\beta_1}$ for categorical X is the same as for contin
 
 # Homework Data
 
-### Educational Longitudinal Study Data 
+## Educational Longitudinal Study Data 
 
 - Educational Longitudinal Study of 2002
-  - (https://nces.ed.gov/surveys/els2002/)[ELS Website]
+  - [ELS Website](https://nces.ed.gov/surveys/els2002/)
   - Nationally representative, longitudinal study of 10th graders in 2002 and 12th graders in 2004
   - Students followed throughout secondary and postsecondary years
   - Surveys of students, their parents, math and English teachers, and school administrators

@@ -1,25 +1,21 @@
 ---
-title: Introduction to Multivariate Regression & Econometrics # potentially push to header
-subtitle:  HED 612
-author: Lecture 4
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
 
@@ -31,7 +27,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 
 # Prep
 
-### Download Data and Open R Script
+## Download Data and Open R Script
 
 
 _Download Data and Open R Script_
@@ -47,7 +43,7 @@ _Download Data and Open R Script_
 We will be using the GSS and CA School datasets today so no need to re-downlaod
 
 
-### Homework Review
+## Homework Review
 
 - Common Issues and Concerns
   - Technical Issues with R 
@@ -62,12 +58,12 @@ We will be using the GSS and CA School datasets today so no need to re-downlaod
     - We need good researchers that understand and can manage data well in positions that prevent these sorts of issues [You!]
 
 
-### HED R Group
+## HED R Group
 
 ![](hedrgroup.jpg)
 
 
-###  Today and Next Week  
+##  Today and Next Week  
 
 __Today__
 
@@ -93,7 +89,7 @@ __Next Week__
 
 # Introduction to Bivariate Regression 
 
-### Purpose of Regression
+## Purpose of Regression
 - Regression analysis is a statistical method that helps us analyze and understand the relationship between 2+ variables
 - What is the purpose of regression in __descriptive research__ (sometimes called "observational studies" or "predictive" studies)?
 
@@ -118,7 +114,7 @@ __Next Week__
   - Policy makers/decision makers don't just care if there is a relationship between class size and student learning; they want to know if we decrease class size by two students what is the expected change in student test scores
 
 
-### Regression: Models, Variables, Relationships
+## Regression: Models, Variables, Relationships
 
 - __Linear Regression Model vs Non-Linear Regression Models__
   - Linear regression model (general linear model)
@@ -147,7 +143,7 @@ __Next Week__
   - Then we will cover non-linear relationships
   
 
-### Rest of Lecture: Same Example as Last Week
+## Rest of Lecture: Same Example as Last Week
 
 - We will be using the same example as last week:
   - What is the effect of hours worked (X) on income (Y)?
@@ -157,7 +153,7 @@ __Next Week__
   - `realrinc`
 
 
-### Slope Measures relationship between X and Y
+## Slope Measures relationship between X and Y
 
 - Research Question
   - What is the effect of hours worked (X) on annual income (Y)
@@ -178,10 +174,8 @@ __Next Week__
 - Draw line showing linear relationship between X and Y
   - $x_1 = 31, x_2 =32, y_1=\$30,000, Y_2=\$35,000$
   - Calculate slope at different points and for different $\Delta X$
-  
-## Population Linear Regression Model
 
-### Population Linear Regression Model
+## Population Linear Regression Model
 
 __Population__ Linear Regression Model
 
@@ -206,7 +200,7 @@ Draw Picture
   - $\beta_1$
   - residual (predicted - value of $Y_i$)
 
-### Population Regression Model
+## Population Regression Model
 
 __Population__ Linear Regression Model
 $Y_i = \beta_0 + \beta_1X_i + u_i$
@@ -221,7 +215,7 @@ Contains two population parameters
 - How do we know these are population parameters? (hint: notation)
 - Do we usually know the value of $\beta_0$ or $\beta_1$? 
 
-### Population regression coefficient, $\beta_1$
+## Population regression coefficient, $\beta_1$
 
 What is the effect of hours worked per week (X) on income (Y)?
 
@@ -249,8 +243,6 @@ Interpretation (we will use this all semester!)
 - Interpret if $\beta_1 = \$2,000$; or $\beta_1 = \$4,000$
 
 
-### Population regression coefficient, $\beta_1$
-
 Some important things to remember:
 
 - If $\beta_1$ (i.e., the relationship between X and Y) is linear, then the average change in Y for a one-unit increase in X is the same no matter the starting value of X
@@ -260,7 +252,7 @@ Some important things to remember:
 
 - $\beta_1$  is a population parameter. We hardly ever know population parameters. So we **estimate** $\beta_1$  using sample data!
 
-### Population Intercept, $\beta_0$
+## Population Intercept, $\beta_0$
 
 What is the effect of hours worked per week (X) on annual income (Y)?
 
@@ -277,8 +269,6 @@ $\beta_0$ is the "population intercept"
 
 ## Population Linear Regression Line
 
-### Population Linear Regression *LINE*
-
 __Population__ Linear Regression Model
 $Y_i = \beta_0 + \beta_1X_i + u_i$
 
@@ -293,8 +283,6 @@ We sometimes deconstruct the Population Linear Regression Model into two parts:
 
 - Population regression line: just a linear prediction line, like the one in the scatterplot *if* the scatterplot contained all observation in the population
 - Population regression line measures the "average" or "expected" relationship between X and Y, ignoring variables that we excluded from the model (i.e., $u_i$)
-
-### Population Linear Regression *LINE*
 
 Population regression line and Expected Value, E(Y)
 
@@ -316,7 +304,7 @@ Population regression line and Expected Value, E(Y)
   - (2) Predict the value of Y (annual income) for someone that works 45 hours per week
   
   
-### $u_i$ as "Error Term"
+## $u_i$ as "Error Term"
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
@@ -340,7 +328,7 @@ Population regression line and Expected Value, E(Y)
   - Interpret the $u_i$ as the overall error in the prediction of Y due to *random variation*
 
 
-### $u_i$ as "Residual"
+## $u_i$ as "Residual"
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
@@ -364,11 +352,9 @@ Population regression line and Expected Value, E(Y)
     - $u_i = Y_i - (\beta_0 + \beta_1X_i)$
     
 
-## BREAK [5-10 min]
-  
 ## Estimating Regression Parameters
 
-### General things we do in regression analysis
+## General things we do in regression analysis
 
 1. __Estimation__ [Today]
   - How do we choose estimates of $\beta_0$ and $\beta_1$ using sample data?
@@ -384,7 +370,7 @@ Population regression line and Expected Value, E(Y)
   - Hypothesis testing and confidence intervals about $\beta_1$
   
   
-### Step 1 of regression: Estimate Parameters  
+## Step 1 of regression: Estimate Parameters  
 
 Population linear regression model
 
@@ -406,7 +392,7 @@ __Estimation problem__:
 Need to develop a method for choosing values of $\hat{\beta_0}$ and $\hat{\beta_1}$ 
 
 
-### Estimation (population mean)
+## Estimation (population mean)
 
 We faced a similar estimation problem in intro to stats!
 
@@ -430,7 +416,7 @@ Draw scatterplot:
 - (1) Horizontal line representing sample mean
   - Show formula for sum of square errors
   
-### Estimation (regression)
+## Estimation (regression)
 
 
 Problem in regression:
@@ -450,8 +436,6 @@ First some terminology:
   - $Y_i - (\hat{\beta_0} + \hat{\beta_1}X_i)$ = $\hat{u_i}$
   - Residuals are sometimes called "errors"
   
-  
-### Estimation (regression)
 
 Criteria for choosing "best" estimate of $\hat{\beta_0}$ and $\hat{\beta_1}$
 
@@ -477,7 +461,7 @@ __Ordinary Least Squares__ is a linear method for estimating parameters in a lin
   - Best estimates of  $\hat{\beta_0}$ and $\hat{\beta_1}$ are those that any other alternatives would result in a higher sum of squared residuals
   
 
-### OLS Prediction Line
+## OLS Prediction Line
 
 __Population Linear Regression Model__
 
@@ -494,7 +478,7 @@ __OLS Prediction Line or "OLS Regression Line" (based on sample data)__
 
 
 
-### Let's write run our first regression and write out our models!
+## Let's write run our first regression and write out our models!
   
 RQ: What is the effect of hours worked per week on annual income? 
 
@@ -504,9 +488,6 @@ RQ: What is the effect of hours worked per week on annual income?
 
 ![](output.png)
 
-
-
-### Let's write run our first regression and write out our models!
 
 RQ: What is the effect of hours worked per week on annual income? 
 
@@ -529,7 +510,7 @@ Write out and label everything within the following: [we will be doing this all 
 
 
 
-### In-Class Group Exercise 
+## In-Class Group Exercise 
 
 RQ: What is the effect of age on annual income?? 
 
@@ -559,7 +540,7 @@ Write out and label everything within the following
 
 
 
-### In-Class Group Exercise [Solutions]
+## In-Class Group Exercise [Solutions]
 
 RQ: What is the effect of age on annual income?? 
 

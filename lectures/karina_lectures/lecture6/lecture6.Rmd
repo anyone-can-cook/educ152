@@ -1,25 +1,21 @@
 ---
-title: Introduction to Multivariate Regression & Econometrics # potentially push to header
-subtitle:  HED 612
-author: Lecture 6
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
 
@@ -31,7 +27,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 
 # Prep
 
-### Download Data and Open R Script
+## Download Data and Open R Script
 
 
 We'll be using the California Schools and GSS data today; no need to re-download!
@@ -45,7 +41,7 @@ We'll be using the California Schools and GSS data today; no need to re-download
     - file >>> open file... >>> [navigate to lecture 6 folder] >>> lecture6.R
 
 
-### General Comments on Problem Sets and "Learning Statistics"
+## General Comments on Problem Sets and "Learning Statistics"
 
 - It's perfectly okay to feel "confused" or feel like you're "still not getting it" under "normal circumstances"
   - We are in the middle of global health pandemic working under extenuating circumstances... give yourself a break!
@@ -64,7 +60,7 @@ We'll be using the California Schools and GSS data today; no need to re-download
 
 
 
-### Class Overview
+## Class Overview
 
 Last week:
 
@@ -85,8 +81,6 @@ This Week:
   
   
 # Hypothesis Testing 
-
-### Hypothesis Testing
 
 - Stock & Watson example: Superintendent needs to assess a claim that smaller class sizes do not improve student learning
 
@@ -111,7 +105,7 @@ This Week:
 
 # Hypothesis Testing about Population Mean
 
-### Approaches to Hypothesis Testing about Population Mean
+## Approaches to Hypothesis Testing about Population Mean
 
 - "Classical" approach
   - Testing a claim of the population mean $\mu$ when the population standard deviation is known $\sigma$
@@ -127,7 +121,7 @@ This Week:
   - If the probability of observing such a sample mean is very small (p-value is less than the alpha), you reject the null
 
 
-### Normal Distribution
+## Normal Distribution
 
 - Special distribution used in statistics!
 
@@ -141,7 +135,7 @@ This Week:
 ![](distributions.png)
 
 
-### Z-Score
+## Z-Score
 
 Z-score ("standard score"): how many standard deviations away from the mean
 
@@ -169,7 +163,7 @@ Note:
 - So we usually use t-score instead [more on this later!]
   - When sample size is large (1000+ z-distribution and t-distribution is the same!)
   
-### Standard Normal Distribution
+## Standard Normal Distribution
 
 - A special case of the normal distribution
 
@@ -189,7 +183,7 @@ Questions:
 - What value would an observation have on a standard normal distribution if it's equal to the mean?
 - How likely are we to see an observation with a value of 3 on a standard normal distribution?
 
-### Empirical Rule (i.e., 68-95-99 Rule)
+## Empirical Rule (i.e., 68-95-99 Rule)
 
 _If a variable has an approximately normal distribution, then:_
 
@@ -212,7 +206,7 @@ _If a variable has an approximately normal distribution, then:_
 
 # P-value approach: Sampling Distributions
 
-### Sampling Distributions
+## Sampling Distributions
 
 Fundamental Statistics Goal:
 
@@ -234,7 +228,7 @@ The "three distributions" [draw pictures of mean]:
   - Shows how point estimates (e.g., sample mean and sample regression coefficient) vary from sample to sample!
   
   
-### Standard Error of Sampling Distribution
+## Standard Error of Sampling Distribution
 
 - Sample standard deviation of Y
   - Sample standard deviation of Y, $\hat{\sigma_Y}$, is the average distance of an observation from the sample mean, $\bar{Y}$
@@ -254,7 +248,7 @@ The "three distributions" [draw pictures of mean]:
 
 
   
-### Properties of Sample Standard Error
+## Properties of Sample Standard Error
 
 - Standard error decreases when sample size increases!
   - Conceptually: why would this be the case? 
@@ -271,7 +265,7 @@ The "three distributions" [draw pictures of mean]:
   - greater variation (i.e., spread) of data will give us a bigger numerator!
   
   
-### Hypothesis Testing about the Sample Mean 
+## Hypothesis Testing about the Sample Mean 
 
 RQ: Is the population mean hours worked per week equal to 40?
 
@@ -301,7 +295,7 @@ Components of Hypothesis Test we need (get from R):
   - __Sample Standard Deviation__: 14.48
   
 
-### Step 1: Assumptions
+## Step 1: Assumptions
 
 1. Quantitative Variable
   - Random sample from the population
@@ -311,7 +305,7 @@ given a sufficiently large sample size, the sampling distribution of the estimat
     - We have a big enough sample! 
     
     
-### Step 2: Hypotheses
+## Step 2: Hypotheses
 
 - You generate hypotheses from your research question!
   - RQ: Is the population mean number of hours worked per week equal to 40?
@@ -335,7 +329,7 @@ __Conceptual strategy for testing these hypotheses:__
   1. If distance (in standard errors) is small, null hypothesis is probably true. We cannot reject the null hypothesis.
   
   
-### Step 3: Test Statistic
+## Step 3: Test Statistic
 
 - Conduct a test to see whether we should reject the null hypothesis
   - Test Statistic
@@ -348,8 +342,6 @@ t = $\frac {\text{(estimate) - (value associated with }H_{0})} {\text{standard e
 \medskip
 
 - Measures how far away an "estimate" is from "value associated with $H_0$, measured in terms of standard errors
-
-### Step 3 cont: Test Statistic
 
 - T-test is based on measuring the distane between the value asosciated with $H_0$ and our observed sample mean $\bar{Y}$ and converts the distance in terms of standard errors!
 
@@ -371,7 +363,7 @@ Hours worked example:
 - $SE(\bar{Y})$ = $\frac{\hat{\sigma_Y}}{\sqrt{n}}$ = $\frac{14.48}{\sqrt{1381}}$ = 0.3896
 - t = $\frac {\bar{Y} - \mu_0} {SE(\bar{Y})}$ = $\frac {41.28 - 40} {0.3896}$ = $\frac {1.28} {0.3896}$ = 3.29
 
-### Step 4: P-Value
+## Step 4: P-Value
 
 P-Value:
 
@@ -395,11 +387,9 @@ Rejection region:
 - So given our observed p-value is .001 (.001<$\alpha$=.05); we reject $H_0$
 - There is less than a 0.1% probability (.001*100) of having observed our sample mean of 41.28 if the population mean is 40 ($H_0$). 
 
-# 10 Minute Break
-
 # Hypothesis Testing about Population Regression Coefficient
 
-### Hypothesis testing about Population Regression Coefficient, $\beta_1$
+## Hypothesis testing about Population Regression Coefficient, $\beta_1$
 
 We follow the same five steps!
 
@@ -409,7 +399,7 @@ We follow the same five steps!
 1. P-value
 1. Conclusion
 
-### Hypotheses about Population Regression Coefficient
+## Hypotheses about Population Regression Coefficient
 
 RQ: What is the effect of student-teacher ratio (X) on student test scores (Y)
 
@@ -425,7 +415,7 @@ RQ: What is the effect of student-teacher ratio (X) on student test scores (Y)
   - Why? Because we can be wrong about the direction of $\beta_1$!
   - E.g., some policies can cause more harm than good! 
   
-### Using $\hat{\beta_1}$ to test hypothesis about $\beta_1$
+## Using $\hat{\beta_1}$ to test hypothesis about $\beta_1$
 
 Same steps as population mean!
 
@@ -435,8 +425,6 @@ Same steps as population mean!
 2. Hypotheses
 - $H_0: \beta_1 = 0$
 - $H_a: \beta_1 \ne 0$
-
-### Using $\hat{\beta_1}$ to test hypothesis about $\beta_1$
 
 
 3. Compute t-test for regression coefficient
@@ -450,8 +438,6 @@ Same steps as population mean!
 ![](annotated_output.png)
 
 
-### Using $\hat{\beta_1}$ to test hypothesis about $\beta_1$
-
   
 4. Set rejection region for p-value ($\alpha$=.05); decide whether to reject $H_0$
   - Note that R will give you the associated p-value for a two-sided hypothesis
@@ -461,7 +447,7 @@ Same steps as population mean!
 Draw sampling distribution of $\hat{\beta_1}$ assuming $H_0$ is true
 
 
-### A deeper understanding of $SE(\hat{\beta_1})$
+## A deeper understanding of $SE(\hat{\beta_1})$
 
 - Anytime we talk about hypothesis testing, we are using estimates from one random sample to make statements about population parameters 
 
@@ -471,7 +457,6 @@ Draw sampling distribution of $\hat{\beta_1}$ assuming $H_0$ is true
 
 - The lower our SE, the closer we are to the population parameter! 
 
-### A deeper understanding of $SE(\hat{\beta_1})$
 
 - When is SE($\hat{\beta_1}$) likely to be low?
     - When standard error of the regression (SER) is also low (i.e., our predictions are good!)
@@ -484,7 +469,7 @@ The number of black and blue dots is the same. Using which sample would you get 
 
 
 
-### Student Exercise [if we have time!]
+## Student Exercise [if we have time!]
 
 RQ: What is the effect of district expenditures-per-student (X) on student test scores (Y)?
 
@@ -504,7 +489,7 @@ RQ: What is the effect of district expenditures-per-student (X) on student test 
     - P-values for regions Pr(t<-3.984) and Pr(t>3.984)
 
 
-### Student Exercise [Solutions]
+## Student Exercise [Solutions]
 
 1. Write out the null and alternative hypotheses for $\beta_1$
     - $H_0: \beta_1 = 0$
@@ -519,7 +504,6 @@ RQ: What is the effect of district expenditures-per-student (X) on student test 
     
 3. t = $\frac {\hat{\beta_1}- \beta_1,0} {SE(\hat{\beta_1})}$ =$\frac {5.749 - 0} {1.443}$ = 3.984
 
-### Student Exercise [Solutions]
 4.
 
 ![](exercise.png)

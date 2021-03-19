@@ -1,28 +1,25 @@
 ---
-title: Introduction to Multivariate Regression & Econometrics # potentially push to header
-subtitle:  HED 612
-author: Lecture 9
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
-### Where are going...
+
+# Where are going...
 
 __Today:__
 
@@ -48,7 +45,7 @@ __Following week__
 
 # Bias and Efficiency
 
-### Efficiency, also called "precision"
+## Efficiency, also called "precision"
 
 - Desirable properties of our point estimates (e.g. $\hat{\beta}$ or $\bar{Y}$)
   - Efficient
@@ -60,7 +57,7 @@ __Following week__
   
 ![](precision.png)
 
-### Bias
+## Bias
 
 - __Bias__: consistently overestimates or underestimates population parameter in repeated random samples
   - There are many different types of bias!
@@ -72,13 +69,13 @@ __Following week__
   
 ![](bias.png)
 
-### Bias and Efficiency (or "Precision")
+## Bias and Efficiency (or "Precision")
 
 ![](bias_efficiency.png)
 
 # OLS Assumption 1
 
-### Prior to assumptions: define causal effect
+## Prior to assumptions: define causal effect
 
 - Asking causal inference research questions
   - "What is the effect of X on Y"
@@ -96,7 +93,7 @@ __Following week__
   - As yourself, what is the relevant randomized experiment?
   - That is, how would your question be designed as a randomized experiment?
   
-### Today's example & defining causal effect
+## Today's example & defining causal effect
 
 - RQ: What is the effect of federal financial aid on students' access to college (Cellini, 2008)?
   - Is this a causal inference research question?
@@ -107,7 +104,7 @@ __Following week__
 - Cellini (2008): Multivariate regression can be used to deal with the problem that the "treatment" (in this case receiving federal financial aid) wasn't randomized in order to assess the effect of X on Y (receiving financial aid on college access).
  - We do our best to recreate experimental conditions for observational data by minimizing omitted variable bias (more on this later)!
 
-### OLS Assumption 1 (mathematically)
+## OLS Assumption 1 (mathematically)
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1 X_i+ u_i$
@@ -120,7 +117,7 @@ __Following week__
     - Pretend that $u_i$ consists of only one variable
     - OLS assumption 1 states that the mean value of the omitted variable is equal to zero no matter the value of variable $X_i$
     
-### OLS Assumption 1
+## OLS Assumption 1
 
 - OLS Assumption 1: $E(u_i|X_i)=0$
 - __Cellini 2008__: Assumption is *always* satisfied in random assignment experiment
@@ -131,7 +128,7 @@ __Following week__
 - __Cellini 2008__: in observational studies (like analyzing what is the effect of financial aid on student access to college), this assumption is usually violated!
   - For example, Receiving financial aid (X) is likely correlated with omitted variables, $u_i$ that have an effect on Y (e.g., academic achievement, socioeconomic status)
   
-### OLS Assumption 1 in practice
+## OLS Assumption 1 in practice
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1 X_i+ u_i$
   - Y= years of schooling (12+ = attended college), X= 0/1 received financial aid, $u_i$ = all other variables that affect Y but were not included in the model
@@ -143,7 +140,7 @@ __Following week__
   - If so, OLS Assumption 1 is violated
 - Can you think of another omitted variable that violates OLS Assumption 1 for this RQ?
 
-### "No relationship" vs "No correlation"
+## "No relationship" vs "No correlation"
 
 - Note: "no relationship" vs "no correlation"
   - $E(u_i|X_i)=0$ implies that $u_i$ and $X_i$ have no relationship (includes linear and non-linear)
@@ -152,7 +149,7 @@ __Following week__
 - So correlation might be zero, but $E(u_i|X_i) \ne 0$ due to the existence of a non-linear relationship
 
 
-<!-- ### Correlation vs Causation -->
+<!-- ## Correlation vs Causation -->
 
 <!-- - $Y_i = \beta_0 + \beta_1X_i + u_i$ -->
 <!--   - Y= test score; X= class size -->
@@ -166,7 +163,7 @@ __Following week__
 # Omitted Variable Bias
 
 
-### Introduction to Omitted Variable Bias
+## Introduction to Omitted Variable Bias
 - $Y_i = \beta_0 + \beta_1X_i + u_i$; Y=test score; X=class size 
   - We want to know the *causal effect* of X on Y
   
@@ -184,7 +181,7 @@ __Following week__
      - (1) Z affects value of Y (i.e. Z is part of $u_i$)
      - (2) *and* Z has a relationship with $X$
      
-### Omitted Variable Bias Example
+## Omitted Variable Bias Example
 
 - $Y_i = \beta_0 + \beta_1X_i + u_i$
   - Y= average class reading test score
@@ -199,7 +196,7 @@ __Following week__
 - Would omitting Z = "time of test administered" result in omitted variable bias?
 - Would omitting Z = "teacher's years of experience" result in omitted variable bias?
 
-### How to check for omitted variable bias
+## How to check for omitted variable bias
 
 - Does Z affect Y?
   - Ask yourself if it is plausible that omitted variable Z affects Y
@@ -212,7 +209,7 @@ __Following week__
 - Sometimes you don’t have a good measure of omitted variable Z
 
 
-### Group Exercise
+## Group Exercise
 
 For each research question below, identify two "hypothetical" variables that would result in a violation of OLS Assumption 1 (i.e., they meet the two conditions of Omitted Variable Bias)
 

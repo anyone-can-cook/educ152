@@ -1,31 +1,27 @@
 ---
-title: Introduction to Multivariate Regression & Program Evaluation # potentially push to header
-subtitle:  HED 612
-author: Lecture 14
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
 
+# Logistics
 
-
-### Where are we going....
+## Where are we going....
 
 - Today's Lecture [4/23/2020]
   - Intro to interactions
@@ -43,7 +39,7 @@ output:
 - Reading Day, "No Class" [5/7/2020]
 
 
-### New R Package and Data! 
+## New R Package and Data! 
 
 We're going to try out a textbook I'm considering for HED 613 that comes with an accopanying R package
 
@@ -62,7 +58,7 @@ Current Population Survey
 # Non-linear functions (Review)
 
 
-### Linear vs Non-Linear Models
+## Linear vs Non-Linear Models
 Two ways to think of "non-linearity":...
 
 - __Regression model that is a nonlinear function of the independent variables $X_{1i}, X_{2i}... X_{ki}$__
@@ -78,7 +74,7 @@ Two ways to think of "non-linearity":...
   - Only exception is __linear probability model__
     
 
-### Nonlinear functions of the IVs, $X_{1i}, X_{2i}... X_{ki}$
+## Nonlinear functions of the IVs, $X_{1i}, X_{2i}... X_{ki}$
 
 - OLS linear regression can model nonlinear function of the independent variables $X_{1i}, X_{2i}... X_{ki}$ in two different ways!
 - __1. The effect of $X_{1i}$ on Y depends on $X_{1i}$__
@@ -93,7 +89,7 @@ Two ways to think of "non-linearity":...
 
 # Introduction to Interaction Effects
 
-### What are interaction effects?
+## What are interaction effects?
 
 - Simple hypothesis
   - X has an effect on Y
@@ -106,7 +102,7 @@ Two ways to think of "non-linearity":...
 - What is an interaction effect? (i.e., "moderators")
   - An interaction effect is when the relationship between two variables (X and Y) depends on the value of a third variable Z
 
-### Interaction Effects 
+## Interaction Effects 
 
 - Interaction Effects are difficult!
   - It takes a while (and lots of practice!) to get comfortable thinking about and interpreting interaction effects
@@ -115,7 +111,7 @@ Two ways to think of "non-linearity":...
   - If you don't take HED 613, seek out more opportunities to learn interaction effects!
   - Read empirical pieces that use/interpret interaction effects!
 
-### Three cases of interaction effects
+## Three cases of interaction effects
 
 __1. Interaction between a categorical and continous variable__ [today]
   
@@ -131,7 +127,7 @@ __3. Interaction between two continuous variables__ [next week]
 
 # Interactions between a categorical and continous variable
  
-### Interaction between a categorical and continous variable
+## Interaction between a categorical and continous variable
 
 __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender (Z)?__
 
@@ -146,7 +142,7 @@ __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender
   - In other words:
     - Is the effect of years of schooling on earnings lower for women than men? 
     
-### Simple Regression (no interaction effect)
+## Simple Regression (no interaction effect)
 
 - Simple Regression 
   - What is the effect of years of schooling on earnings?
@@ -162,7 +158,7 @@ __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender
   - $\hat{\beta_1}$ is significant at the 0.000 level 
 
 
-### Multivariate Regression (no interaction effect)
+## Multivariate Regression (no interaction effect)
 
 
 - Multivariate Regression 
@@ -180,7 +176,7 @@ __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender
   - On average, identifying as a woman as opposed to a man, is associated with a \$4188.48 (4.18848*1000) decrease in earnings, controlling for years of schooling 
   - $\hat{\beta_2}$ is significant at the 0.000 level 
   
-### Simple and Multivariate Regression (no interaction effects)
+## Simple and Multivariate Regression (no interaction effects)
 
 - Simple hypotheses on the multivariate model that controls for gender forces __the effect of years of schooling__ to be the same for men and women
   - They have the same slope!
@@ -192,7 +188,7 @@ __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender
   - This is pretty simple for binary variable, but more time consuming for 2+ categories
 
 
-### Seperate Models for each group of Z
+## Seperate Models for each group of Z
 
 - What is the effect of years of schooling on earnings for women?
     - Run model in R
@@ -208,8 +204,6 @@ __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender
       - Men are predicted to have greater earnings than women when years of schooling is zero
     - $\hat{\beta_1}$: On average, a one-unit (i.e., one year) increase in schooling is associated with a \$1694.80 (1.6948*1000) increase in earnings _for men_
 
-### Seperate Models for each group of Z
-
 - Plot matches results for seperate models
   - Our lines have different slopes
     - Women have slightly steeper line
@@ -217,7 +211,7 @@ __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender
 
 ![](Rplot01.png)  
 
-### Interaction Model for Continuous by Categorical Variables
+## Interaction Model for Continuous by Categorical Variables
 
 - Let's run an interaction effect between years of schooling and gender
   - This will allow the effect of years of schooling on earnings to differ by gender
@@ -243,8 +237,6 @@ __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender
   - change in the effect of years of schooling on earnings for a one-unit increase in Z
 
 
-### Interaction Model for Continuous by Categorical Variables
-
 - Let's run an interaction effect between years of schooling and gender
   - This will allow the effect of years of schooling on earnings to differ by gender
 - We can create the interaction variable!
@@ -259,7 +251,7 @@ __RQ: Does the effect of years of schooling (X) on earnings (Y) differ by gender
 - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}Z_{i} + \hat{\beta_3}(X_{1i}*Z_{i})$
 $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_{i} + 0.2002*(X_{1i}*Z_{i})$
 
-### What do we want to know from interactions?
+## What do we want to know from interactions?
 
 1. Is there an interaction effect?
 
@@ -267,7 +259,7 @@ $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_{i} + 0.2002*(X_{1i}*Z_{i})$
 
 3.  What is the effect of X on Y for different values of Z?
 
-### Is there an interaction effect?
+## Is there an interaction effect?
 
 - Is the effect of years of schooling on earnings significantly different for women vs men?
   - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2Z_{i} + \beta_3(X_{1i}*Z_{i}) + u_i$
@@ -280,7 +272,7 @@ $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_{i} + 0.2002*(X_{1i}*Z_{i})$
   - If $\hat{\beta_3}$ is greater than zero (and statistically significant!) the effect of X on Y is larger when Z=1 than when Z=0
   - If $\hat{\beta_3}$ is less than zero (and statistically significant!) the effect of X on Y is smaller when Z=1 than when Z=0
   
-### What is the predicted value of Y for Z=0 and Z=1 at different values of X
+## What is the predicted value of Y for Z=0 and Z=1 at different values of X
 
 - What is the predicted earnings (Y) for men (Z=0) with 12 years of schooling?
   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}Z_i + \hat{\beta_3}(X_{1i}*Z_i)$
@@ -303,7 +295,7 @@ $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_{i} + 0.2002*(X_{1i}*Z_{i})$
   - Women: $\hat{Y_i}$ = -9.4450 + (1.8950*12) = 13.295
 - But running seperately by sample does not test whether there is a statistically significant interaction! 
 
-### What is the effect of X on Y for different values of Z
+## What is the effect of X on Y for different values of Z
 
 - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}Z_i + \hat{\beta_3}(X_{1i}*Z_i)$
   - Remember that: 
@@ -325,8 +317,7 @@ $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_{i} + 0.2002*(X_{1i}*Z_{i})$
   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_2} + (\hat{\beta_1} + \hat{\beta_3})X_{1i}$
   - __$(\hat{\beta_1} + \hat{\beta_3})$: Average effect of X on Y when Z=1__ 
   
-  
-### What is the effect of X on Y for different values of Z
+
 - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}*1 + \hat{\beta_3}(X_{1i}*1)$
 - $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_i + 0.2002(X_{1i}*Z_i)$
   - Remember that: 
@@ -350,7 +341,6 @@ $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_{i} + 0.2002*(X_{1i}*Z_{i})$
 
 # Klasik, Blagg, Pekor (2018)
 
-### Klasik, Blagg, Pekor (2018)
 
 - __RQs__: What is the relationship between living in a higher education desert and where a student applies to?
   - Education deserts: areas with very few higher education institutions or areas with where limited higher education instituions are 2-year colleges
@@ -373,8 +363,7 @@ $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_{i} + 0.2002*(X_{1i}*Z_{i})$
   - Where X_i is a vector of control variables:
     - race/ethnicity, family income, GPA, special education qualifications, AP work, single parent household, first-gen, etc.
     
-    
-### Klasik, Blagg, Pekor (2018)
+
 - Table 3: Relationship between living in access desert and applying to college outside of home commuting zone
   - Dependent variable is applied to college outside of CZ (Y1)
   - Independent variable of interest is lives in an Access Desert
@@ -390,7 +379,6 @@ $\hat{Y_i} = -3.2368 + 1.6948*X_{1i} - 6.2082*Z_{i} + 0.2002*(X_{1i}*Z_{i})$
 - Table 5: Dependent variable is applying in a match college (Y3) and independent variable is lives in a match desert (X1)
 - Table 5: Dependent variable is enrolling in a match college (Y3) and independent variable is lives in a match desert (X1)
 
-### Klasik, Blagg, Pekor (2018)
 - From lecture 13, Linear Probability Model
   - When X = categorical
   - $\hat{\beta_1}$: On average, being in the “non-reference group” as opposed to the “reference group” is associated with a 100*$\hat{\beta_1}$ percentage point change in the probability of Y=1

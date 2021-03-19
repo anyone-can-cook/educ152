@@ -1,28 +1,24 @@
 ---
-title: Introduction to Multivariate Regression & Program Evaluation # potentially push to header
-subtitle:  HED 612
-author: Lecture 11
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
-### Where are we going....
+# Where are we going....
 
 - This Lecture
   - Other OLS assumptions
@@ -40,7 +36,7 @@ output:
 
 # Final Projects
 
-### Final Projects are optional
+## Final Projects are optional
 
 - __Final projects are optional__
 - You can decide to not move forward with your final project:
@@ -55,7 +51,7 @@ output:
 
 # OLS Assumptions
 
-### OLS Assumptions
+## OLS Assumptions
 
 1. The conditional assumption of $u_i$ given $X_i$ has a mean a zero
 2. ($X_i$, $Y_i$), $i=1, ...n$ are independently and identically distributed (i.i.d)
@@ -70,7 +66,7 @@ output:
 - If these assumptions are violated:
   - We produced inefficeint and biased estimates, $\hat{\beta_0}$ and $\hat{\beta_1}$, of the population parameters $\beta_0$ and $\beta_1$
   
-### First OLS Assumption
+## First OLS Assumption
 
 1. __The conditional assumption of $u_i$ given $X_i$ has a mean a zero__
 - What does this mean?
@@ -87,11 +83,9 @@ output:
     - What happens when you omit a "Z" variable from your model? It is absorbed by the residual term!
     - We know that the "Z" variable omitted from the model is correlated to our independent variable of interest, which now means that our X is not uncorrelated to the residual = violation of OLS 1!
 
-### First OLS Assumption cont.
 - Practical Example: What is the effect number of years of schooling on income?
 ![](ols1.png)
 
-### First OLS Assumption cont
 - Practical Example: What is the effect number of years of schooling on income?
 - $Y_i = \beta_0 + \beta_1X_i +u_1$
 - There are lots of other factors that would influence income besides years of schooling!
@@ -106,7 +100,7 @@ In practice, OLS Assumption 1 is the most difficult to prove and the most import
   - Once we include relevant control variables; there are no omitted variables that affect Y and have a systematic relationship with X
   - Meaning, if we satisfy the conditional independent assumption through control variables, then multiple regression is just as good as random assignment experiment (the gold standard of program evaluation!)
     
-### Second OLS Assumption
+## Second OLS Assumption
 
 2. __($X_i$, $Y_i$), $i=1, ...n$ are independently and identically distributed (i.i.d)__
 - What does this mean?
@@ -125,8 +119,6 @@ _($X_i$, $Y_i$), $i=1, ...n$ are independently distributed_
 
 
 
-### Second OLS Assumption cont. 
-
 _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
 
 - Prior to choosing sample of observations for the population, the probability distribution (i.e., the likelihood that $Y_i$ takes on certain values) is the same for all observation
@@ -137,7 +129,7 @@ _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
     - Ex: You want to investigate probability of being tardy to college lectures and take a sample of students living on campus. Sampling bias: you did not include commuter students. If you were to randomly select a student living on campus, they are not likely to have the same probability of being tardy to lecture than a randomly selected commuter student. 
 
 
-### Third OLS Assumption
+## Third OLS Assumption
 
 3. Large outliers are unlikely
 
@@ -152,13 +144,11 @@ _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
     - Ex: All money variables are usually converted to their natural log in econometrics or education research (e.g., state appropriations, tuition revenue, household income)
 
 
-### Third OLS Assumption cont.
-
 - OLS can be sensitive to an outlier; it will shift our OLS regression line!
 
 ![](outliers.jpg)
 
-### Fourth OLS Assumption
+## Fourth OLS Assumption
 
 - The distribution of the residuals has constant variance (homoscedasticity)
 - Homoskedasticity 
@@ -169,26 +159,22 @@ _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
   - Homo-skedasticity = "unequal" or "different" variances
 
   
-### Fourth OLS Assumption cont.
 
 - Homoskedasticity and Heteroskedasticity shown graphically....
 
 ![](heteroskedasticity.png)
 
-### Fourth OLS Assumption cont.
 
 - Practical example: What is the effect of student-teacher ratio on test scores? [Stock and Watson Example]
 
 ![](heteroskedasticity_str.png)
 
 
-### Fourth OLS Assumption cont.
 
 - Practical example: What is the effect of years of education on hourly wages? [Stock and Watson Example]
 
 ![](heteroskedasticity_wages.png)
 
-### Fourth OLS Assumption cont.
 
 - Why is homoskedasticity/heteroskedasticity important?
   - Because our formula for calculating SE($\hat{\beta_1}$) changes based on homoskedastic or heteroskedastic residuals!
@@ -204,7 +190,7 @@ _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
 
 # Creating (nearly!) Publication Quality Regression Tables
 
-### Stargazer Library
+## Stargazer Library
 
 - Need to install first via `install.packages("stargazer")`
 - Package used to create publication ready tables
@@ -216,7 +202,7 @@ _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
 
 # Interpreting Regression Results in Journals
 
-### Cabrera, Milem, Jaquette, and Marx (2014)
+## Cabrera, Milem, Jaquette, and Marx (2014)
 
 - __RQ__: What is the effect, if any, of Mexican American Studies participation in TUSD on student academic achievement?
 - __Empirical Strategy Used__
@@ -231,8 +217,6 @@ _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
 - __Model__: Logistic Regression
   - Non-linear model because the dependent variables are not continuous
   - We will learn a "related" model in the next few weeks where we can run a linear regression on a 0/1 dummy variable: "linear probability model"
-
-### Cabrera, Milem, Jaquette, and Marx (2014)
 
 - Table 3: Marginal Effect of Participating in MAS, pg. 1103
   - Example of another "standard way" to format regression results
@@ -251,8 +235,6 @@ _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
     - Coefficient interpretation: Being in the non-reference group [MAS participant] as opposed to the reference group [Non-MAS Participant] is associated with a $\hat{\beta_1}$*100 percentage point change in the probability of going from 0 to 1 on the dependent variable (for example, 0=don't graduate high school, 1= graduate high school)
 
 
-### Cabrera, Milem, Jaquette, and Marx (2014)
-
 - How to interpret Table 3 for "schools offering MAS classes" and column "All Cohorts"
   - Graduation $\hat{\beta_1}$ Coefficient: 0.095*** Robust SE= 0.008
     - Interpretation: "On average, participating in MAS as opposed to not participating in MAS increased the probability of graduating high school by 9.5%, holding all covariates constant"
@@ -265,7 +247,6 @@ _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
   - AIMS All Tests $\hat{\beta_1}$ Coefficient: 0.068*** Robust SE= 0.011
     - Interpretation: "For students who initially failed one of AIMS tests, on average, participating in MAS as opposed to not participating in MAS increased the probability of subsequently passing all subject exams by 6.8%, holding all covariates constant"
     
-### Cabrera, Milem, Jaquette, and Marx (2014)
 
 - This is one of my favorite pieces of scholarship! Why? 
 - This could easily be a student paper that is started in one of these statistics class!

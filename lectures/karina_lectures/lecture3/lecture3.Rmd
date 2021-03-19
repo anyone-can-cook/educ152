@@ -1,25 +1,21 @@
 ---
-title: Introduction to Multivariate Regression & Econometrics # potentially push to header
-subtitle:  HED 612
-author: Lecture 3
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
 
@@ -30,7 +26,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 
 # Prep
 
-### Download Data and Open R Script
+## Download Data and Open R Script
 
 
 _Download Data and Open R Script_
@@ -46,7 +42,7 @@ _Download Data and Open R Script_
     - file >>> open file... >>> [navigate to lecture 3 folder] >>> lecture3.R
 
 
-###  Today and Next Week  
+##  Today and Next Week  
 
 __Today__
 
@@ -70,7 +66,7 @@ __Next Week__
 
 
 
-### COE Student R Group
+## COE Student R Group
 
 - HED students are starting an R "working group"
   - Will meet regularly
@@ -85,7 +81,7 @@ __Next Week__
 
 
 
-### Homework Review
+## Homework Review
 
 - Common Questions for PS#2 [review as a class]
   - Packages vs Libraries in R
@@ -101,7 +97,7 @@ __Next Week__
 
 # Review of Statistics
 
-### Hypothesis testing regarding the mean(s) 
+## Hypothesis testing regarding the mean(s) 
 
 Many hypotheses we have about education research can be phrased as yes or no questions:
 
@@ -117,7 +113,7 @@ Intro to Stats:
 - Hypothesis testing regarding two populations
 
 
-### Hypothesis testing: population mean
+## Hypothesis testing: population mean
 
 __Null hypothesis__: $H_0$: $E(Y) = \mu_{Y,0}$
 
@@ -139,7 +135,7 @@ Solution: we test the null hypothesis accounting for sampling variation!
   - Compute the p-value (significance probability) of null hypothesis; $p-value = 2\Phi(-|t|)$
   - P-value is the probability of drawing $\bar{Y}$ at least as far in the tails of its distribution under the assumption that the null hypothesis is correct as the sample average you actually computed
 
-### Hypothesis testing: population mean [Stock & Watson Example]
+## Hypothesis testing: population mean [Stock & Watson Example]
 
 Example: In the population, college graduates earn $20 an hour in the labor market 
 
@@ -161,7 +157,7 @@ Example: In the population, college graduates earn $20 an hour in the labor mark
   - If the p-value is 0.40 (hypothetical), then there is about a 40% probability that a similar ($\bar{Y} = \$22.24$) would have been drawn if the null is true; we cannot reject the null
 
 
-### Hypothesis testing: comparing means from two populations 
+## Hypothesis testing: comparing means from two populations 
 
 Do men and women college graduates, on average, earn the same amount?
 
@@ -190,7 +186,7 @@ The __P-value__ is the probability of observing a difference of $\mu_{m} - \mu_{
 
 
 
-### Relationships between two continuous variables 
+## Relationships between two continuous variables 
 Postive relationship, negative relationship, and no relationships
 
 \medskip
@@ -214,7 +210,7 @@ Postive relationship, negative relationship, and no relationships
 - e.g., amount of ice cream consumed and GPA
 
 
-### Today's Example
+## Today's Example
 
 Using the General Social Survey 2018 [sidebar: Data Goals for this Class]:
 
@@ -238,7 +234,7 @@ Ways to investigate this relationship between X and Y:
 - Numerically: covariance (less used), correlation
 
 
-### Scatterplots
+## Scatterplots
 
 - Scatterplots will plot individual observations on an X and Y axis
 
@@ -256,7 +252,7 @@ Ways to investigate this relationship between X and Y:
 \medskip
 Generate a scatteplot using `ggplot` in R script
 
-### Covariance
+## Covariance
 
 Covariance measures the extent to which two variables move together....
 
@@ -276,7 +272,7 @@ Population covariance, $s_{XY}$ or $\hat{\sigma}_{XY}$
 - $s_{XY}= \hat{\sigma}_{XY}=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X} \right)  \left( Y_{i}-\bar{Y} \right)}{n-1}$
 
 
-### Sample Covariance
+## Sample Covariance
 
 __Formula__
 $s_{XY}= \hat{\sigma}_{XY}=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X} \right)  \left( Y_{i}-\bar{Y} \right)}{n-1}$
@@ -300,8 +296,6 @@ Observation 2: $X_1=45; Y_1=25$
 $s_{XY}$ is the sum of these 20 calculations divided by 19 (n-1)
 
 
-### Sample Covariance cont.
-
 $s_{XY}$ is positive when X and Y move in the same direction
 
 - $X_i >  \bar{X}$ usually coupled with $Y_i > \bar{Y}$
@@ -316,7 +310,7 @@ $s_{XY}$ is negative when X and Y move in the same direction
 
 
 
-### Correlation
+## Correlation
 
 Problem with sample covariance, $s_{XY}$
 
@@ -335,7 +329,7 @@ __Sample Correlation Formula__
 $r_{XY}=\frac{s_{XY}}{s_X*s_Y}  = \frac{\hat{\sigma}_{XY}}{\hat{\sigma}_X \hat{\sigma}_Y}$
 
 
-### Sample Correlation 
+## Sample Correlation 
 
 $r_{XY}=\frac{s_{XY}}{s_X*s_Y}  = \frac{\hat{\sigma}_{XY}}{\hat{\sigma}_X \hat{\sigma}_Y}$
 
@@ -362,7 +356,7 @@ Correlations result in measures between -1 and 1
 Calculate correlations in R...
 
 
-### Linear vs Non-Linear Relationships
+## Linear vs Non-Linear Relationships
 
 Problem with covariance and correlation:
 
@@ -375,7 +369,7 @@ See R script:
 - Run Scatterplots 
 
 
-### Random Assignment
+## Random Assignment
 
 Create the variable `randomvar` where values will be randomly assigned
 
@@ -399,7 +393,7 @@ Randomization process
   - $\bar{Y}_{treat} - \bar{Y}_{control}$ = treatment effect
   - examples: baby aspirin trial, Headstart, Tenessee Star Project 
   
-### In-Class Exercise [in groups]
+## In-Class Exercise [in groups]
 
 1. What is the correlation between how presitigious father's occupation is (`papres105plus`) and income (`incomev2`)?
 1. What is the correlation between hours worked (`hrs1`) and income (`incomev2`)for respondents born in the U.S (`born`)? How about for those not born in the U.S.? Do these correlations differ by birth in the U.S.?
@@ -412,7 +406,7 @@ Randomization process
 Code solutions on next slide...
 
 
-### In-Class Exercise [Solutions]
+## In-Class Exercise [Solutions]
 
 ```{r, eval=FALSE}
 #1 

@@ -1,28 +1,25 @@
 ---
-title: Introduction to Multivariate Regression & Program Evaluation # potentially push to header
-subtitle:  HED 612
-author: Lecture 11
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
-### Where are we going....
+
+# Where are we going....
 
 - This Lecture
   - Other OLS assumptions
@@ -45,7 +42,7 @@ output:
 
 # Introduction to Multivariate Regression
 
-### Population Regression Model
+## Population Regression Model
 
 - Same as in "simple" (univariate) regression!
 - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +$ ... $\beta_kX_{ki} + u_i$
@@ -60,7 +57,7 @@ output:
   - $\beta_0$ = average value of Y when the value of all independent variables ($X_1, X_2 ...X_k$) are equal to zero
   - $u_i$ = all other variables that affect the valye of $Y_i$ but are not included in the model 
   
-### Things we do in multiple regression
+## Things we do in multiple regression
 
 1. Estimation 
 - Choose estimates for $\beta_0, \beta_1, \beta_2, ... \beta_k$ by selecting those that minimuze the sum of squared errors (i.e., make the best prediction of Y), yielding an OLS line
@@ -82,7 +79,7 @@ output:
 - Same as before but forumals for $\hat{\beta_1}$ and $SE(\hat{\beta_1})$ change slightly, but R calculates this for us!
 
 
-### Conditional Independence Assumption
+## Conditional Independence Assumption
 
 - Assume students choose to participate in MAS
 - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \beta_3X_{3i} + u_i$
@@ -96,7 +93,7 @@ output:
   - MAIN POINT: if we satisfy the conditional independence assumption through control variables, then multiple regression is just as good as randomized assignment experiment!
   
   
-### Multiavariate regression in Program Evaluation vs Social Science
+## Multiavariate regression in Program Evaluation vs Social Science
 
 - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \beta_3X_{3i} + u_i$
 - Program evaluation research or "econometrics"
@@ -110,7 +107,7 @@ output:
   - We "throw" everything and the kitchen sink into a model and see what's interesting!
 
 
-### Multivariate regression in R
+## Multivariate regression in R
 
 - Research question: What is the effect of student teacher ratio on student reading test scores?
 - Simple regression
@@ -124,7 +121,7 @@ increase in $X_1$ is associated with a $\hat{\beta_1}$ change in Y
   - Interpretation of $\hat{\beta_1}$: The average effect of a one-unit
 increase in $X_1$ is associated with a $\hat{\beta_1}$ change in Y, holding the value of $X_2$ constant
 
-### What does "holding constant" mean?
+## What does "holding constant" mean?
 
 - RQ: What is the effect of student teacher ratio on reading test scores?
   - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i$
@@ -142,7 +139,7 @@ increase in $X_1$ is associated with a $\hat{\beta_1}$ change in Y, holding the 
   - Said differenly: We analyze the relationship between student teacher ration ($X_1$) and reading test scores (Y) for applicants that have the same value of percent ELL ($X_2$) [calculus: partial derivatives!]
   
   
-### What does "holding constant" mean? Another example....
+## What does "holding constant" mean? Another example....
 
 - RQ: What is the relationship between years of education(X1) on income(Y), after controlling for years of work experience (X2)?
 - General interpretation of $\hat{\beta_1}$:
@@ -155,7 +152,7 @@ increase in Y, holding the value of X2 constant
 on income for people who have same years of experience
 
 
-### Interpreting $\hat{\beta_1}$ for continuous X
+## Interpreting $\hat{\beta_1}$ for continuous X
 
 - RQ: What is the effect of student teacher ratio (X1) on average district reading test scores (X2)?
   - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
@@ -173,7 +170,7 @@ on income for people who have same years of experience
 - Specific example interpretation [run regression in R]
   - The average effect of a one-unit increase in average district student teacher ratio (i.e., one additional student per teacher) is a 0.8 point decrease in average district reading score, holding the values of majority ELL and district average income constant
 
-### Interpreting $\hat{\beta_1}$ for categorical X
+## Interpreting $\hat{\beta_1}$ for categorical X
 
 - RQ: What is the effect of student teacher ratio (X1) on average district reading test scores (X2)?
   - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
@@ -191,7 +188,7 @@ on income for people who have same years of experience
   - Being a majority ELL district as opposed to a non-majority ELL district is associated with a 23 point decrease in average district reading scores, holding values of average student-teacher ratio and district average income constant
 
 
-### Prediction still works the same way!
+## Prediction still works the same way!
 - RQ: What is the effect of student teacher ratio (X1) on average district reading test scores (X2)?
   - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
   - Where: 
@@ -207,7 +204,7 @@ on income for people who have same years of experience
  
 
 
-### How to read regression results in academic journals
+## How to read regression results in academic journals
 
 - Cabrera et al (2014)
   - RQ: What is the effect of participating in MAS on high school graduation?

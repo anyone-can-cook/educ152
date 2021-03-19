@@ -1,25 +1,21 @@
 ---
-title: Introduction to Multivariate Regression & Econometrics # potentially push to header
-subtitle:  HED 612
-author: Lecture 8
+title: "Introduction to Multivariate Regression & Econometrics"
+author: 
 date: 
-classoption: dvipsnames  # for colors
-fontsize: 8pt
 urlcolor: blue
-output:
-  beamer_presentation:
-    keep_tex: true
+output: 
+  html_document:
     toc: true
-    slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
-    #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
-    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
-    includes:
-      in_header: ../beamer_header.tex
-      #after_body: table-of-contents.txt 
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
 ---
 
 
@@ -29,7 +25,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 
 # Logistics
 
-### Download Data and Open R Script
+## Download Data and Open R Script
 
 We're going to use GSS and ELS data today. We'll also explore HSLS later on but we will load the dataset together!
 
@@ -41,7 +37,7 @@ We're going to use GSS and ELS data today. We'll also explore HSLS later on but 
 1. Once the RStudio window opens, open the Lecture 8 R script by clicking on:
     - file >>> open file... >>> [navigate to lecture 8 folder] >>> lecture8.R
 
-### Outline of next couple weeks
+## Outline of next couple weeks
 
 Today, 3/5/2020:
 
@@ -73,7 +69,7 @@ Homework and Reading for 3/17/2021:
 
 # Difference between Standard Error of $\hat{\beta_1}$ and SER
 
-### Standard Error of $\hat{\beta_1}$
+## Standard Error of $\hat{\beta_1}$
 
 - Standard error of $\hat{\beta_1}$ is the *estimated standard deviation* of the *error* in measuring it
 
@@ -90,10 +86,6 @@ Homework and Reading for 3/17/2021:
   - The p-value is the probability that the test statistic for $\hat{\beta_1}$ equals the observed value or a value even more extreme than $\hat{\beta_1}$ if $H_0$ is true
   - A small p-value disproves the null because it would be so unlikely (less than 5% probability) to find the observed data if $H_0$ were true
   
-
-
-
-### Standard Error of $\hat{\beta_1}$
 
 RQ: What is the effect of hours worked per week (X) on annual income (Y)?
 
@@ -112,7 +104,7 @@ SE($\hat{\beta_1}$)
 
 
 
-### SER
+## SER
 __Standard Error of the Regression (SER)__: A measure of "model-fit", in other words the standard deviation of the residuals $\hat{u_i}$
 
 - On average, how far away an actual observed value of Y is from the predicted value of Y for a random observation 
@@ -124,7 +116,7 @@ __Standard Error of the Regression (SER)__: A measure of "model-fit", in other w
 ![](ser2.png)
 
 
-### SER vs SE($\hat{\beta_1}$) 
+## SER vs SE($\hat{\beta_1}$) 
 
 - **Standard error of the regression**
   - It's completely determined by your sample data 
@@ -140,7 +132,7 @@ __Standard Error of the Regression (SER)__: A measure of "model-fit", in other w
   
 # More Practice on Interpreting Categorical X
 
-### Interpretation of $\hat{\beta_1}$
+## Interpretation of $\hat{\beta_1}$
 
 - Generic interpretation for $\hat{\beta_1}$ when X=continuous
   - The average effect of a one-unit increase in X is associated with a $\hat{\beta_1}$ change in the value of Y
@@ -160,14 +152,14 @@ __Standard Error of the Regression (SER)__: A measure of "model-fit", in other w
   - Predict $\hat{Y}$ for groups of interest!
 
 
-### Example on Interpreting Categorical X
+## Example on Interpreting Categorical X
 
 RQ: What is the effect of socioeconomic status quartile (X) on reading score (Y)?
 
 Let's go through each step of the process using the above example! 
 
 
-### First step: investigate categories of X and choosing a reference group 
+## First step: investigate categories of X and choosing a reference group 
 
 The first steps are investigating categories of X and choosing a reference group and then creating the variable(s) in R
 
@@ -189,7 +181,7 @@ How to investigate values and patterns of variable from "input data" when X=Cate
 - use `count()` + `is.na()` to explicitly check if there are any missing observations
 
 
-### Creating "different" categorical variables and R code
+## Creating "different" categorical variables and R code
 
 - What if we want to create a dummy variable?
   - high_ses = 1 for respondents in top two quartiles [non-reference group]
@@ -213,8 +205,6 @@ Where general syntax is:
 
 See R script for example of this process!
 
-
-### Creating "different" categorical variables and R code
 
 - What if we want to create a multi-categorical variable that is very similar to the original?
   - We'll keep quartiles as they are; highest quartile=4 and lowest quartile=1
@@ -242,9 +232,6 @@ df <- df %>%
 See R script for example of this process!
 
 
-
-### Creating "different" categorical variables and R code
-
 - What if we want to create a multi-categorical variable that incorporates SES and Race/ethnicity? 
   - POC respondents in high and low SES quartiles, White respondents in High SES quartiles [non-reference groups]
   - White respondents in low SES quartiles [reference group]
@@ -270,7 +257,7 @@ See R script for example of this process!
 
 
 
-### Example on Interpreting Categorical X
+## Example on Interpreting Categorical X
 
 RQ: What is the effect of socioeconomic status quartile (X) on reading score (Y)?
 
@@ -295,7 +282,7 @@ RQ: What is the effect of socioeconomic status quartile (X) on reading score (Y)
   
 # Final Research Projects, Picking a Research Question
 
-### You can **BEGIN** thinking about final projects; general requirements
+## You can **BEGIN** thinking about final projects; general requirements
 - Paper must focus on analyzing the effect of one independent variable of interest on some outcome variable
 - You can work on your own or in groups of two
 - Required sections: introduction, literature review, conceptual framework, methods (data, sample, analysis), results, discussion
@@ -303,7 +290,7 @@ RQ: What is the effect of socioeconomic status quartile (X) on reading score (Y)
 - Goal is to give you practice with thinking through purpose of each section of a paper and developing sections for a particular research question
 - Students will give conference style presentation of their paper on last day of class!
 
-### Do's and Dont's for final project
+## Do's and Dont's for final project
 
 **Some cautionary "don'ts"**:
 
@@ -327,7 +314,7 @@ RQ: What is the effect of socioeconomic status quartile (X) on reading score (Y)
   - I don't expect you to have the time to clean and create all these and your dataset might not have them
   
 
-### Research questions that work and don't work
+## Research questions that work and don't work
 
 - Fundamental requirements:
   - Must be feasible for your independent variable to be randomly assigned in a random experiment
@@ -350,7 +337,7 @@ Avoid:
   - Personal demographics 
 
 
-### Exception to using personal demographics as X
+## Exception to using personal demographics as X
 
 Generally OK to use personal demographics as X when Y variable is determined by someone else
 
@@ -365,7 +352,7 @@ But these types of questions require really strong control variables!
 - Will cover this more once we cover omitted variable bias
 
 
-### As an aside: choosing "good" research questions
+## As an aside: choosing "good" research questions
 
 Many different ways to determine "good" research questions:
 
@@ -384,7 +371,7 @@ Choosing your research question is hard!
 
 # Final Research Projects, Possible Data
 
-### Educational Longitudinal Survey (ELS)
+## Educational Longitudinal Survey (ELS)
 
 - Nationally representative, longitudinal study of 10th graders in 2002 and 12th graders in 2004
 - Students followed throughout secondary and post secondary years
@@ -400,7 +387,7 @@ Possible research questions:
 - What is the effect of participation in sports in college on timely college graduation?
 
 
-### Early Childhood Longitudinal Study (ECLS)
+## Early Childhood Longitudinal Study (ECLS)
 
 - Longitudinal study that examines child development, school readiness, and early school experiences
 - Actually 4 longitudinal data collections:
@@ -416,7 +403,7 @@ Possible research questions:
 - What is the effect of participating in Head Start on Reading Mastery?
 - What is the effect of race on being placed in Special Education (IEP)?
 
-### High School Longitudinal Study of 2009 (HSLS)
+## High School Longitudinal Study of 2009 (HSLS)
 
 - Nationally representative, longitudinal study of 23,000+ 9th graders from 944 schools in 2009, with a first follow-up in 2012 and a second follow-up in 2016
 - Students followed throughout secondary and post secondary years
@@ -433,7 +420,7 @@ Possible research questions:
 
 
 
-### FYI about NCES Datasets
+## FYI about NCES Datasets
 
 - These datasets have tons of variables! 
   - It can get overwhelming to try to manage these datasets
