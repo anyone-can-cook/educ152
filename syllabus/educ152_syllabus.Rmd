@@ -148,14 +148,31 @@ If you have a personal question or issue, please send a message to the instructo
 
 # Course materials
 
-**Required books**
+**Required book to buy (or get from library)**
 
-- [Learning Statistics with R](https://learningstatisticswithr.com/) by Danielle Navarro [**FREE!**]
-- [R Markdown: The Definative Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, and Garrett Grolemund [**FREE!**]
+- Stock, J., and Watson, M. _Introduction to econometrics_ (1st, 2nd, 3rd, 4th editions are fine; just not the "brief edition")
+  - This will be our primary text for learning regression
+  - [LINK](https://www.amazon.com/Introduction-Econometrics-Stock-James-Watson-dp-935286350X/dp/935286350X/ref=mt_other?_encoding=UTF8&me=&qid=) to paperback 3rd edition on Amazon
+  - ADD INSTRUCTIONS FOR OBTAINING BOOOK FROM LIBRARY
+  
+**Free, online books/resources we will use for assigned reading**  
 
-**Optional books**
+- Lane, D.M. (2020) _Online statistics education: A multimedia course of study_
+  - [Link to onlinestatbook.com](https://onlinestatbook.com/index.html)
+  - This will be our primary text for learning about sampling distribution and hypothesis testing at the beginning of the course
+- Hanck, Arnold, Gerber, and Schmelzer (2020). _Introduction to econometrics with R_.
+  - [Link to Introduction to econometrics with R](https://www.econometrics-with-r.org/)
+  - This book is about regression analysis using _R_ and is written as "an empirical companion" to _Introduction to econometrics_ by Stock and Watson
 
-- [R for Data Science](https://r4ds.had.co.nz/) by Garrett Grolemund and Hadley Wickham [**FREE!**]
+
+**Other free resources we may draw from**
+
+- [R Markdown: The Definative Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, and Garrett Grolemund
+- [R for Data Science](https://r4ds.had.co.nz/) by Garrett Grolemund and Hadley Wickham
+- Two-course programming/data science sequence (using _R_) developed by Ozan Jaquette, Patricia Martin, and Crystal Han
+  - [Link to Rclass1](https://anyone-can-cook.github.io/rclass1/), EDUC260A: Introduction to programming and data management
+  - [Link to Rclass2](https://anyone-can-cook.github.io/rclass2/), EDUC260B: Fundamentals of programming
+
 
 Links to other required and optional reading will be on the [course website](https://anyone-can-cook.github.io/educ152/).
 

@@ -5,3 +5,6 @@
 .RData
 .Ruserdata
 educ152.Rproj
+
+# folders to ignore
+_admin/
