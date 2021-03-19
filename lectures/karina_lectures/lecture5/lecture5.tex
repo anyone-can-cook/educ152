@@ -1,0 +1,1394 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+  8pt,
+  ignorenonframetext,
+  dvipsnames]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Introduction to Multivariate Regression \& Econometrics},
+  pdfauthor={Lecture 5},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+%packages
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{hyperref}
+
+\usepackage{tikz} % used for text highlighting, amongst others
+\usepackage{comment}
+
+%title slide stuff
+%\institute{Department of Education}
+%\title{Managing and Manipulating Data Using R}
+
+%
+\setbeamertemplate{navigation symbols}{} % get rid of navigation icons:
+\setbeamertemplate{footline}[page number]
+
+%\setbeamertemplate{frametitle}{\thesection \hspace{0.2cm} \insertframetitle}
+\setbeamertemplate{section in toc}[sections numbered]
+%\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=3.2em\color{gray}\rlap{\hskip-2em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par
+}
+
+%define colors
+%\definecolor{uva_orange}{RGB}{216,141,42} % UVa orange (Rotunda orange)
+\definecolor{mygray}{rgb}{0.95, 0.95, 0.95} % for highlighted text
+	% grey is equal parts red, green, blue. higher values >> lighter grey
+	%\definecolor{lightgraybo}{rgb}{0.83, 0.83, 0.83}
+
+% new commands
+
+%highlight text with very light grey
+\newcommand*{\hlg}[1]{%
+	\tikz[baseline=(X.base)] \node[rectangle, fill=mygray] (X) {#1};%
+}
+%, inner sep=0.3mm
+%highlight text with very light grey and use font associated with code
+\newcommand*{\hlgc}[1]{\texttt{\hlg{#1}}}
+
+%modifying back ticks to add grey background
+\let\OldTexttt\texttt
+\renewcommand{\texttt}[1]{\OldTexttt{\hlg{#1}}}
+
+
+\begin{comment}
+
+% Font
+\usepackage[defaultfam,light,tabular,lining]{montserrat}
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\fontfamily{Montserrat-TOsF}\selectfont #1}}
+
+% Change color of boldface text to darkgray
+\renewcommand{\textbf}[1]{{\color{darkgray}\bfseries\fontfamily{Montserrat-TOsF}#1}}
+
+% Bullet points
+\setbeamertemplate{itemize item}{\color{BlueViolet}$\circ$}
+\setbeamertemplate{itemize subitem}{\color{BrickRed}$\triangleright$}
+\setbeamertemplate{itemize subsubitem}{$-$}
+
+% Reduce space before lists
+%\addtobeamertemplate{itemize/enumerate body begin}{}{\vspace*{-8pt}}
+
+\let\olditem\item
+\renewcommand{\item}{%
+  \olditem\vspace{4pt}
+}
+
+% decreasing space before and after level-2 bullet block
+%\addtobeamertemplate{itemize/enumerate subbody begin}{}{\vspace*{-3pt}}
+%\addtobeamertemplate{itemize/enumerate subbody end}{}{\vspace*{-3pt}}
+
+% decreasing space before and after level-3 bullet block
+%\addtobeamertemplate{itemize/enumerate subsubbody begin}{}{\vspace*{-2pt}}
+%\addtobeamertemplate{itemize/enumerate subsubbody end}{}{\vspace*{-2pt}}
+
+%Section numbering
+\setbeamertemplate{section page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=10pt,center,rounded=true,shadow=true]{section title}
+        \usebeamerfont{section title}\thesection~\insertsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\setbeamertemplate{subsection page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=6pt,center,rounded=true,shadow=true]{subsection title}
+        \usebeamerfont{subsection title}\thesection.\thesubsection~\insertsubsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\end{comment}
+
+\title{Introduction to Multivariate Regression \& Econometrics}
+\subtitle{HED 612}
+\author{Lecture 5}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+\hypertarget{prep}{%
+\section{Prep}\label{prep}}
+
+\begin{frame}[fragile]{Open R Script; Install new Package!}
+\protect\hypertarget{open-r-script-install-new-package}{}
+
+We'll be using the California Schools Data today; no need to
+re-download!
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Download the Lecture 5 PDF and R files for this week
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Place all files in HED612\_SP21
+    \textgreater\textgreater\textgreater{} lectures
+    \textgreater\textgreater\textgreater{} lecture5
+  \end{itemize}
+\item
+  Open the RProject (should be in your main HED612\_SP21 folder)
+\item
+  Once the RStudio window opens, open the Lecture 5 R script by clicking
+  on:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    file \textgreater\textgreater\textgreater{} open file\ldots{}
+    \textgreater\textgreater\textgreater{} {[}navigate to lecture 5
+    folder{]} \textgreater\textgreater\textgreater{} lecture5.R
+  \end{itemize}
+\item
+  \textbf{Install the ``Margins'' package in Lecture5.R}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    If R prompts you to install margins and ``its dependencies'', go
+    ahead and click install
+  \item
+    If R doesn't prompt you, install via line 5
+    \texttt{install.packages("margins")}
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Homework Questions}
+\protect\hypertarget{homework-questions}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Problem Set \#4
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Questions or Concerns?
+  \end{itemize}
+\item
+  General R Issues?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Be careful of \textless{} / \textgreater{} and \textless= /
+    =\textgreater{}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Class Overview}
+\protect\hypertarget{class-overview}{}
+
+Last week:
+
+\begin{itemize}
+\tightlist
+\item
+  Introduced population linear regression model
+\item
+  Estimating \(\beta_0\) and \(\beta_1\) via OLS Estimates
+  \(\hat{\beta_0}\) and \(\hat{\beta_1}\)
+\end{itemize}
+
+\medskip
+
+Today:
+
+\begin{itemize}
+\tightlist
+\item
+  Prediction
+\item
+  Measures of Model Fit
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(R^2\)
+  \item
+    Standard Error of the Regression (SER)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+Homework:
+
+\begin{itemize}
+\tightlist
+\item
+  HW\#5 posted on D2L
+\item
+  Stock and Watson Chapter 5
+\end{itemize}
+
+\medskip
+
+Next week:
+
+\begin{itemize}
+\tightlist
+\item
+  Using \(\hat{\beta_1}\) for hypothesis testing about \(\beta_1\)
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{prediction}{%
+\section{Prediction}\label{prediction}}
+
+\begin{frame}{General things we do in regression analysis}
+\protect\hypertarget{general-things-we-do-in-regression-analysis}{}
+
+\begin{enumerate}
+\tightlist
+\item
+  \textbf{Estimation} {[}Last Week{]}
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  How do we choose estimates of \(\beta_0\) and \(\beta_1\) using sample
+  data?
+\item
+  OLS Estimates \(\hat{\beta_0}\) and \(\hat{\beta_1}\) that minimize
+  the sum of squared errors
+\end{itemize}
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \textbf{Prediction} {[}Today{]}
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  What is the predicted value of Y for someone with a particular value
+  of X?
+\item
+  Example: What is the predicted income for a college graduate with an
+  engineering degree?
+\end{itemize}
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  \textbf{Hypothesis testing} {[}focus of the rest of the semester{]}
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Hypothesis testing and confidence intervals about \(\beta_1\)
+\item
+  This is estimating causal effects!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{General steps in prediction}
+\protect\hypertarget{general-steps-in-prediction}{}
+
+\begin{enumerate}
+\item
+  Write out population linear regression model
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_i + u_i\)
+  \item
+    Where Y= Annual Income; X= hours worked per week
+  \end{itemize}
+\item
+  Write out OLS prediction line without estimate values
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i\)
+  \end{itemize}
+\item
+  Write out OLS prediction line with estimates {[}last week's example{]}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = \$7,477 + \$503*X_i\)
+  \end{itemize}
+\item
+  If it's helpful, sketch out the OLS prediction line
+\item
+  Calculate predicted values of Y (\(\hat{Y_i}\)) for selected values of
+  \(X_i\)
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Common Examples of Prediction}
+\protect\hypertarget{common-examples-of-prediction}{}
+
+\textbf{Early warning system for academic probation}
+
+\begin{itemize}
+\tightlist
+\item
+  Using data from last year, run regression for relationship between
+  number of class absences and semester GPA
+
+  \begin{itemize}
+  \item
+    \(Y_i = \beta_0 + \beta_1X_i + u_i\)
+  \item
+    Where Y= GPA; X= number of absences
+  \item
+    \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i\)
+  \item
+    \(\hat{Y_i} = 3.5 + (-0.5)*X_i\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  If a student has 4 class absences?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = 3.5 + (-0.5)*4\) = \(\hat{Y_i} = 3.5 + (-2)\) = 1.5
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Track attendance of current year students
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Student receives academic probation warning if predicted to have a
+    GPA less than 2.0
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Common Examples of Prediction}
+\protect\hypertarget{common-examples-of-prediction-1}{}
+
+\textbf{Obama Administration College Rating System}
+
+\begin{itemize}
+\item
+  Rates colleges based on student outcomes to predict the ``best value''
+
+  \begin{itemize}
+  \tightlist
+  \item
+    graduation rates
+  \item
+    labor market participation and return rates
+  \item
+    loan repayment/default rates
+  \item
+    attendance cost
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\item
+  Penalties for colleges with low performance
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Less maximimum pell grants
+  \item
+    Shared ``risk'' for loan default
+  \item
+    Lose Title IV funding altogether
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\item
+  Any red flags with \emph{only} using the above student outcomes to
+  rate colleges?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Different student populations: UA students vs Harvard students?
+  \item
+    Different labor market participation: Liberal arts college vs
+    technical school?
+  \item
+    Obama Administration opted out of ratings system; opted instead for
+    providing students with more information via College Score Cards for
+    them to compare institutions themselves
+  \item
+    Some accountability kept via gainful employment regulations for
+    for-profits
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Prediction Example: California School Data}
+\protect\hypertarget{prediction-example-california-school-data}{}
+
+RQ: What is the relationship between district-wide math test scores (Y)
+and district expenditures per student (X)?
+
+\begin{itemize}
+\tightlist
+\item
+  Do you think this relationship is positive? Negative? Why?
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Practical problem: our X is in dollars.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{\beta_1}\) will be the change in Y for a one-unit change (\$1
+    change) in X
+  \item
+    District wide test scores are not likely to change much for a \$1
+    increase in per student spending
+  \end{itemize}
+\item
+  Let's make our X in thousands of dollars
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{\beta_1}\) will be the change in Y for a one-unit change
+    (\$1,000 change) in X
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Write out the population regression model
+\item
+  OLS line without estimates
+\item
+  OLS line with estimates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Run regression in R
+  \item
+    \texttt{mod1\ \textless{}-\ \ lm(math\_scr\ \textasciitilde{}\ expn\_stu\_000,\ data=caschool)}
+  \item
+    \texttt{summary(mod1)}
+  \end{itemize}
+\item
+  Interpret the values of \(\hat{\beta_0}\) and \(\hat{\beta_1}\)
+\item
+  Draw OLS regression line on graph
+\item
+  Calculate predicted district-wide math test score for X=5 (\$5,000
+  expenditures per student)
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]{Student Exercise \#1}
+\protect\hypertarget{student-exercise-1}{}
+
+RQ: What is the relationship between district-wide reading test scores
+(Y) and district expenditures per student (X)?
+
+\begin{itemize}
+\tightlist
+\item
+  Y= \texttt{read\_scr}
+\item
+  X= \texttt{expn\_stu\_000}
+\end{itemize}
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Write out the population regression model
+\item
+  OLS line without estimates
+\item
+  OLS line with estimates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Run regression in R
+  \item
+    Assign this regression as \texttt{mod2}
+  \end{itemize}
+\item
+  Interpret the values of \(\hat{\beta_0}\) and \(\hat{\beta_1}\)
+\item
+  Draw OLS regression line on graph (if it is helpful to you)
+\item
+  Calculate predicted district-wide reading score for X=11 (\$11,000
+  expenditures per student)
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]{\texttt{margins} and \texttt{prediction} packages
+in R}
+\protect\hypertarget{margins-and-prediction-packages-in-r}{}
+
+\begin{itemize}
+\tightlist
+\item
+  These packages do a lot of useful things; we'll learn how to use
+  functionality little by little
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  For today:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    general introduction
+  \item
+    use them to calculate predicted values
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  We need to run a regression and save it as an ``object''
+\item
+  Then we can run \texttt{margins} and \texttt{prediction} functions on
+  our regression model!
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{break-10-min}{%
+\section{Break {[}10 min{]}}\label{break-10-min}}
+
+\hypertarget{measures-of-model-fit-r2}{%
+\section{\texorpdfstring{Measures of Model Fit:
+\(R^2\)}{Measures of Model Fit: R\^{}2}}\label{measures-of-model-fit-r2}}
+
+\begin{frame}{\(R^2\)}
+\protect\hypertarget{r2}{}
+
+\textbf{What does \(R^2\) measure?}
+
+\begin{itemize}
+\tightlist
+\item
+  \(R^2\), ``the coefficient of determination'', measures the fraction
+  of the variance in Y that is explained by X (and is not already
+  explained by sample mean, \(\bar{Y}\))
+
+  \begin{itemize}
+  \tightlist
+  \item
+    In other words, how much better is the regression model in
+    predicting values of Y than \(\bar{Y}\)
+  \item
+    Draw scatterplot
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\textbf{Interpreting \(R^2\)}
+
+\begin{itemize}
+\tightlist
+\item
+  \(R^2\) ranges from 0 to 1
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(R^2=0\): the model does not explain any variation in Y
+  \item
+    \(R^2=1\): the model explains 100\% of the variation in Y
+  \item
+    \(R^2=0.135\): the model explains 13.5\% of the variation in Y
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Components of \(R^2\)}
+\protect\hypertarget{components-of-r2}{}
+
+\begin{itemize}
+\item
+  \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i\)
+\item
+  \(\hat{u_i} = Y_i - \hat{Y_i}\)
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Total Sum of Squares (TSS) = \(\sum_{i=1}^{n}\) \((Y_i-\bar{Y})^2\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    A measure of the total variance in Y, relative to \(\bar{Y}\)
+  \end{itemize}
+\item
+  Explained Sum of Squares (ESS) = \(\sum_{i=1}^{n}\)
+  \((\hat{Y_i}-\bar{Y})^2\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Difference between predicted values \(\hat{Y_i}\) and sample mean
+    \(\bar{Y}\)
+  \item
+    Measures amount of variation in Y explained by X
+  \end{itemize}
+\item
+  Sum of Squared Residuals (SSR) = \(\sum_{i=1}^{n}\)
+  \((Y_i- \hat{Y_i})^2\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Difference between actual value observed and predicted value by our
+    regression line
+  \item
+    Measures amount of variation in Y not explained by X
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Show in scatter plot: What is the effect of student teacher ratio (X)
+  on district test scores?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    TSS = ESS + SSR
+  \item
+    Total variation in Y (TSS) equals variation explained by the model
+    (ESS) plus variation not explained by model (SSR)
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{\(R^2\) in R}
+\protect\hypertarget{r2-in-r}{}
+
+\begin{itemize}
+\item
+  \textbf{\(R^2\) =
+  \(\frac{\text{variance in Y that is explained by X}}{\text{total variance in Y}} = \frac{ESS}{TSS}\)}
+\item
+  Note that in R:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{summary(MODEL)} will only give you the \(R^2\)
+  \item
+    \texttt{anova(MODEL)} will give you ESS and SSR
+  \end{itemize}
+\end{itemize}
+
+\includegraphics{tss.png}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{mod3\ \textless{}-\ lm(testscr\ \textasciitilde{}\ str,\ data=caschool)}
+\item
+  \texttt{anova(mod3)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ESS= 7794
+  \item
+    SSR = 144315
+  \item
+    TSS = 7794 + 144315 =152109
+  \item
+    \(R^2\) = 7794/152109 = 0.051
+  \item
+    Student teacher ratio explains 5.1\% of the variation in district
+    test scores (not already explained by \(\bar{Y}\))
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{\(R^2\) in R via \texttt{summary(MODEL)}}
+\protect\hypertarget{r2-in-r-via-summarymodel}{}
+
+\includegraphics{r2.png}
+
+\end{frame}
+
+\begin{frame}[fragile]{Student Exercise \#2}
+\protect\hypertarget{student-exercise-2}{}
+
+RQ1: What is the relationship between district-wide math test scores (Y)
+and district expenditures per student (X)?
+
+\begin{itemize}
+\tightlist
+\item
+  Y= \texttt{math\_scr}
+\item
+  X= \texttt{expn\_stu\_000}
+\end{itemize}
+
+\begin{enumerate}
+\tightlist
+\item
+  Run regression in R (did this already in exercise \#1; \texttt{mod1})
+\item
+  Using \texttt{summary(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is \(R^2\)? Interpret \(R^2\).
+  \end{itemize}
+\item
+  Using \texttt{anova(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Show that \(R^2\) = ESS/TSS
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+
+RQ2: What is the relationship between district-wide math test scores (Y)
+and student-teacher ratio (X)?
+
+\begin{itemize}
+\tightlist
+\item
+  Y= \texttt{math\_scr}
+\item
+  X= \texttt{str}
+\end{itemize}
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Run regression in R (need to do this as \texttt{mod4})
+\item
+  Using \texttt{summary(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is \(R^2\)? Interpret \(R^2\).
+  \end{itemize}
+\item
+  Using \texttt{anova(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Show that \(R^2\) = ESS/TSS
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]{Student Exercise \#2 {[}SOLUTIONS{]}}
+\protect\hypertarget{student-exercise-2-solutions}{}
+
+RQ1: What is the relationship between district-wide math test scores (Y)
+and district expenditures per student (X)?
+
+\begin{enumerate}
+\tightlist
+\item
+  Run regression in R (did this already in exercise \#1; \texttt{mod1})
+\item
+  Using \texttt{summary(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is \(R^2\)? \emph{Measures the fraction of the variance in Y
+    that is explained by X (and is not already explained by sample
+    mean)}
+  \item
+    \(R^2\) = 0.02402; \emph{District expenditures per student explains
+    2.4\% of the variation in district math test scores}
+  \end{itemize}
+\item
+  Using \texttt{anova(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ESS= 3540
+  \item
+    SSR = 143831
+  \item
+    TSS = 3540 + 143831 =147371
+  \item
+    \(R^2\) = 3540/147371 = 0.024
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+
+RQ2: What is the relationship between district-wide math test scores (Y)
+and student-teacher ratio (X)?
+
+\begin{enumerate}
+\tightlist
+\item
+  Run regression in R (need to do this as \texttt{mod4})
+\item
+  Using \texttt{summary(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Interpret \(R^2\) = 0.03824; \emph{District student-teacher ratio
+    explains 3.8\% of the variation in district math test scores}
+  \end{itemize}
+\item
+  Using \texttt{anova(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ESS= 5636
+  \item
+    SSR = 141735
+  \item
+    TSS = 5636 + 141735 =147371
+  \item
+    \(R^2\) = 5636/147371 = 0.03824
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Student Exercise \#2}
+\protect\hypertarget{student-exercise-2-1}{}
+
+Based on the \(R^2\) of Model 1 vs \(R^2\) of Model 4:
+
+\begin{itemize}
+\tightlist
+\item
+  Does district expenditures per student or student teacher ratio do a
+  better job at predicting math test scores?
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{measures-of-model-fit-standard-error-of-the-regression}{%
+\section{Measures of Model Fit: Standard Error of the
+Regression}\label{measures-of-model-fit-standard-error-of-the-regression}}
+
+\begin{frame}{Standard Error of the Regression}
+\protect\hypertarget{standard-error-of-the-regression}{}
+
+\textbf{Standard Error of the Regression (SER)}: an estimator of the
+standard deviation of the residuals \(\hat{u_i}\)
+
+\begin{itemize}
+\tightlist
+\item
+  In other words, SER is, on average, how far away an actual observed
+  value of Y is from the predicted value of Y for a random observation
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Sample standard deviation, \(s_{Y}= \hat{\sigma_{Y}}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Average distance between a random observation \(Y_i\) an the sample
+    mean \(\bar{Y}\)
+  \item
+    \(s_{Y}= \hat{\sigma_{Y}} = \sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\overline{Y})^2}} {n-1} }\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Standard error of the regression (SER or \(s_{\hat{u}}\) or
+  \(\hat{\sigma_{u_{i}}}\))
+
+  \begin{itemize}
+  \item
+    Average distance between a random observation \(Y_i\) and the value
+    predicted by the OLS regression \(\hat{Y_i}\)
+  \item
+    SER = \(\sqrt{\frac{SSR}{n-2}}\) =
+    \(\sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\hat{Y})^2}} {n-2} }\) =
+    \(\sqrt{ \frac {\sum_{i=1}^{n} (\hat{u_{i}})^2} {n-2} }\)
+  \item
+    SSR = sum of squared residuals
+  \item
+    Why (n-2)? Because we lose one degree of freedom for calculating
+    sample mean \(\bar{Y}\) and another for the independent variable X
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Standard Error of the Regression (SER)}
+\protect\hypertarget{standard-error-of-the-regression-ser}{}
+
+RQ: What is the relationship between district-wide reading test scores
+(Y) and district expenditures per student (X)?
+
+\begin{itemize}
+\tightlist
+\item
+  In R, SER is ``Residual Standard Error''
+\end{itemize}
+
+\includegraphics{ser.png}
+
+\end{frame}
+
+\begin{frame}[fragile]{Calculating Standard Error of the Regression
+(SER)}
+\protect\hypertarget{calculating-standard-error-of-the-regression-ser}{}
+
+RQ: What is the relationship between district-wide math test scores (Y)
+and district expenditures per student (X)?
+
+\begin{itemize}
+\tightlist
+\item
+  SER = \(\sqrt{\frac{SSR}{n-2}}\)
+\item
+  \texttt{anova(mod1)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    SSR= 161369\\
+  \item
+    n = 420 (there's 420 observations/districts in the California School
+    Data)
+  \end{itemize}
+\end{itemize}
+
+SER = \(\sqrt{\frac{161369}{420-2}}\) = \(\sqrt{\frac{161369}{428}}\)
+=\(\sqrt{377.0303}\) = 19.648
+
+\end{frame}
+
+\begin{frame}[fragile]{Standard Error of the Regression (SER) cont.}
+\protect\hypertarget{standard-error-of-the-regression-ser-cont.}{}
+
+\textbf{SER} = 19.648
+
+\begin{itemize}
+\tightlist
+\item
+  Average distance between reading test score of a random district and
+  the reading test score predicted by the OLS regression is 19.65
+\item
+  SER is always in the same unit as the dependent variable
+\item
+  A ``higher'' SER means that our predicted OLS line is often wrong by a
+  lot!
+\end{itemize}
+
+\medskip
+
+SER vs Standard Deviation
+
+\begin{itemize}
+\tightlist
+\item
+  Standard Deviation of \texttt{read\_scr} = 20.1
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Average distance between reading test score of a random district and
+    the sample mean of reading test scores is 20.1
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+Does predicting reading test scores based on district expenditures per
+student result in dramatic improvements in predictions in comparison to
+just taking the sample mean of math test scores?
+
+\end{frame}
+
+\begin{frame}{Comments on SER and \(R^2\)}
+\protect\hypertarget{comments-on-ser-and-r2}{}
+
+\(R^2\)
+
+\begin{itemize}
+\tightlist
+\item
+  Low \(R^2\) tell us that the model does not explain much of the
+  variation in the dependent variable; there are other factors (not
+  included in the model) that explain most of the variation in the
+  dependent variable
+\item
+  Low \(R^2\) is not necessarily bad and a high \(R^2\) is not
+  necessarily good (e.g., predicting provery from having a cell phone
+  has a very high \(R^2\))
+\end{itemize}
+
+\medskip
+
+SER
+
+\begin{itemize}
+\tightlist
+\item
+  High SER tells us that our predictions will often be wrong by a lot;
+  but that does not necessarily mean our model is bad given some things
+  are hard to predict and we often are interested in ``averages''!
+\end{itemize}
+
+\medskip
+
+Econometrics Research \& Model Fit
+
+\begin{itemize}
+\tightlist
+\item
+  Usually we're most concerned with estimating \(\beta_1\), which is the
+  ``causal effect'' of X on Y
+\item
+  Models with high \(R^2\) and low SER may still be wrong about
+  \(\beta_1\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Student Exercise \#3}
+\protect\hypertarget{student-exercise-3}{}
+
+RQ1: What is the relationship between district-wide math test scores (Y)
+and district expenditures per student (X)?
+
+\begin{itemize}
+\tightlist
+\item
+  Y= \texttt{math\_scr}
+\item
+  X= \texttt{expn\_stu\_000}
+\end{itemize}
+
+\begin{enumerate}
+\tightlist
+\item
+  Run regression in R (did this already in exercise \#1 \& 2;
+  \texttt{mod1})
+\item
+  Using \texttt{summary(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is SER? Interpret SER.
+  \end{itemize}
+\item
+  Using \texttt{anova(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Show that SER = \(\sqrt{\frac{SSR}{n-2}}\)
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+
+RQ2: What is the relationship between district-wide math test scores (Y)
+and student-teacher ratio (X)?
+
+\begin{itemize}
+\tightlist
+\item
+  Y= \texttt{math\_scr}
+\item
+  X= \texttt{str}
+\end{itemize}
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Run regression in R (already did this; \texttt{mod4})
+\item
+  Using \texttt{summary(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Interpret SER.
+  \end{itemize}
+\item
+  Using \texttt{anova(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Show that SER = \(\sqrt{\frac{SSR}{n-2}}\)
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]{Student Exercise \#3 {[}SOLUTIONS{]}}
+\protect\hypertarget{student-exercise-3-solutions}{}
+
+RQ1: What is the relationship between district-wide math test scores (Y)
+and district expenditures per student (X)?
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Using \texttt{summary(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is SER? \textbf{SER is on average how far away an actual
+    observed value of Y is from the predicted value of Y for a random
+    observation}
+  \item
+    Interpret SER. \textbf{18.55; Average distance between math test
+    score of a random district and the math test score predicted by the
+    OLS regression is 18.55}
+  \end{itemize}
+\item
+  Using \texttt{anova(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Show that SER = \(\sqrt{\frac{SSR}{n-2}}\) =
+    \(\sqrt{\frac{143831}{418}}\) = \(\sqrt{344.0933}\) =18.549
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+
+RQ2: What is the relationship between district-wide math test scores (Y)
+and student-teacher ratio (X)?
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Using \texttt{summary(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Interpret SER \textbf{18.41; Average distance between math test
+    score of a random district and the math test score predicted by the
+    OLS regression is 18.41}
+  \end{itemize}
+\item
+  Using \texttt{anova(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Show that SER = \(\sqrt{\frac{SSR}{n-2}}\) =
+    \(\sqrt{\frac{141735}{418}}\) = \(\sqrt{339.0789}\) = 18.414
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\end{document}

@@ -1,0 +1,30 @@
+\frametitle{Absolute vs.~relative filepath}
+\protect\hypertarget{absolute-vs.-relative-filepath}{}
+
+\textbf{Absolute file path}: The absolute file path is the complete list
+of directories needed to locate a file or folder.\\
+\texttt{setwd("Users/Karina/rclass/lectures/lecture2")}
+
+\textbf{Relative file path}: The relative file path is the path relative
+to your current location/directory. Assuming your current working
+directory is in the ``lecture2'' folder and you want to change your
+directory to the data folder, your relative file path would look
+something like this:\\
+\texttt{setwd("../../data")}
+
+\begin{verbatim}
+        File path shortcuts
+\end{verbatim}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\textbf{Key} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+\textasciitilde{} & tilde is a shortcut for user's home directory (mine
+is my name)\tabularnewline
+../ & moves up a level\tabularnewline
+../../ & moves up two level\tabularnewline
+\bottomrule
+\end{longtable}
+

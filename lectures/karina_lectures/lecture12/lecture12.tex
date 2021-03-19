@@ -1,0 +1,1057 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[8pt,ignorenonframetext,dvipsnames]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+\centering
+\begin{beamercolorbox}[sep=16pt,center]{part title}
+  \usebeamerfont{part title}\insertpart\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+\centering
+\begin{beamercolorbox}[sep=12pt,center]{part title}
+  \usebeamerfont{section title}\insertsection\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{part title}
+  \usebeamerfont{subsection title}\insertsubsection\par
+\end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Introduction to Multivariate Regression \& Program Evaluation},
+            pdfauthor={Lecture 12},
+            colorlinks=true,
+            linkcolor=Maroon,
+            filecolor=Maroon,
+            citecolor=Blue,
+            urlcolor=blue,
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\newif\ifbibliography
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+%packages
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{hyperref}
+
+\usepackage{tikz} % used for text highlighting, amongst others
+\usepackage{comment}
+
+%title slide stuff
+%\institute{Department of Education}
+%\title{Managing and Manipulating Data Using R}
+
+%
+\setbeamertemplate{navigation symbols}{} % get rid of navigation icons:
+\setbeamertemplate{footline}[page number]
+
+%\setbeamertemplate{frametitle}{\thesection \hspace{0.2cm} \insertframetitle}
+\setbeamertemplate{section in toc}[sections numbered]
+%\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=3.2em\color{gray}\rlap{\hskip-2em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par
+}
+
+%define colors
+%\definecolor{uva_orange}{RGB}{216,141,42} % UVa orange (Rotunda orange)
+\definecolor{mygray}{rgb}{0.95, 0.95, 0.95} % for highlighted text
+	% grey is equal parts red, green, blue. higher values >> lighter grey
+	%\definecolor{lightgraybo}{rgb}{0.83, 0.83, 0.83}
+
+% new commands
+
+%highlight text with very light grey
+\newcommand*{\hlg}[1]{%
+	\tikz[baseline=(X.base)] \node[rectangle, fill=mygray] (X) {#1};%
+}
+%, inner sep=0.3mm
+%highlight text with very light grey and use font associated with code
+\newcommand*{\hlgc}[1]{\texttt{\hlg{#1}}}
+
+%modifying back ticks to add grey background
+\let\OldTexttt\texttt
+\renewcommand{\texttt}[1]{\OldTexttt{\hlg{#1}}}
+
+
+\begin{comment}
+
+% Font
+\usepackage[defaultfam,light,tabular,lining]{montserrat}
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\fontfamily{Montserrat-TOsF}\selectfont #1}}
+
+% Change color of boldface text to darkgray
+\renewcommand{\textbf}[1]{{\color{darkgray}\bfseries\fontfamily{Montserrat-TOsF}#1}}
+
+% Bullet points
+\setbeamertemplate{itemize item}{\color{BlueViolet}$\circ$}
+\setbeamertemplate{itemize subitem}{\color{BrickRed}$\triangleright$}
+\setbeamertemplate{itemize subsubitem}{$-$}
+
+% Reduce space before lists
+%\addtobeamertemplate{itemize/enumerate body begin}{}{\vspace*{-8pt}}
+
+\let\olditem\item
+\renewcommand{\item}{%
+  \olditem\vspace{4pt}
+}
+
+% decreasing space before and after level-2 bullet block
+%\addtobeamertemplate{itemize/enumerate subbody begin}{}{\vspace*{-3pt}}
+%\addtobeamertemplate{itemize/enumerate subbody end}{}{\vspace*{-3pt}}
+
+% decreasing space before and after level-3 bullet block
+%\addtobeamertemplate{itemize/enumerate subsubbody begin}{}{\vspace*{-2pt}}
+%\addtobeamertemplate{itemize/enumerate subsubbody end}{}{\vspace*{-2pt}}
+
+%Section numbering
+\setbeamertemplate{section page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=10pt,center,rounded=true,shadow=true]{section title}
+        \usebeamerfont{section title}\thesection~\insertsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\setbeamertemplate{subsection page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=6pt,center,rounded=true,shadow=true]{subsection title}
+        \usebeamerfont{subsection title}\thesection.\thesubsection~\insertsubsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\end{comment}
+
+\title{Introduction to Multivariate Regression \& Program Evaluation}
+\providecommand{\subtitle}[1]{}
+\subtitle{HED 612}
+\author{Lecture 12}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
+\begin{frame}{Classes for Fall 2020}
+\protect\hypertarget{classes-for-fall-2020}{}
+
+\begin{itemize}
+\tightlist
+\item
+  HED 696C 005: Data management/manipulation in R
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Thursdays 4:15-6:45PM
+  \end{itemize}
+\item
+  HED 696C 003: Finance, enrollment management, and recruiting
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Wednesdays 4:15-6:45PM
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Where are we going\ldots{}.}
+\protect\hypertarget{where-are-we-going.}{}
+
+\begin{itemize}
+\tightlist
+\item
+  This Lecture
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Introduction to non-linear functions
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Polynomials
+    \end{itemize}
+  \item
+    Review:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Powers, J. M. (2004). High-Stakes Accountability and Equity: Using
+      Evidence From California's Public Schools Accountability Act to
+      Address the Issues in Williams v. State of California. American
+      Educational Research Journal, 41(4), 763--795.
+    \end{itemize}
+  \end{itemize}
+\item
+  Next Lecture
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Non-linear functions cont.
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Logs
+    \item
+      intro to interaction effects
+    \end{itemize}
+  \item
+    Mini lesson on what each section of manuscrupt should accomplish!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{introduction-to-non-linear-functions-polynomials}{%
+\section{Introduction to non-linear functions:
+Polynomials}\label{introduction-to-non-linear-functions-polynomials}}
+
+\begin{frame}{Linear vs Non-Linear Models}
+\protect\hypertarget{linear-vs-non-linear-models}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Non-linear relationships can be confusing and difficult to understand!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    So far we have learned \textbf{linear} multiple regression model via
+    OLS estimation
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + ... \beta_kX_{ki}\)
+    \end{itemize}
+  \item
+    But OLS linear regression equation/model doesn't only produce
+    straight lines; it can fit curves to your data!
+  \end{itemize}
+\item
+  Two ways to think of ``non-linearity'':
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Regression model that is a nonlinear function of the independent
+    variables \(X_{1i}, X_{2i}... X_{ki}\)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      This can be estimated by OLS regression model!
+    \end{itemize}
+  \item
+    Regression model that is a nonlinear function of the coefficients
+    \(\beta_1, \beta_2... \beta_k\)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      This can't be estimated by OLS!
+    \end{itemize}
+  \end{itemize}
+\item
+  The way I think about this
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Is Y continous? If so, then use linear regression model estimated
+    via OLS and model curvitures in the data using nonlinear functions
+    of the independent variables
+  \item
+    Is Y is categorical? Is so, then you need a different estimation
+    method (e.g., logistic regression via Maximum Likelihood estimation)
+    that will model nonlinear functions in the coefficients!
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Exception if Y is a dummy variable (i.e., binary) then you can run
+      a linear probability model
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Nonlinear functions of the IVs,
+\(X_{1i}, X_{2i}... X_{ki}\)}
+\protect\hypertarget{nonlinear-functions-of-the-ivs-x_1i-x_2i...-x_ki}{}
+
+\begin{itemize}
+\tightlist
+\item
+  OLS linear regression can model nonlinear function of the independent
+  variables \(X_{1i}, X_{2i}... X_{ki}\) in two different ways!
+\item
+  \textbf{1. The effect of \(X_{1i}\) on Y depends on \(X_{1i}\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ex: The effect of class size (x) on student test scores (Y) is
+    bigger when initial class size is small
+  \item
+    In other words, the negative effect of increasing class size on test
+    scores is much larger when class size increases from 15 to 16 than
+    when class size increases from 25 to 26
+  \end{itemize}
+\item
+  \textbf{2. The effect of \(X_{1i}\) on Y depends on \(X_{2i}\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ex: The effect of class size (x) on student test scores (Y) depend
+    on the number of ELL students in the class
+  \item
+    Ex: The effect of class size (x) on student test scores (Y) depends
+    on the teachers' years of experience
+  \end{itemize}
+\end{itemize}
+
+\includegraphics{slope.jpg}
+
+\end{frame}
+
+\begin{frame}{The effect of \(X_{1i}\) on Y depends on \(X_{1i}\)}
+\protect\hypertarget{the-effect-of-x_1i-on-y-depends-on-x_1i}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Let's investigate the effect of district average income (in per
+  capita) on student test scores\ldots{}
+\item
+  Do we think there's a positive or negative linear relationship?
+\item
+  Does the linear model fit the data well?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Lets plot it and check!
+  \end{itemize}
+\item
+  Doesn't look like a linear model fits the data!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    In other words, the linear model \emph{overestimates} the
+    relationship between Avg Income and Test Scores when income is
+    really high or very low; and it \emph{underestimates} the
+    relationship for the middle income districts
+  \end{itemize}
+\item
+  \textbf{Problem: the effect of \(X_{1i}\) on Y depends on \(X_{1i}\)}
+\end{itemize}
+
+\includegraphics{linear.png}
+
+\end{frame}
+
+\begin{frame}{Polynomials}
+\protect\hypertarget{polynomials}{}
+
+RQ: What is the effect of district income on average student test
+scores?
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Problem}: the effect of \(X_{1i}\) on Y depends on \(X_{1i}\)
+\item
+  \textbf{Solution}: use a polynomial in X
+\end{itemize}
+
+\medskip
+
+\textbf{Polynomials}
+
+\begin{itemize}
+\tightlist
+\item
+  Polynomials are independent variables that you raise to a power (e.g.,
+  squared or cubed terms)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    In practice: to determine the correct polynomial term to include,
+    count the number of ``curves'' or ``bends'' in your data!
+  \item
+    ``Quadratic'' or \(X^2\) = one bend or one curve
+  \item
+    ``Cubic'' or \(X^3\) = two bends or two curves
+  \end{itemize}
+\item
+  We usually only model a qudratic! Cubics are rare! I have never used
+  or seen a quartic term +
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Why? Because polynomials are difficult to interpret the higher term
+    you use
+  \item
+    If you have so many ``bends'' then in practice, convert your
+    continous X into a categorical X!
+  \end{itemize}
+\end{itemize}
+
+\includegraphics{polynomial.png}
+
+\end{frame}
+
+\begin{frame}[fragile]{Polynomials: Equation}
+\protect\hypertarget{polynomials-equation}{}
+
+RQ: What is the effect of district income on average student test
+scores?
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Problem}: the effect of \(X_{1i}\) on Y depends on \(X_{1i}\)
+\item
+  \textbf{Solution}: use a quadratic in X
+\end{itemize}
+
+Population regression model
+
+\begin{itemize}
+\tightlist
+\item
+  Without quadratic:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_{1i} +u_i\)
+  \item
+    Where \(Y_i\) = district average test scores; \(X_1\)= district
+    income
+  \end{itemize}
+\item
+  With quadratic:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2{X_1i}^2 + u_i\)
+  \item
+    Where \(Y_i\) = district average test scores; \(X_1\)= district
+    income, \({X_1}^2\) = district income squared
+  \item
+    \({X_1}^2\) or \(income^2\) is treated as an additional explanatory
+    variable!
+  \end{itemize}
+\item
+  Run regressions in R
+
+  \begin{itemize}
+  \tightlist
+  \item
+    To run a \emph{quadratic regression model in R}, we still use
+    \texttt{lm()} but use two addtional functions \texttt{I()} +
+    \texttt{\^{}} to add the quadratic term
+  \item
+    Why \texttt{I()}?
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Because R is an object-oriented programming language and operators
+      \texttt{+,\ -,\ *,\ \^{}} have non-arithmetic functions too.
+    \item
+      Using \texttt{I()} tells R that we are using them arithmetically
+      and that the operator should be passed ``arithmetically'' to the
+      \texttt{formula} class object creaated via \texttt{lm()}
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Polynomials: Interpretation}
+\protect\hypertarget{polynomials-interpretation}{}
+
+\begin{itemize}
+\tightlist
+\item
+  RQ: What is the effect of district income on average student test
+  scores?
+\item
+  \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2{X_1i}^2 + u_i\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Where \(Y_i\) = district average test scores; \(X_1\)= district
+    income, \({X_1}^2\) = district income squared
+  \end{itemize}
+\item
+  \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}{X_1i}^2\)
+\item
+  \(\hat{Y_i} = 607.30 + 3.85X_{1i} - 0.04{X_1i}^2\)
+\item
+  Test whether the relationship between test scores and district income
+  is linear against the alternative that it is quadratic
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_0\): \(\beta_2 = 0\) (e.g., relationship is linear)
+  \item
+    \(H_a\): \(\beta_2 \ne 0\) (e.g., relationship is quadratic)
+  \item
+    You could use the t-score and draw the sampling distribution just as
+    we have been doing regarding \(\beta_1\)
+  \item
+    But R will give you the associated p-value for a two-sided
+    hypothesis
+  \item
+    If our p-value is below the alpha level (\(\alpha= .05\)); we reject
+    the null!
+  \end{itemize}
+\item
+  \(\beta_2\) p-value = 0.00000; reject the null in favor of the
+  alternative. In other words, there is a significant, quadratic
+  relationship between test scores and district income!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Polynomials: Interpretation of \(\hat{\beta_1}\)}
+\protect\hypertarget{polynomials-interpretation-of-hatbeta_1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Plot data with a linear and quadratic line in R
+\item
+  How do we interpret our beta coefficients?
+\end{itemize}
+
+\medskip
+
+\textbf{\(\hat{\beta_1}\)}
+
+\begin{itemize}
+\tightlist
+\item
+  Gives the rate of change in Y when X=0; but we don't have any
+  districts with \$0k income
+\item
+  Calculate \(\hat{Y}\) to see rates of change at different values of X!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Will show you how to do this by hand
+  \item
+    Use \texttt{predict()} in R
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Polynomials: Interpretation \(\hat{\beta_1}\)}
+\protect\hypertarget{polynomials-interpretation-hatbeta_1}{}
+
+\textbf{Example 1: What is the change in average student test scores for
+change in \$10k to \$11k income}
+
+\begin{itemize}
+\tightlist
+\item
+  Rate of change = the difference in predicted test scores (\(\hat{Y}\))
+  of the two X values
+
+  \begin{itemize}
+  \tightlist
+  \item
+    OLS Prediction Line:
+    \(\hat{Y_i} = 607.30 + 3.85X_{1i} - 0.04{X_1i}^2\)
+  \item
+    (\(\Delta{Y}\)\textbar{}X=10 to 11):
+    (\(607.30 + 3.85*11 - 0.04*11^2\)) -
+    (\(607.30 + 3.85*10 - 0.04*10^2\))
+  \item
+    (\(\Delta{Y}\)\textbar{}X=10 to 11): (644.5432) - (641.5807)
+  \item
+    (\(\Delta{Y}\)\textbar{}X=10 to 11 = 2.9625
+  \end{itemize}
+\item
+  A change from \$10k to \$11k in average district income per capita is
+  associated with a 2.9625 increase in average student test scores
+\end{itemize}
+
+\textbf{Example 2: What is the change in average student test scores for
+change in \$40k to \$41k income}
+
+\begin{itemize}
+\tightlist
+\item
+  Rate of change = the difference in predicted test scores (\(\hat{Y}\))
+  of the two X values
+
+  \begin{itemize}
+  \tightlist
+  \item
+    OLS Prediction Line:
+    \(\hat{Y_i} = 607.30 + 3.85X_{1i} - 0.04{X_1i}^2\)
+  \item
+    (\(\Delta{Y}\)\textbar{}X=40 to 41):
+    (\(607.30 + 3.85*41 - 0.04*41^2\)) -
+    (\(607.30 + 3.85*40 - 0.04*40^2\))
+  \item
+    (\(\Delta{Y}\)\textbar{}X=40 to 41): (694.0696) - (693.6457)
+  \item
+    (\(\Delta{Y}\)\textbar{}X=40 to 41) = 0.4239
+  \end{itemize}
+\item
+  A change from \$40k to \$41k in average district income per capita is
+  associated with a 0.4239 increase in average student test scores
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Polynomials: Interpretation \(\hat{\beta_2}\)}
+\protect\hypertarget{polynomials-interpretation-hatbeta_2}{}
+
+\begin{itemize}
+\tightlist
+\item
+  How do we interpret our beta coefficients?
+\end{itemize}
+
+\medskip
+
+\textbf{\(\hat{\beta_2}\)}
+
+\begin{itemize}
+\tightlist
+\item
+  Gives us the the direction and steepness of the curve
+\item
+  Direction = positive or negative coefficient
+
+  \begin{itemize}
+  \tightlist
+  \item
+    If the sign of the coefficient is negative = curve is concave (apex
+    at the top, curve opens down)
+  \item
+    If the sign of the coefficient is positive = curve is convex (apex
+    at the bottom, curve opens up)
+  \end{itemize}
+\item
+  Steepness = magnitude of the value of the coefficient
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The greater the value the steeper the curve!
+    \includegraphics{convex.png}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{interpreting-regression-results-in-journals}{%
+\section{Interpreting Regression Results in
+Journals}\label{interpreting-regression-results-in-journals}}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{RQ}: What is the relationship(s) between school and district
+  characteristics on school's Academic Performance Index?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Old legal approach to school financing: focused on levels and
+    patterns of spending
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Didn't work because the state has minimal oversight of local
+      educational control/``property taxes''; caps were eliminated via
+      voter overrides; and what the small proportion of state funding
+      was given ``equally''
+    \end{itemize}
+  \item
+    New legal approach to school financing: \emph{Williams v. State of
+    California} reframed the issue of school financing around the
+    \emph{conditions} of education rather than funding!
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Worked because the state is responsible for ensuring resources are
+      used to produce desirable outcomes
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Empirical Strategy Used}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    She's not trying to establish a causal effect of school/resource
+    characteristics on API score; rather she's trying to show that API
+    score can be predicted by William's case variables!
+  \item
+    See pg.766 for rationale in including control variables
+
+    \begin{itemize}
+    \tightlist
+    \item
+      ``To ensure the findings related to Williams variables are robust,
+      that is, they are not systematically related to student, school,
+      and district characteristics''
+    \end{itemize}
+  \item
+    But still analyzing ``descriptive relationships'', not ``causal
+    relationships''
+  \end{itemize}
+\item
+  \textbf{Data}: California DOE Data, school-level
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Dependent variable(s): Academic Performance Index
+  \item
+    Independent variable(s) of interest: variables related to main
+    issues of Williams case
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Teacher quality
+    \item
+      Condition of facilities
+    \item
+      Quality/Supply of textbooks
+    \end{itemize}
+  \item
+    Control Variables:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Variables related to students' socioeconomic backgrounds
+    \item
+      School and district control variables (student teacher ratio,
+      school size, district locale, expenditures, etc)
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Model}: OLS Linear Regression
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Table 2: Nested Regression Models Using 1999 API Index as DV, pg. 781
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The most ``standard way'' to format regression results
+  \item
+    You show the ``progression'' towards your final regression model via
+    multiple models
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Intercept-only model (no independent variables) {[}Powers didnt
+      show this{]}
+    \item
+      Model 1 can have your independent variable of interest (standard
+      for program eval) or some variables (Powers did student
+      characteristics)
+    \item
+      Models 2+\ldots{} shows the addition of control variables
+    \end{itemize}
+  \item
+    Shows beta coefficients, standard errors, and significant levels!
+  \end{itemize}
+\item
+  Does show model fit statistics!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Powers is not writing from a program evaluation standpoint
+  \item
+    Rather she's trying to show how variables from Williams Case explain
+    (predict!) API scores
+  \item
+    In this case, measures of model fit are important
+  \item
+    \(R^2\) increases from Model 1 to Model 2
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Variable for Williams case and school/district characterstics
+      explain additional 3\% (81\% total)
+    \item
+      Change in \(R^2\) doesn't mean that Williams case IVs add
+      ``little'' explanation; see pg 782!
+    \end{itemize}
+  \item
+    In text, she mentions overall F-test is significant from Model 1 to
+    Model 2
+  \item
+    F-test is related to \(R^2\)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \(H_0\): model with no independent variables (or limited IVs) fits
+      the data just as well as model with full variables
+    \item
+      \(H_a\): model with more variables fits the data better than model
+      with no IVs
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-2}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Interpretation for Table 2 for Williams Case Variables
+\item
+  In text, she doesn't interpret them much beyond ``significance and
+  direction''
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Only sometimes mentions the magnitude of the coefficient by large
+    vs.~small
+  \item
+    This approach is common in ``descriptive research''
+  \end{itemize}
+\item
+  Teacher training (reference group is fully credentialed teachers)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Emergency Credentialed \(\hat{\beta_1}\) Coefficient:
+    -1.12*** SE= 0.09}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``On average, one-percentage-point increase in a
+      school teaching staff's proportion of emergency credentialed
+      teachers (as opposed to fully credentialed teachers) is associated
+      with a 1.12 point decrease in API score, holding all covariates
+      constant''
+    \end{itemize}
+  \end{itemize}
+\item
+  Teacher Education (reference group is less than M.A)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Greater than MA \(\hat{\beta_1}\) Coefficient: .42*** SE=
+    0.06}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``On average, a one-percentage-point increase in a
+      school teaching staff's proportion of teachers with greater than
+      MA degree (as opposed to lower than MA teachers) is associated
+      with a 0.42 point increase in API score, holding all covariates
+      constant''
+    \end{itemize}
+  \end{itemize}
+\item
+  Teacher Experience
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Years teaching \(\hat{\beta_1}\) Coefficient: .80** SE=
+    0.26}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``A one year increase in a school teaching staff's
+      average years of experience, on average, is associated with a 0.80
+      point increase in API score, holding all covariates constant''
+    \end{itemize}
+  \end{itemize}
+\item
+  Textbooks
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Per-pupil textbook expenditures \(\hat{\beta_1}\)
+    Coefficient: .11*** SE=0.003}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``A \$1 increase in per-pupil expenditures for
+      textbooks is associated with a 0.1 point increase in API score,
+      holding all covariates constant''\\
+    \item
+      Interpretation: ``A \$10 increase in per-pupil expenditures for
+      textbooks, on average, is associated with a 1 point increase in
+      API score, holding all covariates constant''\\
+    \item
+      Interpretation: ``A \$100 increase in per-pupil expenditures for
+      textbooks, on average, is associated with a 10 point increase in
+      API score, holding all covariates constant''
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-3}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Why do I like this piece of scholarship?
+\item
+  Example of how to deal with ``metrics'' that I fundamentally disagree
+  with but are part of our educational reality
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Metrics like SAT/ACT scores, standardized K-12 test, are ``firmly
+    entrenched part of the political landscape'' that schools and
+    students must navigate
+  \item
+    In many cases, they are institutionalized within federal, state, and
+    university/school policies
+  \item
+    ``Aim is to make a strong argument for equity by marshaling the very
+    data that dominate the political discourse'' (p.~765)
+  \end{itemize}
+\item
+  Direct response to policies
+\item
+  Cool understanding of legal logic when it comes to education finance!
+\end{itemize}
+
+\end{frame}
+
+\end{document}

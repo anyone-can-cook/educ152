@@ -1,0 +1,1309 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[8pt,ignorenonframetext,dvipsnames]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+\centering
+\begin{beamercolorbox}[sep=16pt,center]{part title}
+  \usebeamerfont{part title}\insertpart\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+\centering
+\begin{beamercolorbox}[sep=12pt,center]{part title}
+  \usebeamerfont{section title}\insertsection\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{part title}
+  \usebeamerfont{subsection title}\insertsubsection\par
+\end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Introduction to Multivariate Regression \& Program Evaluation},
+            pdfauthor={Lecture 15},
+            colorlinks=true,
+            linkcolor=Maroon,
+            filecolor=Maroon,
+            citecolor=Blue,
+            urlcolor=blue,
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+%packages
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{hyperref}
+
+\usepackage{tikz} % used for text highlighting, amongst others
+\usepackage{comment}
+
+%title slide stuff
+%\institute{Department of Education}
+%\title{Managing and Manipulating Data Using R}
+
+%
+\setbeamertemplate{navigation symbols}{} % get rid of navigation icons:
+\setbeamertemplate{footline}[page number]
+
+%\setbeamertemplate{frametitle}{\thesection \hspace{0.2cm} \insertframetitle}
+\setbeamertemplate{section in toc}[sections numbered]
+%\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=3.2em\color{gray}\rlap{\hskip-2em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par
+}
+
+%define colors
+%\definecolor{uva_orange}{RGB}{216,141,42} % UVa orange (Rotunda orange)
+\definecolor{mygray}{rgb}{0.95, 0.95, 0.95} % for highlighted text
+	% grey is equal parts red, green, blue. higher values >> lighter grey
+	%\definecolor{lightgraybo}{rgb}{0.83, 0.83, 0.83}
+
+% new commands
+
+%highlight text with very light grey
+\newcommand*{\hlg}[1]{%
+	\tikz[baseline=(X.base)] \node[rectangle, fill=mygray] (X) {#1};%
+}
+%, inner sep=0.3mm
+%highlight text with very light grey and use font associated with code
+\newcommand*{\hlgc}[1]{\texttt{\hlg{#1}}}
+
+%modifying back ticks to add grey background
+\let\OldTexttt\texttt
+\renewcommand{\texttt}[1]{\OldTexttt{\hlg{#1}}}
+
+
+\begin{comment}
+
+% Font
+\usepackage[defaultfam,light,tabular,lining]{montserrat}
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\fontfamily{Montserrat-TOsF}\selectfont #1}}
+
+% Change color of boldface text to darkgray
+\renewcommand{\textbf}[1]{{\color{darkgray}\bfseries\fontfamily{Montserrat-TOsF}#1}}
+
+% Bullet points
+\setbeamertemplate{itemize item}{\color{BlueViolet}$\circ$}
+\setbeamertemplate{itemize subitem}{\color{BrickRed}$\triangleright$}
+\setbeamertemplate{itemize subsubitem}{$-$}
+
+% Reduce space before lists
+%\addtobeamertemplate{itemize/enumerate body begin}{}{\vspace*{-8pt}}
+
+\let\olditem\item
+\renewcommand{\item}{%
+  \olditem\vspace{4pt}
+}
+
+% decreasing space before and after level-2 bullet block
+%\addtobeamertemplate{itemize/enumerate subbody begin}{}{\vspace*{-3pt}}
+%\addtobeamertemplate{itemize/enumerate subbody end}{}{\vspace*{-3pt}}
+
+% decreasing space before and after level-3 bullet block
+%\addtobeamertemplate{itemize/enumerate subsubbody begin}{}{\vspace*{-2pt}}
+%\addtobeamertemplate{itemize/enumerate subsubbody end}{}{\vspace*{-2pt}}
+
+%Section numbering
+\setbeamertemplate{section page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=10pt,center,rounded=true,shadow=true]{section title}
+        \usebeamerfont{section title}\thesection~\insertsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\setbeamertemplate{subsection page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=6pt,center,rounded=true,shadow=true]{subsection title}
+        \usebeamerfont{subsection title}\thesection.\thesubsection~\insertsubsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\end{comment}
+
+\title{Introduction to Multivariate Regression \& Program Evaluation}
+\providecommand{\subtitle}[1]{}
+\subtitle{HED 612}
+\author{Lecture 15}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
+\begin{frame}{Where are we going\ldots{}.}
+\protect\hypertarget{where-are-we-going.}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Our last Lecture!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    End of Semester House keeping items
+  \item
+    Categorical by Categorical interactions
+  \item
+    Continuous by Continuous interactions
+  \item
+    Homework: Class Survey!
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Reading Day, ``No Class'' {[}5/7/2020{]}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{\texttt{AER} R Package and Data!}
+\protect\hypertarget{aer-r-package-and-data}{}
+
+We're going to try out a textbook I'm considering for HED 613 that comes
+with an accompanying R package
+
+\begin{itemize}
+\tightlist
+\item
+  Applied Econometrics with R, Christian Kleiber \& Achim Zeileis
+\item
+  \href{https://rdrr.io/cran/AER/f/inst/doc/AER.pdf}{\texttt{AER}
+  Package}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Comes with different functions and datasets!
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+Current Population Survey
+
+\begin{itemize}
+\item
+  The Current Population Survey (CPS), sponsored jointly by the U.S.
+  Census Bureau and the U.S. Bureau of Labor Statistics (BLS), is the
+  primary source of labor force statistics for the population of the
+  United States
+\item
+  CORRECTION FROM LECTURE 14
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{earnings} = average hourly earnings
+  \item
+    \texttt{earnings} \(\ne\) yearly income in \$000s
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{end-of-semester-logistics}{%
+\section{End of Semester Logistics}\label{end-of-semester-logistics}}
+
+\begin{frame}{Grading}
+\protect\hypertarget{grading}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Submit whatever homework assignments you can by Friday, May 8th, 2010
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Your course grade will be based on what you can submit!
+  \item
+    Don't stress trying to finish them all if you can't!
+  \item
+    But be sure to download all materials sometime soon after finals!
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  For those pursuing final projects\ldots{}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    I will absolutely consider final projects as ``ongoing'' if you'd
+    like to keep working on them!
+  \item
+    If you would like detailed feedback, submit what you have by May 8th
+  \item
+    I am happy to work with you all through Summer and Fall 2020 as you
+    continue working on these
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Next steps for those interested in quantitative research!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Continue taking classes in both statistics and data management!
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Fall 2020: HED 696C Data Management and Manipulation in R
+    \item
+      Spring 2021: HED 613 Regression modeling with non-continuous
+      dependent variables
+    \item
+      Classes in Sociology and other COE departments are good too!
+    \end{itemize}
+  \item
+    Seek opportunities to practice these skills!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Student Course Survey (formerly Teacher Course
+Evaluations)}
+\protect\hypertarget{student-course-survey-formerly-teacher-course-evaluations}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Student course survey's have been formally canceled!
+\item
+  But I would love your feedback (the good and the bad!)
+\item
+  PLEASE TAKE THIS SURVEY
+
+  \begin{itemize}
+  \tightlist
+  \item
+    It contains same questions as the student course surveys
+  \item
+    It is anonymous!
+  \item
+    Your honest feedback will help me improve the course!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{interaction-effects-continued}{%
+\section{Interaction Effects
+Continued\ldots{}}\label{interaction-effects-continued}}
+
+\begin{frame}{What are interaction effects?}
+\protect\hypertarget{what-are-interaction-effects}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Simple hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    X has an effect on Y
+  \item
+    Ex: Participation in MAS (X) has an effect on graduation (Y)
+  \end{itemize}
+\item
+  Interactions = Conditional Hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The effect of X on Y depends on a third variable
+  \item
+    Ex: the effect of MAS participation (X) on graduation (Y) differs by
+    race (Z)
+  \end{itemize}
+\item
+  What is an interaction effect? (i.e., ``moderators'')
+
+  \begin{itemize}
+  \tightlist
+  \item
+    An interaction effect is when the relationship between two variables
+    (X and Y) depends on the value of a third variable Z
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Interaction Effects}
+\protect\hypertarget{interaction-effects}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Interaction Effects are difficult!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    It takes a while (and lots of practice!) to get comfortable thinking
+    about and interpreting interaction effects
+  \end{itemize}
+\item
+  I will provide an ``introduction'' to interaction effects!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    We will continue to learn interaction effects in HED 613
+  \item
+    If you don't take HED 613, seek out more opportunities to learn
+    interaction effects!
+  \item
+    Read empirical pieces that use/interpret interaction effects!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Three cases of interaction effects}
+\protect\hypertarget{three-cases-of-interaction-effects}{}
+
+\textbf{1. Interaction between a categorical and continuous variable}
+{[}last week{]}
+
+\begin{itemize}
+\tightlist
+\item
+  Example: the effect of years of schooling (X) on earnings (Y) differs
+  for men and women (Z)
+\end{itemize}
+
+\textbf{2. Interaction between two categorical variables} {[}today{]}
+
+\begin{itemize}
+\tightlist
+\item
+  Example: the effect of having more than a high school diploma (X) on
+  earnings (Y) differs for men and women (Z)
+\end{itemize}
+
+\textbf{3. Interaction between two continuous variables} {[}today{]}
+
+\begin{itemize}
+\tightlist
+\item
+  Example: the effect of years of schooling (X) on earnings (Y) differs
+  by age (Z)
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{interactions-between-two-categorical-variables}{%
+\section{Interactions between two categorical
+variables}\label{interactions-between-two-categorical-variables}}
+
+\begin{frame}{Interaction between two categorical variables}
+\protect\hypertarget{interaction-between-two-categorical-variables}{}
+
+\textbf{RQ: Does the effect of having more than a HS diploma (X) on
+earnings (Y) differ by gender (Z)?}
+
+\begin{itemize}
+\tightlist
+\item
+  Categorical by Categorical Interaction
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Y = earnings
+  \item
+    X = 0/1 more than a HS diploma
+  \item
+    Z (interaction variable) = 0/1 Women (0=men)
+  \end{itemize}
+\item
+  Simple hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Having more than a HS diploma affects earnings
+  \end{itemize}
+\item
+  Conditional hypothesis (interaction effect)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The effect of having more than a HS diploma (X) on earnings (Y)
+    differs for women and men
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Simple Regression (no interaction effect)}
+\protect\hypertarget{simple-regression-no-interaction-effect}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Simple Regression
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is the having more than a HS diploma on earnings?
+  \item
+    Population regression model:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \(Y_i = \beta_0 + \beta_1X_{1i} + u_i\)
+    \item
+      where Y= earnings, \(X_{1}\) = 0/1 having more than a HS diploma
+    \end{itemize}
+  \end{itemize}
+\item
+  Run model in R
+\item
+  \(\hat{earnings} = \hat{\beta_0} + \hat{\beta_1}*morehs_{i}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{earnings} = 14.48726 + 6.54299*morehs_{i}\)
+  \end{itemize}
+\item
+  \(\hat{\beta_1}\) = 6.54299
+
+  \begin{itemize}
+  \tightlist
+  \item
+    On average, having more than a high school diploma as opposed to
+    having a high school diploma or less is associated with a \$6.54
+    increase in hourly earnings
+  \item
+    \(\hat{\beta_1}\) is significant at the 0.000 level
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Multivariate Regression (no interaction effect)}
+\protect\hypertarget{multivariate-regression-no-interaction-effect}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Multivariate Regression
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is the effect of having more than a HS diploma on earnings
+    controlling for gender?
+  \item
+    Population regression model:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i\)
+    \item
+      where Y= earnings, \(X_{1}\) = 0/1 more than HS, \(X_{2}\) = 0/1
+      women
+    \end{itemize}
+  \end{itemize}
+\item
+  Run model in R
+\item
+  \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}X_{2i}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = 16.16394 + 6.81100*X_{1i} - 4.17302*X_{2i}\)
+  \end{itemize}
+\item
+  \(\hat{\beta_1}\) = 6.81100
+
+  \begin{itemize}
+  \tightlist
+  \item
+    On average, having more than a high school diploma as opposed to
+    having a high school diploma or less is associated with a \$6.81
+    increase in hourly earnings, controlling for gender
+  \item
+    \(\hat{\beta_1}\) is significant at the 0.000 level
+  \end{itemize}
+\item
+  \(\hat{\beta_2}\) = -4.17302
+
+  \begin{itemize}
+  \tightlist
+  \item
+    On average, identifying as a woman as opposed to identifying as a
+    man, is associated with a \$4.17 decrease in hourly earnings,
+    controlling for whether or not participant has more than a HS
+    diploma
+  \item
+    \(\hat{\beta_2}\) is significant at the 0.000 level
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Multivariate Regression (no interaction effect)}
+\protect\hypertarget{multivariate-regression-no-interaction-effect-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  The multivariate regression which only controls for gender\ldots{}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Assumes that the effect of having more than a HS diploma is the same
+    for men and women!
+  \item
+    We can extend the model by allowing the effect of having more than a
+    high school diploma to depend on gender by including an interaction
+    between these two variables!
+  \end{itemize}
+\item
+  Same steps as last week\ldots{} {[}refresher!{]}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    We will run separate models by different groups of Z
+  \item
+    Then we will run interaction model
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Separate Models for each group of Z}
+\protect\hypertarget{separate-models-for-each-group-of-z}{}
+
+\begin{itemize}
+\tightlist
+\item
+  What is the effect having more than a HS Diploma on earnings for
+  women?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Run model in R
+  \item
+    \(\hat{Y_i} = 12.31394 + 6.30489*X_{1i}\)
+  \item
+    \(\hat{\beta_0}\): predicted earnings for women with a HS diploma or
+    less
+  \item
+    \(\hat{\beta_1}\): On average, having more than a HS diploma as
+    opposed to having a HS diploma or less is associated with a \$6.31
+    increase in hourly earnings \emph{for women}
+  \item
+    Y\textbar{} X=1: \(12.31394 + 6.30489*1\) = \$18.61883 hourly
+    earnings
+  \end{itemize}
+\item
+  What is the effect having more than a HS Diploma on earnings for men?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Run model in R
+  \item
+    \(\hat{Y_i} = 15.94698 + 7.18773*X_{1i}\)
+  \item
+    \(\hat{\beta_0}\): predicted earnings for men with a HS diploma or
+    less
+  \item
+    \(\hat{\beta_1}\): On average, having more than a HS diploma as
+    opposed to having a HS diploma or less is associated with a \$7.19
+    increase in hourly earnings \emph{for men}
+  \item
+    Y\textbar{} X=1: \(15.94698 + 7.18773*1\) = \$23.13471 hourly
+    earnings
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Interaction Model for Two Categorical Variables}
+\protect\hypertarget{interaction-model-for-two-categorical-variables}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Let's run an interaction effect model to investigate whether the
+  effect of having more than a HS diploma (X) on earnings (Y) differs by
+  gender (Z)
+\item
+  Population regression model
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2Z_{i} + \beta_3(X_{1i}*Z_{i}) + u_i\)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      where Y= earnings, \(X_{1}\) = 0/1 More than HS, \(Z_{i}\) = 0/1
+      Women
+    \item
+      \(X_{1i}*Z_{i}\) = interaction for more than HS and gender
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  OLS Prediction line without estimates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}Z_{i} + \hat{\beta_3}(X_{1i}*Z_{i})\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(\hat{\beta_0}\) = \(\hat{Y_i}\) when X1=0 and Z=0}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Predicted earnings for men (Z=0) with a high school diploma or less
+    (X1=0)
+  \end{itemize}
+\item
+  \textbf{\(\hat{\beta_1}\) = change in \(\hat{Y_i}\) for X1=1 as
+  opposed to X1=0, when Z=0}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Change in earnings for having more than a HS diploma (X1=1\_) as
+    opposed to having a HS diploma or less (X1=0) for men (Z=0)
+  \end{itemize}
+\item
+  \textbf{\(\hat{\beta_2}\) = change in \(\hat{Y_i}\) for Z1=1 as
+  opposed to Z1=0, when X1=0}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Change in earnings for women (Z=1) as opposed to men (Z=0) with a HS
+    diploma or less (X1=0)
+  \end{itemize}
+\item
+  \textbf{\(\hat{\beta_3}\) = interaction term: how much the effect of
+  X1 on \(\hat{Y_i}\) changes when Z ``increases by one unit'' or when
+  Z=1 as opposed to Z=0}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    change in the effect of having more than a HS diploma on earnings
+    for for Z=1 as opposed to Z=0
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Interaction Model for Categorical by Categorical
+Interaction}
+\protect\hypertarget{interaction-model-for-categorical-by-categorical-interaction}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Run in R
+\item
+  \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}Z_{i} + \hat{\beta_3}(X_{1i}*Z_{i})\)
+\item
+  \(\hat{Y_i} = 15.94698 + 7.18773*X_{1i} - 3.63304*Z_{i} - 0.88283*(X_{1i}*Z_{i})\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{What do we want to know from interactions?}
+\protect\hypertarget{what-do-we-want-to-know-from-interactions}{}
+
+\begin{enumerate}
+\item
+  Is there an interaction effect?
+\item
+  What is the predicted value of Y for Z=0 and Z=1 at different values
+  of X?
+\item
+  What is the effect of X on Y for different values of Z?
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Is there an interaction effect?}
+\protect\hypertarget{is-there-an-interaction-effect}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Is the effect of years having more than a high school degree
+  significantly different for women vs men?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2Z_{i} + \beta_3(X_{1i}*Z_{i}) + u_i\)
+  \end{itemize}
+\item
+  Hypothesis test
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_0: \beta_3 =0\) vs \(H_0: \beta_3 \ne 0\)
+  \item
+    In other words, test whether the beta coefficient for the
+    interaction term is significantly different from zero. If so, then
+    there is an interaction!
+  \end{itemize}
+\item
+  \(\hat{\beta_3}\) = -0.88283 , p-value of 0.000
+
+  \begin{itemize}
+  \tightlist
+  \item
+    We reject \(H_0\) at \(\alpha\) of 0.05
+  \item
+    There is a statistically significant interaction!
+  \end{itemize}
+\item
+  Magnitude
+
+  \begin{itemize}
+  \tightlist
+  \item
+    If \(\hat{\beta_3}\) is greater than zero (and statistically
+    significant!) the effect of X on Y is larger when Z=1 than when Z=0
+  \item
+    If \(\hat{\beta_3}\) is less than zero (and statistically
+    significant!) the effect of X on Y is smaller when Z=1 than when Z=0
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{What is the predicted value of Y for Z=0 and Z=1 at
+different values of X}
+\protect\hypertarget{what-is-the-predicted-value-of-y-for-z0-and-z1-at-different-values-of-x}{}
+
+\begin{itemize}
+\tightlist
+\item
+  What is the predicted earnings (Y) for men (Z=0) with more than a HS
+  diploma (X=1)?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = 15.94698 + 7.18773*X_{1i} - 3.63304*Z_{i} - 0.88283*(X_{1i}*Z_{i})\)
+  \item
+    Z=0 \& X=1:
+    \(15.94698 + (7.18773*1) - (3.63304*0) - (0.88283*(1*0))\)
+  \item
+    \(\$23.13 = 15.94698 + (7.18773)\)
+  \end{itemize}
+\item
+  What is the predicted earnings (Y) for women (Z=1) with more than a HS
+  diploma (X=1)?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = 15.94698 + 7.18773*X_{1i} - 3.63304*Z_{i} - 0.88283*(X_{1i}*Z_{i})\)
+  \item
+    Z=1 \& X=1:
+    \(15.94698 + (7.18773*1) - (3.63304*1) - (0.88283*(1*1))\)
+  \item
+    \(\$18.62 = 15.94698 + (7.18773) - (3.63304) - (0.88283)\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Same result as when we ran model separately by sample!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Men: \(15.94698 + 7.18773*1\) = 23.13471
+  \item
+    Women: \(12.31394 + 6.30489*1\) = 18.61883
+  \end{itemize}
+\item
+  But running separately by sample does not test whether there is a
+  statistically significant interaction!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{What is the effect of X on Y for different values of Z}
+\protect\hypertarget{what-is-the-effect-of-x-on-y-for-different-values-of-z}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}*1 + \hat{\beta_3}(X_{1i}*1)\)
+\item
+  \(\hat{Y_i} = 15.94698 + 7.18773*X_{1i} - 3.63304*Z_{i} - 0.88283*(X_{1i}*Z_{i})\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Remember that:
+  \item
+    \(\hat{\beta_1}\) = change in \(\hat{Y_i}\) for a one-unit increase
+    in X1, when Z=0 -- \(\hat{\beta_1}\) = how much effect of X1 on Y
+    changes when Z increases by one unit
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(\hat{\beta_1}\): Average effect of X on Y when Z=0}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{\beta_1}\) = 7.18773
+  \item
+    change in \(\hat{Y_i}\) for X1=1 as opposed to X1=0, when Z=0\_\_
+  \item
+    Change in earnings for having more than a HS diploma (X1=1\_) as
+    opposed to having a HS diploma or less (X1=0) for men (Z=0)
+  \item
+    On average, having more than a HS diploma (X1=1) as opposed to
+    having a HS diploma or less (X1=0) is associated with \$7.19
+    increase in hourly earnings for men (Z=0)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\((\hat{\beta_1} + \hat{\beta_3})\): Average effect of X on Y
+  when Z=1}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{\beta_1}\) = 7.18773; \(\hat{\beta_3}\) = - 0.88283
+  \item
+    7.18773 + - 0.88283 = 6.3049
+  \item
+    On average, having more than a HS diploma (X1=1) as opposed to
+    having a HS diploma or less (X1=0) is associated with \$6.30
+    increase in hourly earnings for women (Z=1)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Same result as when we ran model separately by sample!
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{interactions-by-two-continuous-variables}{%
+\section{Interactions by Two Continuous
+Variables}\label{interactions-by-two-continuous-variables}}
+
+\begin{frame}{Interactions by Two Continuous Variables}
+\protect\hypertarget{interactions-by-two-continuous-variables-1}{}
+
+\textbf{RQ: Does the effect of years of schooling (X) on earnings (Y)
+differ by age (Z)?}
+
+\begin{itemize}
+\tightlist
+\item
+  Continuous by Categorical Interaction
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Y = earnings
+  \item
+    X = years of schooling
+  \item
+    Z (interaction variable) = age
+  \end{itemize}
+\item
+  Simple hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Years of schooling affects earnings
+  \end{itemize}
+\item
+  Conditional hypothesis (interaction effect)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The effect of years of schooling (X) on earnings (Y) depends on age
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Simple and Multivariate Regression (no interaction
+effect)}
+\protect\hypertarget{simple-and-multivariate-regression-no-interaction-effect}{}
+
+Simple Regression
+
+\begin{itemize}
+\tightlist
+\item
+  Population Regression Model
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_{1i} + u_i\)
+  \item
+    Where Y= earnings, \(X_1\) = years of schooling
+  \end{itemize}
+\item
+  Run in R
+\item
+  OLS Prediction line with estimates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = -5.37626 + 1.74515*X_{1i}\)
+  \item
+    On average, a one-year increase in years of schooling is associated
+    with a \$1.75 increase in hourly earnings
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+Multivariate Regression
+
+\begin{itemize}
+\tightlist
+\item
+  Population Regression Model
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i\)
+  \item
+    Where Y= earnings, \(X_1\) = years of schooling, \(X_2\) = age
+  \end{itemize}
+\item
+  Run in R
+\item
+  OLS Prediction line with estimates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = -11.177774 + 1.706443*X_{1i} + 0.153515*X_{2i}\)
+  \item
+    On average, a one-year increase in years of schooling is associated
+    with a \$171 increase in hourly earnings, holding age constant
+  \end{itemize}
+\item
+  But this assumes the effect of years of schooling is the same across
+  all ages!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Interaction Model for Two Categorical Variables}
+\protect\hypertarget{interaction-model-for-two-categorical-variables-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Let's run an interaction effect model to investigate whether the
+  effect of years of school (X) on earnings (Y) differs by age (Z)
+\item
+  Population regression model
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2Z_{i} + \beta_3(X_{1i}*Z_{i}) + u_i\)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      where Y= earnings, \(X_{1}\) = years of school, \(Z_{i}\) = age
+    \item
+      \(X_{1i}*Z_{i}\) = interaction for years of schooling and age
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  OLS Prediction line without estimates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}Z_{i} + \hat{\beta_3}(X_{1i}*Z_{i})\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(\hat{\beta_0}\) = \(\hat{Y_i}\) when X1=0 and Z=0}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Predicted earnings for observations with zero years of schooling
+    (X=0) and age zero (Z=0)
+  \end{itemize}
+\item
+  \textbf{\(\hat{\beta_1}\) = change in \(\hat{Y_i}\) one-unit increase
+  in X1, when Z=0}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Change in earnings for one year increase in schooling when age is
+    zero
+  \end{itemize}
+\item
+  \textbf{\(\hat{\beta_2}\) = change in \(\hat{Y_i}\) for one-unit
+  increase in Z, when X1=0}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Change in earnings for one year increase in age when years of
+    schooling is zero
+  \end{itemize}
+\item
+  \textbf{\(\hat{\beta_3}\) = interaction term: how much the effect of
+  X1 on \(\hat{Y_i}\) changes when Z increases by one unit}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    change in the effect of years of schooling for a one-year increase
+    in age
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Interaction Model for Continuous by Continuous
+Interaction}
+\protect\hypertarget{interaction-model-for-continuous-by-continuous-interaction}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Run in R
+\item
+  \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}Z_{i} + \hat{\beta_3}(X_{1i}*Z_{i})\)
+\item
+  \(\hat{Y_i} = -7.032907 + 1.398881*X_{1i} + 0.055153*Z_{i} + 0.007281*(X_{1i}*Z_{i})\)
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Is there an interaction effect?}
+\item
+  \(\beta_3\) is significant at the 0.000
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Yes, there is a statistically significant interaction between years
+    of schooling and age!
+  \end{itemize}
+\item
+  Positive \(\beta_3\) coefficient means that the effect of years of
+  schooling gets stronger as age increases!
+\item
+  Negative \(\beta_3\) coefficient means that the effect of years of
+  schooling gets weaker as age increases!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{What is the predicted value of Y for different values of X
+and Z}
+\protect\hypertarget{what-is-the-predicted-value-of-y-for-different-values-of-x-and-z}{}
+
+\begin{itemize}
+\tightlist
+\item
+  X = 16 years of schooling (BA) and Z= 24 years old
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Y \textbar{}X=16, Z=24:
+    \(\hat{Y_i} = -7.032907 + (1.398881*16) + (0.055153*24) + (0.007281*(16*24))\)
+  \item
+    \(\hat{Y_i} = -7.032907 + 22.3821 + 1.323672 + 0.007281*(384)\)
+  \item
+    \(19.46877 = -7.032907 + 22.3821 + 1.323672 + 2.795904\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  X = 16 years of schooling (BA) and Z = 45 years old
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Y \textbar{}X=16, Z=45:
+    \(\hat{Y_i} = -7.032907 + (1.398881*16) + (0.055153*45) + (0.007281*(16*45))\)
+  \item
+    \(\hat{Y_i} = -7.032907 + 22.3821 + 2.481885+ 0.007281*(720)\)
+  \item
+    \(21.91519 = -7.032907 + 22.3821 + 1.323672 + 5.24232\)
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{thank-you-and-take-care-of-yourselves}{%
+\section{THANK YOU AND TAKE CARE OF
+YOURSELVES}\label{thank-you-and-take-care-of-yourselves}}
+
+\end{document}

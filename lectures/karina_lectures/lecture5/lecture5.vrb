@@ -1,0 +1,65 @@
+\frametitle{Student Exercise \#3 {[}SOLUTIONS{]}}
+\protect\hypertarget{student-exercise-3-solutions}{}
+
+RQ1: What is the relationship between district-wide math test scores (Y)
+and district expenditures per student (X)?
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Using \texttt{summary(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is SER? \textbf{SER is on average how far away an actual
+    observed value of Y is from the predicted value of Y for a random
+    observation}
+  \item
+    Interpret SER. \textbf{18.55; Average distance between math test
+    score of a random district and the math test score predicted by the
+    OLS regression is 18.55}
+  \end{itemize}
+\item
+  Using \texttt{anova(mod1)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Show that SER = \(\sqrt{\frac{SSR}{n-2}}\) =
+    \(\sqrt{\frac{143831}{418}}\) = \(\sqrt{344.0933}\) =18.549
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+
+RQ2: What is the relationship between district-wide math test scores (Y)
+and student-teacher ratio (X)?
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Using \texttt{summary(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Interpret SER \textbf{18.41; Average distance between math test
+    score of a random district and the math test score predicted by the
+    OLS regression is 18.41}
+  \end{itemize}
+\item
+  Using \texttt{anova(mod4)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Show that SER = \(\sqrt{\frac{SSR}{n-2}}\) =
+    \(\sqrt{\frac{141735}{418}}\) = \(\sqrt{339.0789}\) = 18.414
+  \end{itemize}
+\end{enumerate}
+

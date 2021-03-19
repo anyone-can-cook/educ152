@@ -1,0 +1,34 @@
+\frametitle{Tidyverse}
+\protect\hypertarget{tidyverse-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Most distinctive part of Tidyverse approach to R syntax is using pipes
+  or piping operator \texttt{\%\textgreater{}\%}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Allows for ``sequential computations'' or multiple commands/tasks in
+    the same line of code
+  \item
+    I usually think of the words ``AND THEN'' every time I see a pipe
+  \end{itemize}
+\item
+  \texttt{caschool\ \%\textgreater{}\%\ select(enrl\_tot,\ computer,\ read\_scr)\ \%\textgreater{}\%\ var\_label()}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{caschool}= open the california school dataset \textbf{AND
+    THEN}
+  \item
+    \texttt{select(enrl\_tot,\ computer,\ read\_scr)} = select the three
+    variables enrol\_tot, computer, read\_scr \textbf{AND THEN}
+  \item
+    \texttt{var\_label()} = print the labels for the three variables
+    selected
+  \end{itemize}
+\end{itemize}
+

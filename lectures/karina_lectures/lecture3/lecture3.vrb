@@ -1,0 +1,28 @@
+\frametitle{In-Class Exercise {[}Solutions{]}}
+\protect\hypertarget{in-class-exercise-solutions}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#1 }
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(papres105plus, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+
+\CommentTok{#2 }
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(born) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{val_labels}\NormalTok{()}
+
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(born}\OperatorTok{==}\DecValTok{1}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{   }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(hrs1, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(born}\OperatorTok{==}\DecValTok{2}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{   }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(hrs1, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+
+\CommentTok{#3}
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(degree) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{val_labels}\NormalTok{()}
+
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(degree}\OperatorTok{>=}\DecValTok{3}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(hrs1, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(degree}\OperatorTok{<=}\DecValTok{2}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(hrs1, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+\end{Highlighting}
+\end{Shaded}
+

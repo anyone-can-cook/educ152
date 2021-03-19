@@ -1,0 +1,1448 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+  8pt,
+  ignorenonframetext,
+  dvipsnames]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Introduction to Multivariate Regression \& Econometrics},
+  pdfauthor={Lecture 6},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+%packages
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{hyperref}
+
+\usepackage{tikz} % used for text highlighting, amongst others
+\usepackage{comment}
+
+%title slide stuff
+%\institute{Department of Education}
+%\title{Managing and Manipulating Data Using R}
+
+%
+\setbeamertemplate{navigation symbols}{} % get rid of navigation icons:
+\setbeamertemplate{footline}[page number]
+
+%\setbeamertemplate{frametitle}{\thesection \hspace{0.2cm} \insertframetitle}
+\setbeamertemplate{section in toc}[sections numbered]
+%\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=3.2em\color{gray}\rlap{\hskip-2em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par
+}
+
+%define colors
+%\definecolor{uva_orange}{RGB}{216,141,42} % UVa orange (Rotunda orange)
+\definecolor{mygray}{rgb}{0.95, 0.95, 0.95} % for highlighted text
+	% grey is equal parts red, green, blue. higher values >> lighter grey
+	%\definecolor{lightgraybo}{rgb}{0.83, 0.83, 0.83}
+
+% new commands
+
+%highlight text with very light grey
+\newcommand*{\hlg}[1]{%
+	\tikz[baseline=(X.base)] \node[rectangle, fill=mygray] (X) {#1};%
+}
+%, inner sep=0.3mm
+%highlight text with very light grey and use font associated with code
+\newcommand*{\hlgc}[1]{\texttt{\hlg{#1}}}
+
+%modifying back ticks to add grey background
+\let\OldTexttt\texttt
+\renewcommand{\texttt}[1]{\OldTexttt{\hlg{#1}}}
+
+
+\begin{comment}
+
+% Font
+\usepackage[defaultfam,light,tabular,lining]{montserrat}
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\fontfamily{Montserrat-TOsF}\selectfont #1}}
+
+% Change color of boldface text to darkgray
+\renewcommand{\textbf}[1]{{\color{darkgray}\bfseries\fontfamily{Montserrat-TOsF}#1}}
+
+% Bullet points
+\setbeamertemplate{itemize item}{\color{BlueViolet}$\circ$}
+\setbeamertemplate{itemize subitem}{\color{BrickRed}$\triangleright$}
+\setbeamertemplate{itemize subsubitem}{$-$}
+
+% Reduce space before lists
+%\addtobeamertemplate{itemize/enumerate body begin}{}{\vspace*{-8pt}}
+
+\let\olditem\item
+\renewcommand{\item}{%
+  \olditem\vspace{4pt}
+}
+
+% decreasing space before and after level-2 bullet block
+%\addtobeamertemplate{itemize/enumerate subbody begin}{}{\vspace*{-3pt}}
+%\addtobeamertemplate{itemize/enumerate subbody end}{}{\vspace*{-3pt}}
+
+% decreasing space before and after level-3 bullet block
+%\addtobeamertemplate{itemize/enumerate subsubbody begin}{}{\vspace*{-2pt}}
+%\addtobeamertemplate{itemize/enumerate subsubbody end}{}{\vspace*{-2pt}}
+
+%Section numbering
+\setbeamertemplate{section page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=10pt,center,rounded=true,shadow=true]{section title}
+        \usebeamerfont{section title}\thesection~\insertsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\setbeamertemplate{subsection page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=6pt,center,rounded=true,shadow=true]{subsection title}
+        \usebeamerfont{subsection title}\thesection.\thesubsection~\insertsubsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\end{comment}
+
+\title{Introduction to Multivariate Regression \& Econometrics}
+\subtitle{HED 612}
+\author{Lecture 6}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+\hypertarget{prep}{%
+\section{Prep}\label{prep}}
+
+\begin{frame}{Download Data and Open R Script}
+\protect\hypertarget{download-data-and-open-r-script}{}
+
+We'll be using the California Schools and GSS data today; no need to
+re-download!
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Download the Lecture 6 PDF and R files for this week
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Place all files in HED612\_S21
+    \textgreater\textgreater\textgreater{} lectures
+    \textgreater\textgreater\textgreater{} lecture6
+  \end{itemize}
+\item
+  Open the RProject (should be in your main HED612\_S21 folder)
+\item
+  Once the RStudio window opens, open the Lecture 6 R script by clicking
+  on:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    file \textgreater\textgreater\textgreater{} open file\ldots{}
+    \textgreater\textgreater\textgreater{} {[}navigate to lecture 6
+    folder{]} \textgreater\textgreater\textgreater{} lecture6.R
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{General Comments on Problem Sets and ``Learning
+Statistics''}
+\protect\hypertarget{general-comments-on-problem-sets-and-learning-statistics}{}
+
+\begin{itemize}
+\tightlist
+\item
+  It's perfectly okay to feel ``confused'' or feel like you're ``still
+  not getting it'' under ``normal circumstances''
+
+  \begin{itemize}
+  \tightlist
+  \item
+    We are in the middle of global health pandemic working under
+    extenuating circumstances\ldots{} give yourself a break!
+  \item
+    You don't become a knowledgeable, confident, experienced
+    quantitative researcher after one lecture, one class, one
+    year\ldots{}
+  \item
+    But you can make a lot of progress by learning the foundations of
+    regression well (what we're doing in this class)
+  \end{itemize}
+\item
+  It's like learning/earning each piece of a puzzle when you don't
+  always know what the complete puzzle looks like
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Puzzle pieces seem to ``click'' down the road when you are actually
+    working on a project/dissertation or thesis
+  \item
+    We have to learn the ``dense'' stuff of statistics to get to the
+    important, critical fun part of quantitative research!
+  \end{itemize}
+\item
+  I still struggle with this too\ldots{}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    After taking statistics classes in Education, Public Policy,
+    Sociology, and Economics for 8 years!
+  \item
+    I learned the most when I sought out opportunities to apply my
+    statistics and data skills (although it was a scary process!)
+  \item
+    The ``clicking'' of things I learned in classes as a student has
+    often happened now as an assistant professor (it takes time!)
+  \item
+    I push myself to keep learning\ldots{} when I read empirical
+    articles, I never skip the methods section!
+
+    \begin{itemize}
+    \tightlist
+    \item
+      I take the time to look up things I am confused about
+    \item
+      I reach out to folks that know statistics more than I do
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Class Overview}
+\protect\hypertarget{class-overview}{}
+
+Last week:
+
+\begin{itemize}
+\tightlist
+\item
+  Prediction
+\item
+  Measures of Model Fit
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(R^2\)
+  \item
+    Standard Error of the Regression (SER)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+This Week:
+
+\begin{itemize}
+\tightlist
+\item
+  Using \(\hat{\beta_1}\) for hypothesis testing about \(\beta_1\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Review on hypothesis testing about population mean
+  \end{itemize}
+\item
+  Homework:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    HW\#6 posted on D2L
+  \item
+    Stock and Watson Chapter 5 {[}finish if you haven't already{]}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{hypothesis-testing}{%
+\section{Hypothesis Testing}\label{hypothesis-testing}}
+
+\begin{frame}{Hypothesis Testing}
+\protect\hypertarget{hypothesis-testing-1}{}
+
+\begin{itemize}
+\item
+  Stock \& Watson example: Superintendent needs to assess a claim that
+  smaller class sizes do not improve student learning
+\item
+  RQ: What is the effect of student-teacher ratio (X) on district
+  average test scores (Y)?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y_i = \beta_0 + \beta_1X_i + u_i\)
+  \item
+    Goal of causal inference: estimate \(\beta_1\), which shows the
+    average effect of one additional student per teacher on district
+    average test score
+  \item
+    We don't know \(\beta_1\); so we get an estimate of it
+    (\(\hat{\beta_1}\))
+  \item
+    We use \(\hat{\beta_1}\) to test hypotheses about \(\beta_1\)
+  \end{itemize}
+\item
+  \textbf{We always test the same hypothesis about \(\beta_1\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_0: \beta_1 =0\)
+  \item
+    \(H_a: \beta_1 \ne 0\)
+  \item
+    Why this hypothesis?
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  We are going to first review hypothesis testing about the population
+  mean (\(u_Y\))
+\item
+  Then cover hypothesis testing about \(\beta_1\)
+\item
+  Both use same concepts!
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{hypothesis-testing-about-population-mean}{%
+\section{Hypothesis Testing about Population
+Mean}\label{hypothesis-testing-about-population-mean}}
+
+\begin{frame}{Approaches to Hypothesis Testing about Population Mean}
+\protect\hypertarget{approaches-to-hypothesis-testing-about-population-mean}{}
+
+\begin{itemize}
+\tightlist
+\item
+  ``Classical'' approach
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Testing a claim of the population mean \(\mu\) when the population
+    standard deviation is known \(\sigma\)
+  \item
+    Based on standard deviations; compares the test statistic (Z-score)
+    to a critical value from the standard normal table/distribution
+  \item
+    If the test statistic falls under the rejection zone (using the
+    critical value), you reject the null
+  \item
+    Not used very often because it requires you to know the population
+    standard deviation (we hardly ever know this!)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  ``P-value'' approach
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Tests the probability of observing our sample mean under the
+    assumption that the null is true
+  \item
+    Compares the area associated with the test statistic (T statistic)
+    to the \(\alpha\) level of significance (using a normal curve)
+  \item
+    If the probability of observing such a sample mean is very small
+    (p-value is less than the alpha), you reject the null
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Normal Distribution}
+\protect\hypertarget{normal-distribution}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Special distribution used in statistics!
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Definition: a symmetric, bell-shaped distribution
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Not left-skewed (or negatively skewed or ``longer left tail'' )
+  \item
+    Not right-skewed (or positively skewed or ``longer right tail'')
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\includegraphics{distributions.png}
+
+\end{frame}
+
+\begin{frame}{Z-Score}
+\protect\hypertarget{z-score}{}
+
+Z-score (``standard score''): how many standard deviations away from the
+mean
+
+\medskip
+
+The Z-score \(z_i\) of an observation \(y_i\) is the number of standard
+deviations that observation is from the mean Y
+
+\begin{itemize}
+\tightlist
+\item
+  \(z_i = \frac{y_i - Y}{\sigma_Y}\)
+\item
+  numerator: deviations from the mean (i.e., difference from the mean)
+\item
+  denominator: standard deviation (i.e., standardized or ``scaled'' in
+  terms of standard deviation)
+\end{itemize}
+
+\medskip
+
+Example: We believe that taking 3+ remedial classes (instead of less
+than 3) will extend time to graduation. Average time to baccalaureate
+graduation for all college students in the U.S. is 5 years.
+
+\begin{itemize}
+\tightlist
+\item
+  \(H_0: \mu = 5 ; H_a: \mu \ne 5\)
+\item
+  \(y_i = 8\), \(Y=5\), \(\sigma_Y = 1.3\)
+\item
+  \(z_i = \frac{y_i - Y}{\sigma_Y} = \frac{8 - 5}{1.3} = 2.31\)
+\end{itemize}
+
+\medskip
+
+Note:
+
+\begin{itemize}
+\tightlist
+\item
+  Z-score requires us to know population parameters {[}which we often
+  don't know!{]}
+\item
+  So we usually use t-score instead {[}more on this later!{]}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    When sample size is large (1000+ z-distribution and t-distribution
+    is the same!)
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Standard Normal Distribution}
+\protect\hypertarget{standard-normal-distribution}{}
+
+\begin{itemize}
+\tightlist
+\item
+  A special case of the normal distribution
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  A normal distribution (i.e., bell-shaped) that has a mean of zero and
+  a standard deviation of one
+
+  \begin{itemize}
+  \tightlist
+  \item
+    draw picture
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  The value of each observation is already in terms of z-scores (or
+  t-scores)!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    each observation shows how many standard deviations from the mean
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+Questions:
+
+\begin{itemize}
+\tightlist
+\item
+  What value would an observation have on a standard normal distribution
+  if it's equal to the mean?
+\item
+  How likely are we to see an observation with a value of 3 on a
+  standard normal distribution?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Empirical Rule (i.e., 68-95-99 Rule)}
+\protect\hypertarget{empirical-rule-i.e.-68-95-99-rule}{}
+
+\emph{If a variable has an approximately normal distribution, then:}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  About 68\% of observations fall within one standard deviation
+  \(\sigma_Y\) of the mean \(\bar{Y}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    in other words: between \(\bar{Y} - \sigma_Y\) and
+    \(\bar{Y} + \sigma_Y\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  About 95\% of observations fall within two standard deviations
+  \(\sigma_Y\) of the mean \(\bar{Y}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    in other words: between \(\bar{Y} - 2\sigma_Y\) and
+    \(\bar{Y} + 2\sigma_Y\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  About 99\% of observations fall within three standard deviations
+  \(\sigma_Y\) of the mean \(\bar{Y}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    in other words: between \(\bar{Y} - 3\sigma_Y\) and
+    \(\bar{Y} + 3\sigma_Y\)
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{p-value-approach-sampling-distributions}{%
+\section{P-value approach: Sampling
+Distributions}\label{p-value-approach-sampling-distributions}}
+
+\begin{frame}{Sampling Distributions}
+\protect\hypertarget{sampling-distributions}{}
+
+Fundamental Statistics Goal:
+
+\begin{itemize}
+\tightlist
+\item
+  Use sample data to make a statement about the value of a population
+  parameter!
+\item
+  Use an estimate of the population parameter and a sense of how likely
+  our estimate is close to the population parameter
+
+  \begin{itemize}
+  \tightlist
+  \item
+    example: estimate the population mean \(Y\) via the sample mean
+    \(\bar{Y}\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Problem}: Even with random sampling, our sample mean is likely
+  to be different from the population mean and likely to be different
+  from one sample to another
+\item
+  \textbf{Solution}: Repeated random sampling helps us understand this
+  variation from sample to sample!
+\end{itemize}
+
+\medskip
+
+The ``three distributions'' {[}draw pictures of mean{]}:
+
+\begin{itemize}
+\tightlist
+\item
+  Population distribution
+\item
+  One random sample
+\item
+  Sampling distribution
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Shows how point estimates (e.g., sample mean and sample regression
+    coefficient) vary from sample to sample!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Standard Error of Sampling Distribution}
+\protect\hypertarget{standard-error-of-sampling-distribution}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Sample standard deviation of Y
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Sample standard deviation of Y, \(\hat{\sigma_Y}\), is the average
+    distance of an observation from the sample mean, \(\bar{Y}\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Standard error of \(\bar{Y}\), \(SE(\bar{Y})\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Standard error of \(\bar{Y}\) is the average distance of a single
+    sample mean \(\bar{Y}\) from the mean of sample means \(\bar{Y}_Y\)
+  \item
+    In other words: \(SE(\bar{Y})\) is the standard deviation of the
+    sampling distribution!
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Show ``three distributions'' for \(SE(\bar{Y})\)
+\end{itemize}
+
+\medskip
+
+\end{frame}
+
+\begin{frame}{Properties of Sample Standard Error}
+\protect\hypertarget{properties-of-sample-standard-error}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Standard error decreases when sample size increases!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Conceptually: why would this be the case?
+  \item
+    Imagine the sample mean income in US. Sample size of 10 vs sample
+    size of 1000
+  \item
+    The bigger the sample the closer we get to estimating the true
+    population mean! (i.e., sample means cluster more and more around
+    the true population mean)
+  \item
+    Draw picture!
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Standard error increases when sample standard deviation increases!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Why?
+  \item
+    \(SE(\bar{Y}) = \frac{\hat{\sigma_Y}}{\sqrt{n}}\); where
+    \(\hat{\sigma_Y}\) is sample standard deviation
+  \item
+    \(SE(\bar{Y}) = \frac{\hat{\sigma_Y}}{\sqrt{n}}\)
+  \item
+    greater variation (i.e., spread) of data will give us a bigger
+    numerator!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Hypothesis Testing about the Sample Mean}
+\protect\hypertarget{hypothesis-testing-about-the-sample-mean}{}
+
+RQ: Is the population mean hours worked per week equal to 40?
+
+\begin{itemize}
+\tightlist
+\item
+  Test a two-sided hypothesis
+\end{itemize}
+
+\medskip
+
+\textbf{Five parts of a hypothesis test:}
+
+\begin{enumerate}
+\tightlist
+\item
+  Assumptions
+\item
+  Specify null and alternative hypotheses
+\item
+  Test statistic
+\item
+  P-value
+\item
+  Conclusion
+\end{enumerate}
+
+\medskip
+
+Components of Hypothesis Test we need (get from R):
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Sample size}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    2,348 is the total obs in \texttt{gss}, but we dropped missing
+    observation in \texttt{hrs1}
+  \item
+    Missing observations in R are categorized as \texttt{NA}
+  \item
+    \texttt{summary(gss\$hrs1)} shows there are 967 obs with missing
+    \texttt{hrs1}
+  \item
+    We used \texttt{na.rm\ =\ TRUE} which dropped all missing obs
+  \item
+    So sample size is 2,348 - 967 = 1,381
+  \end{itemize}
+\item
+  \textbf{Sample Mean}: 41.28
+\item
+  \textbf{Sample Standard Deviation}: 14.48
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Step 1: Assumptions}
+\protect\hypertarget{step-1-assumptions}{}
+
+\begin{enumerate}
+\tightlist
+\item
+  Quantitative Variable
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Random sample from the population
+\item
+  Variable has a normal population distribution
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Central Limit Theorem: No matter the distribution of our population
+    parameter, given a sufficiently large sample size, the sampling
+    distribution of the estimate (e.g., mean) for a variable will
+    approximate a normal distribution.
+  \item
+    We have a big enough sample!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Step 2: Hypotheses}
+\protect\hypertarget{step-2-hypotheses}{}
+
+\begin{itemize}
+\tightlist
+\item
+  You generate hypotheses from your research question!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    RQ: Is the population mean number of hours worked per week equal to
+    40?
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Null hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_0: \mu = 40\)
+  \end{itemize}
+\item
+  Two-sided alternative hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_a: \mu \ne 40\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\textbf{Conceptual strategy for testing these hypotheses:}
+
+\begin{itemize}
+\item
+  Goal: Assuming the null hypothesis is true, how unlikely would it be
+  to observe the sample mean, \(\bar{Y} = 41.28\), we observed?
+
+  \begin{enumerate}
+  \tightlist
+  \item
+    Draw sampling distribution under assumption that null hypothesis is
+    true
+  \item
+    Calculate distance from sample estimate to population mean
+    associated with null hypothesis
+  \item
+    Convert that distance to standard errors
+  \item
+    If distance (in standard errors) is large, null hypothesis is
+    probably false. We reject the null in favor of the alternative.
+  \item
+    If distance (in standard errors) is small, null hypothesis is
+    probably true. We cannot reject the null hypothesis.
+  \end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Step 3: Test Statistic}
+\protect\hypertarget{step-3-test-statistic}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Conduct a test to see whether we should reject the null hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Test Statistic
+
+    \begin{itemize}
+    \tightlist
+    \item
+      If the null hypothesis is true, how unlikely would it be to
+      randomly draw a sample mean equal to our observed sample mean of
+      41.28
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+t =
+\(\frac {\text{(estimate) - (value associated with }H_{0})} {\text{standard error of estimate}}\)
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Measures how far away an ``estimate'' is from "value associated with
+  \(H_0\), measured in terms of standard errors
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Step 3 cont: Test Statistic}
+\protect\hypertarget{step-3-cont-test-statistic}{}
+
+\begin{itemize}
+\tightlist
+\item
+  T-test is based on measuring the distane between the value asosciated
+  with \(H_0\) and our observed sample mean \(\bar{Y}\) and converts the
+  distance in terms of standard errors!
+\end{itemize}
+
+\medskip
+
+t =
+\(\frac {\text{(estimate) - (value associated with }H_{0})} {\text{standard error of estimate}}\)
+
+Same as\ldots{}
+
+t = \(\frac {\bar{Y} - \mu_0} {SE(\bar{Y})}\)
+
+\begin{itemize}
+\tightlist
+\item
+  Where \(SE(\bar{Y})\) = \(\frac{\text{sample std dev}}{\sqrt{n}}\)
+\end{itemize}
+
+\medskip
+
+Hours worked example:
+
+\begin{itemize}
+\tightlist
+\item
+  n = 1381, \(\bar{Y}=41.28\), \(\hat{\sigma_Y}=14.48\)
+\item
+  \(SE(\bar{Y})\) = \(\frac{\hat{\sigma_Y}}{\sqrt{n}}\) =
+  \(\frac{14.48}{\sqrt{1381}}\) = 0.3896
+\item
+  t = \(\frac {\bar{Y} - \mu_0} {SE(\bar{Y})}\) =
+  \(\frac {41.28 - 40} {0.3896}\) = \(\frac {1.28} {0.3896}\) = 3.29
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Step 4: P-Value}
+\protect\hypertarget{step-4-p-value}{}
+
+P-Value:
+
+\begin{itemize}
+\tightlist
+\item
+  Under the assumption that \(H_0\) is true, the p-value is the
+  probability that test statistic equals the observed value or a value
+  even more extreme than \(H_a\)
+\item
+  A small p-value means that it would be unusual to find the observed
+  data if \(H_0\) were true
+\end{itemize}
+
+\medskip
+
+Two-sided hypothesis (\(H_a: \mu \ne \mu_0\))
+
+\begin{itemize}
+\tightlist
+\item
+  Pr(obs\textgreater t) + Pr(obs\textless{} -t)
+\item
+  You can use a z-score table (should have done this in intro course),
+  we'll use R!
+\item
+  Interpretation: Under the assumption that \(H_0\) is true, the
+  probability of observing a test statistic even more extreme than 3.28
+  (i.e., greater than 3.28 or less than -3.28) is equal to 0.001
+\item
+  Run t-test in R
+\item
+  Draw picture of this!
+\end{itemize}
+
+\medskip
+
+Rejection region:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\alpha\) level (alpha level) is a value such that we reject \(H_0\)
+  if the observed p-value is \textbf{less than or equal to} the alpha
+  level.
+\item
+  Most common alpha level is .05
+\item
+  So given our observed p-value is .001 (.001\textless{}\(\alpha\)=.05);
+  we reject \(H_0\)
+\item
+  There is less than a 0.1\% probability (.001*100) of having observed
+  our sample mean of 41.28 if the population mean is 40 (\(H_0\)).
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{minute-break}{%
+\section{10 Minute Break}\label{minute-break}}
+
+\hypertarget{hypothesis-testing-about-population-regression-coefficient}{%
+\section{Hypothesis Testing about Population Regression
+Coefficient}\label{hypothesis-testing-about-population-regression-coefficient}}
+
+\begin{frame}{Hypothesis testing about Population Regression
+Coefficient, \(\beta_1\)}
+\protect\hypertarget{hypothesis-testing-about-population-regression-coefficient-beta_1}{}
+
+We follow the same five steps!
+
+\begin{enumerate}
+\tightlist
+\item
+  Assumptions
+\item
+  Specify null and alternative hypotheses
+\item
+  Test statistic
+\item
+  P-value
+\item
+  Conclusion
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Hypotheses about Population Regression Coefficient}
+\protect\hypertarget{hypotheses-about-population-regression-coefficient}{}
+
+RQ: What is the effect of student-teacher ratio (X) on student test
+scores (Y)
+
+\begin{itemize}
+\tightlist
+\item
+  Null hypothesis: student-teacher ratio has no effect on student test
+  scores
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_0: \beta_1 = 0\) or \(H_0: \beta_1 = \beta_1,0\)
+  \end{itemize}
+\item
+  Alternative hypothesis: student-teacher ratio has an effect on student
+  test scores
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_a: \beta_1 \ne 0\) or \(H_a: \beta_1 \ne \beta_1,0\)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\item
+  Note: We almost always test two-sided hypotheses about regression
+  coefficients!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Why? Because we can be wrong about the direction of \(\beta_1\)!
+  \item
+    E.g., some policies can cause more harm than good!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Using \(\hat{\beta_1}\) to test hypothesis about
+\(\beta_1\)}
+\protect\hypertarget{using-hatbeta_1-to-test-hypothesis-about-beta_1}{}
+
+Same steps as population mean!
+
+\begin{enumerate}
+\tightlist
+\item
+  Assumptions:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Draw random sample; sample size is large enough to assume that
+  sampling distribution of \(\hat{\beta_1}\) is normally distributed
+\end{itemize}
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Hypotheses
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  \(H_0: \beta_1 = 0\)
+\item
+  \(H_a: \beta_1 \ne 0\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Using \(\hat{\beta_1}\) to test hypothesis about
+\(\beta_1\)}
+\protect\hypertarget{using-hatbeta_1-to-test-hypothesis-about-beta_1-1}{}
+
+\begin{enumerate}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Compute t-test for regression coefficient
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  t =
+  \(\frac {\text{(estimate) - (value associated with }H_{0})} {\text{standard error of estimate}}\)
+\item
+  Run regression in R
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_0: \beta_1 = 0\), \(\hat{\beta_1}=-2.2798\),
+    \(SE(\hat{\beta_1})\) = 0.4798
+  \item
+    t = \(\frac{(-2.2798) - (0)}{0.4798}\) = -4.751
+  \item
+    p-value= 0.00000278
+  \end{itemize}
+\end{itemize}
+
+\includegraphics{annotated_output.png}
+
+\end{frame}
+
+\begin{frame}{Using \(\hat{\beta_1}\) to test hypothesis about
+\(\beta_1\)}
+\protect\hypertarget{using-hatbeta_1-to-test-hypothesis-about-beta_1-2}{}
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Set rejection region for p-value (\(\alpha\)=.05); decide whether to
+  reject \(H_0\)
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Note that R will give you the associated p-value for a two-sided
+  hypothesis
+\item
+  So in sampling distribution we add the probability to the right and
+  probability to the left!
+\end{itemize}
+
+\medskip
+
+Draw sampling distribution of \(\hat{\beta_1}\) assuming \(H_0\) is true
+
+\end{frame}
+
+\begin{frame}{A deeper understanding of \(SE(\hat{\beta_1})\)}
+\protect\hypertarget{a-deeper-understanding-of-sehatbeta_1}{}
+
+\begin{itemize}
+\item
+  Anytime we talk about hypothesis testing, we are using estimates from
+  one random sample to make statements about population parameters
+\item
+  But our estimates differ from population parameters due to random
+  sampling
+\item
+  Standard error (SE) tells us how far away (on average) an estimate is
+  likely to be from population parameter
+\item
+  The lower our SE, the closer we are to the population parameter!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{A deeper understanding of \(SE(\hat{\beta_1})\)}
+\protect\hypertarget{a-deeper-understanding-of-sehatbeta_1-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  When is SE(\(\hat{\beta_1}\)) likely to be low?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    When standard error of the regression (SER) is also low (i.e., our
+    predictions are good!)
+  \item
+    When sample size is big {[}estimates become more precise as sample
+    size increases{]}
+  \item
+    When the variance of X is high
+  \end{itemize}
+\end{itemize}
+
+\includegraphics[width=2.60417in,height=\textheight]{varianceX.jpg}
+
+The number of black and blue dots is the same. Using which sample would
+you get a more accurate regression line?
+
+\end{frame}
+
+\begin{frame}[fragile]{Student Exercise {[}if we have time!{]}}
+\protect\hypertarget{student-exercise-if-we-have-time}{}
+
+RQ: What is the effect of district expenditures-per-student (X) on
+student test scores (Y)?
+
+\begin{enumerate}
+\item
+  Write out the null and alternative hypotheses for \(\beta_1\)
+\item
+  Run regression in R
+
+  \begin{itemize}
+  \tightlist
+  \item
+    X = \texttt{expn\_stu\_000}
+  \item
+    Y = \texttt{testscr}
+  \end{itemize}
+\item
+  Based on regression output in Q2 and t-statistic formula, show why
+  t=3.984 for \(\hat{\beta_1}\)
+\item
+  Draw sampling distribution of \(\hat{\beta_1}\) assuming \(H_0\) is
+  true. Label the following:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Population regression coefficient associated with \(H_0\)
+  \item
+    \(\hat{\beta_1}\) and observed t-value
+  \item
+    Shade in regions for Pr(t\textless-3.984) and Pr(t\textgreater3.984)
+  \item
+    P-values for regions Pr(t\textless-3.984) and Pr(t\textgreater3.984)
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]{Student Exercise {[}Solutions{]}}
+\protect\hypertarget{student-exercise-solutions}{}
+
+\begin{enumerate}
+\tightlist
+\item
+  Write out the null and alternative hypotheses for \(\beta_1\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(H_0: \beta_1 = 0\)
+  \item
+    \(H_a: \beta_1 \ne 0\)
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \texttt{mod1\ \textless{}-\ lm(testscr\ \textasciitilde{}\ expn\_stu\_000,\ data=caschool)}
+  \texttt{summary(mod1)}
+\end{enumerate}
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  t = \(\frac {\hat{\beta_1}- \beta_1,0} {SE(\hat{\beta_1})}\)
+  =\(\frac {5.749 - 0} {1.443}\) = 3.984
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Student Exercise {[}Solutions{]}}
+\protect\hypertarget{student-exercise-solutions-1}{}
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item
+\end{enumerate}
+
+\includegraphics{exercise.png}
+
+\end{frame}
+
+\end{document}

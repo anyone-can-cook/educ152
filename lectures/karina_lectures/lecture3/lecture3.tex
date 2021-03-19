@@ -1,0 +1,1189 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+  8pt,
+  ignorenonframetext,
+  dvipsnames]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Introduction to Multivariate Regression \& Econometrics},
+  pdfauthor={Lecture 3},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+%packages
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{hyperref}
+
+\usepackage{tikz} % used for text highlighting, amongst others
+\usepackage{comment}
+
+%title slide stuff
+%\institute{Department of Education}
+%\title{Managing and Manipulating Data Using R}
+
+%
+\setbeamertemplate{navigation symbols}{} % get rid of navigation icons:
+\setbeamertemplate{footline}[page number]
+
+%\setbeamertemplate{frametitle}{\thesection \hspace{0.2cm} \insertframetitle}
+\setbeamertemplate{section in toc}[sections numbered]
+%\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=3.2em\color{gray}\rlap{\hskip-2em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par
+}
+
+%define colors
+%\definecolor{uva_orange}{RGB}{216,141,42} % UVa orange (Rotunda orange)
+\definecolor{mygray}{rgb}{0.95, 0.95, 0.95} % for highlighted text
+	% grey is equal parts red, green, blue. higher values >> lighter grey
+	%\definecolor{lightgraybo}{rgb}{0.83, 0.83, 0.83}
+
+% new commands
+
+%highlight text with very light grey
+\newcommand*{\hlg}[1]{%
+	\tikz[baseline=(X.base)] \node[rectangle, fill=mygray] (X) {#1};%
+}
+%, inner sep=0.3mm
+%highlight text with very light grey and use font associated with code
+\newcommand*{\hlgc}[1]{\texttt{\hlg{#1}}}
+
+%modifying back ticks to add grey background
+\let\OldTexttt\texttt
+\renewcommand{\texttt}[1]{\OldTexttt{\hlg{#1}}}
+
+
+\begin{comment}
+
+% Font
+\usepackage[defaultfam,light,tabular,lining]{montserrat}
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\fontfamily{Montserrat-TOsF}\selectfont #1}}
+
+% Change color of boldface text to darkgray
+\renewcommand{\textbf}[1]{{\color{darkgray}\bfseries\fontfamily{Montserrat-TOsF}#1}}
+
+% Bullet points
+\setbeamertemplate{itemize item}{\color{BlueViolet}$\circ$}
+\setbeamertemplate{itemize subitem}{\color{BrickRed}$\triangleright$}
+\setbeamertemplate{itemize subsubitem}{$-$}
+
+% Reduce space before lists
+%\addtobeamertemplate{itemize/enumerate body begin}{}{\vspace*{-8pt}}
+
+\let\olditem\item
+\renewcommand{\item}{%
+  \olditem\vspace{4pt}
+}
+
+% decreasing space before and after level-2 bullet block
+%\addtobeamertemplate{itemize/enumerate subbody begin}{}{\vspace*{-3pt}}
+%\addtobeamertemplate{itemize/enumerate subbody end}{}{\vspace*{-3pt}}
+
+% decreasing space before and after level-3 bullet block
+%\addtobeamertemplate{itemize/enumerate subsubbody begin}{}{\vspace*{-2pt}}
+%\addtobeamertemplate{itemize/enumerate subsubbody end}{}{\vspace*{-2pt}}
+
+%Section numbering
+\setbeamertemplate{section page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=10pt,center,rounded=true,shadow=true]{section title}
+        \usebeamerfont{section title}\thesection~\insertsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\setbeamertemplate{subsection page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=6pt,center,rounded=true,shadow=true]{subsection title}
+        \usebeamerfont{subsection title}\thesection.\thesubsection~\insertsubsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\end{comment}
+
+\title{Introduction to Multivariate Regression \& Econometrics}
+\subtitle{HED 612}
+\author{Lecture 3}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+\hypertarget{prep}{%
+\section{Prep}\label{prep}}
+
+\begin{frame}{Download Data and Open R Script}
+\protect\hypertarget{download-data-and-open-r-script}{}
+
+\emph{Download Data and Open R Script}
+
+\begin{enumerate}
+\tightlist
+\item
+  Create a new data folder called ``gss''
+
+  \begin{itemize}
+  \tightlist
+  \item
+    HED612\_S21 \textgreater\textgreater\textgreater{} data
+    \textgreater\textgreater\textgreater{} gss
+  \end{itemize}
+\item
+  Download the GSS 2018 dataset from D2L (under Datasets)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Place the ``GSS2018.RData'' dataset into the ``gss'' folder you
+    created in the previous step
+  \end{itemize}
+\item
+  Download the Lecture 3 PDF and R files for this week
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Place all files in HED612\_S21
+    \textgreater\textgreater\textgreater{} lectures
+    \textgreater\textgreater\textgreater{} lecture3
+  \end{itemize}
+\item
+  Open the RProject (should be in your main HED612\_S21 folder)
+\item
+  Once the RStudio window opens, open the Lecture 3 R script by clicking
+  on:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    file \textgreater\textgreater\textgreater{} open file\ldots{}
+    \textgreater\textgreater\textgreater{} {[}navigate to lecture 3
+    folder{]} \textgreater\textgreater\textgreater{} lecture3.R
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Today and Next Week}
+\protect\hypertarget{today-and-next-week}{}
+
+\textbf{Today}
+
+\begin{itemize}
+\tightlist
+\item
+  Review of statistics (bivariate)
+\item
+  Some more R Basics
+\item
+  Intro to ``Gold Standard'' for causal inference and bivariate
+  regression
+\item
+  Class exercise
+\end{itemize}
+
+\medskip
+
+\textbf{HW \& Reading}
+
+\begin{itemize}
+\tightlist
+\item
+  HW\#3 posted on D2L
+\item
+  Stock \& Watson Ch. 4 {[}will cover Chapter 4 next 2 weeks{]}
+\end{itemize}
+
+\medskip
+
+\textbf{Next Week}
+
+\begin{itemize}
+\tightlist
+\item
+  Bivariate regression cont.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{COE Student R Group}
+\protect\hypertarget{coe-student-r-group}{}
+
+\begin{itemize}
+\tightlist
+\item
+  HED students are starting an R ``working group''
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Will meet regularly
+  \item
+    Troubleshoot errors
+  \item
+    Work collaboratively on class assignments (highly encouraged!)
+  \item
+    Learn new skills via tutorials
+  \end{itemize}
+\item
+  I have committed to providing some guidance and will participate when
+  I can
+\item
+  So far looks like Thursdays from 5-7 may work
+
+  \begin{itemize}
+  \tightlist
+  \item
+    May consider meeting every two weeks\ldots{}
+  \item
+    If you want to join but have different availability fill out Doodle
+    poll
+  \item
+    \href{https://doodle.com/poll/n3wpgsxtauhttmd8?utm_source=poll\&utm_medium=link}{Doodle
+    Poll}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Homework Review}
+\protect\hypertarget{homework-review}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Common Questions for PS\#2 {[}review as a class{]}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Packages vs Libraries in R
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Packages are collections of R functions, data, and compiled code
+      in a well-defined format, created to add specific functionality.
+      We only need to install packages in R once via
+      \texttt{install.packages()}
+    \item
+      Libraries are the ``directories'' in R where the packages are
+      stored; we need to ``load'' these libraries via \texttt{library()}
+      each time we would like to use any of the functionality associated
+      with the package
+    \end{itemize}
+  \item
+    Rounding in R
+
+    \begin{itemize}
+    \tightlist
+    \item
+      It's okay if your hand calculations are slightly off from R
+      answers due to rounding\ldots{}
+    \item
+      Why is it rounding to an integer?
+    \item
+      R is an \textbf{object oriented programming language}; which means
+      it saves ``results'' into various objects which ``function''
+      differently
+    \item
+      Piping creates a tibble object\ldots which will round to the
+      nearest integer
+    \item
+      {[}Show solutions in R and D2L{]}
+    \end{itemize}
+  \end{itemize}
+\item
+  Questions or Concerns?
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{review-of-statistics}{%
+\section{Review of Statistics}\label{review-of-statistics}}
+
+\begin{frame}{Hypothesis testing regarding the mean(s)}
+\protect\hypertarget{hypothesis-testing-regarding-the-means}{}
+
+Many hypotheses we have about education research can be phrased as yes
+or no questions:
+
+\begin{itemize}
+\tightlist
+\item
+  Do students in smaller class sizes get better grades?
+\item
+  Is there a difference in earnings between men and women college
+  graduates?
+\item
+  Do wealthier public schools get more recruiting visits by colleges and
+  universites than poorer schools?
+\end{itemize}
+
+\medskip
+
+Intro to Stats:
+
+\begin{itemize}
+\tightlist
+\item
+  Hypothesis testing regarding the population mean
+\item
+  Hypothesis testing regarding two populations
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Hypothesis testing: population mean}
+\protect\hypertarget{hypothesis-testing-population-mean}{}
+
+\textbf{Null hypothesis}: \(H_0\): \(E(Y) = \mu_{Y,0}\)
+
+\textbf{Alternative hypothesis}: \(H_1\): \(E(Y) \ne \mu_{Y,0}\)
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Sample mean, \(\bar{Y}\) or \(E(Y)\), is rarely exactly equal to the
+  hypothesized value, \(\mu_{Y,0}\), in any given sample
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Because the true population in fact does not equal the hypothesized
+    value (the null hypothesis is false) OR
+  \item
+    Because the true population does equal the hypothesized value but
+    \(\bar{Y}\) differs from the hypothesized value because of random
+    sampling variation
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+Solution: we test the null hypothesis accounting for sampling variation!
+
+\begin{itemize}
+\tightlist
+\item
+  Perform a t-test to check whether there is a significant difference
+  between the population mean (which is equal to the mean of sample
+  means from last week's sampling distribution) and the hypothesized
+  value
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Compute the standard error of \(\bar{Y}\);
+    \(SE(\bar{Y}) =s_Y/\sqrt{n}\)
+  \item
+    Compute the t-statistic; \(t = \bar{Y} - \mu_{Y,0}/SE(\bar{Y})\)\\
+  \item
+    Compute the p-value (significance probability) of null hypothesis;
+    \(p-value = 2\Phi(-|t|)\)
+  \item
+    P-value is the probability of drawing \(\bar{Y}\) at least as far in
+    the tails of its distribution under the assumption that the null
+    hypothesis is correct as the sample average you actually computed
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Hypothesis testing: population mean {[}Stock \& Watson
+Example{]}}
+\protect\hypertarget{hypothesis-testing-population-mean-stock-watson-example}{}
+
+Example: In the population, college graduates earn \$20 an hour in the
+labor market
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Null hypothesis}: \(H_0\): \(E(Y) = \mu_{Y,20}\)
+\item
+  \textbf{Alternative hypothesis}: \(H_1\): \(E(Y) \ne \mu_{Y,20}\)
+\item
+  Random Sample of 200 college graduates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\bar{Y} = \$22.64\) is the mean hourly earnings of the sample
+  \item
+    \(s_Y = \$18.14\) is the standard deviation
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Step 1: Compute the \textbf{standard error of \(\bar{Y}\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(SE(\bar{Y}) =s_Y/\sqrt{n}\)
+  \end{itemize}
+\item
+  Step 2: Compute the \textbf{T-statistic}: measures the size (in units
+  of standard error) of the difference between the population mean and
+  the hypothesized value relative to the variation in the sample data
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(t = \bar{Y} - \mu_{Y,0}/SE(\bar{Y})\)
+  \end{itemize}
+\item
+  Step 3: Compute the \textbf{P-value}: the probability of observing
+  another \(\bar{Y}\) at least as different from \$20 as \$22.24 by pure
+  random sampling variation assuming the null is correct
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(p-value = 2\Phi(-|t|)\)
+  \item
+    If the p-value is 0.039, then there is only a 3.9\% probability that
+    a similar (\(\bar{Y} = \$22.24\)) would have been drawn if the null
+    is true, we can reject the null hypothesis
+  \item
+    If the p-value is 0.40 (hypothetical), then there is about a 40\%
+    probability that a similar (\(\bar{Y} = \$22.24\)) would have been
+    drawn if the null is true; we cannot reject the null
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Hypothesis testing: comparing means from two populations}
+\protect\hypertarget{hypothesis-testing-comparing-means-from-two-populations}{}
+
+Do men and women college graduates, on average, earn the same amount?
+
+\textbf{Null hypothesis}: \(H_0\): \(\mu_{m} - \mu_{w} = 0\)
+
+\textbf{Alternative hypothesis}: \(H_1\): \(\mu_{m} - \mu_{w} \ne 0\)
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \$21.99 is the average hourly earnings of men in the sample of college
+  graduates
+\item
+  \$18.48 is the average hourly earnings of men in the sample of college
+  graduates
+\item
+  \$21.99 - \$18.48 = \$3.52
+\end{itemize}
+
+\medskip
+
+\textbf{T-statistic} measures the size (in SE) of the difference between
+the population wage gap and the hypothesized wage gap relative to the
+variation in the sample data
+
+\begin{itemize}
+\tightlist
+\item
+  the greater the magnitude of t-statistic, the greater evidence against
+  the null
+\item
+  the closer the magnitude of t-statistic to zero, the more likely it is
+  that there is no signifcant difference between the population mean and
+  hypothesized value
+\end{itemize}
+
+\medskip
+
+The \textbf{P-value} is the probability of observing a difference of
+\(\mu_{m} - \mu_{w}\) at least as different from zero as the observed
+difference of \$3.52 by pure random sampling variation
+
+\begin{itemize}
+\tightlist
+\item
+  If the p-value is 0.05, then there is about a 5\% probability that a
+  similar sample mean difference between men and women would have been
+  drawn if the null hypothesis is true, so we can reject the null
+  hypothesis
+\item
+  If the p-value is 0.40, then there is about a 40\% probability that
+  the \$3.52 difference in sample average earnings between men and women
+  could have arisen just by random sampling variation if the null
+  hypothesis is true, so we would not reject the null hypothesis
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Relationships between two continuous variables}
+\protect\hypertarget{relationships-between-two-continuous-variables}{}
+
+Postive relationship, negative relationship, and no relationships
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Relationship between X and Y is positive
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  when X is ``high'', Y tend to be ``high''
+\item
+  when X is ``low'', Y tends to be ``low''
+\item
+  e.g., number of hours studying and GPA
+\end{itemize}
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Relationship between X and Y is negative
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  when X is ``high'', Y tend to be ``low''
+\item
+  when X is ``low'', Y tends to be ``high''
+\item
+  e.g., number of school abscences and GPA
+\end{itemize}
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  No relationship between X and Y
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  knowing the value of X gives you does not tell you much about the
+  value of Y
+\item
+  e.g., amount of ice cream consumed and GPA
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Today's Example}
+\protect\hypertarget{todays-example}{}
+
+Using the General Social Survey 2018 {[}sidebar: Data Goals for this
+Class{]}:
+
+\begin{itemize}
+\tightlist
+\item
+  Nationally representative survey of adults in the United States
+  conducted since 1972
+\item
+  Collects data on contemporary American society in order to monitor and
+  explain trends in opinions, attitudes and behaviors
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Demographic, behavioral, and attitudinal questions
+  \item
+    Covers topics like civil liberties, crime and violence, intergroup
+    tolerance, morality, national spending priorities, psychological
+    well-being, social mobility, etc.
+  \end{itemize}
+\item
+  \href{https://gss.norc.org/}{GSS Website Link}
+\end{itemize}
+
+\medskip
+
+We have two variables X and Y:
+
+\begin{itemize}
+\tightlist
+\item
+  X (independent variable) = hours worked per week
+\item
+  Y (dependent variable) = income
+\end{itemize}
+
+\medskip
+
+Ways to investigate this relationship between X and Y:
+
+\begin{itemize}
+\tightlist
+\item
+  Graphically: scatterplots
+\item
+  Numerically: covariance (less used), correlation
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Scatterplots}
+\protect\hypertarget{scatterplots}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Scatterplots will plot individual observations on an X and Y axis
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Draw scatterplot of X (hours worked) and Y (income) by hand
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Add a prediction line
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Residual
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Difference between actual observed value of Y and predicted value of
+    Y (given X)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Relationship between X and Y is not perfect!
+\end{itemize}
+
+\medskip
+
+Generate a scatteplot using \texttt{ggplot} in R script
+
+\end{frame}
+
+\begin{frame}{Covariance}
+\protect\hypertarget{covariance}{}
+
+Covariance measures the extent to which two variables move
+together\ldots.
+
+\begin{itemize}
+\tightlist
+\item
+  If income is ``high'' when hours is worked is ``high'', then
+  covariance is positive
+\item
+  If income is ``low'' when hours is worked is ``high'', then covariance
+  is negative
+\end{itemize}
+
+\medskip
+
+Population covariance, cov(X, Y)
+
+\begin{itemize}
+\tightlist
+\item
+  As with all population parameters, we don't know this!
+\end{itemize}
+
+\medskip
+
+Population covariance, \(s_{XY}\) or \(\hat{\sigma}_{XY}\)
+
+\begin{itemize}
+\item
+  Estimator of population covariance
+\item
+  \(s_{XY}= \hat{\sigma}_{XY}=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X} \right) \left( Y_{i}-\bar{Y} \right)}{n-1}\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Sample Covariance}
+\protect\hypertarget{sample-covariance}{}
+
+\textbf{Formula}
+\(s_{XY}= \hat{\sigma}_{XY}=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X} \right) \left( Y_{i}-\bar{Y} \right)}{n-1}\)
+
+\medskip
+
+Example: Imagine we have 20 obs; \(\bar{X}=40; \bar{Y}=30\)
+
+\medskip
+
+Observation 1: \(X_1=50; Y_1=60\)
+
+\begin{itemize}
+\tightlist
+\item
+  \((X_{i}-\bar{X})( Y_{i}-\bar{Y})=(50-40)(60-30)=10*30=300\)
+\item
+  \(X_i > \bar{X}\) and \(Y_i > \bar{Y}\); so
+  \((X_{i}-\bar{X})( Y_{i}-\bar{Y})\) is positive
+\end{itemize}
+
+Observation 2: \(X_1=45; Y_1=25\) -
+\((X_{i}-\bar{X})( Y_{i}-\bar{Y})=(45-40)(25-30)=5*-5=-25\) -
+\(X_i > \bar{X}\) and \(Y_i < \bar{Y}\); so
+\((X_{i}-\bar{X})( Y_{i}-\bar{Y})\) is positive
+
+\medskip
+
+\(s_{XY}\) is the sum of these 20 calculations divided by 19 (n-1)
+
+\end{frame}
+
+\begin{frame}{Sample Covariance cont.}
+\protect\hypertarget{sample-covariance-cont.}{}
+
+\(s_{XY}\) is positive when X and Y move in the same direction
+
+\begin{itemize}
+\tightlist
+\item
+  \(X_i > \bar{X}\) usually coupled with \(Y_i > \bar{Y}\)
+\item
+  \(X_i < \bar{X}\) usually coupled with \(Y_i < \bar{Y}\)
+\end{itemize}
+
+\medskip
+
+\(s_{XY}\) is negative when X and Y move in the same direction
+
+\begin{itemize}
+\tightlist
+\item
+  \(X_i > \bar{X}\) usually coupled with \(Y_i < \bar{Y}\)
+\item
+  \(X_i < \bar{X}\) usually coupled with \(Y_i > \bar{Y}\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Correlation}
+\protect\hypertarget{correlation}{}
+
+Problem with sample covariance, \(s_{XY}\)
+
+\begin{itemize}
+\tightlist
+\item
+  Covariance (like variance) dependes on the units of measurement
+\item
+  We can't compare the covaraince of X and Y vs covariance of X and Z
+\end{itemize}
+
+\medskip
+
+Sample Correlation of Z and Y, \(r_{XY}\)
+
+\begin{itemize}
+\tightlist
+\item
+  Unitless measure of relationship between X and Y
+\item
+  Equals sample covariance, \(s_{XY}\), divided by the product of their
+  individual sample standard deviations
+\end{itemize}
+
+\medskip
+
+\textbf{Sample Correlation Formula}
+\(r_{XY}=\frac{s_{XY}}{s_X*s_Y} = \frac{\hat{\sigma}_{XY}}{\hat{\sigma}_X \hat{\sigma}_Y}\)
+
+\end{frame}
+
+\begin{frame}{Sample Correlation}
+\protect\hypertarget{sample-correlation}{}
+
+\(r_{XY}=\frac{s_{XY}}{s_X*s_Y} = \frac{\hat{\sigma}_{XY}}{\hat{\sigma}_X \hat{\sigma}_Y}\)
+
+\medskip
+
+Correlations result in measures between -1 and 1
+
+\medskip
+
+``Type'' of relationship
+
+\begin{itemize}
+\tightlist
+\item
+  \(r_{XY}\) = 0 means there is no relationship between X and Y
+\item
+  \(r_{XY}\) \textgreater{} 0 means a positive correlation between X and
+  Y
+
+  \begin{itemize}
+  \tightlist
+  \item
+    in other words, the variables move together
+  \end{itemize}
+\item
+  \(r_{XY}\) \textless{} 0 means a negative correlation
+
+  \begin{itemize}
+  \tightlist
+  \item
+    in other words, the variables move in opposite directions
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+``Strength'' of relationship
+
+\begin{itemize}
+\tightlist
+\item
+  \(r_{XY}\) = \textbar0.1\textbar{} to \textbar0.3\textbar{} = weak
+  relationship
+\item
+  \(r_{XY}\) = \textbar0.3\textbar{} to \textbar0.6\textbar{} = moderate
+  relationship
+\item
+  \(r_{XY}\) = \textbar0.6\textbar{} to \textbar1\textbar{} = strong
+  relationship
+\end{itemize}
+
+\medskip
+
+Calculate correlations in R\ldots{}
+
+\end{frame}
+
+\begin{frame}{Linear vs Non-Linear Relationships}
+\protect\hypertarget{linear-vs-non-linear-relationships}{}
+
+Problem with covariance and correlation:
+
+\begin{itemize}
+\tightlist
+\item
+  Both measure linear relationships; these measures do not detect
+  non-linear relationships
+\end{itemize}
+
+\medskip
+
+See R script:
+
+\begin{itemize}
+\tightlist
+\item
+  Run correlation of income and age for respondents that identified as
+  Black
+\item
+  Run Scatterplots
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Random Assignment}
+\protect\hypertarget{random-assignment}{}
+
+Create the variable \texttt{randomvar} where values will be randomly
+assigned
+
+\begin{itemize}
+\tightlist
+\item
+  Will randomly assign observations to values of 0 to 1000 for this new
+  random var
+\item
+  Run correlation between \texttt{randomvar} and income
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What is the relationship beween\texttt{randomvar} and income
+    (positive, negative, no correlation)? Why?
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+This is the intuition behind \textbf{Randomized Control Trials} as the
+``gold standard'' of progam evaluation research
+
+\medskip
+
+Randomization process
+
+\begin{itemize}
+\tightlist
+\item
+  Reseachers use a ``coin flip'' to sort participants (of a program,
+  policy, treatment, etc.) into two groups: treatment group or control
+  group
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Coin flip = randomization
+  \item
+    Treatment is completely unrelated to participant's
+    background/demographic characteristics
+  \end{itemize}
+\item
+  \textbf{On average}, the two groups should be \emph{identical} in
+  every way
+\item
+  Treat the treatment group; control group does not get treatment
+\item
+  Compare outcomes for the treatment and control group
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\bar{Y}_{treat} - \bar{Y}_{control}\) = treatment effect
+  \item
+    examples: baby aspirin trial, Headstart, Tenessee Star Project
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{In-Class Exercise {[}in groups{]}}
+\protect\hypertarget{in-class-exercise-in-groups}{}
+
+\begin{enumerate}
+\tightlist
+\item
+  What is the correlation between how presitigious father's occupation
+  is (\texttt{papres105plus}) and income (\texttt{incomev2})?
+\item
+  What is the correlation between hours worked (\texttt{hrs1}) and
+  income (\texttt{incomev2})for respondents born in the U.S
+  (\texttt{born})? How about for those not born in the U.S.? Do these
+  correlations differ by birth in the U.S.?
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Hint: If you run
+  \texttt{gss\ \%\textgreater{}\%\ select(born)\ \%\textgreater{}\%\ val\_labels()}
+  you'll see that the value \texttt{1} is ``yes'' and value \texttt{2}
+  is ``no.''
+\item
+  Use tidyverse approach to run correlation; use the \texttt{filter()}
+  function to run a correlation for each group
+\end{itemize}
+
+\begin{enumerate}
+\tightlist
+\item
+  What is the correlation between hours worked (\texttt{hrs1}) and
+  income (\texttt{incomev2}) for respondents with at least a bachelors
+  degree? How about for those with less than a bachelors degree?
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Hint: If you run
+  \texttt{gss\ \%\textgreater{}\%\ select(degree)\ \%\textgreater{}\%\ val\_labels()}
+  you'll see that the value \texttt{1} is ``high school'', the value
+  \texttt{2} is ``junior college'', value \texttt{3} is ``bachelor'',
+  and value \texttt{4} is ``graduate''.
+\item
+  Use tidyverse approach to run correlation; use the \texttt{filter()}
+  function to run a correlation for those those with (at least) a
+  bachelors and those without.
+\end{itemize}
+
+Code solutions on next slide\ldots{}
+
+\end{frame}
+
+\begin{frame}[fragile]{In-Class Exercise {[}Solutions{]}}
+\protect\hypertarget{in-class-exercise-solutions}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#1 }
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(papres105plus, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+
+\CommentTok{#2 }
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(born) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{val_labels}\NormalTok{()}
+  
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(born}\OperatorTok{==}\DecValTok{1}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{   }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(hrs1, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+    
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(born}\OperatorTok{==}\DecValTok{2}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{   }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(hrs1, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+
+\CommentTok{#3}
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(degree) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{val_labels}\NormalTok{()}
+  
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(degree}\OperatorTok{>=}\DecValTok{3}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(hrs1, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+    
+\NormalTok{gss }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(degree}\OperatorTok{<=}\DecValTok{2}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{cor}\NormalTok{(hrs1, incomev2, }\DataTypeTok{use =} \StringTok{"complete.obs"}\NormalTok{)) }
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\end{document}

@@ -1,0 +1,32 @@
+\frametitle{Polynomials: Interpretation of \(\hat {\beta _1}\)}
+\protect\hypertarget{polynomials-interpretation-of-hatbeta_1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Plot data with a linear and quadratic line in R
+\item
+  How do we interpret our beta coefficients?
+\end{itemize}
+
+\medskip
+
+\textbf{\(\hat{\beta_1}\)}
+
+\begin{itemize}
+\tightlist
+\item
+  Gives the rate of change in Y when X=0; but we don't have any
+  districts with \$0k income
+\item
+  Calculate \(\hat{Y}\) to see rates of change at different values of X!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Will show you how to do this by hand
+  \item
+    Use \texttt{predict()} in R
+  \end{itemize}
+\end{itemize}
+

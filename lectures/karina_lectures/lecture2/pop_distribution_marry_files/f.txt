@@ -1,0 +1,1 @@
+_gfp_s_({"_cookies_":[{"_value_":"ID=0508cf86547b7a1d-22e57dd7f8c5005e:T=1611168174:RT=1611168174:S=ALNI_MYsqU_aNNEGPApXNYYDURnYHfNgYw","_expires_":1644864174,"_path_":"/","_domain_":"spss-tutorials.com"}]});
