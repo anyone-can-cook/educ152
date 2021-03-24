@@ -201,8 +201,14 @@ read_scorecard <- function(file_name) {
   
   save(df_debt_earn_panel, file = file.path(output_data_dir, 'df_debt_earn_panel.RData'))
   
-  # load data
+  # load data from local pc
   load(file = file.path(output_data_dir, 'df_debt_earn_panel.RData'))
+  
+  # load data from github
+  
+  
+  
+  load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel.RData'))
   
 # investigate analysis dataset
   
@@ -210,6 +216,8 @@ read_scorecard <- function(file_name) {
   df_debt_earn_panel %>% group_by(opeid6,unitid,cipcode,credlev,field_ay) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
   
   df_debt_earn_panel %>%
+    # keep most recent year of data
+    %>% filter(credlev == 5)
     # keep master's degrees
     %>% filter(credlev == 5)
     # carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity; 17 = Doctoral/Professional Universities
