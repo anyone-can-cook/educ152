@@ -12,7 +12,7 @@
 ## ---------------------------
 
 library(tidyverse)
-#library(rscorecard)
+library(rscorecard)
 
 ## ---------------------------
 ## directory paths
@@ -129,11 +129,136 @@ read_scorecard <- function(file_name) {
   df_field_1617 <- read_scorecard(file_name = 'Raw Data Files/FieldOfStudyData1516_1617_PP')
   df_field_1718 <- read_scorecard(file_name = 'Raw Data Files/FieldOfStudyData1617_1718_PP')
   
-  df_field_1516
+  # create variable that defines year of data for field of study data
+  
+  df_field_1516$field_ay <- '2015-16'
+  df_field_1617$field_ay <- '2016-17'
+  df_field_1718$field_ay <- '2017-18'
+  
+  # append multiple years of institution-field level data and sort data
+    # 
+  df_field_panel <- bind_rows(df_field_1516,df_field_1617,df_field_1718) %>% arrange(opeid6,unitid,cipcode,credlev,desc(field_ay))
+  
+  df_field_panel %>% count(field_ay)
+  df_field_panel %>% glimpse()
+  
+
+  
+
+## ---------------------------
+## Create analysis file that contains variables from institution level and institution-field level data
+## ---------------------------
+
+  # Investigate structure of data
+
+    # institution level data: 
+      #unitid uniquely identifies obs
+      df_inst_recent %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+
+    # institution-field level data: 
+  
+      # opeid6-unitid-cipcode-credlev uniquely identifies obs
+      df_field_1718 %>% group_by(opeid6,unitid,cipcode,credlev) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+    
+      # after filtering man == 1, opeid6-cipcode-credlev does not uniquely identify obs but comes close
+      df_field_1718 %>% filter(main == 1) %>% group_by(opeid6,cipcode,credlev) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+      
+      # for panel dataset, opeid6-unitid-cipcode-credlev-field_ay uniquely identifies obs
+      df_field_panel %>% group_by(opeid6,unitid,cipcode,credlev,field_ay) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+
+
+# join data
+    
+  # create institution level dataset with subset of variables
+  df_inst_somevars <- df_inst_recent %>% 
+    select(unitid,city,stabbr,zip,main,accredagency,numbranch,highdeg,st_fips,region,locale,locale2,latitude,longitude,ccbasic,
+      hbcu,annhi,tribal,aanapii,hsi,nanti,relaffil)
+    # note: excluded these vars because keeping versions from institution-field level data: instnm,control,main
+      
+  df_inst_somevars %>% glimpse()
+  df_inst_somevars %>% count(region)
+  
+  # left join with x=df_field_panel and y = df_inst_recent
+    # keep only main campuses
+
+  df_debt_earn_panel <- df_field_panel %>% 
+    # keep only main campuses
+    filter(main ==1) %>%
+    # select vars to keep from inst-field level data
+    select(-main,-contains('male'),-contains('pell'),-starts_with('bbrr'),-contains('nwne'),-contains('cntover150')) %>% 
+    # left join
+    left_join(y=df_inst_somevars, by = 'unitid') %>% 
+    # order of variables
+    relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,city,cipcode,cipdesc,credlev,creddesc,field_ay,ipedscount1,ipedscount2,
+      contains('stgp'),contains('_pp'),starts_with('earn'),
+      main,numbranch,accredagency,highdeg,st_fips,region,zip,locale,locale2,latitude,longitude,relaffil,hbcu,annhi,tribal,aanapii,hsi,nanti)
+
+  df_debt_earn_panel %>% glimpse()
+  rm(df_debt_earn_panel)
+  
+  
+# save institution-field level panel dataset as .RDS file
+  
+  save(df_debt_earn_panel, file = file.path(output_data_dir, 'df_debt_earn_panel.RData'))
+  
+  # load data
+  load(file = file.path(output_data_dir, 'df_debt_earn_panel.RData'))
+  
+# investigate analysis dataset
+  
+  # vars that uniquely identify
+  df_debt_earn_panel %>% group_by(opeid6,unitid,cipcode,credlev,field_ay) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+  
+  df_debt_earn_panel %>%
+    # keep master's degrees
+    %>% filter(credlev == 5)
+    # carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity; 17 = Doctoral/Professional Universities
+    filter(ccbasic %in% c(15,16,17)) 
+    
+    %>%
+  
+  sc_dict('ccbasic')
+# investigate which obs from table x = df_field_panel did not have a matching value from table y = df_inst_somevars
+  
+  field_no_inst <- df_field_panel %>% filter(main ==1) %>%
+    select(opeid6,unitid,cipcode,credlev,field_ay,instnm,control,main,cipdesc,creddesc,ipedscount1,ipedscount2) %>%
+    anti_join(y=df_inst_somevars, by='unitid') 
+  
+  field_no_inst %>% glimpse()
+  
+  field_no_inst %>% count(field_ay) # missing data in all years
+  
+  field_no_inst %>% count(main) # about half are not main campuses
+  field_no_inst %>% count(unitid) # about half are not main campuses
+  
+  field_no_inst %>% count(control) # about half are not main campuses # most are foreign or private-for-profit
+  
+  field_no_inst %>% filter(control %in% c('Private, nonprofit','Public')) %>% count(control)
+  field_no_inst %>% filter(control %in% c('Private, nonprofit','Public')) %>% count(main)
+  
+  field_no_inst %>% filter(control %in% c('Private, nonprofit','Public')) %>% count(unitid)
+  field_no_inst %>% filter(control %in% c('Private, nonprofit','Public')) %>% count(instnm)
+  
+  field_no_inst %>% filter(control %in% c('Private, nonprofit','Public')) %>% count(field_ay)
+  
+  field_no_inst %>% filter(control %in% c('Private, nonprofit','Public')) %>% count(instnm) %>% print(n = 400)
+  
+  # print publics from field_ay == 2017-18 cohort that didn't have institution level data
+  field_no_inst %>% filter(control %in% c('Public'), field_ay == '2017-18') %>% count(instnm) %>% print(n = 400)
+
+  # print publics from field_ay == 2017-18 cohort that didn't have institution level data and were main campuses; VERDICT == NOT MISSING MUCH
+  field_no_inst %>% filter(control %in% c('Public'), field_ay == '2017-18',main ==1) %>% count(instnm) %>% print(n = 400)
+
+      
+  # print not-for-profits from field_ay == 2017-18 cohort that didn't have institution level data 
+  field_no_inst %>% filter(control %in% c('Private, nonprofit'), field_ay == '2017-18') %>% count(instnm) %>% print(n = 400)
+  
+  # print not-for-profits from field_ay == 2017-18 cohort that didn't have institution level data and were main campuses; VERDICT = NOT MISSING MUCH
+  field_no_inst %>% filter(control %in% c('Private, nonprofit'), field_ay == '2017-18', main ==1) %>% count(instnm) %>% print(n = 400)
   
   
 ## ---------------------------
-## Create analysis file that contains variables from institution level and institution-field level data
+## investigations of institution level and institution-field level data
 ## ---------------------------
 
 # Investigate structure of institution level data
@@ -152,8 +277,7 @@ read_scorecard <- function(file_name) {
     
   # which variables to keep
     
-    df_inst_recent %>% 
-      select(unitid,instnm,city,stabbr,zip,accredagency,main,numbranch,highdeg,control,st_fips,region,locale,locale2,latitude,longitude,ccbasic,
+    df_inst_recent %>% select(unitid,instnm,city,stabbr,zip,accredagency,main,numbranch,highdeg,control,st_fips,region,locale,locale2,latitude,longitude,ccbasic,
              hbcu,annhi,tribal,aanapii,hsi,nanti,relaffil)
     
 # Investigate structure of institution-field level data  
@@ -165,7 +289,7 @@ read_scorecard <- function(file_name) {
     
     df_field_1718 %>% count(main)
     
-    # unitid-cipcode-credlev does not uniquely identify obs
+    # unitid-cipcode-credlev does not uniquely identify obs, but gets closer than anything else i can find
     df_field_1718 %>% group_by(unitid,cipcode,credlev) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
     
     # filter first by main == 1, then group_by unitid-cipcode-credlev does not uniquely identify obs
