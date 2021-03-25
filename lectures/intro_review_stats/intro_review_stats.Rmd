@@ -57,7 +57,31 @@ Create dataframe that is subset:
     # carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity; 17 = Doctoral/Professional Universities
     filter(ccbasic %in% c(15,16,17)) 
 
+
 df_scorecard %>% glimpse()
+
+
+```
+
+Investigate dataset
+```{r}
+
+df_scorecard %>% count(control)
+
+df_scorecard %>% count(cipcode)
+# 13.04	No substantive changes	no	Educational Administration and Supervision.
+# 44.04	No substantive changes	no	Public Administration.
+# 44.05	No substantive changes	no	Public Policy Analysis.
+# 44.07	No substantive changes	no	Social Work.
+
+df_scorecard %>% 
+  filter(cipcode == "1304",debt_all_stgp_eval_n != 'PrivacySuppressed',debt_all_stgp_eval_mean != 'debt_all_stgp_eval_mean') %>%
+  select(instnm,debt_all_stgp_eval_n,debt_all_stgp_eval_mean,earn_mdn_hi_2yr) %>%
+  print(n=200)
+  # debt_all_stgp_eval_mdn
+  # debt_all_pp_eval_n,debt_all_pp_eval_mean,debt_all_pp_eval_mdn
+
+%>% count(cipdesc)
 ```
 
 
