@@ -28,7 +28,7 @@ library(kableExtra)
 library(tidyverse)
 
 t <- c("Class website", "Class Zoom link", "Class Slack workspace")
-l <- c("https://anyone-can-cook.github.io/educ152/", "TBD", "TBD")
+l <- c("https://anyone-can-cook.github.io/educ152/", "https://ucla.zoom.us/j/91707509593", "https://app.slack.com/client/T01S30RQY2E/C01SVPEPHPT")
 
 info <- tibble(t, l)
 
@@ -60,7 +60,8 @@ EDUC 152 introduces students to regression as a tool to answer questions about e
 - Pronouns: she/her/hers/ella
 - Email: [pmarti@g.ucla.edu](pmarti@g.ucla.edu)
 - Office hours:
-  - Zoom office hours: TBD, zoom [link](https://ucla.zoom.us/j/97724535140)
+  - Zoom office hours: Thursdays 12 - 1pm, zoom [link](
+ https://ucla.zoom.us/j/97786470715)
   - And by appointment
 
 # Course learning goals
@@ -103,7 +104,7 @@ During synchronous class time students will work in groups to practice a new ski
 
 
 1. __Asynchronous (pre-class) lectures__. Weekly asynchronous lectures will be posted on the course website with the expectation that students work through the lecture in advance of our weekly synchronous class meeting. Lecture materials will consist of three types of resources: first, detailed lecture slides (PDF or HTML) introducing the statistical theory, programming skills, and sample code; second, short videos (e.g., 15 to 30 total minutes per week) that provide a high-level discussion of important and/or challenging concepts from the lecture slides, but not a line-by-line recitation of the lecture; and, third, the .Rmd file that created the PDF/HTML lecture slides. This .Rmd file will contain all "code chunks" and links to all data utilized in the lecture. Thus, students will be able to "learn by doing" in that they can run R code on their own computer while they work through lecture materials on their own.
-1. __Synchronous workshop-style class meetings.__ We will have one synchronous class meeting per week. Typically, these meetings will begin with a discussion of concepts students found difficult or confusing from the lecture materials. The majority of class time will be devoted to students working in groups on a substantive activity posed by the instructor, for example: practicing a new skill, like creating .Rmd files with in-text citations and references; solving a practical research challenge, like creating analysis variables from survey data in the presence of skip patterns; or deconstructing and critiquing empirical research articles we read prior to class.  While students work in groups, the instructor and TA will visit each group to answer questions and talk through ideas.
+1. __Synchronous workshop-style class meetings.__ We will have one synchronous class meeting per week. Typically, these meetings will begin with a discussion of concepts students found difficult or confusing from the lecture materials. The majority of class time will be devoted to students working in groups on a substantive activity posed by the instructor, for example: practicing a new skill, like creating .Rmd files with in-text citations and references; solving a practical research challenge, like creating analysis variables from survey data in the presence of skip patterns; or deconstructing and critiquing empirical research articles we read prior to class. While students work in groups, the instructor and TA will visit each group to answer questions and talk through ideas.
 
 ## How to succeed in this class
 
@@ -144,7 +145,7 @@ All course related material can be found on the [course website](https://anyone-
 
 Instead of communicating via email, we’ll use *Slack*, an online collaborative workspace. You can access it through a web browser or by downloading the Slack app on your phone or computer. Our workspace is called "EDUC 152, Spring 2021" and the link is at the top of the syllabus. The best way to communicate with the instructor, TAs, and your classmates is via Slack, instead of email. All class announcements (e.g., "the due date for the assignment has changed" or "I've posted a study guide – check it out!") will be made with Slack. This means it’s important that you check regularly for communication.
 
-If you have a personal question or issue, please send a message to the instructor and/or TA via Slack. Additionally, we are available for office hours or by appointment if there is anything you would like to discuss with us in private. 
+If you have a personal question or issue, please send a direct message to the instructor and/or TA via Slack. Additionally, we are available for office hours or by appointment if there is anything you would like to discuss with us in private. 
 
 # Course materials
 
@@ -153,7 +154,7 @@ If you have a personal question or issue, please send a message to the instructo
 - Stock, J., and Watson, M. _Introduction to econometrics_ (1st, 2nd, 3rd, 4th editions are fine; just not the "brief edition")
   - This will be our primary text for learning regression
   - [LINK](https://www.amazon.com/Introduction-Econometrics-Stock-James-Watson-dp-935286350X/dp/935286350X/ref=mt_other?_encoding=UTF8&me=&qid=) to paperback 3rd edition on Amazon
-  - ADD INSTRUCTIONS FOR OBTAINING BOOOK FROM LIBRARY
+  - ADD INSTRUCTIONS FOR OBTAINING BOOK FROM LIBRARY
   
 **Free, online books/resources we will use for assigned reading**  
 
@@ -169,7 +170,7 @@ If you have a personal question or issue, please send a message to the instructo
 
 - [R Markdown: The Definative Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, and Garrett Grolemund
 - [R for Data Science](https://r4ds.had.co.nz/) by Garrett Grolemund and Hadley Wickham
-- Two-course programming/data science sequence (using _R_) developed by Ozan Jaquette, Patricia Martin, and Crystal Han
+- Two-course programming/data science sequence (using _R_) developed by Ozan Jaquette, Patricia Martín, and Crystal Han
   - [Link to Rclass1](https://anyone-can-cook.github.io/rclass1/), EDUC260A: Introduction to programming and data management
   - [Link to Rclass2](https://anyone-can-cook.github.io/rclass2/), EDUC260B: Fundamentals of programming
 
@@ -183,7 +184,7 @@ Links to other required and optional reading will be on the [course website](htt
 - **[RStudio](https://rstudio.com/products/rstudio/download/)**, integrated development environment for R  [**FREE!**]
 
 
-Link to tips for software installation [HERE](https://github.com/ozanj/rclass/raw/master/todo/educ263_todo.pdf).
+Link to tips for software installation [HERE](https://github.com/anyone-can-cook/educ152/raw/main/assets/resources/software_installation.pdf).
 
 - **_Note_**: _This document is subject to change prior to spring quarter._
 
@@ -207,7 +208,7 @@ Each problem set will require students to apply knowledge of statistical concept
 
 You will work in groups for the first three problem sets. **However, it is important that you understand how to do the problem set on your own, rather than copying the solution developed by group members.**  Each student will submit their own R script or .Rmd file. Since you will be working together, it is understandable that answers for some questions will be the same as your group members. However, if I find compelling evidence that a student merely copied solutions from a classmate, I will consider this a violation of academic integrity and that student will receive a zero for the homework assignment.
 
-Late submissions will lose 20% (i.e., max grade becomes 80%). Problem sets not submitted by XXXX will not receive points. You will not lose points for late submission if you cannot submit a problem set due to an unexpected emergency. But please contact the instructor by email as soon as you can so we can work out a plan.
+Late submissions will lose 20% (i.e., max grade becomes 80%). Problem sets submitted a week late (after the problem set is due) will not receive points. You will not lose points for late submission if you cannot submit a problem set due to an unexpected emergency. Extensions can be granted, but only with prior approval by the instructor(s). But please contact the instructor by email as soon as you can so we can work out a plan.
 
 We strongly recommend using the course Slack workspace to ask questions that you have about problem sets. Instructors will do our best to reply quickly with helpful hints/explanations and we encourage members of the class to do the same.
 
@@ -323,6 +324,29 @@ __UNIT 3: REGRESSION FOR CAUSAL CLAIMS__
 
 # Course policies
 
+## Learning during a global pandemic
+
+With the ongoing spread of the COVID-19 pandemic, we understand that right now is a challenging time for everybody. Many of us may be experiencing added stress or responsibilities that make learning and completing classwork difficult. If you are having trouble keeping up with the class, please reach out to the teaching team and we will help work out a plan with you. We understand that right now is a precarious time and in the event that you or someone in your family and/or shared living space gets sick, we ask that you please reach out to us as soon as you are able to. We want to be accommodating to everyone's unique situation and hope to make this class an enjoyable learning experience for all.
+
+## Online collaboration/netiquette
+
+You will communicate with instructors and peers virtually through a variety of tools such as Slack, email, and Zoom web conferencing. The following guidelines will enable everyone in the course to participate and collaborate in a productive, safe environment.
+
+-	Be professional, courteous, and respectful as you would in a physical classroom.
+-	Online communication lacks the nonverbal cues that provide much of the meaning and nuances in face-to-face conversations. Choose your words carefully, phrase your sentences clearly, and stay on topic.
+-	It is expected that students may disagree with the research presented or the opinions of their fellow classmates. To disagree is fine but to disparage others' views is unacceptable. All comments should be kept civil and thoughtful.
+- It is imperative that we respect one another in this course, and all other spaces. One way to gain/show respect is to actively listen to one another. Please do not text, tweet, email, Facebook, LinkedIn, browse the internet, and such during class.
+- In the unlikely event that Zoom is down, please be sure to check the class Slack channel often for instructions on how we will complete that class session in an asynchronous manner.
+
+**Class Zoom guidelines**  
+
+All synchronous class sessions will be held online, via Zoom. Below, we have outlined some general guidelines about Zoom learning. As we continue learning together, we can add to and change the below list. I'm open to your feedback and your experiences as we continue to learn how to learn via Zoom.  
+
+- **Video**: Students are **strongly** encouraged to turn on their video during synchronous lectures. Additionally, we encourage students to turn on their video particularly during small group breakout rooms. You may turn off your camera in the event that you have to step out for a few minutes and/or are having connectivity issues.   
+- **Audio**: We ask students to mute their microphones when they are not speaking. We encourage the use of earphones or headphones if you are in a space with background noise.  
+- **Zoom outage**: In the unlikely event that Zoom is down, the instructors will post an announcement on Slack with instructions for completing the class section in an asynchronous manner. Therefore, if Zoom is not functioning properly during the class period, be sure to check the class Slack channel.  
+- **Internet connectivity**: We understand that having access to a stable internet connection and/or electronic equipment is a privilege. With that in mind, we want to provide a space where everyone has the resources they need to do well in the class. If you have any issues with your internet connection and/or don't have access to electronic equipment, please reach out to the instructors. 
+
 ## Academic accomodations
 
 **Center for Accessible Education**  
@@ -332,7 +356,7 @@ Students needing academic accommodations based on a disability should contact th
 Located in A255 Murphy Hall: (310) 825-1501, TDD (310) 206-6083; http://www.cae.ucla.edu/
 
 -	Due to COVID-19, the CAE office is closed for in-person meetings
--	CAE counselor, resources, and services are still available via email / virtual appointment
+-	CAE counselor, resources, and services are still available via email / virtual appointment/drop-in hours
 -	Stay up-to-date with CAE newsletters & announcements at https://www.cae.ucla.edu/announcements-events/student
 
 
@@ -436,7 +460,7 @@ For more information visit their website: https://www.swd.ucla.edu/
 
 Title IX prohibits gender discrimination, including sexual harassment, domestic and dating violence, sexual assault, and stalking.  If you have experienced sexual harassment or sexual violence, there are a variety of resources to assist you.  
 
-- __CONFIDENTIAL RESOURCES__:You can receive confidential support and advocacy at the CARE Advocacy Office for Sexual and Gender-Based Violence, A233 Murphy Hall, CAREadvocate\@careprogram.ucla.edu, (310) 206-2465. Counseling and Psychological Services (CAPS) also provides confidential counseling to all students and can be reached 24/7 at (310) 825-0768.  
+- __CONFIDENTIAL RESOURCES__:You can receive confidential support and advocacy at the CARE Advocacy Office for Sexual and Gender-Based Violence, A233 Murphy Hall, CAREadvocate@careprogram.ucla.edu, (310) 206-2465. Counseling and Psychological Services (CAPS) also provides confidential counseling to all students and can be reached 24/7 at (310) 825-0768.  
 
 - __NON-CONFIDENTIAL RESOURCES__: You can also report sexual violence or sexual harassment directly to the University's Title IX Coordinator, 2255 Murphy Hall, titleix\@conet.ucla.edu, (310) 206-3417. Reports to law enforcement can be made to UCPD at (310) 825-1491. These offices may be required to pursue an official investigation.
 
@@ -444,10 +468,10 @@ Title IX prohibits gender discrimination, including sexual harassment, domestic 
 
 ## Undergraduate Writing Center
 
-Peer learning facilitators (PLFs) are undergraduates who understand the challenges of writing at UCLA. Scheduled appointment and walk-in options are available, see www.wp.ucla.edu/uwc for more information about writing programs and to get assistance with your writing.
+Peer learning facilitators (PLFs) are undergraduates who understand the challenges of writing at UCLA. Scheduled appointment and walk-in options are available, see https://uwc.ucla.edu/ for more information about writing programs and to get assistance with your writing.
 
 -	Due to COVID-19, all physical UWC offices will be closed until further notice
 -	All UWC appointments are now online via Zoom and Google Docs
--	Offer virtual drop-in appointments Mon – Thurs from 10am-9pm, Fri from 10am-3pm and Sun from 6-9pm
+-	Spring 2021 virtual drop-in appointments M 10am-12pm & 2-4pm | Tues. 1-3pm | W 3-5pm | Th 10am-12pm & 3-5pm | F 10am-12pm &1-3pm
 
 For additional campus resources and student services, please review [this document](https://ucla.app.box.com/s/st51pify842ouoc24ae2r80s9sesavmy). 
