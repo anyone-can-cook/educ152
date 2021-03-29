@@ -1660,118 +1660,456 @@ div.tocify {
 </div>
 
 
-<p>TO PATRICIA:</p>
-<ul>
-<li><a href="https://docs.google.com/document/d/1eogA4hdijojQJQc-kN6Gx9bHtZRRnUV52K_FNamfCGI/edit">LINK TO GOOGLE DOC</a> that has proposed outline for lecture</li>
-</ul>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
+<p><strong>Lecture overview</strong></p>
+<ul>
+<li>Introduction to <em>College Scorecard</em> data on debt and earnings from degree programs</li>
+<li>Brief review of statistics (selected concepts)</li>
+</ul>
 <div id="libraries-we-will-use" class="section level2">
 <h2><span class="header-section-number">1.1</span> Libraries we will use</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; -- Attaching packages ----------------------------------------------------------------- tidyverse 1.3.0 --</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; v ggplot2 3.3.2     v purrr   0.3.4</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; v tibble  3.0.3     v dplyr   1.0.2</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; v tidyr   1.1.2     v stringr 1.4.0</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; v readr   1.3.1     v forcats 0.5.0</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; -- Conflicts -------------------------------------------------------------------- tidyverse_conflicts() --</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; x dplyr::filter() masks stats::filter()</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">#install.packages(&#39;tidyverse&#39;) # if you haven&#39;t installed already</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#install.packages(&#39;labelled&#39;) # if you haven&#39;t installed already</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(tidyverse) <span class="co"># load tidyverse package</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">library</span>(labelled) <span class="co"># load labelled package package</span></span></code></pre></div>
 </div>
-<div id="data-we-will-use" class="section level2">
-<h2><span class="header-section-number">1.2</span> Data we will use</h2>
-<p>Dataset on debt and earnings associated with degree programs from College Scorecard</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">load</span>(<span class="dt">file =</span> <span class="kw">url</span>(<span class="st">&#39;https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel.RData&#39;</span>))</span></code></pre></div>
-<p>Create dataframe that is subset:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>  df_scorecard &lt;-<span class="st"> </span>df_debt_earn_panel <span class="op">%&gt;%</span></span>
+</div>
+<div id="college-scorecard-data" class="section level1">
+<h1><span class="header-section-number">2</span> College Scorecard data</h1>
+<p>The <a href="https://collegescorecard.ed.gov/">College Scorecard</a> is a tool created by the <em>US Department of Education</em> that seeks to help prospective students investigate/compare postsecondary institutions and degree programs</p>
+<ul>
+<li>We will use data from the <em>College Scorecard</em> in lecture and potentially for some assignments</li>
+<li>Relevant links
+<ul>
+<li><a href="https://collegescorecard.ed.gov/">College Scorecard website</a></li>
+<li><a href="https://collegescorecard.ed.gov/data/documentation/">Data documentation</a></li>
+<li><a href="https://data.ed.gov/dataset/college-scorecard-all-data-files-through-6-2020/resources">Data download</a></li>
+</ul></li>
+</ul>
+<p>Recently, the <em>US Department of Education</em> released new <em>College Scorecard</em> data on debt and earnings associated with postsecondary degree programs</p>
+<ul>
+<li>(In theory) for each postsecondary degree program offered by a college/university, <em>College Scorecard</em> identifies average student debt associated with that degree program (for federal student loan programs) and average earnings of graduates</li>
+<li>Many debt and earnings variables have the value <code>&#39;PrivacySuppressed&#39;</code> because number of graduates is sufficiently small that there are concerns about being able to identify individual students</li>
+<li>Generally, academic programs with “large” enrollment are not suppressed</li>
+<li>We will focus on debt and earnings associated with master’s (MA) programs
+<ul>
+<li>Hopefully, this information will be useful for students considering an MA program down the road</li>
+</ul></li>
+</ul>
+<p>In the following sub-sections, we “load” the data, create modified datasets, investigate the data, and run some basic descriptive statistics</p>
+<ul>
+<li><strong>Your are not responsible for knowing the below code</strong>
+<ul>
+<li>You will only be responsible for knowing code that we explicitly teach you during the quarter</li>
+</ul></li>
+<li>But try to follow the general logic of what the code is doing</li>
+<li>And try running the below “code chunks” on your own computer</li>
+</ul>
+<div id="load-and-inspect-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Load and inspect data</h2>
+<p>Load data frame (i.e., dataset)</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">load</span>(<span class="dt">file =</span> <span class="kw">url</span>(<span class="st">&#39;https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel_labelled.RData&#39;</span>))</span></code></pre></div>
+<p>Create subset data frame:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>df_scorecard &lt;-<span class="st"> </span>df_debt_earn_panel_labelled <span class="op">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="st">    </span><span class="co"># keep most recent year of data</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="st">    </span><span class="kw">filter</span>(field_ay <span class="op">==</span><span class="st"> &#39;2017-18&#39;</span>) <span class="op">%&gt;%</span></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="st">    </span><span class="co"># keep master&#39;s degrees</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="st">    </span><span class="kw">filter</span>(credlev <span class="op">==</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="st">    </span><span class="co"># carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity; 17 = Doctoral/Professional Universities</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="st">    </span><span class="kw">filter</span>(ccbasic <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">16</span>,<span class="dv">17</span>)) </span>
-<span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a>df_scorecard <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()</span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; Rows: 18,665</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; Columns: 52</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; $ opeid6                        &lt;chr&gt; &quot;001009&quot;, &quot;001009&quot;, &quot;001009&quot;, &quot;001009...</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; $ unitid                        &lt;dbl&gt; 100858, 100858, 100858, 100858, 10085...</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; $ instnm                        &lt;chr&gt; &quot;Auburn University&quot;, &quot;Auburn Universi...</span></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; $ control                       &lt;chr&gt; &quot;Public&quot;, &quot;Public&quot;, &quot;Public&quot;, &quot;Public...</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; $ ccbasic                       &lt;dbl&gt; 15, 15, 15, 15, 15, 15, 15, 15, 15, 1...</span></span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; $ stabbr                        &lt;chr&gt; &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;...</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; $ city                          &lt;chr&gt; &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn...</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; $ cipcode                       &lt;chr&gt; &quot;0101&quot;, &quot;0103&quot;, &quot;0109&quot;, &quot;0111&quot;, &quot;0181...</span></span>
-<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt; $ cipdesc                       &lt;chr&gt; &quot;Agricultural Business and Management...</span></span>
-<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; $ credlev                       &lt;dbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5...</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; $ creddesc                      &lt;chr&gt; &quot;Master&#39;s Degree&quot;, &quot;Master&#39;s Degree&quot;,...</span></span>
-<span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; $ field_ay                      &lt;chr&gt; &quot;2017-18&quot;, &quot;2017-18&quot;, &quot;2017-18&quot;, &quot;201...</span></span>
-<span id="cb3-24"><a href="#cb3-24"></a><span class="co">#&gt; $ ipedscount1                   &lt;chr&gt; &quot;7&quot;, &quot;15&quot;, &quot;17&quot;, &quot;24&quot;, &quot;NULL&quot;, &quot;7&quot;, &quot;...</span></span>
-<span id="cb3-25"><a href="#cb3-25"></a><span class="co">#&gt; $ ipedscount2                   &lt;chr&gt; &quot;3&quot;, &quot;14&quot;, &quot;11&quot;, &quot;38&quot;, &quot;NULL&quot;, &quot;4&quot;, &quot;...</span></span>
-<span id="cb3-26"><a href="#cb3-26"></a><span class="co">#&gt; $ debt_all_stgp_any_n           &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-27"><a href="#cb3-27"></a><span class="co">#&gt; $ debt_all_stgp_any_mean        &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-28"><a href="#cb3-28"></a><span class="co">#&gt; $ debt_all_stgp_any_mdn         &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a><span class="co">#&gt; $ debt_all_stgp_eval_n          &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-30"><a href="#cb3-30"></a><span class="co">#&gt; $ debt_all_stgp_eval_mean       &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-31"><a href="#cb3-31"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn        &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-32"><a href="#cb3-32"></a><span class="co">#&gt; $ debt_all_stgp_any_mdn10yrpay  &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-33"><a href="#cb3-33"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn10yrpay &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-34"><a href="#cb3-34"></a><span class="co">#&gt; $ debt_all_pp_any_n             &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-35"><a href="#cb3-35"></a><span class="co">#&gt; $ debt_all_pp_any_mean          &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-36"><a href="#cb3-36"></a><span class="co">#&gt; $ debt_all_pp_any_mdn           &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-37"><a href="#cb3-37"></a><span class="co">#&gt; $ debt_all_pp_eval_n            &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-38"><a href="#cb3-38"></a><span class="co">#&gt; $ debt_all_pp_eval_mean         &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-39"><a href="#cb3-39"></a><span class="co">#&gt; $ debt_all_pp_eval_mdn          &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt; $ debt_all_pp_any_mdn10yrpay    &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-41"><a href="#cb3-41"></a><span class="co">#&gt; $ debt_all_pp_eval_mdn10yrpay   &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
-<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; $ earn_count_wne_hi_1yr         &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;15&quot;, &quot;12&quot;, &quot;11&quot;...</span></span>
-<span id="cb3-43"><a href="#cb3-43"></a><span class="co">#&gt; $ earn_mdn_hi_1yr               &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;46478&quot;, &quot;43426&quot;...</span></span>
-<span id="cb3-44"><a href="#cb3-44"></a><span class="co">#&gt; $ earn_count_wne_hi_2yr         &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;13&quot;, &quot;PrivacySu...</span></span>
-<span id="cb3-45"><a href="#cb3-45"></a><span class="co">#&gt; $ earn_mdn_hi_2yr               &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;44942&quot;, &quot;Privac...</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a><span class="co">#&gt; $ main                          &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...</span></span>
-<span id="cb3-47"><a href="#cb3-47"></a><span class="co">#&gt; $ numbranch                     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...</span></span>
-<span id="cb3-48"><a href="#cb3-48"></a><span class="co">#&gt; $ accredagency                  &lt;chr&gt; &quot;Southern Association of Colleges and...</span></span>
-<span id="cb3-49"><a href="#cb3-49"></a><span class="co">#&gt; $ highdeg                       &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4...</span></span>
-<span id="cb3-50"><a href="#cb3-50"></a><span class="co">#&gt; $ st_fips                       &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...</span></span>
-<span id="cb3-51"><a href="#cb3-51"></a><span class="co">#&gt; $ region                        &lt;dbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5...</span></span>
-<span id="cb3-52"><a href="#cb3-52"></a><span class="co">#&gt; $ zip                           &lt;chr&gt; &quot;36849&quot;, &quot;36849&quot;, &quot;36849&quot;, &quot;36849&quot;, &quot;...</span></span>
-<span id="cb3-53"><a href="#cb3-53"></a><span class="co">#&gt; $ locale                        &lt;dbl&gt; 13, 13, 13, 13, 13, 13, 13, 13, 13, 1...</span></span>
-<span id="cb3-54"><a href="#cb3-54"></a><span class="co">#&gt; $ locale2                       &lt;chr&gt; &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL...</span></span>
-<span id="cb3-55"><a href="#cb3-55"></a><span class="co">#&gt; $ latitude                      &lt;dbl&gt; 32.59938, 32.59938, 32.59938, 32.5993...</span></span>
-<span id="cb3-56"><a href="#cb3-56"></a><span class="co">#&gt; $ longitude                     &lt;dbl&gt; -85.48826, -85.48826, -85.48826, -85....</span></span>
-<span id="cb3-57"><a href="#cb3-57"></a><span class="co">#&gt; $ relaffil                      &lt;chr&gt; &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL...</span></span>
-<span id="cb3-58"><a href="#cb3-58"></a><span class="co">#&gt; $ hbcu                          &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0...</span></span>
-<span id="cb3-59"><a href="#cb3-59"></a><span class="co">#&gt; $ annhi                         &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0...</span></span>
-<span id="cb3-60"><a href="#cb3-60"></a><span class="co">#&gt; $ tribal                        &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0...</span></span>
-<span id="cb3-61"><a href="#cb3-61"></a><span class="co">#&gt; $ aanapii                       &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0...</span></span>
-<span id="cb3-62"><a href="#cb3-62"></a><span class="co">#&gt; $ hsi                           &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0...</span></span>
-<span id="cb3-63"><a href="#cb3-63"></a><span class="co">#&gt; $ nanti                         &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0...</span></span></code></pre></div>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="st">    </span><span class="co"># carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="st">    </span><span class="kw">filter</span>(ccbasic <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">16</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="st">    </span><span class="co"># drop &quot;parent plus&quot; loan variables and other vars we won&#39;t use in this lecture</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">contains</span>(<span class="st">&#39;_pp&#39;</span>),<span class="op">-</span><span class="kw">contains</span>(<span class="st">&#39;_any&#39;</span>),<span class="op">-</span>field_ay,<span class="op">-</span>st_fips,<span class="op">-</span>zip,<span class="op">-</span>longitude,<span class="op">-</span>latitude,<span class="op">-</span>locale2,<span class="op">-</span>highdeg,<span class="op">-</span>accredagency,<span class="op">-</span>relaffil,<span class="op">-</span>hbcu,<span class="op">-</span>annhi,<span class="op">-</span>tribal,<span class="op">-</span>aanapii,<span class="op">-</span>hsi,<span class="op">-</span>nanti,<span class="op">-</span>main,<span class="op">-</span>numbranch) <span class="op">%&gt;%</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="st">    </span><span class="co"># create variable for broad field of degree (e.g., education, business)</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">cipdig2 =</span> <span class="kw">str_sub</span>(<span class="dt">string =</span> cipcode, <span class="dt">start =</span> <span class="dv">1</span>, <span class="dt">end =</span> <span class="dv">2</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="st">    </span><span class="co"># shorten variable cipdesc to make it more suitable for printing</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">cipdesc =</span> <span class="kw">str_sub</span>(<span class="dt">string =</span> cipdesc, <span class="dt">start =</span> <span class="dv">1</span>, <span class="dt">end =</span> <span class="dv">50</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="st">    </span><span class="co"># re-order variables</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="st">    </span><span class="kw">relocate</span>(opeid6,unitid,instnm,control,ccbasic,stabbr,city,cipdig2)</span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="co"># &quot;glimpse&quot; data frame</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a>df_scorecard <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()</span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; Rows: 15,336</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt; Columns: 24</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; $ opeid6                        &lt;chr&gt; &quot;001009&quot;, &quot;001009&quot;, &quot;001009&quot;, &quot;001009...</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; $ unitid                        &lt;dbl&gt; 100858, 100858, 100858, 100858, 10085...</span></span>
+<span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; $ instnm                        &lt;chr&gt; &quot;Auburn University&quot;, &quot;Auburn Universi...</span></span>
+<span id="cb3-24"><a href="#cb3-24"></a><span class="co">#&gt; $ control                       &lt;chr+lbl&gt; Public, Public, Public, Public, P...</span></span>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="co">#&gt; $ ccbasic                       &lt;dbl+lbl&gt; 15, 15, 15, 15, 15, 15, 15, 15, 1...</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a><span class="co">#&gt; $ stabbr                        &lt;chr&gt; &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;...</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a><span class="co">#&gt; $ city                          &lt;chr&gt; &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn...</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a><span class="co">#&gt; $ cipdig2                       &lt;chr&gt; &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;03&quot;, &quot;...</span></span>
+<span id="cb3-29"><a href="#cb3-29"></a><span class="co">#&gt; $ cipcode                       &lt;chr&gt; &quot;0101&quot;, &quot;0103&quot;, &quot;0109&quot;, &quot;0111&quot;, &quot;0181...</span></span>
+<span id="cb3-30"><a href="#cb3-30"></a><span class="co">#&gt; $ cipdesc                       &lt;chr&gt; &quot;Agricultural Business and Management...</span></span>
+<span id="cb3-31"><a href="#cb3-31"></a><span class="co">#&gt; $ credlev                       &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
+<span id="cb3-32"><a href="#cb3-32"></a><span class="co">#&gt; $ creddesc                      &lt;chr&gt; &quot;Master&#39;s Degree&quot;, &quot;Master&#39;s Degree&quot;,...</span></span>
+<span id="cb3-33"><a href="#cb3-33"></a><span class="co">#&gt; $ ipedscount1                   &lt;chr&gt; &quot;7&quot;, &quot;15&quot;, &quot;17&quot;, &quot;24&quot;, &quot;NULL&quot;, &quot;7&quot;, &quot;...</span></span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="co">#&gt; $ ipedscount2                   &lt;chr&gt; &quot;3&quot;, &quot;14&quot;, &quot;11&quot;, &quot;38&quot;, &quot;NULL&quot;, &quot;4&quot;, &quot;...</span></span>
+<span id="cb3-35"><a href="#cb3-35"></a><span class="co">#&gt; $ debt_all_stgp_eval_n          &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
+<span id="cb3-36"><a href="#cb3-36"></a><span class="co">#&gt; $ debt_all_stgp_eval_mean       &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
+<span id="cb3-37"><a href="#cb3-37"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn        &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
+<span id="cb3-38"><a href="#cb3-38"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn10yrpay &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;PrivacySuppress...</span></span>
+<span id="cb3-39"><a href="#cb3-39"></a><span class="co">#&gt; $ earn_count_wne_hi_1yr         &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;15&quot;, &quot;12&quot;, &quot;11&quot;...</span></span>
+<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt; $ earn_mdn_hi_1yr               &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;46478&quot;, &quot;43426&quot;...</span></span>
+<span id="cb3-41"><a href="#cb3-41"></a><span class="co">#&gt; $ earn_count_wne_hi_2yr         &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;13&quot;, &quot;PrivacySu...</span></span>
+<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; $ earn_mdn_hi_2yr               &lt;chr&gt; &quot;PrivacySuppressed&quot;, &quot;44942&quot;, &quot;Privac...</span></span>
+<span id="cb3-43"><a href="#cb3-43"></a><span class="co">#&gt; $ region                        &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
+<span id="cb3-44"><a href="#cb3-44"></a><span class="co">#&gt; $ locale                        &lt;dbl+lbl&gt; 13, 13, 13, 13, 13, 13, 13, 13, 1...</span></span>
+<span id="cb3-45"><a href="#cb3-45"></a></span>
+<span id="cb3-46"><a href="#cb3-46"></a><span class="co"># For debt and earnings variables, convert from character to numeric variables (which replaces &quot;PrivacySuppressed&quot; values with NA values)</span></span>
+<span id="cb3-47"><a href="#cb3-47"></a>df_scorecard &lt;-<span class="st"> </span>df_scorecard <span class="op">%&gt;%</span></span>
+<span id="cb3-48"><a href="#cb3-48"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb3-49"><a href="#cb3-49"></a>    <span class="dt">debt_all_stgp_eval_n =</span> <span class="kw">as.numeric</span>(debt_all_stgp_eval_n),</span>
+<span id="cb3-50"><a href="#cb3-50"></a>    <span class="dt">debt_all_stgp_eval_mean =</span> <span class="kw">as.numeric</span>(debt_all_stgp_eval_mean),</span>
+<span id="cb3-51"><a href="#cb3-51"></a>    <span class="dt">debt_all_stgp_eval_mdn =</span> <span class="kw">as.numeric</span>(debt_all_stgp_eval_mdn),</span>
+<span id="cb3-52"><a href="#cb3-52"></a>    <span class="dt">debt_all_stgp_eval_mdn10yrpay =</span> <span class="kw">as.numeric</span>(debt_all_stgp_eval_mdn10yrpay),</span>
+<span id="cb3-53"><a href="#cb3-53"></a>    <span class="dt">earn_count_wne_hi_1yr =</span> <span class="kw">as.numeric</span>(earn_count_wne_hi_1yr),</span>
+<span id="cb3-54"><a href="#cb3-54"></a>    <span class="dt">earn_mdn_hi_1yr =</span> <span class="kw">as.numeric</span>(earn_mdn_hi_1yr),</span>
+<span id="cb3-55"><a href="#cb3-55"></a>    <span class="dt">earn_count_wne_hi_2yr =</span> <span class="kw">as.numeric</span>(earn_count_wne_hi_2yr),</span>
+<span id="cb3-56"><a href="#cb3-56"></a>    <span class="dt">earn_mdn_hi_2yr =</span> <span class="kw">as.numeric</span>(earn_mdn_hi_2yr)</span>
+<span id="cb3-57"><a href="#cb3-57"></a>  ) </span>
+<span id="cb3-58"><a href="#cb3-58"></a></span>
+<span id="cb3-59"><a href="#cb3-59"></a><span class="co"># add variable label to variable cipdig2</span></span>
+<span id="cb3-60"><a href="#cb3-60"></a>  <span class="kw">attr</span>(df_scorecard[[<span class="st">&#39;cipdig2&#39;</span>]], <span class="dt">which =</span> <span class="st">&#39;label&#39;</span>) &lt;-<span class="st"> &#39;broad degree field code = 2-digit classification of instructional programs (CIP) degree code&#39;</span></span>
+<span id="cb3-61"><a href="#cb3-61"></a></span>
+<span id="cb3-62"><a href="#cb3-62"></a><span class="co"># add variable label attribute back to debt and earnings variables</span></span>
+<span id="cb3-63"><a href="#cb3-63"></a>  <span class="cf">for</span>(v <span class="cf">in</span> <span class="kw">c</span>(<span class="st">&#39;debt_all_stgp_eval_n&#39;</span>,<span class="st">&#39;debt_all_stgp_eval_mean&#39;</span>,<span class="st">&#39;debt_all_stgp_eval_mdn&#39;</span>,<span class="st">&#39;debt_all_stgp_eval_mdn10yrpay&#39;</span>,<span class="st">&#39;earn_count_wne_hi_1yr&#39;</span>,<span class="st">&#39;earn_mdn_hi_1yr&#39;</span>,<span class="st">&#39;earn_count_wne_hi_2yr&#39;</span>,<span class="st">&#39;earn_mdn_hi_2yr&#39;</span>,<span class="st">&#39;cipdesc&#39;</span>)) {</span>
+<span id="cb3-64"><a href="#cb3-64"></a>    </span>
+<span id="cb3-65"><a href="#cb3-65"></a>    <span class="co">#writeLines(str_c(&#39;object v=&#39;, v))</span></span>
+<span id="cb3-66"><a href="#cb3-66"></a>    <span class="co">#writeLines(attr(df_debt_earn_panel_labelled[[v]], which = &#39;label&#39;))</span></span>
+<span id="cb3-67"><a href="#cb3-67"></a>    </span>
+<span id="cb3-68"><a href="#cb3-68"></a>    <span class="kw">attr</span>(df_scorecard[[v]], <span class="dt">which =</span> <span class="st">&#39;label&#39;</span>) &lt;-<span class="st"> </span><span class="kw">attr</span>(df_debt_earn_panel_labelled[[v]], <span class="dt">which =</span> <span class="st">&#39;label&#39;</span>)</span>
+<span id="cb3-69"><a href="#cb3-69"></a>  }</span>
+<span id="cb3-70"><a href="#cb3-70"></a></span>
+<span id="cb3-71"><a href="#cb3-71"></a>df_scorecard <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()</span>
+<span id="cb3-72"><a href="#cb3-72"></a><span class="co">#&gt; Rows: 15,336</span></span>
+<span id="cb3-73"><a href="#cb3-73"></a><span class="co">#&gt; Columns: 24</span></span>
+<span id="cb3-74"><a href="#cb3-74"></a><span class="co">#&gt; $ opeid6                        &lt;chr&gt; &quot;001009&quot;, &quot;001009&quot;, &quot;001009&quot;, &quot;001009...</span></span>
+<span id="cb3-75"><a href="#cb3-75"></a><span class="co">#&gt; $ unitid                        &lt;dbl&gt; 100858, 100858, 100858, 100858, 10085...</span></span>
+<span id="cb3-76"><a href="#cb3-76"></a><span class="co">#&gt; $ instnm                        &lt;chr&gt; &quot;Auburn University&quot;, &quot;Auburn Universi...</span></span>
+<span id="cb3-77"><a href="#cb3-77"></a><span class="co">#&gt; $ control                       &lt;chr+lbl&gt; Public, Public, Public, Public, P...</span></span>
+<span id="cb3-78"><a href="#cb3-78"></a><span class="co">#&gt; $ ccbasic                       &lt;dbl+lbl&gt; 15, 15, 15, 15, 15, 15, 15, 15, 1...</span></span>
+<span id="cb3-79"><a href="#cb3-79"></a><span class="co">#&gt; $ stabbr                        &lt;chr&gt; &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;...</span></span>
+<span id="cb3-80"><a href="#cb3-80"></a><span class="co">#&gt; $ city                          &lt;chr&gt; &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn...</span></span>
+<span id="cb3-81"><a href="#cb3-81"></a><span class="co">#&gt; $ cipdig2                       &lt;chr&gt; &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;03&quot;, &quot;...</span></span>
+<span id="cb3-82"><a href="#cb3-82"></a><span class="co">#&gt; $ cipcode                       &lt;chr&gt; &quot;0101&quot;, &quot;0103&quot;, &quot;0109&quot;, &quot;0111&quot;, &quot;0181...</span></span>
+<span id="cb3-83"><a href="#cb3-83"></a><span class="co">#&gt; $ cipdesc                       &lt;chr&gt; &quot;Agricultural Business and Management...</span></span>
+<span id="cb3-84"><a href="#cb3-84"></a><span class="co">#&gt; $ credlev                       &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
+<span id="cb3-85"><a href="#cb3-85"></a><span class="co">#&gt; $ creddesc                      &lt;chr&gt; &quot;Master&#39;s Degree&quot;, &quot;Master&#39;s Degree&quot;,...</span></span>
+<span id="cb3-86"><a href="#cb3-86"></a><span class="co">#&gt; $ ipedscount1                   &lt;chr&gt; &quot;7&quot;, &quot;15&quot;, &quot;17&quot;, &quot;24&quot;, &quot;NULL&quot;, &quot;7&quot;, &quot;...</span></span>
+<span id="cb3-87"><a href="#cb3-87"></a><span class="co">#&gt; $ ipedscount2                   &lt;chr&gt; &quot;3&quot;, &quot;14&quot;, &quot;11&quot;, &quot;38&quot;, &quot;NULL&quot;, &quot;4&quot;, &quot;...</span></span>
+<span id="cb3-88"><a href="#cb3-88"></a><span class="co">#&gt; $ debt_all_stgp_eval_n          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 1...</span></span>
+<span id="cb3-89"><a href="#cb3-89"></a><span class="co">#&gt; $ debt_all_stgp_eval_mean       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 6...</span></span>
+<span id="cb3-90"><a href="#cb3-90"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N...</span></span>
+<span id="cb3-91"><a href="#cb3-91"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn10yrpay &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N...</span></span>
+<span id="cb3-92"><a href="#cb3-92"></a><span class="co">#&gt; $ earn_count_wne_hi_1yr         &lt;dbl&gt; NA, 15, 12, 11, NA, NA, NA, NA, NA, 2...</span></span>
+<span id="cb3-93"><a href="#cb3-93"></a><span class="co">#&gt; $ earn_mdn_hi_1yr               &lt;dbl&gt; NA, 46478, 43426, 43314, NA, NA, NA, ...</span></span>
+<span id="cb3-94"><a href="#cb3-94"></a><span class="co">#&gt; $ earn_count_wne_hi_2yr         &lt;dbl&gt; NA, 13, NA, NA, NA, NA, NA, 11, NA, 2...</span></span>
+<span id="cb3-95"><a href="#cb3-95"></a><span class="co">#&gt; $ earn_mdn_hi_2yr               &lt;dbl&gt; NA, 44942, NA, NA, NA, NA, NA, 42712,...</span></span>
+<span id="cb3-96"><a href="#cb3-96"></a><span class="co">#&gt; $ region                        &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
+<span id="cb3-97"><a href="#cb3-97"></a><span class="co">#&gt; $ locale                        &lt;dbl+lbl&gt; 13, 13, 13, 13, 13, 13, 13, 13, 1...</span></span></code></pre></div>
+<p>Investigate dataset, show variable labels</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>df_scorecard <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">var_label</span>()</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; $opeid6</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt; [1] &quot;6-digit OPE ID for institution&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; </span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; $unitid</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt; [1] &quot;Unit ID for institution&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; </span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; $instnm</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; [1] &quot;Institution name&quot;</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; </span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; $control</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; [1] &quot;Control of institution&quot;</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; </span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; $ccbasic</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; [1] &quot;Carnegie Classification -- basic&quot;</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; </span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; $stabbr</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; [1] &quot;State postcode&quot;</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; </span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; $city</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; [1] &quot;City&quot;</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; </span></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="co">#&gt; $cipdig2</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; [1] &quot;broad degree field code = 2-digit classification of instructional programs (CIP) degree code&quot;</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="co">#&gt; </span></span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt; $cipcode</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a><span class="co">#&gt; [1] &quot;Classification of Instructional Programs (CIP) code for the field of study&quot;</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="co">#&gt; </span></span>
+<span id="cb4-29"><a href="#cb4-29"></a><span class="co">#&gt; $cipdesc</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="co">#&gt; [1] &quot;Text description of the field of study CIP Code&quot;</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="co">#&gt; </span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="co">#&gt; $credlev</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a><span class="co">#&gt; [1] &quot;Level of credential&quot;</span></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="co">#&gt; </span></span>
+<span id="cb4-35"><a href="#cb4-35"></a><span class="co">#&gt; $creddesc</span></span>
+<span id="cb4-36"><a href="#cb4-36"></a><span class="co">#&gt; [1] &quot;Text description of the level of credential&quot;</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a><span class="co">#&gt; </span></span>
+<span id="cb4-38"><a href="#cb4-38"></a><span class="co">#&gt; $ipedscount1</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a><span class="co">#&gt; [1] &quot;Number of awards to all students in year 1 of the pooled debt cohort&quot;</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a><span class="co">#&gt; </span></span>
+<span id="cb4-41"><a href="#cb4-41"></a><span class="co">#&gt; $ipedscount2</span></span>
+<span id="cb4-42"><a href="#cb4-42"></a><span class="co">#&gt; [1] &quot;Number of awards to all students in year 2 of the pooled debt cohort&quot;</span></span>
+<span id="cb4-43"><a href="#cb4-43"></a><span class="co">#&gt; </span></span>
+<span id="cb4-44"><a href="#cb4-44"></a><span class="co">#&gt; $debt_all_stgp_eval_n</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a><span class="co">#&gt; [1] &quot;Borrower count for average/median Stafford and Grad PLUS loan debt disbursed at this institution&quot;</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a><span class="co">#&gt; </span></span>
+<span id="cb4-47"><a href="#cb4-47"></a><span class="co">#&gt; $debt_all_stgp_eval_mean</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a><span class="co">#&gt; [1] &quot;Average Stafford and Grad PLUS loan debt disbursed at this institution&quot;</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a><span class="co">#&gt; </span></span>
+<span id="cb4-50"><a href="#cb4-50"></a><span class="co">#&gt; $debt_all_stgp_eval_mdn</span></span>
+<span id="cb4-51"><a href="#cb4-51"></a><span class="co">#&gt; [1] &quot;Median Stafford and Grad PLUS loan debt disbursed at this institution&quot;</span></span>
+<span id="cb4-52"><a href="#cb4-52"></a><span class="co">#&gt; </span></span>
+<span id="cb4-53"><a href="#cb4-53"></a><span class="co">#&gt; $debt_all_stgp_eval_mdn10yrpay</span></span>
+<span id="cb4-54"><a href="#cb4-54"></a><span class="co">#&gt; [1] &quot;Median estimated monthly payment for Stafford and Grad PLUS loan debt disbursed at this institution&quot;</span></span>
+<span id="cb4-55"><a href="#cb4-55"></a><span class="co">#&gt; </span></span>
+<span id="cb4-56"><a href="#cb4-56"></a><span class="co">#&gt; $earn_count_wne_hi_1yr</span></span>
+<span id="cb4-57"><a href="#cb4-57"></a><span class="co">#&gt; [1] &quot;Number of graduates working and not enrolled 1 year after completing highest credential&quot;</span></span>
+<span id="cb4-58"><a href="#cb4-58"></a><span class="co">#&gt; </span></span>
+<span id="cb4-59"><a href="#cb4-59"></a><span class="co">#&gt; $earn_mdn_hi_1yr</span></span>
+<span id="cb4-60"><a href="#cb4-60"></a><span class="co">#&gt; [1] &quot;Median earnings of graduates working and not enrolled 1 year after completing highest credential&quot;</span></span>
+<span id="cb4-61"><a href="#cb4-61"></a><span class="co">#&gt; </span></span>
+<span id="cb4-62"><a href="#cb4-62"></a><span class="co">#&gt; $earn_count_wne_hi_2yr</span></span>
+<span id="cb4-63"><a href="#cb4-63"></a><span class="co">#&gt; [1] &quot;Number of graduates working and not enrolled 2 years after completing highest credential&quot;</span></span>
+<span id="cb4-64"><a href="#cb4-64"></a><span class="co">#&gt; </span></span>
+<span id="cb4-65"><a href="#cb4-65"></a><span class="co">#&gt; $earn_mdn_hi_2yr</span></span>
+<span id="cb4-66"><a href="#cb4-66"></a><span class="co">#&gt; [1] &quot;Median earnings of graduates working and not enrolled 2 years after completing highest credential&quot;</span></span>
+<span id="cb4-67"><a href="#cb4-67"></a><span class="co">#&gt; </span></span>
+<span id="cb4-68"><a href="#cb4-68"></a><span class="co">#&gt; $region</span></span>
+<span id="cb4-69"><a href="#cb4-69"></a><span class="co">#&gt; [1] &quot;Region (IPEDS)&quot;</span></span>
+<span id="cb4-70"><a href="#cb4-70"></a><span class="co">#&gt; </span></span>
+<span id="cb4-71"><a href="#cb4-71"></a><span class="co">#&gt; $locale</span></span>
+<span id="cb4-72"><a href="#cb4-72"></a><span class="co">#&gt; [1] &quot;Locale of institution&quot;</span></span></code></pre></div>
+<p>Investigate dataset, show “value labels” for variables that have value labels</p>
+<ul>
+<li>code not run</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>df_scorecard <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">val_labels</span>()</span></code></pre></div>
 </div>
-<div id="lecture-overview" class="section level2">
-<h2><span class="header-section-number">1.3</span> Lecture overview</h2>
+<div id="ma-debtearnings-at-fancy-univs" class="section level2">
+<h2><span class="header-section-number">2.2</span> MA debt/earnings at fancy univs</h2>
+<p>Investigate debt and earnings from a few fancy universities</p>
 <ul>
-<li>Review of statistics [univariate]</li>
-<li>R Basics</li>
-</ul>
-
-<p><strong>HW &amp; Reading</strong></p>
+<li>UC-Berkeley
 <ul>
-<li>HW#2 posted on D2L</li>
-<li>No reading for next week</li>
-</ul>
-
-<p><strong>Next Week</strong></p>
+<li><code>unitid == 110635</code></li>
+<li><code>opeid6 == 001312</code></li>
+</ul></li>
+<li>UCLA
 <ul>
-<li>Review of Statistics [bivariate]</li>
-<li>Introduction to bivariate regression</li>
+<li><code>unitid == 110662</code></li>
+<li><code>opeid6 == 001315</code></li>
+</ul></li>
+<li>USC
+<ul>
+<li><code>unitid == 123961</code></li>
+<li><code>opeid6 == 001328</code></li>
+</ul></li>
+<li>Stanford
+<ul>
+<li><code>unitid == 243744</code></li>
+<li><code>opeid6 == 001305</code></li>
+</ul></li>
+<li>Columbia
+<ul>
+<li><code>unitid == 190150</code></li>
+<li><code>opeid6 == 002707</code></li>
+</ul></li>
+<li>Columbia, Teacher’s College
+<ul>
+<li><code>unitid == 196468</code></li>
+<li><code>opeid6 == 003979</code></li>
+</ul></li>
+<li>NYU
+<ul>
+<li><code>unitid == 193900</code></li>
+<li><code>opeid6 == 002785</code></li>
+</ul></li>
+<li>Harvard
+<ul>
+<li><code>unitid == 166027</code></li>
+<li><code>opeid6 == 002155</code></li>
+</ul></li>
 </ul>
+<p>Examine debt and earnings from master’s programs at some fancy universities</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>df_scorecard <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="co"># opeid6: UC-Berkeley = 001312; UCLA = 001315; USC = 001328; Stanford = 001305; Columbia = 002707; Columbia, Teacher&#39;s College = 003979; NYU = 002785; Harvard = 002155</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">filter</span>(opeid6 <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;001312&#39;</span>,<span class="st">&#39;001315&#39;</span>,<span class="st">&#39;001328&#39;</span>,<span class="st">&#39;001305&#39;</span>,<span class="st">&#39;002707&#39;</span>,<span class="st">&#39;003979&#39;</span>,<span class="st">&#39;002785&#39;</span>,<span class="st">&#39;002155&#39;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="st">  </span><span class="co"># filter observations where debt_all_stgp_eval_n is not missing (NA)</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.na</span>(debt_all_stgp_eval_n)<span class="op">==</span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="st">  </span><span class="kw">select</span>(instnm,cipdig2,cipcode,cipdesc,debt_all_stgp_eval_n,debt_all_stgp_eval_mean,earn_mdn_hi_2yr)</span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; # A tibble: 220 x 7</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt;    instnm cipdig2 cipcode cipdesc debt_all_stgp_e~ debt_all_stgp_e~</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt;  1 Stanf~ 05      0501    Area S~               14            41792</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt;  2 Stanf~ 09      0901    Commun~               11            45456</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt;  3 Stanf~ 11      1107    Comput~               22            43580</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt;  4 Stanf~ 13      1301    Educat~              171            35264</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt;  5 Stanf~ 14      1402    Aerosp~               13            63721</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt;  6 Stanf~ 14      1408    Civil ~               51            47367</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#&gt;  7 Stanf~ 14      1410    Electr~               25            50608</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#&gt;  8 Stanf~ 14      1419    Mechan~               20            52503</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#&gt;  9 Stanf~ 15      1515    Engine~               20            56004</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="co">#&gt; 10 Stanf~ 51      5122    Public~               11            60488</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#&gt; # ... with 210 more rows, and 1 more variable: earn_mdn_hi_2yr &lt;dbl&gt;</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#%&gt;% print(n=200)</span></span></code></pre></div>
+<p>Examine debt and earnings from master’s programs in education at some fancy universities</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>df_scorecard <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="co"># opeid6: UC-Berkeley = 001312; UCLA = 001315; USC = 001328; Stanford = 001305; Columbia = 002707; Columbia, Teacher&#39;s College = 003979; NYU = 002785; Harvard = 002155</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw">filter</span>(opeid6 <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;001312&#39;</span>,<span class="st">&#39;001315&#39;</span>,<span class="st">&#39;001328&#39;</span>,<span class="st">&#39;001305&#39;</span>,<span class="st">&#39;002707&#39;</span>,<span class="st">&#39;003979&#39;</span>,<span class="st">&#39;002785&#39;</span>,<span class="st">&#39;002155&#39;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span><span class="co"># filter observations where debt_all_stgp_eval_n is not missing (NA)</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.na</span>(debt_all_stgp_eval_n)<span class="op">==</span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="st">  </span><span class="co"># filter degree programs in education</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="st">  </span><span class="kw">filter</span>(cipdig2 <span class="op">==</span><span class="st"> &#39;13&#39;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="st">  </span><span class="kw">select</span>(instnm,cipdig2,cipcode,cipdesc,debt_all_stgp_eval_n,debt_all_stgp_eval_mean,earn_mdn_hi_2yr)</span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; # A tibble: 26 x 7</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt;    instnm cipdig2 cipcode cipdesc debt_all_stgp_e~ debt_all_stgp_e~</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt;  1 Stanf~ 13      1301    &quot;Educa~              171            35264</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt;  2 Unive~ 13      1301    &quot;Educa~              221            32803</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt;  3 Unive~ 13      1304    &quot;Educa~               59            67159</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt;  4 Unive~ 13      1306    &quot;Educa~               17            61611</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt;  5 Unive~ 13      1311    &quot;Stude~               48            84293</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt;  6 Unive~ 13      1313    &quot;Teach~              273            66099</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt;  7 Unive~ 13      1314    &quot;Teach~               71            61120</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#&gt;  8 Harva~ 13      1301    &quot;Educa~              641            35492</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="co">#&gt;  9 New Y~ 13      1304    &quot;Educa~               17            73952</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="co">#&gt; 10 New Y~ 13      1305    &quot;Educa~               17            86476</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="co">#&gt; # ... with 16 more rows, and 1 more variable: earn_mdn_hi_2yr &lt;dbl&gt;</span></span></code></pre></div>
+</div>
+<div id="mas-in-education" class="section level2">
+<h2><span class="header-section-number">2.3</span> MAs in education</h2>
+<p>Create a new data frame that contains data about Education MA programs in which debt variables are not suppressed</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>df_scorecard_edu &lt;-<span class="st"> </span>df_scorecard <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="co"># filter: degree programs in education; and debt_all_stgp_eval_n is not missing (NA)</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span><span class="kw">filter</span>(cipdig2 <span class="op">==</span><span class="st"> &#39;13&#39;</span>,<span class="kw">is.na</span>(debt_all_stgp_eval_n)<span class="op">==</span><span class="dv">0</span>)</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  </span></code></pre></div>
+<p>Investigate new data frame <code>df_scorecard_edu</code></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">#df_scorecard_edu %&gt;% glimpse()</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co"># investigate data structure</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="co"># one observation per opeid6-cipcode</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>  df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(opeid6,cipcode) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="dt">n_per_key=</span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(n_per_key)</span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt; # A tibble: 1 x 2</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="co">#&gt;   n_per_key     n</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt;       &lt;int&gt; &lt;int&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="co">#&gt; 1         1   773</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a>  <span class="co">#df_scorecard_edu %&gt;% group_by(unitid,cipcode) %&gt;% summarise(n_per_key=n()) %&gt;% ungroup() %&gt;% count(n_per_key)</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="co"># name of institutions</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(instnm) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(instnm)</span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt; # A tibble: 216 x 1</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt;    instnm                               </span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt;    &lt;chr&gt;                                </span></span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt;  1 American University                  </span></span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt;  2 Arizona State University-Tempe       </span></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="co">#&gt;  3 Arkansas State University-Main Campus</span></span>
+<span id="cb9-20"><a href="#cb9-20"></a><span class="co">#&gt;  4 Auburn University                    </span></span>
+<span id="cb9-21"><a href="#cb9-21"></a><span class="co">#&gt;  5 Azusa Pacific University             </span></span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="co">#&gt;  6 Ball State University                </span></span>
+<span id="cb9-23"><a href="#cb9-23"></a><span class="co">#&gt;  7 Baylor University                    </span></span>
+<span id="cb9-24"><a href="#cb9-24"></a><span class="co">#&gt;  8 Binghamton University                </span></span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="co">#&gt;  9 Boise State University               </span></span>
+<span id="cb9-26"><a href="#cb9-26"></a><span class="co">#&gt; 10 Boston College                       </span></span>
+<span id="cb9-27"><a href="#cb9-27"></a><span class="co">#&gt; # ... with 206 more rows</span></span>
+<span id="cb9-28"><a href="#cb9-28"></a></span>
+<span id="cb9-29"><a href="#cb9-29"></a><span class="co"># control (public, private)</span></span>
+<span id="cb9-30"><a href="#cb9-30"></a></span>
+<span id="cb9-31"><a href="#cb9-31"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(opeid6) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>ungroup <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(control) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb9-32"><a href="#cb9-32"></a><span class="co">#&gt; # A tibble: 2 x 2</span></span>
+<span id="cb9-33"><a href="#cb9-33"></a><span class="co">#&gt;   control                n</span></span>
+<span id="cb9-34"><a href="#cb9-34"></a><span class="co">#&gt;   &lt;fct&gt;              &lt;int&gt;</span></span>
+<span id="cb9-35"><a href="#cb9-35"></a><span class="co">#&gt; 1 Private, nonprofit    51</span></span>
+<span id="cb9-36"><a href="#cb9-36"></a><span class="co">#&gt; 2 Public               165</span></span>
+<span id="cb9-37"><a href="#cb9-37"></a></span>
+<span id="cb9-38"><a href="#cb9-38"></a><span class="co"># carnegie classification</span></span>
+<span id="cb9-39"><a href="#cb9-39"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(opeid6) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>ungroup <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(ccbasic) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb9-40"><a href="#cb9-40"></a><span class="co">#&gt; # A tibble: 2 x 2</span></span>
+<span id="cb9-41"><a href="#cb9-41"></a><span class="co">#&gt;   ccbasic                                                n</span></span>
+<span id="cb9-42"><a href="#cb9-42"></a><span class="co">#&gt;   &lt;fct&gt;                                              &lt;int&gt;</span></span>
+<span id="cb9-43"><a href="#cb9-43"></a><span class="co">#&gt; 1 Doctoral Universities: Very High Research Activity   108</span></span>
+<span id="cb9-44"><a href="#cb9-44"></a><span class="co">#&gt; 2 Doctoral Universities: High Research Activity        108</span></span>
+<span id="cb9-45"><a href="#cb9-45"></a></span>
+<span id="cb9-46"><a href="#cb9-46"></a><span class="co"># level of urbanization</span></span>
+<span id="cb9-47"><a href="#cb9-47"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(opeid6) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>ungroup <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(locale) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb9-48"><a href="#cb9-48"></a><span class="co">#&gt; # A tibble: 9 x 2</span></span>
+<span id="cb9-49"><a href="#cb9-49"></a><span class="co">#&gt;   locale                                                                       n</span></span>
+<span id="cb9-50"><a href="#cb9-50"></a><span class="co">#&gt;   &lt;fct&gt;                                                                    &lt;int&gt;</span></span>
+<span id="cb9-51"><a href="#cb9-51"></a><span class="co">#&gt; 1 City: Large (population of 250,000 or more)                                 76</span></span>
+<span id="cb9-52"><a href="#cb9-52"></a><span class="co">#&gt; 2 City: Midsize (population of at least 100,000 but less than 250,000)        40</span></span>
+<span id="cb9-53"><a href="#cb9-53"></a><span class="co">#&gt; 3 City: Small (population less than 100,000)                                  39</span></span>
+<span id="cb9-54"><a href="#cb9-54"></a><span class="co">#&gt; 4 Suburb: Large (outside principal city, in urbanized area with populatio~    29</span></span>
+<span id="cb9-55"><a href="#cb9-55"></a><span class="co">#&gt; 5 Suburb: Midsize (outside principal city, in urbanized area with populat~     6</span></span>
+<span id="cb9-56"><a href="#cb9-56"></a><span class="co">#&gt; 6 Suburb: Small (outside principal city, in urbanized area with populatio~     7</span></span>
+<span id="cb9-57"><a href="#cb9-57"></a><span class="co">#&gt; 7 Town: Fringe (in urban cluster up to 10 miles from an urbanized area)        3</span></span>
+<span id="cb9-58"><a href="#cb9-58"></a><span class="co">#&gt; 8 Town: Distant (in urban cluster more than 10 miles and up to 35 miles f~     9</span></span>
+<span id="cb9-59"><a href="#cb9-59"></a><span class="co">#&gt; 9 Town: Remote (in urban cluster more than 35 miles from an urbanized are~     7</span></span>
+<span id="cb9-60"><a href="#cb9-60"></a></span>
+<span id="cb9-61"><a href="#cb9-61"></a><span class="co"># which education degrees</span></span>
+<span id="cb9-62"><a href="#cb9-62"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(cipdesc) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>ungroup <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(cipdesc)</span>
+<span id="cb9-63"><a href="#cb9-63"></a><span class="co">#&gt; # A tibble: 13 x 2</span></span>
+<span id="cb9-64"><a href="#cb9-64"></a><span class="co">#&gt;    cipdesc                                                  n</span></span>
+<span id="cb9-65"><a href="#cb9-65"></a><span class="co">#&gt;    &lt;chr&gt;                                                &lt;int&gt;</span></span>
+<span id="cb9-66"><a href="#cb9-66"></a><span class="co">#&gt;  1 &quot;Bilingual, Multilingual, and Multicultural Educati&quot;     1</span></span>
+<span id="cb9-67"><a href="#cb9-67"></a><span class="co">#&gt;  2 &quot;Curriculum and Instruction.&quot;                            1</span></span>
+<span id="cb9-68"><a href="#cb9-68"></a><span class="co">#&gt;  3 &quot;Education, General.&quot;                                    1</span></span>
+<span id="cb9-69"><a href="#cb9-69"></a><span class="co">#&gt;  4 &quot;Education, Other.&quot;                                      1</span></span>
+<span id="cb9-70"><a href="#cb9-70"></a><span class="co">#&gt;  5 &quot;Educational Administration and Supervision.&quot;            1</span></span>
+<span id="cb9-71"><a href="#cb9-71"></a><span class="co">#&gt;  6 &quot;Educational Assessment, Evaluation, and Research.&quot;      1</span></span>
+<span id="cb9-72"><a href="#cb9-72"></a><span class="co">#&gt;  7 &quot;Educational/Instructional Media Design.&quot;                1</span></span>
+<span id="cb9-73"><a href="#cb9-73"></a><span class="co">#&gt;  8 &quot;International and Comparative Education.&quot;               1</span></span>
+<span id="cb9-74"><a href="#cb9-74"></a><span class="co">#&gt;  9 &quot;Social and Philosophical Foundations of Education.&quot;     1</span></span>
+<span id="cb9-75"><a href="#cb9-75"></a><span class="co">#&gt; 10 &quot;Special Education and Teaching.&quot;                        1</span></span>
+<span id="cb9-76"><a href="#cb9-76"></a><span class="co">#&gt; 11 &quot;Student Counseling and Personnel Services.&quot;             1</span></span>
+<span id="cb9-77"><a href="#cb9-77"></a><span class="co">#&gt; 12 &quot;Teacher Education and Professional Development, Sp&quot;     1</span></span>
+<span id="cb9-78"><a href="#cb9-78"></a><span class="co">#&gt; 13 &quot;Teaching English or French as a Second or Foreign &quot;     1</span></span></code></pre></div>
+<p>Investigate data frame <code>df_scorecard_edu</code>, debt and earnings variables</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># mean of mean debt from sfafford and grad plus</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>  df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(</span>
+<span id="cb10-3"><a href="#cb10-3"></a>    <span class="dt">mean_debt =</span> <span class="kw">mean</span>(debt_all_stgp_eval_mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  )</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; # A tibble: 1 x 1</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt;   mean_debt</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt;       &lt;dbl&gt;</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt; 1    35415.</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a>  </span>
+<span id="cb10-10"><a href="#cb10-10"></a>  <span class="co"># separate for public vs. private</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a>  df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(control) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(</span>
+<span id="cb10-12"><a href="#cb10-12"></a>    <span class="dt">mean_debt =</span> <span class="kw">mean</span>(debt_all_stgp_eval_mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-13"><a href="#cb10-13"></a>  )</span>
+<span id="cb10-14"><a href="#cb10-14"></a><span class="co">#&gt; # A tibble: 2 x 2</span></span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="co">#&gt;   control            mean_debt</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="co">#&gt;   &lt;chr+lbl&gt;              &lt;dbl&gt;</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a><span class="co">#&gt; 1 Private, nonprofit    47341.</span></span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="co">#&gt; 2 Public                32447.</span></span>
+<span id="cb10-19"><a href="#cb10-19"></a></span>
+<span id="cb10-20"><a href="#cb10-20"></a><span class="co"># mean of median earnings, 2 years after graduation</span></span>
+<span id="cb10-21"><a href="#cb10-21"></a>  df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(</span>
+<span id="cb10-22"><a href="#cb10-22"></a>    <span class="dt">mean_earn =</span> <span class="kw">mean</span>(earn_mdn_hi_2yr, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-23"><a href="#cb10-23"></a>  )</span>
+<span id="cb10-24"><a href="#cb10-24"></a><span class="co">#&gt; # A tibble: 1 x 1</span></span>
+<span id="cb10-25"><a href="#cb10-25"></a><span class="co">#&gt;   mean_earn</span></span>
+<span id="cb10-26"><a href="#cb10-26"></a><span class="co">#&gt;       &lt;dbl&gt;</span></span>
+<span id="cb10-27"><a href="#cb10-27"></a><span class="co">#&gt; 1    48194.</span></span>
+<span id="cb10-28"><a href="#cb10-28"></a>  </span>
+<span id="cb10-29"><a href="#cb10-29"></a>  <span class="co"># separate for public vs. private</span></span>
+<span id="cb10-30"><a href="#cb10-30"></a>  df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(control) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(</span>
+<span id="cb10-31"><a href="#cb10-31"></a>    <span class="dt">mean_earn =</span> <span class="kw">mean</span>(earn_mdn_hi_2yr, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-32"><a href="#cb10-32"></a>  )</span>
+<span id="cb10-33"><a href="#cb10-33"></a><span class="co">#&gt; # A tibble: 2 x 2</span></span>
+<span id="cb10-34"><a href="#cb10-34"></a><span class="co">#&gt;   control            mean_earn</span></span>
+<span id="cb10-35"><a href="#cb10-35"></a><span class="co">#&gt;   &lt;chr+lbl&gt;              &lt;dbl&gt;</span></span>
+<span id="cb10-36"><a href="#cb10-36"></a><span class="co">#&gt; 1 Private, nonprofit    52645.</span></span>
+<span id="cb10-37"><a href="#cb10-37"></a><span class="co">#&gt; 2 Public                47104.</span></span></code></pre></div>
 </div>
 </div>
 <div id="review-of-statistics" class="section level1">
-<h1><span class="header-section-number">2</span> Review of Statistics</h1>
+<h1><span class="header-section-number">3</span> Review of Statistics</h1>
 <div id="statistical-inference" class="section level2">
-<h2><span class="header-section-number">2.1</span> Statistical Inference</h2>
-<p><em>Goal of statistical inference is to infer something about the population from a sample</em></p>
+<h2><span class="header-section-number">3.1</span> Statistical Inference</h2>
+<p>In general, the goal of <strong>statistical inference</strong> is to infer something about a <strong>population</strong> based on a <strong>sample</strong> from that population</p>
 
 <p><strong>Population Parameter</strong>: a measure of the population</p>
 <ul>
@@ -1788,16 +2126,16 @@ div.tocify {
 
 <p><strong>Point Estimate</strong>: numeric value generated from calculating an estimator from a specific sample of data</p>
 <ul>
-<li>e.g., sample mean household income is $81,000, 2017 American Community Survey</li>
+<li>e.g., imagine that sample mean household income is $81,000, 2017 American Community Survey</li>
 </ul>
 </div>
 <div id="parameters-and-point-estimates" class="section level2">
-<h2><span class="header-section-number">2.2</span> Parameters and Point Estimates</h2>
+<h2><span class="header-section-number">3.2</span> Parameters and Point Estimates</h2>
 <p>Introductory statistics class</p>
 <ul>
 <li>Parameter: Population mean (<span class="math inline">\(\mu_Y\)</span>)</li>
 <li>Estimator: Sample mean (<span class="math inline">\(\bar{Y}\)</span>)</li>
-<li>RQs: What is the mean GPA of UA students living in residence halls?</li>
+<li>RQs: What is the mean GPA of UCLA students living in residence halls?</li>
 </ul>
 
 <p>Multivariate regression class</p>
@@ -1808,7 +2146,7 @@ div.tocify {
 </ul>
 </div>
 <div id="notation-for-parameters" class="section level2">
-<h2><span class="header-section-number">2.3</span> Notation for Parameters</h2>
+<h2><span class="header-section-number">3.3</span> Notation for Parameters</h2>
 <p>Population Parameters</p>
 <ul>
 <li>Denoted by Greek setters, usually lowercase
@@ -1838,22 +2176,201 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div id="data-sources" class="section level2">
-<h2><span class="header-section-number">2.4</span> Data Sources</h2>
-<p><strong>Experimental Data</strong>: obtained from experiments designed to assess the causal effect of a “treatment” on an outcome</p>
+<div id="variables-and-variation" class="section level2">
+<h2><span class="header-section-number">3.4</span> Variables and variation</h2>
+<div id="variables" class="section level3">
+<h3><span class="header-section-number">3.4.1</span> Variables</h3>
+<p>In statistics, we are usually working with a (called a ‘data frame’ in <em>R</em>) that contains variables (columns) and observations (rows)</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>() <span class="co"># a dataset</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co">#&gt; Rows: 773</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="co">#&gt; Columns: 24</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co">#&gt; $ opeid6                        &lt;chr&gt; &quot;001009&quot;, &quot;001009&quot;, &quot;001009&quot;, &quot;001009...</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="co">#&gt; $ unitid                        &lt;dbl&gt; 100858, 100858, 100858, 100858, 10085...</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="co">#&gt; $ instnm                        &lt;chr&gt; &quot;Auburn University&quot;, &quot;Auburn Universi...</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="co">#&gt; $ control                       &lt;chr+lbl&gt; Public, Public, Public, Public, P...</span></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="co">#&gt; $ ccbasic                       &lt;dbl+lbl&gt; 15, 15, 15, 15, 15, 15, 15, 15, 1...</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a><span class="co">#&gt; $ stabbr                        &lt;chr&gt; &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;...</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="co">#&gt; $ city                          &lt;chr&gt; &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn...</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a><span class="co">#&gt; $ cipdig2                       &lt;chr&gt; &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;...</span></span>
+<span id="cb11-12"><a href="#cb11-12"></a><span class="co">#&gt; $ cipcode                       &lt;chr&gt; &quot;1304&quot;, &quot;1310&quot;, &quot;1311&quot;, &quot;1312&quot;, &quot;1313...</span></span>
+<span id="cb11-13"><a href="#cb11-13"></a><span class="co">#&gt; $ cipdesc                       &lt;chr&gt; &quot;Educational Administration and Super...</span></span>
+<span id="cb11-14"><a href="#cb11-14"></a><span class="co">#&gt; $ credlev                       &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
+<span id="cb11-15"><a href="#cb11-15"></a><span class="co">#&gt; $ creddesc                      &lt;chr&gt; &quot;Master&#39;s Degree&quot;, &quot;Master&#39;s Degree&quot;,...</span></span>
+<span id="cb11-16"><a href="#cb11-16"></a><span class="co">#&gt; $ ipedscount1                   &lt;chr&gt; &quot;53&quot;, &quot;34&quot;, &quot;27&quot;, &quot;59&quot;, &quot;61&quot;, &quot;36&quot;, &quot;...</span></span>
+<span id="cb11-17"><a href="#cb11-17"></a><span class="co">#&gt; $ ipedscount2                   &lt;chr&gt; &quot;30&quot;, &quot;39&quot;, &quot;36&quot;, &quot;64&quot;, &quot;56&quot;, &quot;22&quot;, &quot;...</span></span>
+<span id="cb11-18"><a href="#cb11-18"></a><span class="co">#&gt; $ debt_all_stgp_eval_n          &lt;dbl&gt; 34, 38, 32, 52, 43, 45, 20, 40, 25, 2...</span></span>
+<span id="cb11-19"><a href="#cb11-19"></a><span class="co">#&gt; $ debt_all_stgp_eval_mean       &lt;dbl&gt; 29768, 43336, 41572, 31462, 28726, 35...</span></span>
+<span id="cb11-20"><a href="#cb11-20"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn        &lt;dbl&gt; 30942, 41000, 43500, 30000, 20500, 32...</span></span>
+<span id="cb11-21"><a href="#cb11-21"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn10yrpay &lt;dbl&gt; 318, 421, 447, 308, 210, 335, 295, 21...</span></span>
+<span id="cb11-22"><a href="#cb11-22"></a><span class="co">#&gt; $ earn_count_wne_hi_1yr         &lt;dbl&gt; 46, 34, 26, 56, 82, 51, 32, 52, 21, 3...</span></span>
+<span id="cb11-23"><a href="#cb11-23"></a><span class="co">#&gt; $ earn_mdn_hi_1yr               &lt;dbl&gt; 46321, 42905, 37568, 44495, 49179, 52...</span></span>
+<span id="cb11-24"><a href="#cb11-24"></a><span class="co">#&gt; $ earn_count_wne_hi_2yr         &lt;dbl&gt; 36, 24, 30, 40, 83, 40, 34, 36, 20, 4...</span></span>
+<span id="cb11-25"><a href="#cb11-25"></a><span class="co">#&gt; $ earn_mdn_hi_2yr               &lt;dbl&gt; 41844, 44021, 34603, 48041, 45249, 53...</span></span>
+<span id="cb11-26"><a href="#cb11-26"></a><span class="co">#&gt; $ region                        &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
+<span id="cb11-27"><a href="#cb11-27"></a><span class="co">#&gt; $ locale                        &lt;dbl+lbl&gt; 13, 13, 13, 13, 13, 12, 12, 12, 1...</span></span></code></pre></div>
+<p>In general, a variable is something that varies</p>
 <ul>
-<li>randomized control trials (experiments) are the <strong>gold standard</strong> of program evaluation [will learn more about this]</li>
-<li>e.g., Tennessee STAR project</li>
+<li>A variable contains all observations for a particular characteristic/measure</li>
 </ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># the variable &#39;cipdesc&#39; from the dataset df_scorecard_edu</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(cipdesc)</span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="co">#&gt; # A tibble: 773 x 1</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="co">#&gt;    cipdesc                                           </span></span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="co">#&gt;    &lt;chr&gt;                                             </span></span>
+<span id="cb12-6"><a href="#cb12-6"></a><span class="co">#&gt;  1 Educational Administration and Supervision.       </span></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="co">#&gt;  2 Special Education and Teaching.                   </span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="co">#&gt;  3 Student Counseling and Personnel Services.        </span></span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="co">#&gt;  4 Teacher Education and Professional Development, Sp</span></span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="co">#&gt;  5 Teacher Education and Professional Development, Sp</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="co">#&gt;  6 Educational Administration and Supervision.       </span></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="co">#&gt;  7 Special Education and Teaching.                   </span></span>
+<span id="cb12-13"><a href="#cb12-13"></a><span class="co">#&gt;  8 Teacher Education and Professional Development, Sp</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="co">#&gt;  9 Teacher Education and Professional Development, Sp</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a><span class="co">#&gt; 10 Educational Administration and Supervision.       </span></span>
+<span id="cb12-16"><a href="#cb12-16"></a><span class="co">#&gt; # ... with 763 more rows</span></span>
+<span id="cb12-17"><a href="#cb12-17"></a></span>
+<span id="cb12-18"><a href="#cb12-18"></a><span class="co"># a different approach to showing the same variable</span></span>
+<span id="cb12-19"><a href="#cb12-19"></a>df_scorecard_edu<span class="op">$</span>cipdesc[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
+<span id="cb12-20"><a href="#cb12-20"></a><span class="co">#&gt;  [1] &quot;Educational Administration and Supervision.&quot;       </span></span>
+<span id="cb12-21"><a href="#cb12-21"></a><span class="co">#&gt;  [2] &quot;Special Education and Teaching.&quot;                   </span></span>
+<span id="cb12-22"><a href="#cb12-22"></a><span class="co">#&gt;  [3] &quot;Student Counseling and Personnel Services.&quot;        </span></span>
+<span id="cb12-23"><a href="#cb12-23"></a><span class="co">#&gt;  [4] &quot;Teacher Education and Professional Development, Sp&quot;</span></span>
+<span id="cb12-24"><a href="#cb12-24"></a><span class="co">#&gt;  [5] &quot;Teacher Education and Professional Development, Sp&quot;</span></span>
+<span id="cb12-25"><a href="#cb12-25"></a><span class="co">#&gt;  [6] &quot;Educational Administration and Supervision.&quot;       </span></span>
+<span id="cb12-26"><a href="#cb12-26"></a><span class="co">#&gt;  [7] &quot;Special Education and Teaching.&quot;                   </span></span>
+<span id="cb12-27"><a href="#cb12-27"></a><span class="co">#&gt;  [8] &quot;Teacher Education and Professional Development, Sp&quot;</span></span>
+<span id="cb12-28"><a href="#cb12-28"></a><span class="co">#&gt;  [9] &quot;Teacher Education and Professional Development, Sp&quot;</span></span>
+<span id="cb12-29"><a href="#cb12-29"></a><span class="co">#&gt; [10] &quot;Educational Administration and Supervision.&quot;</span></span></code></pre></div>
+<p><strong>Continuous Variables</strong></p>
+<ul>
+<li>Variables that take on a continuum of possible values where the distance between one value and another is meaningful</li>
+<li>Examples: Age, income, GPA, test scores</li>
+</ul>
+<p>Variable <code>ipedscount2</code> = number of degrees awarded in most recent academic year reported</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(ipedscount2) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">var_label</span>() <span class="co"># variable label</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="co">#&gt; $ipedscount2</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="co">#&gt; [1] &quot;Number of awards to all students in year 2 of the pooled debt cohort&quot;</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a></span>
+<span id="cb13-5"><a href="#cb13-5"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(instnm,opeid6,cipdesc,ipedscount2)</span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="co">#&gt; # A tibble: 773 x 4</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="co">#&gt;    instnm                   opeid6 cipdesc                           ipedscount2</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a><span class="co">#&gt;    &lt;chr&gt;                    &lt;chr&gt;  &lt;chr&gt;                             &lt;chr&gt;      </span></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="co">#&gt;  1 Auburn University        001009 Educational Administration and S~ 30         </span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="co">#&gt;  2 Auburn University        001009 Special Education and Teaching.   39         </span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="co">#&gt;  3 Auburn University        001009 Student Counseling and Personnel~ 36         </span></span>
+<span id="cb13-12"><a href="#cb13-12"></a><span class="co">#&gt;  4 Auburn University        001009 Teacher Education and Profession~ 64         </span></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="co">#&gt;  5 Auburn University        001009 Teacher Education and Profession~ 56         </span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#&gt;  6 The University of Alaba~ 001051 Educational Administration and S~ 22         </span></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#&gt;  7 The University of Alaba~ 001051 Special Education and Teaching.   28         </span></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#&gt;  8 The University of Alaba~ 001051 Teacher Education and Profession~ 65         </span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#&gt;  9 The University of Alaba~ 001051 Teacher Education and Profession~ 38         </span></span>
+<span id="cb13-18"><a href="#cb13-18"></a><span class="co">#&gt; 10 University of Alabama a~ 001052 Educational Administration and S~ 30         </span></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="co">#&gt; # ... with 763 more rows</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a></span>
+<span id="cb13-21"><a href="#cb13-21"></a><span class="co"># showing just the first ten values of variable ipedscount2</span></span>
+<span id="cb13-22"><a href="#cb13-22"></a>df_scorecard_edu<span class="op">$</span>ipedscount2[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
+<span id="cb13-23"><a href="#cb13-23"></a><span class="co">#&gt;  [1] &quot;30&quot; &quot;39&quot; &quot;36&quot; &quot;64&quot; &quot;56&quot; &quot;22&quot; &quot;28&quot; &quot;65&quot; &quot;38&quot; &quot;30&quot;</span></span></code></pre></div>
 
-<p><strong>Observational Data</strong>: obtained from surveys, administrative records [focus of this course]</p>
+<p><strong>Discrete Variables</strong> (or categorical variables)</p>
 <ul>
-<li>researchers have/had no control on the “treatment”</li>
-<li>e.g., Beginning Postsecondary Students Longitudinal Study, High School Longitudinal Study, National Education Longitudinal Study</li>
+<li>Variables that can only take on specific (discrete) integer values</li>
+<li>Can be nominal (e.g., school type), ordinal (e.g., likert scale), and quantitative (e.g., number of children)
+<ul>
+<li>nominal: variable indicate which category an observation belongs to but should not be interpreted as high vs. low (e.g., marital status, religion)</li>
+<li>ordinal: variable values indicate whether one observation is higher or lower than another but distance between variable values is not meaningful (e.g., <code>1=very satisfied</code>, <code>2=satisfied</code>)</li>
+<li>quantitative: distance between one value and another is meaningful; like a continuous variable but takes on a small number of different values</li>
+</ul></li>
 </ul>
+<p>Variable <code>region</code> = Geographic Census region the university is located in</p>
+<ul>
+<li>this is a “nominal” categorical variable</li>
+<li>each region is associated with a numeric value, but the numeric value isn’t meaningful in itself</li>
+<li>each value of region has a “value label” to make it easier to interpret observations</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="co"># indicates this variable has &quot;value labels</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(region) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()</span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="co">#&gt; Rows: 773</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="co">#&gt; Columns: 1</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="co">#&gt; $ region &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,...</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a>df_scorecard_edu<span class="op">$</span>region <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">class</span>()</span>
+<span id="cb14-8"><a href="#cb14-8"></a><span class="co">#&gt; [1] &quot;haven_labelled&quot;</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a></span>
+<span id="cb14-10"><a href="#cb14-10"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(region) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">var_label</span>() <span class="co"># variable label</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt; $region</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt; [1] &quot;Region (IPEDS)&quot;</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a></span>
+<span id="cb14-14"><a href="#cb14-14"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(region) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">val_labels</span>() <span class="co"># label assigned to variable values</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="co">#&gt; $region</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a><span class="co">#&gt;                                       U.S. Service Schools </span></span>
+<span id="cb14-17"><a href="#cb14-17"></a><span class="co">#&gt;                                                          0 </span></span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="co">#&gt;                       New England (CT, ME, MA, NH, RI, VT) </span></span>
+<span id="cb14-19"><a href="#cb14-19"></a><span class="co">#&gt;                                                          1 </span></span>
+<span id="cb14-20"><a href="#cb14-20"></a><span class="co">#&gt;                          Mid East (DE, DC, MD, NJ, NY, PA) </span></span>
+<span id="cb14-21"><a href="#cb14-21"></a><span class="co">#&gt;                                                          2 </span></span>
+<span id="cb14-22"><a href="#cb14-22"></a><span class="co">#&gt;                           Great Lakes (IL, IN, MI, OH, WI) </span></span>
+<span id="cb14-23"><a href="#cb14-23"></a><span class="co">#&gt;                                                          3 </span></span>
+<span id="cb14-24"><a href="#cb14-24"></a><span class="co">#&gt;                        Plains (IA, KS, MN, MO, NE, ND, SD) </span></span>
+<span id="cb14-25"><a href="#cb14-25"></a><span class="co">#&gt;                                                          4 </span></span>
+<span id="cb14-26"><a href="#cb14-26"></a><span class="co">#&gt; Southeast (AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV) </span></span>
+<span id="cb14-27"><a href="#cb14-27"></a><span class="co">#&gt;                                                          5 </span></span>
+<span id="cb14-28"><a href="#cb14-28"></a><span class="co">#&gt;                                 Southwest (AZ, NM, OK, TX) </span></span>
+<span id="cb14-29"><a href="#cb14-29"></a><span class="co">#&gt;                                                          6 </span></span>
+<span id="cb14-30"><a href="#cb14-30"></a><span class="co">#&gt;                       Rocky Mountains (CO, ID, MT, UT, WY) </span></span>
+<span id="cb14-31"><a href="#cb14-31"></a><span class="co">#&gt;                                                          7 </span></span>
+<span id="cb14-32"><a href="#cb14-32"></a><span class="co">#&gt;                          Far West (AK, CA, HI, NV, OR, WA) </span></span>
+<span id="cb14-33"><a href="#cb14-33"></a><span class="co">#&gt;                                                          8 </span></span>
+<span id="cb14-34"><a href="#cb14-34"></a><span class="co">#&gt;            Outlying Areas (AS, FM, GU, MH, MP, PR, PW, VI) </span></span>
+<span id="cb14-35"><a href="#cb14-35"></a><span class="co">#&gt;                                                          9</span></span>
+<span id="cb14-36"><a href="#cb14-36"></a></span>
+<span id="cb14-37"><a href="#cb14-37"></a><span class="co"># print a few observations</span></span>
+<span id="cb14-38"><a href="#cb14-38"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(instnm,opeid6,cipdesc,region)</span>
+<span id="cb14-39"><a href="#cb14-39"></a><span class="co">#&gt; # A tibble: 773 x 4</span></span>
+<span id="cb14-40"><a href="#cb14-40"></a><span class="co">#&gt;    instnm            opeid6 cipdesc                                       region</span></span>
+<span id="cb14-41"><a href="#cb14-41"></a><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;  &lt;chr&gt;                                      &lt;dbl+lbl&gt;</span></span>
+<span id="cb14-42"><a href="#cb14-42"></a><span class="co">#&gt;  1 Auburn University 001009 Educational Administrat~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-43"><a href="#cb14-43"></a><span class="co">#&gt;  2 Auburn University 001009 Special Education and T~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-44"><a href="#cb14-44"></a><span class="co">#&gt;  3 Auburn University 001009 Student Counseling and ~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-45"><a href="#cb14-45"></a><span class="co">#&gt;  4 Auburn University 001009 Teacher Education and P~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-46"><a href="#cb14-46"></a><span class="co">#&gt;  5 Auburn University 001009 Teacher Education and P~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-47"><a href="#cb14-47"></a><span class="co">#&gt;  6 The University o~ 001051 Educational Administrat~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-48"><a href="#cb14-48"></a><span class="co">#&gt;  7 The University o~ 001051 Special Education and T~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-49"><a href="#cb14-49"></a><span class="co">#&gt;  8 The University o~ 001051 Teacher Education and P~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-50"><a href="#cb14-50"></a><span class="co">#&gt;  9 The University o~ 001051 Teacher Education and P~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-51"><a href="#cb14-51"></a><span class="co">#&gt; 10 University of Al~ 001052 Educational Administrat~ 5 [Southeast (AL, AR, FL, ~</span></span>
+<span id="cb14-52"><a href="#cb14-52"></a><span class="co">#&gt; # ... with 763 more rows</span></span>
+<span id="cb14-53"><a href="#cb14-53"></a></span>
+<span id="cb14-54"><a href="#cb14-54"></a><span class="co"># frequency count of the variable</span></span>
+<span id="cb14-55"><a href="#cb14-55"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(region)</span>
+<span id="cb14-56"><a href="#cb14-56"></a><span class="co">#&gt; # A tibble: 8 x 2</span></span>
+<span id="cb14-57"><a href="#cb14-57"></a><span class="co">#&gt;                                                           region     n</span></span>
+<span id="cb14-58"><a href="#cb14-58"></a><span class="co">#&gt;                                                        &lt;dbl+lbl&gt; &lt;int&gt;</span></span>
+<span id="cb14-59"><a href="#cb14-59"></a><span class="co">#&gt; 1 1 [New England (CT, ME, MA, NH, RI, VT)]                          36</span></span>
+<span id="cb14-60"><a href="#cb14-60"></a><span class="co">#&gt; 2 2 [Mid East (DE, DC, MD, NJ, NY, PA)]                            117</span></span>
+<span id="cb14-61"><a href="#cb14-61"></a><span class="co">#&gt; 3 3 [Great Lakes (IL, IN, MI, OH, WI)]                             138</span></span>
+<span id="cb14-62"><a href="#cb14-62"></a><span class="co">#&gt; 4 4 [Plains (IA, KS, MN, MO, NE, ND, SD)]                           50</span></span>
+<span id="cb14-63"><a href="#cb14-63"></a><span class="co">#&gt; 5 5 [Southeast (AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV)]   232</span></span>
+<span id="cb14-64"><a href="#cb14-64"></a><span class="co">#&gt; 6 6 [Southwest (AZ, NM, OK, TX)]                                    93</span></span>
+<span id="cb14-65"><a href="#cb14-65"></a><span class="co">#&gt; 7 7 [Rocky Mountains (CO, ID, MT, UT, WY)]                          37</span></span>
+<span id="cb14-66"><a href="#cb14-66"></a><span class="co">#&gt; 8 8 [Far West (AK, CA, HI, NV, OR, WA)]                             70</span></span>
+<span id="cb14-67"><a href="#cb14-67"></a></span>
+<span id="cb14-68"><a href="#cb14-68"></a><span class="co"># frequency count of the variable, but show value labels rather than underlying variable value</span></span>
+<span id="cb14-69"><a href="#cb14-69"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(region) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb14-70"><a href="#cb14-70"></a><span class="co">#&gt; # A tibble: 8 x 2</span></span>
+<span id="cb14-71"><a href="#cb14-71"></a><span class="co">#&gt;   region                                                         n</span></span>
+<span id="cb14-72"><a href="#cb14-72"></a><span class="co">#&gt;   &lt;fct&gt;                                                      &lt;int&gt;</span></span>
+<span id="cb14-73"><a href="#cb14-73"></a><span class="co">#&gt; 1 New England (CT, ME, MA, NH, RI, VT)                          36</span></span>
+<span id="cb14-74"><a href="#cb14-74"></a><span class="co">#&gt; 2 Mid East (DE, DC, MD, NJ, NY, PA)                            117</span></span>
+<span id="cb14-75"><a href="#cb14-75"></a><span class="co">#&gt; 3 Great Lakes (IL, IN, MI, OH, WI)                             138</span></span>
+<span id="cb14-76"><a href="#cb14-76"></a><span class="co">#&gt; 4 Plains (IA, KS, MN, MO, NE, ND, SD)                           50</span></span>
+<span id="cb14-77"><a href="#cb14-77"></a><span class="co">#&gt; 5 Southeast (AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV)   232</span></span>
+<span id="cb14-78"><a href="#cb14-78"></a><span class="co">#&gt; 6 Southwest (AZ, NM, OK, TX)                                    93</span></span>
+<span id="cb14-79"><a href="#cb14-79"></a><span class="co">#&gt; 7 Rocky Mountains (CO, ID, MT, UT, WY)                          37</span></span>
+<span id="cb14-80"><a href="#cb14-80"></a><span class="co">#&gt; 8 Far West (AK, CA, HI, NV, OR, WA)                             70</span></span></code></pre></div>
 </div>
-<div id="data-types" class="section level2">
-<h2><span class="header-section-number">2.5</span> Data Types</h2>
+<div id="types-of-variation" class="section level3">
+<h3><span class="header-section-number">3.4.2</span> Types of variation</h3>
+<p>Several types of “variation” exist</p>
 <p><strong>Cross sectional data</strong>: data on different “observations” (e.g., students, classrooms, universities) for a single point in time [focus of this course]</p>
 <ul>
 <li>e.g., California Test Score data where “observations” are districts</li>
@@ -1862,29 +2379,42 @@ div.tocify {
 <p><strong>Time-Series Data</strong>: data on a single “observation” collected at multiple time points</p>
 <ul>
 <li>e.g., US inflation and unemployment rate data 1959-2000</li>
+<li>e.g., stock price for a single stock each minute of the day for 7 days</li>
 </ul>
 
 <p><strong>Longitudinal Data</strong> (or panel data): data on multiple “observations” at multiple time points</p>
 <ul>
-<li>e.g., Beginning Postsecondary Students Longitudinal Study, High School Longitudinal Study, National Education Longitudinal Study</li>
+<li>e.g., annual earnings for a person, measured every year for 10 years</li>
+<li>usually, the dataset would have one observation for each person-year, so if we have longitudinal annual data on earnings over 10 years for 10 people, the dataset has <code>10 X 10 = 100</code> observations</li>
 </ul>
 </div>
-<div id="variables" class="section level2">
-<h2><span class="header-section-number">2.6</span> Variables</h2>
-<p><strong>Continuous Variables</strong></p>
+<div id="experimental-vs.-observational-data" class="section level3">
+<h3><span class="header-section-number">3.4.3</span> Experimental vs. observational data</h3>
+<p><strong>Experimental Data</strong>: obtained from experiments designed to assess the causal effect of a “treatment” on an outcome</p>
 <ul>
-<li>Variables that take on a continuum of possible values where the distance between one value and another is meaningful</li>
-<li>Examples: Age, income, GPA, test scores</li>
+<li>each unit of analysis randomly assigned to “treatment” or “control” group</li>
+<li>e.g., randomly assigned to enroll in an MA program at a private university (treatment) or a public university (control); and we are interested in measuring the effect of public vs. private on the outcomes of debt and earnings after program participation</li>
+<li>randomized control trials (experiments) are the <strong>gold standard</strong> of program evaluation [will learn more about this]</li>
 </ul>
-
-<p><strong>Discrete Variables</strong> (or categorical variables)</p>
+<p><strong>Observational Data</strong>: obtained from surveys, administrative records [focus of this course]</p>
 <ul>
-<li>Variables that can only take on specific (discrete) integer values</li>
-<li>Can be nominal (school type), ordinal (likert scale), and quantitative (number of children)</li>
+<li>researchers have/had no control on the “treatment”
+<ul>
+<li>units (people, organizations) choose what they want to participate in</li>
+</ul></li>
+<li>e.g., students decide whether they enroll in an MA program at a private university (treatment) or a public university (control); and we are interested in measuring the effect of public vs. private on the outcomes of debt and earnings after program participation</li>
 </ul>
 </div>
-<div id="measures-of-central-tendency-sample-mean" class="section level2">
-<h2><span class="header-section-number">2.7</span> Measures of Central Tendency: Sample Mean</h2>
+</div>
+<div id="descriptive-stats-central-tendancy-vs.-dispersion" class="section level2">
+<h2><span class="header-section-number">3.5</span> Descriptive stats: central tendancy vs. dispersion</h2>
+<p>Descriptive statistics describe data</p>
+<ul>
+<li>Variables have measures of “central tendency” (e.g., mean, median, mode)</li>
+<li>Variables have measures of “dispersion,” which identify how individual observations differ from one another (e.g., standard deviation, range)</li>
+</ul>
+<div id="measures-of-central-tendency-sample-mean" class="section level3">
+<h3><span class="header-section-number">3.5.1</span> Measures of Central Tendency: Sample Mean</h3>
 <p>Sample mean of Y or denoted as <span class="math inline">\(\bar{Y}\)</span></p>
 <ul>
 <li><span class="math inline">\(\bar{Y} = \frac{\sum_{i=1}^{n} Y_i}{n}\)</span>
@@ -1898,15 +2428,79 @@ div.tocify {
 <li>Obs: <span class="math inline">\(Y_1 = 5, Y_1 = 2, Y_3 = 13, Y_4 = 11, Y_5 = 18, Y_6 = 22\)</span></li>
 <li>Calculate <span class="math inline">\(\bar{Y}\)</span></li>
 </ul>
+<p>Calculate sample mean in <em>R</em></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">2</span>,<span class="dv">13</span>,<span class="dv">11</span>,<span class="dv">18</span>,<span class="dv">22</span>)</span>
+<span id="cb15-2"><a href="#cb15-2"></a></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="kw">mean</span>(x)</span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="co">#&gt; [1] 11.83333</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="co"># &quot;by hand&quot;</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="kw">sum</span>(x) <span class="co"># sum of x</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a><span class="co">#&gt; [1] 71</span></span>
+<span id="cb15-9"><a href="#cb15-9"></a><span class="kw">length</span>(x) <span class="co"># number of observations</span></span>
+<span id="cb15-10"><a href="#cb15-10"></a><span class="co">#&gt; [1] 6</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="kw">sum</span>(x)<span class="op">/</span><span class="kw">length</span>(x)</span>
+<span id="cb15-13"><a href="#cb15-13"></a><span class="co">#&gt; [1] 11.83333</span></span></code></pre></div>
+<p>Calculate mean value of (mean) debt from Stafford and grad plus, using first 10 observations</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="co">#&gt; Rows: 773</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="co">#&gt; Columns: 24</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="co">#&gt; $ opeid6                        &lt;chr&gt; &quot;001009&quot;, &quot;001009&quot;, &quot;001009&quot;, &quot;001009...</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="co">#&gt; $ unitid                        &lt;dbl&gt; 100858, 100858, 100858, 100858, 10085...</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="co">#&gt; $ instnm                        &lt;chr&gt; &quot;Auburn University&quot;, &quot;Auburn Universi...</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a><span class="co">#&gt; $ control                       &lt;chr+lbl&gt; Public, Public, Public, Public, P...</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a><span class="co">#&gt; $ ccbasic                       &lt;dbl+lbl&gt; 15, 15, 15, 15, 15, 15, 15, 15, 1...</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a><span class="co">#&gt; $ stabbr                        &lt;chr&gt; &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;...</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="co">#&gt; $ city                          &lt;chr&gt; &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn...</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a><span class="co">#&gt; $ cipdig2                       &lt;chr&gt; &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;...</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a><span class="co">#&gt; $ cipcode                       &lt;chr&gt; &quot;1304&quot;, &quot;1310&quot;, &quot;1311&quot;, &quot;1312&quot;, &quot;1313...</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a><span class="co">#&gt; $ cipdesc                       &lt;chr&gt; &quot;Educational Administration and Super...</span></span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="co">#&gt; $ credlev                       &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a><span class="co">#&gt; $ creddesc                      &lt;chr&gt; &quot;Master&#39;s Degree&quot;, &quot;Master&#39;s Degree&quot;,...</span></span>
+<span id="cb16-16"><a href="#cb16-16"></a><span class="co">#&gt; $ ipedscount1                   &lt;chr&gt; &quot;53&quot;, &quot;34&quot;, &quot;27&quot;, &quot;59&quot;, &quot;61&quot;, &quot;36&quot;, &quot;...</span></span>
+<span id="cb16-17"><a href="#cb16-17"></a><span class="co">#&gt; $ ipedscount2                   &lt;chr&gt; &quot;30&quot;, &quot;39&quot;, &quot;36&quot;, &quot;64&quot;, &quot;56&quot;, &quot;22&quot;, &quot;...</span></span>
+<span id="cb16-18"><a href="#cb16-18"></a><span class="co">#&gt; $ debt_all_stgp_eval_n          &lt;dbl&gt; 34, 38, 32, 52, 43, 45, 20, 40, 25, 2...</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a><span class="co">#&gt; $ debt_all_stgp_eval_mean       &lt;dbl&gt; 29768, 43336, 41572, 31462, 28726, 35...</span></span>
+<span id="cb16-20"><a href="#cb16-20"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn        &lt;dbl&gt; 30942, 41000, 43500, 30000, 20500, 32...</span></span>
+<span id="cb16-21"><a href="#cb16-21"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn10yrpay &lt;dbl&gt; 318, 421, 447, 308, 210, 335, 295, 21...</span></span>
+<span id="cb16-22"><a href="#cb16-22"></a><span class="co">#&gt; $ earn_count_wne_hi_1yr         &lt;dbl&gt; 46, 34, 26, 56, 82, 51, 32, 52, 21, 3...</span></span>
+<span id="cb16-23"><a href="#cb16-23"></a><span class="co">#&gt; $ earn_mdn_hi_1yr               &lt;dbl&gt; 46321, 42905, 37568, 44495, 49179, 52...</span></span>
+<span id="cb16-24"><a href="#cb16-24"></a><span class="co">#&gt; $ earn_count_wne_hi_2yr         &lt;dbl&gt; 36, 24, 30, 40, 83, 40, 34, 36, 20, 4...</span></span>
+<span id="cb16-25"><a href="#cb16-25"></a><span class="co">#&gt; $ earn_mdn_hi_2yr               &lt;dbl&gt; 41844, 44021, 34603, 48041, 45249, 53...</span></span>
+<span id="cb16-26"><a href="#cb16-26"></a><span class="co">#&gt; $ region                        &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
+<span id="cb16-27"><a href="#cb16-27"></a><span class="co">#&gt; $ locale                        &lt;dbl+lbl&gt; 13, 13, 13, 13, 13, 12, 12, 12, 1...</span></span>
+<span id="cb16-28"><a href="#cb16-28"></a>  </span>
+<span id="cb16-29"><a href="#cb16-29"></a>df_scorecard_edu<span class="op">$</span>debt_all_stgp_eval_mean[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
+<span id="cb16-30"><a href="#cb16-30"></a><span class="co">#&gt;  [1] 29768 43336 41572 31462 28726 35316 28032 32904 39299 25015</span></span>
+<span id="cb16-31"><a href="#cb16-31"></a></span>
+<span id="cb16-32"><a href="#cb16-32"></a>debt_i &lt;-<span class="st"> </span>df_scorecard_edu<span class="op">$</span>debt_all_stgp_eval_mean[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
+<span id="cb16-33"><a href="#cb16-33"></a>debt_i</span>
+<span id="cb16-34"><a href="#cb16-34"></a><span class="co">#&gt;  [1] 29768 43336 41572 31462 28726 35316 28032 32904 39299 25015</span></span>
+<span id="cb16-35"><a href="#cb16-35"></a></span>
+<span id="cb16-36"><a href="#cb16-36"></a><span class="co"># calculate mean</span></span>
+<span id="cb16-37"><a href="#cb16-37"></a><span class="kw">mean</span>(debt_i)</span>
+<span id="cb16-38"><a href="#cb16-38"></a><span class="co">#&gt; [1] 33543</span></span>
+<span id="cb16-39"><a href="#cb16-39"></a></span>
+<span id="cb16-40"><a href="#cb16-40"></a><span class="co"># calculate by hand</span></span>
+<span id="cb16-41"><a href="#cb16-41"></a><span class="kw">sum</span>(debt_i) <span class="co"># sum of values</span></span>
+<span id="cb16-42"><a href="#cb16-42"></a><span class="co">#&gt; [1] 335430</span></span>
+<span id="cb16-43"><a href="#cb16-43"></a><span class="kw">length</span>(debt_i) <span class="co"># number of observations</span></span>
+<span id="cb16-44"><a href="#cb16-44"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb16-45"><a href="#cb16-45"></a></span>
+<span id="cb16-46"><a href="#cb16-46"></a><span class="kw">sum</span>(debt_i)<span class="op">/</span><span class="kw">length</span>(debt_i)</span>
+<span id="cb16-47"><a href="#cb16-47"></a><span class="co">#&gt; [1] 33543</span></span></code></pre></div>
 
 <p>Other measures of central tendency:</p>
 <ul>
 <li>Median</li>
 <li>Mode</li>
 </ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">median</span>(debt_i)</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="co">#&gt; [1] 32183</span></span></code></pre></div>
 </div>
-<div id="measures-of-dispersion-standard-deviation" class="section level2">
-<h2><span class="header-section-number">2.8</span> Measures of Dispersion: Standard Deviation</h2>
+<div id="measures-of-dispersion-standard-deviation" class="section level3">
+<h3><span class="header-section-number">3.5.2</span> Measures of Dispersion: Standard Deviation</h3>
 <p>Sample standard deviation of Y or denoted as <span class="math inline">\(\hat\sigma_Y\)</span></p>
 <ul>
 <li><p>Standard deviation is, on average, how far away a random observation, <span class="math inline">\(Y_i\)</span>, is from the sample mean, <span class="math inline">\(\bar{Y}\)</span></p></li>
@@ -1921,6 +2515,35 @@ div.tocify {
 <li>Obs: <span class="math inline">\(Y_1 = 5, Y_1 = 2, Y_3 = 13, Y_4 = 11, Y_5 = 18, Y_6 = 22\)</span></li>
 <li>Calculate <span class="math inline">\(\hat\sigma_Y\)</span></li>
 </ul>
+<p>Calculate standard deviation for sample data</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">sd</span>(x) <span class="co"># on aveage each value of x is ~7.5 away from the mean</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="co">#&gt; [1] 7.574079</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="co"># by hand</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a></span>
+<span id="cb18-6"><a href="#cb18-6"></a>(x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span> <span class="co"># squared deviations</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a><span class="co">#&gt; [1]  46.6944444  96.6944444   1.3611111   0.6944444  38.0277778 103.3611111</span></span>
+<span id="cb18-8"><a href="#cb18-8"></a></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="kw">sum</span>((x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span>) <span class="co"># sum squared deviation</span></span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="co">#&gt; [1] 286.8333</span></span>
+<span id="cb18-11"><a href="#cb18-11"></a></span>
+<span id="cb18-12"><a href="#cb18-12"></a><span class="kw">sqrt</span>(<span class="kw">sum</span>((x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">length</span>(x)<span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb18-13"><a href="#cb18-13"></a><span class="co">#&gt; [1] 7.574079</span></span></code></pre></div>
+<p>Calcualte standard deviation of debt (first ten obs)</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">sd</span>(debt_i) <span class="co"># on aveage each value of debt is 6164 away from the mean</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="co">#&gt; [1] 6163.816</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="co"># by hand</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a></span>
+<span id="cb19-6"><a href="#cb19-6"></a>(debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span> <span class="co"># squared deviations</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="co">#&gt;  [1] 14250625 95902849 64464841  4330561 23203489  3143529 30371121   408321</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co">#&gt;  [9] 33131536 72726784</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="kw">sum</span>((debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span>) <span class="co"># sum squared deviation</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="co">#&gt; [1] 341933656</span></span>
+<span id="cb19-12"><a href="#cb19-12"></a></span>
+<span id="cb19-13"><a href="#cb19-13"></a><span class="kw">sqrt</span>(<span class="kw">sum</span>((debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">length</span>(debt_i)<span class="op">-</span><span class="dv">1</span>)) <span class="co"># standard deviation</span></span>
+<span id="cb19-14"><a href="#cb19-14"></a><span class="co">#&gt; [1] 6163.816</span></span></code></pre></div>
 
 <p>Other measures of dispersion:</p>
 <ul>
@@ -1928,90 +2551,6 @@ div.tocify {
 <li>Range</li>
 </ul>
 </div>
-<div id="sample-mean-standard-deviation" class="section level2">
-<h2><span class="header-section-number">2.9</span> Sample Mean &amp; Standard Deviation</h2>
-<p>Substantive interpretation(s):</p>
-<ul>
-<li>Which distribution has the greatest mean and lowest mean?</li>
-<li>Which distribution has the greatest standard deviation and lowest standard deviation?</li>
-</ul>
-<p><img src="data:image/png;base64,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" /></p>
-<p>Substantive interpretation(s):</p>
-<p>Consider the SAT scores of students at a large, public high school and the SAT scores of the Harvard freshman class:</p>
-<ul>
-<li><p>Which do you think has a larger mean?</p></li>
-<li><p>Which do you think has a larger standard deviation?</p></li>
-</ul>
-</div>
-<div id="sampling-distribution-central-limit-theorem" class="section level2">
-<h2><span class="header-section-number">2.10</span> Sampling Distribution &amp; Central Limit Theorem</h2>
-<p>Many of the statistical tests we use (e.g., t-tests, confidence intervals) assume that populations we work with are normally distributed.</p>
-<ul>
-<li>A bit unrealistic (outliers, skewness, bimodal)</li>
-</ul>
-
-<p>An appropriate sample size and <em>Central Limit Theorem</em> can help us get around this assumption!</p>
-<ul>
-<li>We usually determine appropriate sample size via exploratory data analysis</li>
-</ul>
-
-<p><strong>Central Limit Theorem</strong>: No matter the distribution of our population parameter, given a suffficiently large sample size, the sampling distribution of the estimate (e.g., mean) for a variable will approximate a normal distribution.</p>
-<p>Sampling Distribution</p>
-<ul>
-<li><strong>Mean of Sample Means</strong> (<span class="math inline">\(\bar{Y}_Y\)</span>) = population mean (<span class="math inline">\(\mu_Y\)</span>)</li>
-<li><strong>Standard Error</strong> <span class="math inline">\(SE(\bar{Y})\)</span>: the standard deviation of the sampling distribution. In other words it is the average distance between a random sample mean and the mean of sample means.</li>
-</ul>
-<p></p>
-<p>Interactive presentation <a href="http://onlinestatbook.com/stat_sim/sampling_dist/">link</a></p>
-<!-- ## Bias and Precision -->
-<!-- __Unbiased point estimate__: an estimator for a particular random sample is unbiased if its distribution centers around the population parameter (mean of sample means) -->
-<!-- __Precise point estimate__: an estimator is precise if it does not vary considerably from sample to sample (low SE) -->
-<!-- \includegraphics[width=200pt]{precision-bias.png} -->
-</div>
-</div>
-<div id="r-basics" class="section level1">
-<h1><span class="header-section-number">3</span> R Basics</h1>
-<div id="r-script-basics" class="section level2">
-<h2><span class="header-section-number">3.1</span> R Script Basics</h2>
-<p>Go to the lecture2.R script I had you download before class</p>
-
-<p><strong>Within an R script you can run commands in different ways</strong>:</p>
-<ol style="list-style-type: decimal">
-<li>One command at a time by highlighting only that command and clicking the “Run” Button</li>
-<li>Several commands at a time by highlighting several commands and clicking the “Run” Button</li>
-<li>Run the entire R script by not highlighting any commands and clicking the “Run” Button</li>
-</ol>
-
-<p><strong>Comments</strong></p>
-<ul>
-<li><code>#</code> Will comment out the remainder of syntax on that line</li>
-<li><code>&quot; &quot;</code> Will comment out anything between the quotation marks (multiple lines)</li>
-</ul>
-</div>
-<div id="tidyverse" class="section level2">
-<h2><span class="header-section-number">3.2</span> Tidyverse</h2>
-<ul>
-<li>R sytanx for this class will all be given to you.</li>
-<li>For problem sets, you often will get an example of the code you need to run in the lecture or directly in the instructions; you’ll often use that code as template for you the specific task you are working on</li>
-<li>While you have the template; you will often need to change a “couple of minor things” (e.g., the variable name; the “function” for the statistical test you are trying to run, etc.)</li>
-<li>So you will still need to develop some “intuition” as to what the code is doing</li>
-<li>All code (very few exceptions) will be written in the “tidyverse” way as opposed to base R
-<ul>
-<li>Base R: the “default” coding approach to R; it can be very inefficient</li>
-<li>Tidyverse: most popular way to write R code that does simple tasks (everything we do in this class is considered simple)</li>
-</ul></li>
-<li>Most distinctive part of Tidyverse approach to R syntax is using pipes or piping operator <code>%&gt;%</code>
-<ul>
-<li>Allows for “sequential computations” or multiple commands/tasks in the same line of code</li>
-<li>I usually think of the words “AND THEN” every time I see a pipe</li>
-</ul></li>
-<li><code>caschool %&gt;% select(enrl_tot, computer, read_scr) %&gt;% var_label()</code>
-<ul>
-<li><code>caschool</code>= open the california school dataset <strong>AND THEN</strong></li>
-<li><code>select(enrl_tot, computer, read_scr)</code> = select the three variables enrol_tot, computer, read_scr <strong>AND THEN</strong></li>
-<li><code>var_label()</code> = print the labels for the three variables selected</li>
-</ul></li>
-</ul>
 </div>
 </div>
 

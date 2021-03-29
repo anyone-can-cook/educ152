@@ -20,97 +20,254 @@ output:
 ---
 
 
-```{r, echo=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
+```{r, echo=FALSE, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning = FALSE, message = FALSE)
+  #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
 ```
-
-TO PATRICIA: 
-
-- [LINK TO GOOGLE DOC](https://docs.google.com/document/d/1eogA4hdijojQJQc-kN6Gx9bHtZRRnUV52K_FNamfCGI/edit) that has proposed outline for lecture
-
 
 
 # Introduction
 
+**Lecture overview**
+
+- Introduction to *College Scorecard* data on debt and earnings from degree programs
+- Brief review of statistics (selected concepts)
+
+
 ## Libraries we will use
 
 ```{r}
-library(tidyverse)
+#install.packages('tidyverse') # if you haven't installed already
+#install.packages('labelled') # if you haven't installed already
+
+library(tidyverse) # load tidyverse package
+library(labelled) # load labelled package package
 ```
 
-## Data we will use
+# College Scorecard data
 
-Dataset on debt and earnings associated with degree programs from College Scorecard
+The [College Scorecard](https://collegescorecard.ed.gov/) is a tool created by the *US Department of Education* that seeks to help prospective students investigate/compare postsecondary institutions and degree programs
 
+- We will use data from the *College Scorecard* in lecture and potentially for some assignments
+- Relevant links
+  - [College Scorecard website](https://collegescorecard.ed.gov/)
+  - [Data documentation](https://collegescorecard.ed.gov/data/documentation/)
+  - [Data download](https://data.ed.gov/dataset/college-scorecard-all-data-files-through-6-2020/resources)
+  
+Recently, the *US Department of Education* released new *College Scorecard* data on debt and earnings associated with postsecondary degree programs
+
+- (In theory) for each postsecondary degree program offered by a college/university, *College Scorecard* identifies average student debt associated with that degree program (for federal student loan programs) and average earnings of graduates
+- Many debt and earnings variables have the value `'PrivacySuppressed'` because number of graduates is sufficiently small that there are concerns about being able to identify individual students
+- Generally, academic programs with "large" enrollment are not suppressed
+- We will focus on debt and earnings associated with master's (MA) programs
+  - Hopefully, this information will be useful for students considering an MA program down the road
+
+
+In the following sub-sections, we "load" the data, create modified datasets, investigate the data, and run some basic descriptive statistics
+
+- **Your are not responsible for knowing the below code**
+  - You will only be responsible for knowing code that we explicitly teach you during the quarter
+- But try to follow the general logic of what the code is doing
+- And try running the below "code chunks" on your own computer
+
+
+## Load and inspect data
+
+
+Load data frame (i.e., dataset)
 ```{r}
-load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel.RData'))
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel_labelled.RData'))
 ```
 
-Create dataframe that is subset:
+
+Create subset data frame:
 
 ```{r}
-  df_scorecard <- df_debt_earn_panel %>%
+df_scorecard <- df_debt_earn_panel_labelled %>%
     # keep most recent year of data
     filter(field_ay == '2017-18') %>%
     # keep master's degrees
     filter(credlev == 5) %>%
-    # carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity; 17 = Doctoral/Professional Universities
-    filter(ccbasic %in% c(15,16,17)) 
+    # carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity
+    filter(ccbasic %in% c(15,16)) %>%
+    # drop "parent plus" loan variables and other vars we won't use in this lecture
+    select(-contains('_pp'),-contains('_any'),-field_ay,-st_fips,-zip,-longitude,-latitude,-locale2,-highdeg,-accredagency,-relaffil,-hbcu,-annhi,-tribal,-aanapii,-hsi,-nanti,-main,-numbranch) %>%
+    # create variable for broad field of degree (e.g., education, business)
+    mutate(cipdig2 = str_sub(string = cipcode, start = 1, end = 2)) %>%
+    # shorten variable cipdesc to make it more suitable for printing
+    mutate(cipdesc = str_sub(string = cipdesc, start = 1, end = 50)) %>%
+    # re-order variables
+    relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,city,cipdig2)
 
-
+# "glimpse" data frame
 df_scorecard %>% glimpse()
 
+# For debt and earnings variables, convert from character to numeric variables (which replaces "PrivacySuppressed" values with NA values)
+df_scorecard <- df_scorecard %>%
+  mutate(
+    debt_all_stgp_eval_n = as.numeric(debt_all_stgp_eval_n),
+    debt_all_stgp_eval_mean = as.numeric(debt_all_stgp_eval_mean),
+    debt_all_stgp_eval_mdn = as.numeric(debt_all_stgp_eval_mdn),
+    debt_all_stgp_eval_mdn10yrpay = as.numeric(debt_all_stgp_eval_mdn10yrpay),
+    earn_count_wne_hi_1yr = as.numeric(earn_count_wne_hi_1yr),
+    earn_mdn_hi_1yr = as.numeric(earn_mdn_hi_1yr),
+    earn_count_wne_hi_2yr = as.numeric(earn_count_wne_hi_2yr),
+    earn_mdn_hi_2yr = as.numeric(earn_mdn_hi_2yr)
+  ) 
 
+# add variable label to variable cipdig2
+  attr(df_scorecard[['cipdig2']], which = 'label') <- 'broad degree field code = 2-digit classification of instructional programs (CIP) degree code'
+
+# add variable label attribute back to debt and earnings variables
+  for(v in c('debt_all_stgp_eval_n','debt_all_stgp_eval_mean','debt_all_stgp_eval_mdn','debt_all_stgp_eval_mdn10yrpay','earn_count_wne_hi_1yr','earn_mdn_hi_1yr','earn_count_wne_hi_2yr','earn_mdn_hi_2yr','cipdesc')) {
+    
+    #writeLines(str_c('object v=', v))
+    #writeLines(attr(df_debt_earn_panel_labelled[[v]], which = 'label'))
+    
+    attr(df_scorecard[[v]], which = 'label') <- attr(df_debt_earn_panel_labelled[[v]], which = 'label')
+  }
+
+df_scorecard %>% glimpse()
 ```
 
-Investigate dataset
+
+Investigate dataset, show variable labels
 ```{r}
+df_scorecard %>% var_label()
+```
+Investigate dataset, show "value labels" for variables that have value labels
 
-df_scorecard %>% count(control)
+- code not run
 
-df_scorecard %>% count(cipcode)
-# 13.04	No substantive changes	no	Educational Administration and Supervision.
-# 44.04	No substantive changes	no	Public Administration.
-# 44.05	No substantive changes	no	Public Policy Analysis.
-# 44.07	No substantive changes	no	Social Work.
-
-df_scorecard %>% 
-  filter(cipcode == "1304",debt_all_stgp_eval_n != 'PrivacySuppressed',debt_all_stgp_eval_mean != 'debt_all_stgp_eval_mean') %>%
-  select(instnm,debt_all_stgp_eval_n,debt_all_stgp_eval_mean,earn_mdn_hi_2yr) %>%
-  print(n=200)
-  # debt_all_stgp_eval_mdn
-  # debt_all_pp_eval_n,debt_all_pp_eval_mean,debt_all_pp_eval_mdn
-
-%>% count(cipdesc)
+```{r, eval = FALSE}
+df_scorecard %>% val_labels()
 ```
 
 
-## Lecture overview
+## MA debt/earnings at fancy univs
+
+Investigate debt and earnings from a few fancy universities
+
+- UC-Berkeley
+  - `unitid == 110635`
+  - `opeid6 == 001312`
+- UCLA
+  - `unitid == 110662`
+  - `opeid6 == 001315`
+- USC
+  - `unitid == 123961`
+  - `opeid6 == 001328`
+- Stanford
+  - `unitid == 243744`
+  - `opeid6 == 001305`
+- Columbia
+  - `unitid == 190150`
+  - `opeid6 == 002707`
+- Columbia, Teacher's College
+  - `unitid == 196468`
+  - `opeid6 == 003979`
+- NYU
+  - `unitid == 193900`
+  - `opeid6 == 002785`
+- Harvard
+  - `unitid == 166027`
+  - `opeid6 == 002155`
+
+Examine debt and earnings from master's programs at some fancy universities
+```{r}
+df_scorecard %>% 
+  # opeid6: UC-Berkeley = 001312; UCLA = 001315; USC = 001328; Stanford = 001305; Columbia = 002707; Columbia, Teacher's College = 003979; NYU = 002785; Harvard = 002155
+  filter(opeid6 %in% c('001312','001315','001328','001305','002707','003979','002785','002155')) %>%
+  # filter observations where debt_all_stgp_eval_n is not missing (NA)
+  filter(is.na(debt_all_stgp_eval_n)==0) %>%
+  select(instnm,cipdig2,cipcode,cipdesc,debt_all_stgp_eval_n,debt_all_stgp_eval_mean,earn_mdn_hi_2yr)
+#%>% print(n=200)
+```
 
 
-- Review of statistics [univariate]
-- R Basics
+Examine debt and earnings from master's programs in education at some fancy universities
+```{r}
+df_scorecard %>% 
+  # opeid6: UC-Berkeley = 001312; UCLA = 001315; USC = 001328; Stanford = 001305; Columbia = 002707; Columbia, Teacher's College = 003979; NYU = 002785; Harvard = 002155
+  filter(opeid6 %in% c('001312','001315','001328','001305','002707','003979','002785','002155')) %>%
+  # filter observations where debt_all_stgp_eval_n is not missing (NA)
+  filter(is.na(debt_all_stgp_eval_n)==0) %>%
+  # filter degree programs in education
+  filter(cipdig2 == '13') %>%
+  select(instnm,cipdig2,cipcode,cipdesc,debt_all_stgp_eval_n,debt_all_stgp_eval_mean,earn_mdn_hi_2yr)
+```
+## MAs in education
 
-\medskip
+Create a new data frame that contains data about Education MA programs in which debt variables are not suppressed
 
-__HW & Reading__
+```{r}
+df_scorecard_edu <- df_scorecard %>% 
+  # filter: degree programs in education; and debt_all_stgp_eval_n is not missing (NA)
+  filter(cipdig2 == '13',is.na(debt_all_stgp_eval_n)==0)
+  
 
-- HW#2 posted on D2L
-- No reading for next week
+```
 
-\medskip
+Investigate new data frame `df_scorecard_edu`
 
-__Next Week__
+```{r}
+#df_scorecard_edu %>% glimpse()
 
-- Review of Statistics [bivariate]
-- Introduction to bivariate regression
+# investigate data structure
+  # one observation per opeid6-cipcode
+  df_scorecard_edu %>% group_by(opeid6,cipcode) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+  #df_scorecard_edu %>% group_by(unitid,cipcode) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+
+# name of institutions
+df_scorecard_edu %>% group_by(instnm) %>% slice(1) %>% ungroup() %>% select(instnm)
+
+# control (public, private)
+
+df_scorecard_edu %>% group_by(opeid6) %>% slice(1) %>% ungroup %>% count(control) %>% as_factor()
+
+# carnegie classification
+df_scorecard_edu %>% group_by(opeid6) %>% slice(1) %>% ungroup %>% count(ccbasic) %>% as_factor()
+
+# level of urbanization
+df_scorecard_edu %>% group_by(opeid6) %>% slice(1) %>% ungroup %>% count(locale) %>% as_factor()
+
+# which education degrees
+df_scorecard_edu %>% group_by(cipdesc) %>% slice(1) %>% ungroup %>% count(cipdesc)
+
+```
+
+
+Investigate data frame `df_scorecard_edu`, debt and earnings variables
+
+```{r}
+# mean of mean debt from sfafford and grad plus
+  df_scorecard_edu %>% summarize(
+    mean_debt = mean(debt_all_stgp_eval_mean, na.rm = TRUE)
+  )
+  
+  # separate for public vs. private
+  df_scorecard_edu %>% group_by(control) %>% summarize(
+    mean_debt = mean(debt_all_stgp_eval_mean, na.rm = TRUE)
+  )
+
+# mean of median earnings, 2 years after graduation
+  df_scorecard_edu %>% summarize(
+    mean_earn = mean(earn_mdn_hi_2yr, na.rm = TRUE)
+  )
+  
+  # separate for public vs. private
+  df_scorecard_edu %>% group_by(control) %>% summarize(
+    mean_earn = mean(earn_mdn_hi_2yr, na.rm = TRUE)
+  )
+```
 
 
 # Review of Statistics
 
 ## Statistical Inference
 
-_Goal of statistical inference is to infer something about the population from a sample_
+In general, the goal of **statistical inference** is to infer something about a **population** based on a **sample** from that population
+
 
 \medskip
 __Population Parameter__: a  measure of the population
@@ -129,8 +286,7 @@ __Estimator (or Statistic)__: a formula or procedure used to estimate the value 
 \medskip
 __Point Estimate__:  numeric value generated from calculating an estimator from a specific sample of data
 
-- e.g., sample mean household income is $81,000, 2017 American Community Survey  
-
+- e.g., imagine that sample mean household income is $81,000, 2017 American Community Survey 
 
 
 ## Parameters and Point Estimates
@@ -139,7 +295,7 @@ Introductory statistics class
 
 - Parameter: Population mean ($\mu_Y$)
 - Estimator: Sample mean ($\bar{Y}$)
-- RQs: What is the mean GPA of UA students living in residence halls?
+- RQs: What is the mean GPA of UCLA students living in residence halls?
 
 \medskip
 
@@ -174,22 +330,85 @@ Estimators of Population Parameters (two general approaches)
     - $\bar{Y}$: "Y bar" refers to the estimate of $\mu_Y$
     - $s_X$: "S of X" refers to the estimate of $\sigma_X$
 
-## Data Sources 
+## Variables and variation
 
-__Experimental Data__: obtained from experiments designed to assess the causal effect of a "treatment" on an outcome
+### Variables
 
-- randomized control trials (experiments) are the __gold standard__ of program evaluation [will learn more about this]
-- e.g., Tennessee STAR project
+In statistics, we are usually working with a (called a 'data frame' in *R*) that contains variables (columns) and observations (rows)
+```{r}
+df_scorecard_edu %>% glimpse() # a dataset
+```
+
+
+In general, a variable is something that varies
+
+- A variable contains all observations for a particular characteristic/measure
+
+```{r}
+# the variable 'cipdesc' from the dataset df_scorecard_edu
+df_scorecard_edu %>% select(cipdesc)
+
+# a different approach to showing the same variable
+df_scorecard_edu$cipdesc[1:10]
+```
+
+
+__Continuous Variables__
+
+- Variables that take on a continuum of possible values where the distance between one value and another is meaningful
+- Examples: Age, income, GPA, test scores
+
+
+Variable `ipedscount2` = number of degrees awarded in most recent academic year reported
+```{r}
+df_scorecard_edu %>% select(ipedscount2) %>% var_label() # variable label
+
+df_scorecard_edu %>% select(instnm,opeid6,cipdesc,ipedscount2)
+
+# showing just the first ten values of variable ipedscount2
+df_scorecard_edu$ipedscount2[1:10]
+```
+
 
 \medskip
-\medskip
 
-__Observational Data__: obtained from surveys, administrative records [focus of this course]
+__Discrete Variables__ (or categorical variables)
 
-- researchers have/had no control on the "treatment"
-- e.g., Beginning Postsecondary Students Longitudinal Study, High School Longitudinal Study, National Education Longitudinal Study
+- Variables that can only take on specific (discrete) integer values
+- Can be nominal (e.g., school type), ordinal (e.g., likert scale), and quantitative (e.g., number of children)
+  - nominal: variable indicate which category an observation belongs to but should not be interpreted as high vs. low (e.g., marital status, religion)
+  - ordinal: variable values indicate whether one observation is higher or lower than another but distance between variable values is not meaningful (e.g., `1=very satisfied`, `2=satisfied`)
+  - quantitative: distance between one value and another is meaningful; like a continuous variable but takes on a small number of different values
 
-## Data Types
+Variable `region` = Geographic Census region the university is located in
+
+- this is a "nominal" categorical variable
+- each region is associated with a numeric value, but the numeric value isn't meaningful in itself
+- each value of region has a "value label" to make it easier to interpret observations
+```{r}
+
+# indicates this variable has "value labels
+df_scorecard_edu %>% select(region) %>% glimpse()
+df_scorecard_edu$region %>% class()
+
+df_scorecard_edu %>% select(region) %>% var_label() # variable label
+
+df_scorecard_edu %>% select(region) %>% val_labels() # label assigned to variable values
+
+# print a few observations
+df_scorecard_edu %>% select(instnm,opeid6,cipdesc,region)
+
+# frequency count of the variable
+df_scorecard_edu %>% count(region)
+
+# frequency count of the variable, but show value labels rather than underlying variable value
+df_scorecard_edu %>% count(region) %>% as_factor()
+```
+
+### Types of variation
+
+Several types of "variation" exist
+
 
 __Cross sectional data__: data on different "observations" (e.g., students, classrooms, universities) for a single point in time [focus of this course]
 
@@ -199,31 +418,37 @@ __Cross sectional data__: data on different "observations" (e.g., students, clas
 __Time-Series Data__: data on a single "observation" collected at multiple time points
 
 - e.g., US inflation and unemployment rate data 1959-2000
+- e.g., stock price for a single stock each minute of the day for 7 days
 
 \medskip
 __Longitudinal Data__ (or panel data): data on multiple "observations" at multiple time points 
 
-- e.g., Beginning Postsecondary Students Longitudinal Study, High School Longitudinal Study, National Education Longitudinal Study
+- e.g., annual earnings for a person, measured every year for 10 years
+- usually, the dataset would have one observation for each person-year, so if we have longitudinal annual data on earnings over 10 years for 10 people, the dataset has `10 X 10 = 100` observations
+
+### Experimental vs. observational data
+
+__Experimental Data__: obtained from experiments designed to assess the causal effect of a "treatment" on an outcome
+
+- each unit of analysis randomly assigned to "treatment" or "control" group
+- e.g., randomly assigned to enroll in an MA program at a private university (treatment) or a public university (control); and we are interested in measuring the effect of public vs. private on the outcomes of debt and earnings after program participation
+- randomized control trials (experiments) are the __gold standard__ of program evaluation [will learn more about this]
+
+__Observational Data__: obtained from surveys, administrative records [focus of this course]
+
+- researchers have/had no control on the "treatment"
+  - units (people, organizations) choose what they want to participate in
+- e.g., students decide whether they enroll in an MA program at a private university (treatment) or a public university (control); and we are interested in measuring the effect of public vs. private on the outcomes of debt and earnings after program participation
+
+## Descriptive stats: central tendancy vs. dispersion
+
+Descriptive statistics describe data
+
+- Variables have measures of "central tendency" (e.g., mean, median, mode)
+- Variables have measures of "dispersion," which identify how individual observations differ from one another (e.g., standard deviation, range)
 
 
-## Variables
-
-__Continuous Variables__
-
-- Variables that take on a continuum of possible values where the distance between one value and another is meaningful
-- Examples: Age, income, GPA, test scores
-
-
-
-\medskip
-
-__Discrete Variables__ (or categorical variables)
-
-- Variables that can only take on specific (discrete) integer values
-- Can be nominal (school type), ordinal (likert scale), and quantitative (number of children)
-
-
-## Measures of Central Tendency: Sample Mean
+### Measures of Central Tendency: Sample Mean
 
 Sample mean of Y or denoted as $\bar{Y}$
 
@@ -237,14 +462,49 @@ Example: Variable Y has the following six observations ($Y_1... Y_6$)
 - Obs: $Y_1 = 5, Y_1 = 2, Y_3 = 13, Y_4 = 11, Y_5 = 18, Y_6 = 22$
 - Calculate $\bar{Y}$
 
+Calculate sample mean in *R*
+```{r}
+x <- c(5,2,13,11,18,22)
+
+mean(x)
+
+# "by hand"
+sum(x) # sum of x
+length(x) # number of observations
+
+sum(x)/length(x)
+```
+Calculate mean value of (mean) debt from Stafford and grad plus, using first 10 observations
+```{r}
+df_scorecard_edu %>% glimpse()
+  
+df_scorecard_edu$debt_all_stgp_eval_mean[1:10]
+
+debt_i <- df_scorecard_edu$debt_all_stgp_eval_mean[1:10]
+debt_i
+
+# calculate mean
+mean(debt_i)
+
+# calculate by hand
+sum(debt_i) # sum of values
+length(debt_i) # number of observations
+
+sum(debt_i)/length(debt_i)
+```
+
+
 \medskip
 Other measures of central tendency:
 
 - Median
 - Mode
 
+```{r}
+median(debt_i)
+```
 
-## Measures of Dispersion: Standard Deviation
+### Measures of Dispersion: Standard Deviation
 
 
 Sample standard deviation of Y or denoted as $\hat\sigma_Y$
@@ -261,97 +521,36 @@ Example: Variable Y has the following six observations ($Y_1... Y_6$)
 - Obs: $Y_1 = 5, Y_1 = 2, Y_3 = 13, Y_4 = 11, Y_5 = 18, Y_6 = 22$
 - Calculate $\hat\sigma_Y$
 
+Calculate standard deviation for sample data
+```{r}
+sd(x) # on aveage each value of x is ~7.5 away from the mean
+
+# by hand
+
+(x-mean(x))^2 # squared deviations
+
+sum((x-mean(x))^2) # sum squared deviation
+
+sqrt(sum((x-mean(x))^2)/(length(x)-1))
+```
+
+Calcualte standard deviation of debt (first ten obs)
+```{r}
+sd(debt_i) # on aveage each value of debt is 6164 away from the mean
+
+# by hand
+
+(debt_i-mean(debt_i))^2 # squared deviations
+
+sum((debt_i-mean(debt_i))^2) # sum squared deviation
+
+sqrt(sum((debt_i-mean(debt_i))^2)/(length(debt_i)-1)) # standard deviation
+
+```
+
 \medskip
 Other measures of dispersion:
 
 - Variance (SD is the square root of the variance)
 - Range
 
-
-## Sample Mean & Standard Deviation
-
-Substantive interpretation(s):
-
-- Which distribution has the greatest mean and lowest mean?
-- Which distribution has the greatest standard deviation and lowest standard deviation?
-
-![](distributions.png)
-
-Substantive interpretation(s):
-
-Consider the SAT scores of students at a large, public high school and the SAT scores of the Harvard freshman class: 
-
-- Which do you think has a larger mean?
-
-- Which do you think has a larger standard deviation?
-
-## Sampling Distribution & Central Limit Theorem
-
-Many of the statistical tests we use (e.g., t-tests, confidence intervals) assume that populations we work with are normally distributed.
-
-- A bit unrealistic (outliers, skewness, bimodal)
-
-\medskip
-An appropriate sample size and _Central Limit Theorem_ can help us get around this assumption!
-
-- We usually determine appropriate sample size via exploratory data analysis
-
-\medskip
-__Central Limit Theorem__: No matter the distribution of our population parameter, given a suffficiently large sample size, the sampling distribution of the estimate (e.g., mean) for a variable will approximate a normal distribution. 
-
-Sampling Distribution
-
-- __Mean of Sample Means__ ($\bar{Y}_Y$) = population mean ($\mu_Y$)
-- __Standard Error__ $SE(\bar{Y})$: the standard deviation of the sampling distribution. In other words it is the average distance between a random sample mean and the mean of sample means.
-
-
-
-\includegraphics[width=150pt]{sampdist.png}
-
-Interactive presentation [link](http://onlinestatbook.com/stat_sim/sampling_dist/)
-
-
-<!-- ## Bias and Precision -->
-<!-- __Unbiased point estimate__: an estimator for a particular random sample is unbiased if its distribution centers around the population parameter (mean of sample means) -->
-
-<!-- __Precise point estimate__: an estimator is precise if it does not vary considerably from sample to sample (low SE) -->
-
-<!-- \includegraphics[width=200pt]{precision-bias.png} -->
-
-
-# R Basics
-
-## R Script Basics
-
-Go to the lecture2.R script I had you download before class
-
-\medskip
-__Within an R script you can run commands in different ways__:
-
-1. One command at a time by highlighting only that command and clicking the "Run" Button
-1. Several commands at a time by highlighting several commands and clicking the "Run" Button
-1. Run the entire R script by not highlighting any commands and clicking the "Run" Button
-
-\medskip
-__Comments__
-
-- `#` Will comment out the remainder of syntax on that line
-- `" "` Will comment out anything between the quotation marks (multiple lines)
-
-
-## Tidyverse 
-
-- R sytanx for this class will all be given to you. 
-- For problem sets, you often will get an example of the code you need to run in the lecture or directly in the instructions; you'll often use that code as template for you the specific task you are working on
-- While you have the template; you will often need to change a "couple of minor things" (e.g., the variable name; the "function" for the statistical test you are trying to run, etc.)
-- So you will still need to develop some "intuition" as to what the code is doing
-- All code (very few exceptions) will be written in the "tidyverse" way as opposed to base R
-  - Base R: the "default" coding approach to R; it can be very inefficient
-  - Tidyverse: most popular way to write R code that does simple tasks (everything we do in this class is considered simple)
-- Most distinctive part of Tidyverse approach to R syntax is using pipes or piping operator `%>%`
-  - Allows for "sequential computations" or multiple commands/tasks in the same line of code
-  - I usually think of the words "AND THEN" every time I see a pipe
-- `caschool %>% select(enrl_tot, computer, read_scr) %>% var_label()`
-  - `caschool`= open the california school dataset __AND THEN__
-  - `select(enrl_tot, computer, read_scr)` = select the three variables enrol_tot, computer, read_scr __AND THEN__
-  - `var_label()` = print the labels for the three variables selected 
