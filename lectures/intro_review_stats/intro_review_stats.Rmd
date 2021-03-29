@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Multivariate Regression & Econometrics"
+title: "EDUC 152. Intro to quantitative research in education: Regression analysis"
 subtitle: "Introduction and review of statistics"
 author: 
 date: 
