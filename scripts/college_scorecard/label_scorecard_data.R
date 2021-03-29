@@ -9,25 +9,34 @@ data_dir <- file.path(scorecard_dir, 'output_data')
 dict_dir <- file.path(scorecard_dir, 'documentation')
 
 
-# Read in data dictionary
-df_scorecard_dict <- read_excel(file.path(dict_dir, 'CollegeScorecardDataDictionary.xlsx'),
-                                sheet = 'institution_data_dictionary',
-                                col_types = 'text') %>% 
-  select(`VARIABLE NAME`, `NAME OF DATA ELEMENT`, `VALUE`, `LABEL`)
-
-names(df_scorecard_dict) <- c('var_name', 'var_label', 'val_name', 'val_label')
-df_scorecard_dict$var_name <- str_to_lower(df_scorecard_dict$var_name)
-
-prev_var <- df_scorecard_dict[[1, 'var_name']]
-for (i in 1:nrow(df_scorecard_dict)) {
-  curr_var <- df_scorecard_dict[[i, 'var_name']]
+# Function to read in data dictionary
+get_data_dict <- function(sheet_name) {
+  dict_df <- read_excel(file.path(dict_dir, 'CollegeScorecardDataDictionary.xlsx'),
+                                  sheet = sheet_name,
+                                  col_types = 'text') %>% 
+    select(`VARIABLE NAME`, `NAME OF DATA ELEMENT`, `VALUE`, `LABEL`)
   
-  if (is.na(curr_var)) {
-    df_scorecard_dict[[i, 'var_name']] <- prev_var
-  } else {
-    prev_var <- curr_var
+  names(dict_df) <- c('var_name', 'var_label', 'val_name', 'val_label')
+  dict_df$var_name <- str_to_lower(dict_df$var_name)
+  
+  prev_var <- dict_df[[1, 'var_name']]
+  for (i in 1:nrow(dict_df)) {
+    curr_var <- dict_df[[i, 'var_name']]
+    
+    if (is.na(curr_var)) {
+      dict_df[[i, 'var_name']] <- prev_var
+    } else {
+      prev_var <- curr_var
+    }
   }
+  
+  dict_df
 }
+
+# Read in data dictionary
+df_institution_dict <- get_data_dict(sheet_name = 'institution_data_dictionary')
+df_fieldofstudy_dict <- get_data_dict(sheet_name = 'FieldOfStudy_data_dictionary')
+df_scorecard_dict <- union(df_institution_dict, df_fieldofstudy_dict)
 
 # save(df_scorecard_dict, file = file.path(dict_dir, 'df_scorecard_dict.RData'))
 # load(file = file.path(dict_dir, 'df_scorecard_dict.RData'))
