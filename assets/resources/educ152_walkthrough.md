@@ -69,46 +69,6 @@ R is a language and environment for statistical programming and visualization. T
     - Alternatively you can insert a code chunk by clicking on the `+`c insert tab and then click on the R.  
     ![](images/code-chunk.png)
 
-```r
-load("~/Desktop/GitHub/rclass/data/recruiting/recruit_school_somevars.RData")
-1 + 4
-```
-
-```
-## [1] 5
-```
-
-
-```r
-#addition
-1 + 3 #adding 1 + 3
-```
-
-```
-## [1] 4
-```
-
-```r
-2 + 4
-```
-
-```
-## [1] 6
-```
-
-```r
-2 + 5
-```
-
-```
-## [1] 7
-```
-
-
-```r
-#subtraction
-```
-
 # R practice
 
 <br>  
