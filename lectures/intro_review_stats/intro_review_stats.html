@@ -2430,66 +2430,44 @@ div.tocify {
 </ul>
 <p>Calculate sample mean in <em>R</em></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">2</span>,<span class="dv">13</span>,<span class="dv">11</span>,<span class="dv">18</span>,<span class="dv">22</span>)</span>
-<span id="cb15-2"><a href="#cb15-2"></a></span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="kw">mean</span>(x)</span>
-<span id="cb15-4"><a href="#cb15-4"></a><span class="co">#&gt; [1] 11.83333</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a></span>
-<span id="cb15-6"><a href="#cb15-6"></a><span class="co"># &quot;by hand&quot;</span></span>
-<span id="cb15-7"><a href="#cb15-7"></a><span class="kw">sum</span>(x) <span class="co"># sum of x</span></span>
-<span id="cb15-8"><a href="#cb15-8"></a><span class="co">#&gt; [1] 71</span></span>
-<span id="cb15-9"><a href="#cb15-9"></a><span class="kw">length</span>(x) <span class="co"># number of observations</span></span>
-<span id="cb15-10"><a href="#cb15-10"></a><span class="co">#&gt; [1] 6</span></span>
-<span id="cb15-11"><a href="#cb15-11"></a></span>
-<span id="cb15-12"><a href="#cb15-12"></a><span class="kw">sum</span>(x)<span class="op">/</span><span class="kw">length</span>(x)</span>
-<span id="cb15-13"><a href="#cb15-13"></a><span class="co">#&gt; [1] 11.83333</span></span></code></pre></div>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="kw">length</span>(x)</span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="co">#&gt; [1] 6</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a></span>
+<span id="cb15-5"><a href="#cb15-5"></a><span class="kw">mean</span>(x)</span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="co">#&gt; [1] 11.83333</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a></span>
+<span id="cb15-8"><a href="#cb15-8"></a><span class="co"># &quot;by hand&quot;</span></span>
+<span id="cb15-9"><a href="#cb15-9"></a><span class="kw">sum</span>(x) <span class="co"># sum of x</span></span>
+<span id="cb15-10"><a href="#cb15-10"></a><span class="co">#&gt; [1] 71</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a><span class="kw">length</span>(x) <span class="co"># number of observations</span></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="co">#&gt; [1] 6</span></span>
+<span id="cb15-13"><a href="#cb15-13"></a></span>
+<span id="cb15-14"><a href="#cb15-14"></a><span class="kw">sum</span>(x)<span class="op">/</span><span class="kw">length</span>(x)</span>
+<span id="cb15-15"><a href="#cb15-15"></a><span class="co">#&gt; [1] 11.83333</span></span></code></pre></div>
 <p>Calculate mean value of (mean) debt from Stafford and grad plus, using first 10 observations</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()</span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="co">#&gt; Rows: 773</span></span>
-<span id="cb16-3"><a href="#cb16-3"></a><span class="co">#&gt; Columns: 24</span></span>
-<span id="cb16-4"><a href="#cb16-4"></a><span class="co">#&gt; $ opeid6                        &lt;chr&gt; &quot;001009&quot;, &quot;001009&quot;, &quot;001009&quot;, &quot;001009...</span></span>
-<span id="cb16-5"><a href="#cb16-5"></a><span class="co">#&gt; $ unitid                        &lt;dbl&gt; 100858, 100858, 100858, 100858, 10085...</span></span>
-<span id="cb16-6"><a href="#cb16-6"></a><span class="co">#&gt; $ instnm                        &lt;chr&gt; &quot;Auburn University&quot;, &quot;Auburn Universi...</span></span>
-<span id="cb16-7"><a href="#cb16-7"></a><span class="co">#&gt; $ control                       &lt;chr+lbl&gt; Public, Public, Public, Public, P...</span></span>
-<span id="cb16-8"><a href="#cb16-8"></a><span class="co">#&gt; $ ccbasic                       &lt;dbl+lbl&gt; 15, 15, 15, 15, 15, 15, 15, 15, 1...</span></span>
-<span id="cb16-9"><a href="#cb16-9"></a><span class="co">#&gt; $ stabbr                        &lt;chr&gt; &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;...</span></span>
-<span id="cb16-10"><a href="#cb16-10"></a><span class="co">#&gt; $ city                          &lt;chr&gt; &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn&quot;, &quot;Auburn...</span></span>
-<span id="cb16-11"><a href="#cb16-11"></a><span class="co">#&gt; $ cipdig2                       &lt;chr&gt; &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;13&quot;, &quot;...</span></span>
-<span id="cb16-12"><a href="#cb16-12"></a><span class="co">#&gt; $ cipcode                       &lt;chr&gt; &quot;1304&quot;, &quot;1310&quot;, &quot;1311&quot;, &quot;1312&quot;, &quot;1313...</span></span>
-<span id="cb16-13"><a href="#cb16-13"></a><span class="co">#&gt; $ cipdesc                       &lt;chr&gt; &quot;Educational Administration and Super...</span></span>
-<span id="cb16-14"><a href="#cb16-14"></a><span class="co">#&gt; $ credlev                       &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
-<span id="cb16-15"><a href="#cb16-15"></a><span class="co">#&gt; $ creddesc                      &lt;chr&gt; &quot;Master&#39;s Degree&quot;, &quot;Master&#39;s Degree&quot;,...</span></span>
-<span id="cb16-16"><a href="#cb16-16"></a><span class="co">#&gt; $ ipedscount1                   &lt;chr&gt; &quot;53&quot;, &quot;34&quot;, &quot;27&quot;, &quot;59&quot;, &quot;61&quot;, &quot;36&quot;, &quot;...</span></span>
-<span id="cb16-17"><a href="#cb16-17"></a><span class="co">#&gt; $ ipedscount2                   &lt;chr&gt; &quot;30&quot;, &quot;39&quot;, &quot;36&quot;, &quot;64&quot;, &quot;56&quot;, &quot;22&quot;, &quot;...</span></span>
-<span id="cb16-18"><a href="#cb16-18"></a><span class="co">#&gt; $ debt_all_stgp_eval_n          &lt;dbl&gt; 34, 38, 32, 52, 43, 45, 20, 40, 25, 2...</span></span>
-<span id="cb16-19"><a href="#cb16-19"></a><span class="co">#&gt; $ debt_all_stgp_eval_mean       &lt;dbl&gt; 29768, 43336, 41572, 31462, 28726, 35...</span></span>
-<span id="cb16-20"><a href="#cb16-20"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn        &lt;dbl&gt; 30942, 41000, 43500, 30000, 20500, 32...</span></span>
-<span id="cb16-21"><a href="#cb16-21"></a><span class="co">#&gt; $ debt_all_stgp_eval_mdn10yrpay &lt;dbl&gt; 318, 421, 447, 308, 210, 335, 295, 21...</span></span>
-<span id="cb16-22"><a href="#cb16-22"></a><span class="co">#&gt; $ earn_count_wne_hi_1yr         &lt;dbl&gt; 46, 34, 26, 56, 82, 51, 32, 52, 21, 3...</span></span>
-<span id="cb16-23"><a href="#cb16-23"></a><span class="co">#&gt; $ earn_mdn_hi_1yr               &lt;dbl&gt; 46321, 42905, 37568, 44495, 49179, 52...</span></span>
-<span id="cb16-24"><a href="#cb16-24"></a><span class="co">#&gt; $ earn_count_wne_hi_2yr         &lt;dbl&gt; 36, 24, 30, 40, 83, 40, 34, 36, 20, 4...</span></span>
-<span id="cb16-25"><a href="#cb16-25"></a><span class="co">#&gt; $ earn_mdn_hi_2yr               &lt;dbl&gt; 41844, 44021, 34603, 48041, 45249, 53...</span></span>
-<span id="cb16-26"><a href="#cb16-26"></a><span class="co">#&gt; $ region                        &lt;dbl+lbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ...</span></span>
-<span id="cb16-27"><a href="#cb16-27"></a><span class="co">#&gt; $ locale                        &lt;dbl+lbl&gt; 13, 13, 13, 13, 13, 12, 12, 12, 1...</span></span>
-<span id="cb16-28"><a href="#cb16-28"></a>  </span>
-<span id="cb16-29"><a href="#cb16-29"></a>df_scorecard_edu<span class="op">$</span>debt_all_stgp_eval_mean[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
-<span id="cb16-30"><a href="#cb16-30"></a><span class="co">#&gt;  [1] 29768 43336 41572 31462 28726 35316 28032 32904 39299 25015</span></span>
-<span id="cb16-31"><a href="#cb16-31"></a></span>
-<span id="cb16-32"><a href="#cb16-32"></a>debt_i &lt;-<span class="st"> </span>df_scorecard_edu<span class="op">$</span>debt_all_stgp_eval_mean[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
-<span id="cb16-33"><a href="#cb16-33"></a>debt_i</span>
-<span id="cb16-34"><a href="#cb16-34"></a><span class="co">#&gt;  [1] 29768 43336 41572 31462 28726 35316 28032 32904 39299 25015</span></span>
-<span id="cb16-35"><a href="#cb16-35"></a></span>
-<span id="cb16-36"><a href="#cb16-36"></a><span class="co"># calculate mean</span></span>
-<span id="cb16-37"><a href="#cb16-37"></a><span class="kw">mean</span>(debt_i)</span>
-<span id="cb16-38"><a href="#cb16-38"></a><span class="co">#&gt; [1] 33543</span></span>
-<span id="cb16-39"><a href="#cb16-39"></a></span>
-<span id="cb16-40"><a href="#cb16-40"></a><span class="co"># calculate by hand</span></span>
-<span id="cb16-41"><a href="#cb16-41"></a><span class="kw">sum</span>(debt_i) <span class="co"># sum of values</span></span>
-<span id="cb16-42"><a href="#cb16-42"></a><span class="co">#&gt; [1] 335430</span></span>
-<span id="cb16-43"><a href="#cb16-43"></a><span class="kw">length</span>(debt_i) <span class="co"># number of observations</span></span>
-<span id="cb16-44"><a href="#cb16-44"></a><span class="co">#&gt; [1] 10</span></span>
-<span id="cb16-45"><a href="#cb16-45"></a></span>
-<span id="cb16-46"><a href="#cb16-46"></a><span class="kw">sum</span>(debt_i)<span class="op">/</span><span class="kw">length</span>(debt_i)</span>
-<span id="cb16-47"><a href="#cb16-47"></a><span class="co">#&gt; [1] 33543</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>df_scorecard_edu <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(debt_all_stgp_eval_mean) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">var_label</span>()</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="co">#&gt; $debt_all_stgp_eval_mean</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="co">#&gt; [1] &quot;Average Stafford and Grad PLUS loan debt disbursed at this institution&quot;</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a></span>
+<span id="cb16-5"><a href="#cb16-5"></a>df_scorecard_edu<span class="op">$</span>debt_all_stgp_eval_mean[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="co">#&gt;  [1] 29768 43336 41572 31462 28726 35316 28032 32904 39299 25015</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a></span>
+<span id="cb16-8"><a href="#cb16-8"></a>debt_i &lt;-<span class="st"> </span>df_scorecard_edu<span class="op">$</span>debt_all_stgp_eval_mean[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
+<span id="cb16-9"><a href="#cb16-9"></a>debt_i</span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="co">#&gt;  [1] 29768 43336 41572 31462 28726 35316 28032 32904 39299 25015</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a></span>
+<span id="cb16-12"><a href="#cb16-12"></a><span class="co"># calculate mean</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a><span class="kw">mean</span>(debt_i)</span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="co">#&gt; [1] 33543</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a></span>
+<span id="cb16-16"><a href="#cb16-16"></a><span class="co"># calculate by hand</span></span>
+<span id="cb16-17"><a href="#cb16-17"></a><span class="kw">sum</span>(debt_i) <span class="co"># sum of values</span></span>
+<span id="cb16-18"><a href="#cb16-18"></a><span class="co">#&gt; [1] 335430</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a><span class="kw">length</span>(debt_i) <span class="co"># number of observations</span></span>
+<span id="cb16-20"><a href="#cb16-20"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb16-21"><a href="#cb16-21"></a></span>
+<span id="cb16-22"><a href="#cb16-22"></a><span class="kw">sum</span>(debt_i)<span class="op">/</span><span class="kw">length</span>(debt_i)</span>
+<span id="cb16-23"><a href="#cb16-23"></a><span class="co">#&gt; [1] 33543</span></span></code></pre></div>
 
 <p>Other measures of central tendency:</p>
 <ul>
@@ -2516,34 +2494,42 @@ div.tocify {
 <li>Calculate <span class="math inline">\(\hat\sigma_Y\)</span></li>
 </ul>
 <p>Calculate standard deviation for sample data</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">sd</span>(x) <span class="co"># on aveage each value of x is ~7.5 away from the mean</span></span>
-<span id="cb18-2"><a href="#cb18-2"></a><span class="co">#&gt; [1] 7.574079</span></span>
-<span id="cb18-3"><a href="#cb18-3"></a></span>
-<span id="cb18-4"><a href="#cb18-4"></a><span class="co"># by hand</span></span>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>x</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="co">#&gt; [1]  5  2 13 11 18 22</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="kw">sd</span>(x) <span class="co"># on aveage each value of x is ~7.5 away from the mean</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="co">#&gt; [1] 7.574079</span></span>
 <span id="cb18-5"><a href="#cb18-5"></a></span>
-<span id="cb18-6"><a href="#cb18-6"></a>(x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span> <span class="co"># squared deviations</span></span>
-<span id="cb18-7"><a href="#cb18-7"></a><span class="co">#&gt; [1]  46.6944444  96.6944444   1.3611111   0.6944444  38.0277778 103.3611111</span></span>
-<span id="cb18-8"><a href="#cb18-8"></a></span>
-<span id="cb18-9"><a href="#cb18-9"></a><span class="kw">sum</span>((x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span>) <span class="co"># sum squared deviation</span></span>
-<span id="cb18-10"><a href="#cb18-10"></a><span class="co">#&gt; [1] 286.8333</span></span>
-<span id="cb18-11"><a href="#cb18-11"></a></span>
-<span id="cb18-12"><a href="#cb18-12"></a><span class="kw">sqrt</span>(<span class="kw">sum</span>((x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">length</span>(x)<span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb18-13"><a href="#cb18-13"></a><span class="co">#&gt; [1] 7.574079</span></span></code></pre></div>
+<span id="cb18-6"><a href="#cb18-6"></a><span class="co"># by hand</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="kw">mean</span>(x)</span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="co">#&gt; [1] 11.83333</span></span>
+<span id="cb18-10"><a href="#cb18-10"></a>x</span>
+<span id="cb18-11"><a href="#cb18-11"></a><span class="co">#&gt; [1]  5  2 13 11 18 22</span></span>
+<span id="cb18-12"><a href="#cb18-12"></a>(x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span> <span class="co"># squared deviations</span></span>
+<span id="cb18-13"><a href="#cb18-13"></a><span class="co">#&gt; [1]  46.6944444  96.6944444   1.3611111   0.6944444  38.0277778 103.3611111</span></span>
+<span id="cb18-14"><a href="#cb18-14"></a></span>
+<span id="cb18-15"><a href="#cb18-15"></a><span class="kw">sum</span>((x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span>) <span class="co"># sum squared deviation</span></span>
+<span id="cb18-16"><a href="#cb18-16"></a><span class="co">#&gt; [1] 286.8333</span></span>
+<span id="cb18-17"><a href="#cb18-17"></a></span>
+<span id="cb18-18"><a href="#cb18-18"></a><span class="kw">sqrt</span>(<span class="kw">sum</span>((x<span class="op">-</span><span class="kw">mean</span>(x))<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">length</span>(x)<span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb18-19"><a href="#cb18-19"></a><span class="co">#&gt; [1] 7.574079</span></span></code></pre></div>
 <p>Calcualte standard deviation of debt (first ten obs)</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">sd</span>(debt_i) <span class="co"># on aveage each value of debt is 6164 away from the mean</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a><span class="co">#&gt; [1] 6163.816</span></span>
-<span id="cb19-3"><a href="#cb19-3"></a></span>
-<span id="cb19-4"><a href="#cb19-4"></a><span class="co"># by hand</span></span>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>debt_i</span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="co">#&gt;  [1] 29768 43336 41572 31462 28726 35316 28032 32904 39299 25015</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="kw">sd</span>(debt_i) <span class="co"># on aveage each value of debt is 6164 away from the mean</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="co">#&gt; [1] 6163.816</span></span>
 <span id="cb19-5"><a href="#cb19-5"></a></span>
-<span id="cb19-6"><a href="#cb19-6"></a>(debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span> <span class="co"># squared deviations</span></span>
-<span id="cb19-7"><a href="#cb19-7"></a><span class="co">#&gt;  [1] 14250625 95902849 64464841  4330561 23203489  3143529 30371121   408321</span></span>
-<span id="cb19-8"><a href="#cb19-8"></a><span class="co">#&gt;  [9] 33131536 72726784</span></span>
-<span id="cb19-9"><a href="#cb19-9"></a></span>
-<span id="cb19-10"><a href="#cb19-10"></a><span class="kw">sum</span>((debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span>) <span class="co"># sum squared deviation</span></span>
-<span id="cb19-11"><a href="#cb19-11"></a><span class="co">#&gt; [1] 341933656</span></span>
-<span id="cb19-12"><a href="#cb19-12"></a></span>
-<span id="cb19-13"><a href="#cb19-13"></a><span class="kw">sqrt</span>(<span class="kw">sum</span>((debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">length</span>(debt_i)<span class="op">-</span><span class="dv">1</span>)) <span class="co"># standard deviation</span></span>
-<span id="cb19-14"><a href="#cb19-14"></a><span class="co">#&gt; [1] 6163.816</span></span></code></pre></div>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="co"># by hand</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a></span>
+<span id="cb19-8"><a href="#cb19-8"></a>(debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span> <span class="co"># squared deviations</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="co">#&gt;  [1] 14250625 95902849 64464841  4330561 23203489  3143529 30371121   408321</span></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="co">#&gt;  [9] 33131536 72726784</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a></span>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="kw">sum</span>((debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span>) <span class="co"># sum squared deviation</span></span>
+<span id="cb19-13"><a href="#cb19-13"></a><span class="co">#&gt; [1] 341933656</span></span>
+<span id="cb19-14"><a href="#cb19-14"></a></span>
+<span id="cb19-15"><a href="#cb19-15"></a><span class="kw">sqrt</span>(<span class="kw">sum</span>((debt_i<span class="op">-</span><span class="kw">mean</span>(debt_i))<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">length</span>(debt_i)<span class="op">-</span><span class="dv">1</span>)) <span class="co"># standard deviation</span></span>
+<span id="cb19-16"><a href="#cb19-16"></a><span class="co">#&gt; [1] 6163.816</span></span></code></pre></div>
 
 <p>Other measures of dispersion:</p>
 <ul>

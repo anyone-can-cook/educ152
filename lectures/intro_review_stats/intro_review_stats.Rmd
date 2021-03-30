@@ -465,6 +465,7 @@ Example: Variable Y has the following six observations ($Y_1... Y_6$)
 Calculate sample mean in *R*
 ```{r}
 x <- c(5,2,13,11,18,22)
+length(x)
 
 mean(x)
 
@@ -476,8 +477,8 @@ sum(x)/length(x)
 ```
 Calculate mean value of (mean) debt from Stafford and grad plus, using first 10 observations
 ```{r}
-df_scorecard_edu %>% glimpse()
-  
+df_scorecard_edu %>% select(debt_all_stgp_eval_mean) %>% var_label()
+
 df_scorecard_edu$debt_all_stgp_eval_mean[1:10]
 
 debt_i <- df_scorecard_edu$debt_all_stgp_eval_mean[1:10]
@@ -523,10 +524,13 @@ Example: Variable Y has the following six observations ($Y_1... Y_6$)
 
 Calculate standard deviation for sample data
 ```{r}
+x
 sd(x) # on aveage each value of x is ~7.5 away from the mean
 
 # by hand
 
+mean(x)
+x
 (x-mean(x))^2 # squared deviations
 
 sum((x-mean(x))^2) # sum squared deviation
@@ -536,6 +540,7 @@ sqrt(sum((x-mean(x))^2)/(length(x)-1))
 
 Calcualte standard deviation of debt (first ten obs)
 ```{r}
+debt_i
 sd(debt_i) # on aveage each value of debt is 6164 away from the mean
 
 # by hand
