@@ -43,13 +43,9 @@ stata_dir <- file.path(input_dir, 'stata_files')
 url <- 'https://nces.ed.gov/ipeds/datacenter/data/'
 
 
-download_file2(dir_name = csv_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '', file_extension = '.csv')
-download_file2(dir_name = dict_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '_dict', file_extension = '.xlsx')
-download_file2(dir_name = stata_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '_Stata', file_extension = '.do')
 
-  
 #download_file2 <- function(dir_name, file_prefix, file_year, file_suffix, file_type, file_extension) {
-download_file2 <- function(file_type, file_prefix, file_year, file_suffix) {
+download_file <- function(file_type, file_prefix, file_year, file_suffix) {
 
   # create objects for which directory, file extension, etc. based on whether reading csv data, dictionrary, or stata do file
   if (file_type == 'csv') {
@@ -93,99 +89,53 @@ download_file2 <- function(file_type, file_prefix, file_year, file_suffix) {
   
 }
 
-# switch statement
 
-download_file2(file_type = 'csv', file_prefix = 'ef', file_year = '2018', file_suffix = 'a')
-download_file2(file_type = 'dict', file_prefix = 'ef', file_year = '2018', file_suffix = 'a')
-download_file2(file_type = 'stata', file_prefix = 'ef', file_year = '2018', file_suffix = 'a')
+# loop across file_type and year
 
-file_dirs <- c(csv_dir, dict_dir, stata_dir)
-suffixes <- c('', '_Dict', '_Stata') 
-extensions <- c('.csv', '.xlsx', '.do')
+file_types <- c('csv','dict','stata')
 
-################################
-################################
-################################
+years <- c('2015','2016','2017','2018','2019')
 
-
-download_file <- function(dir_name, file_prefix, file_year, file_suffix, file_type, file_extension) {
-
-  # create objects for: file_name, data_url, data_zipfile, data_unzipped file
-  file_name <- str_c(file_prefix,file_year,file_suffix)
-    writeLines(str_c('file_name object = ',file_name))
-  data_url <- str_c('https://nces.ed.gov/ipeds/datacenter/data/', file_name, file_type, '.zip')
-    writeLines(str_c('data_url object = ',data_url))
-  data_zipfile <- file.path(dir_name, str_c(file_name, file_type, '.zip'))
-    writeLines(str_c('data_zipfile object = ',data_zipfile))
-  data_unzipped <- file.path(dir_name, str_c(file_name, file_extension))
-    writeLines(str_c('data_unzipped object = ',data_unzipped))
-    
-  # download and unzip files
-  if (!file.exists(data_zipfile)) {
-    writeLines(str_c('Downloading file: ', data_zipfile, ' & Unzipping file: ', data_unzipped))
-    download.file(url = data_url, destfile = data_zipfile)
-    unzip(zipfile = data_zipfile, exdir = dir_name)
-  } else if (!file.exists(data_unzipped)) {
-    writeLines(str_c('Unzipping file: ', data_unzipped))
-    unzip(zipfile = data_zipfile, exdir = dir_name)
-  } else {
-    writeLines(str_c('Already have files: ', data_zipfile, ' & ', data_unzipped))
-  }
+# loop for data year
+for (y in 1:length(years)) { 
   
+  writeLines(str_c("\n i=", i, "; year=", years[[y]]))
+  
+  # loop for file_types c('csv','dict','stata')
+  for (i in 1:length(file_types)) { 
+    
+    writeLines(str_c("\n i=", i, "; file_type=", file_types[[i]]))
+  
+    # institutional characteristics, flags
+    download_file(file_type = file_types[[i]], file_prefix = 'flags', file_year = years[[y]], file_suffix = '')
+      
+    # institutional characteristics, hd
+    download_file(file_type = file_types[[i]], file_prefix = 'hd', file_year = years[[y]], file_suffix = '')
+    
+    # Imstitutional characteristics, Educational offerings, organization, services and athletic associations Educational offerings, organization, services and athletic associations
+    download_file(file_type = file_types[[i]], file_prefix = 'ic', file_year = years[[y]], file_suffix = '')
+    
+    # instituional characteristics, student charges for academic year programs
+    download_file(file_type = file_types[[i]], file_prefix = 'ic', file_year = years[[y]], file_suffix = '_ay')
+    
+    
+  }
 }
 
 
-download_file(dir_name = csv_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '', file_extension = '.csv')
-download_file(dir_name = dict_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '_dict', file_extension = '.xlsx')
-download_file(dir_name = stata_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '_Stata', file_extension = '.do')
+# STUFF FOR CRYSTAL TO DO:
 
-
-
-
-# hd 2019
-  #https://nces.ed.gov/ipeds/datacenter/data/HD2019.zip
-  #https://nces.ed.gov/ipeds/datacenter/data/HD2019_Stata.zip
-  #https://nces.ed.gov/ipeds/datacenter/data/HD2019_Dict.zip
-
-download_file(dir_name = csv_dir, file_prefix = 'hd', file_year = '2019', file_suffix = '', file_type = '', file_extension = '.csv')
-download_file(dir_name = dict_dir, file_prefix = 'hd', file_year = '2019', file_suffix = '', file_type = '_dict', file_extension = '.xlsx')
-download_file(dir_name = stata_dir, file_prefix = 'hd', file_year = '2019', file_suffix = '', file_type = '_Stata', file_extension = '.do')
-
-# flags 2019
-
-  #https://nces.ed.gov/ipeds/datacenter/data/FLAGS2019.zip
-  #https://nces.ed.gov/ipeds/datacenter/data/FLAGS2019_Stata.zip
-  #https://nces.ed.gov/ipeds/datacenter/data/FLAGS2019_Dict.zip
-
-download_file(dir_name = csv_dir, file_prefix = 'flags', file_year = '2019', file_suffix = '', file_type = '', file_extension = '.csv')
-download_file(dir_name = dict_dir, file_prefix = 'flags', file_year = '2019', file_suffix = '', file_type = '_dict', file_extension = '.xlsx')
-download_file(dir_name = stata_dir, file_prefix = 'flags', file_year = '2019', file_suffix = '', file_type = '_Stata', file_extension = '.do')
-
-# student charges for academic year programs 2019
-
-  #https://nces.ed.gov/ipeds/datacenter/data/IC2019_AY.zip
-  #https://nces.ed.gov/ipeds/datacenter/data/IC2019_AY_Stata.zip
-  #https://nces.ed.gov/ipeds/datacenter/data/IC2019_AY_Dict.zip
-
-download_file(dir_name = csv_dir, file_prefix = 'ic', file_year = '2019', file_suffix = '_ay', file_type = '', file_extension = '.csv')
-download_file(dir_name = dict_dir, file_prefix = 'ic', file_year = '2019', file_suffix = '_ay', file_type = '_dict', file_extension = '.xlsx')
-download_file(dir_name = stata_dir, file_prefix = 'ic', file_year = '2019', file_suffix = '_ay', file_type = '_Stata', file_extension = '.do')
-
-#fall enrollment; Race/ethnicity, gender, attendance status, and level of student: Fall 2019
-
-  #https://nces.ed.gov/ipeds/datacenter/data/EF2019A.zip
-  #https://nces.ed.gov/ipeds/datacenter/data/EF2019A_Stata.zip
-  #https://nces.ed.gov/ipeds/datacenter/data/EF2019A_Dict.zip
-
-download_file(dir_name = csv_dir, file_prefix = 'ef', file_year = '2019', file_suffix = 'a', file_type = '', file_extension = '.csv')
-download_file(dir_name = dict_dir, file_prefix = 'ef', file_year = '2019', file_suffix = 'a', file_type = '_dict', file_extension = '.xlsx')
-download_file(dir_name = stata_dir, file_prefix = 'ef', file_year = '2019', file_suffix = 'a', file_type = '_Stata', file_extension = '.do')
-
-download_file(dir_name = file_dirs[1], file_name = files[1], file_suffix = suffixes[1], file_extension = extensions[1])
-
-
-
-
+  # READ CSV DATA INTO R
+  # LABEL ALL VARIABLES AND ADD VALUE LABELS TO VARIABLES WITH VALUE LABELS
+    # YOU DECIDE WHETHER YOU WANT TO USE THE XLSX DICTIONARIES OR STATA DO FILES AS INPUTS TO VARIABLE/VALUE LABELS
+  # FOR EACH DIFFERENT KIND OF DATA (E.G., flags; hd; educational offerings...; student charges) append the datasets from different years to create a panel
+    # create a year identifier to identify year
+    # this will involve ovewriting variable/value labels
+    # save these r datasets to local machine 
+      # C:\Users\ozanj\Documents\educ152\data\ipeds\output_data
+  # merge the following panels by unitid and year:
+      # hd, flags, academic year charges
+      # save R dataset to local machine
 
 ## -----------------------------------------------------------------------------
 ## END SCRIPT
