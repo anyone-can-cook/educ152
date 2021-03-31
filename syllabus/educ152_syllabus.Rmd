@@ -50,8 +50,8 @@ EDUC 152 introduces students to regression as a tool to answer questions about e
 - Office: Moore Hall, Room 3038
 - Email: [ozanj@ucla.edu](ozanj@ucla.edu)
 - Office hours:
-  - Zoom office hours: TBD, zoom [link](https://ucla.zoom.us/j/2545750562)
-  - And by appointment
+  - Zoom office hours: Wednesdays 3 - 4 pm, zoom [link](https://ucla.zoom.us/j/2545750562)
+  - And by appointment (afternoon preferred)
   
 ## Teaching assistants
 
@@ -154,7 +154,7 @@ If you have a personal question or issue, please send a direct message to the in
 - Stock, J., and Watson, M. _Introduction to econometrics_ (1st, 2nd, 3rd, 4th editions are fine; just not the "brief edition")
   - This will be our primary text for learning regression
   - [LINK](https://www.amazon.com/Introduction-Econometrics-Stock-James-Watson-dp-935286350X/dp/935286350X/ref=mt_other?_encoding=UTF8&me=&qid=) to paperback 3rd edition on Amazon
-  - ADD INSTRUCTIONS FOR OBTAINING BOOK FROM LIBRARY
+
   
 **Free, online books/resources we will use for assigned reading**  
 
