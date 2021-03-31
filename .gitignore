@@ -9,3 +9,4 @@ educ152.Rproj
 # folders to ignore
 _admin/
 data/college_scorecard/input_data
+data/ipeds/input_data
