@@ -43,19 +43,43 @@ stata_dir <- file.path(input_dir, 'stata_files')
 url <- 'https://nces.ed.gov/ipeds/datacenter/data/'
 
 
-  
-download_file <- function(dir_name, file_prefix, file_year, file_suffix, file_type, file_extension) {
+download_file2(dir_name = csv_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '', file_extension = '.csv')
+download_file2(dir_name = dict_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '_dict', file_extension = '.xlsx')
+download_file2(dir_name = stata_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '_Stata', file_extension = '.do')
 
+  
+#download_file2 <- function(dir_name, file_prefix, file_year, file_suffix, file_type, file_extension) {
+download_file2 <- function(file_type, file_prefix, file_year, file_suffix) {
+
+  # create objects for which directory, file extension, etc. based on whether reading csv data, dictionrary, or stata do file
+  if (file_type == 'csv') {
+    dir_name <- csv_dir
+    type_extension <- ''
+    file_extension <- '.csv'
+        
+  } else if (file_type == 'dict') {
+    dir_name <- dict_dir
+    type_extension <- '_dict'
+    file_extension <- '.xlsx'
+    
+  } else { # stata code
+    dir_name <- stata_dir
+    type_extension <- '_Stata'
+    file_extension <- '.do'
+    
+  }
+  
+  # create objects for: file_name, data_url, data_zipfile, data_unzipped file
   file_name <- str_c(file_prefix,file_year,file_suffix)
     writeLines(str_c('file_name object = ',file_name))
-  data_url <- str_c('https://nces.ed.gov/ipeds/datacenter/data/', file_name, file_type, '.zip')
+  data_url <- str_c(url, file_name, type_extension, '.zip')
     writeLines(str_c('data_url object = ',data_url))
-  data_zipfile <- file.path(dir_name, str_c(file_name, file_type, '.zip'))
+  data_zipfile <- file.path(dir_name, str_c(file_name, type_extension, '.zip'))
     writeLines(str_c('data_zipfile object = ',data_zipfile))
-    
   data_unzipped <- file.path(dir_name, str_c(file_name, file_extension))
     writeLines(str_c('data_unzipped object = ',data_unzipped))
     
+  # download and unzip files
   if (!file.exists(data_zipfile)) {
     writeLines(str_c('Downloading file: ', data_zipfile, ' & Unzipping file: ', data_unzipped))
     download.file(url = data_url, destfile = data_zipfile)
@@ -68,6 +92,55 @@ download_file <- function(dir_name, file_prefix, file_year, file_suffix, file_ty
   }
   
 }
+
+# switch statement
+
+download_file2(file_type = 'csv', file_prefix = 'ef', file_year = '2018', file_suffix = 'a')
+download_file2(file_type = 'dict', file_prefix = 'ef', file_year = '2018', file_suffix = 'a')
+download_file2(file_type = 'stata', file_prefix = 'ef', file_year = '2018', file_suffix = 'a')
+
+file_dirs <- c(csv_dir, dict_dir, stata_dir)
+suffixes <- c('', '_Dict', '_Stata') 
+extensions <- c('.csv', '.xlsx', '.do')
+
+################################
+################################
+################################
+
+
+download_file <- function(dir_name, file_prefix, file_year, file_suffix, file_type, file_extension) {
+
+  # create objects for: file_name, data_url, data_zipfile, data_unzipped file
+  file_name <- str_c(file_prefix,file_year,file_suffix)
+    writeLines(str_c('file_name object = ',file_name))
+  data_url <- str_c('https://nces.ed.gov/ipeds/datacenter/data/', file_name, file_type, '.zip')
+    writeLines(str_c('data_url object = ',data_url))
+  data_zipfile <- file.path(dir_name, str_c(file_name, file_type, '.zip'))
+    writeLines(str_c('data_zipfile object = ',data_zipfile))
+  data_unzipped <- file.path(dir_name, str_c(file_name, file_extension))
+    writeLines(str_c('data_unzipped object = ',data_unzipped))
+    
+  # download and unzip files
+  if (!file.exists(data_zipfile)) {
+    writeLines(str_c('Downloading file: ', data_zipfile, ' & Unzipping file: ', data_unzipped))
+    download.file(url = data_url, destfile = data_zipfile)
+    unzip(zipfile = data_zipfile, exdir = dir_name)
+  } else if (!file.exists(data_unzipped)) {
+    writeLines(str_c('Unzipping file: ', data_unzipped))
+    unzip(zipfile = data_zipfile, exdir = dir_name)
+  } else {
+    writeLines(str_c('Already have files: ', data_zipfile, ' & ', data_unzipped))
+  }
+  
+}
+
+
+download_file(dir_name = csv_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '', file_extension = '.csv')
+download_file(dir_name = dict_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '_dict', file_extension = '.xlsx')
+download_file(dir_name = stata_dir, file_prefix = 'ef', file_year = '2018', file_suffix = 'a', file_type = '_Stata', file_extension = '.do')
+
+
+
 
 # hd 2019
   #https://nces.ed.gov/ipeds/datacenter/data/HD2019.zip
@@ -112,9 +185,7 @@ download_file(dir_name = file_dirs[1], file_name = files[1], file_suffix = suffi
 
 
 
-file_dirs <- c(csv_dir, dict_dir, stata_dir)
-suffixes <- c('', '_Dict', '_Stata') 
-extensions <- c('.csv', '.xlsx', '.do')
+
 
 ## -----------------------------------------------------------------------------
 ## END SCRIPT
