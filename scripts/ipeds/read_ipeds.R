@@ -216,6 +216,10 @@ get_panel_data <- function(years, file_prefix, file_suffix = '') {
 hd <- get_panel_data(years = years, file_prefix = 'hd')
 var_label(hd)
 val_labels(hd)
+
+hd <- hd %>% add_column(opeid6 = str_sub(hd$opeid, start = 1, end = 6), .after = 'opeid')
+var_label(hd[['opeid6']]) <- 'First 6 digits of OPEID'
+
 save(hd, file = file.path(output_dir, 'hd_panel_data.RData'))
 
 flags <- get_panel_data(years = years, file_prefix = 'flags')
