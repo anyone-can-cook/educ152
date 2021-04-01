@@ -66,6 +66,9 @@ library(labelled) # load labelled package package
   - required fees  (in-state vs. out-of-state)
   - books and supplies; off-campus room and board; off-campus "other expenses"
     - these are calculated for undergraduate students, but should be highly correlated with graduate students
+  - **Note**: none of these variables include the cost of healthcare
+    - Therefore, assuming you must pay for the cost of healthcare, the measures of cost of attendance (COA) we create will understate the total cost of graduate school + life
+
 
 **Why use IPEDS data rather than *College Scorecard* data? and why these variables?**
 
@@ -115,7 +118,7 @@ Some definitions related to tuition, fees, expenses, etc; from the IPEDS "Studen
 
 *Note*: "required fees" do not include the cost of healthcare (I think)
 
-## Create dataset `df_ipeds`
+## Create dataset `df_ipeds_pop`
 
 Load IPEDS dataset
 
@@ -126,7 +129,7 @@ load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/
 
 Create data frame for use in teaching statistical inference
 ```{r}
-df_ipeds <- panel_data %>%
+df_ipeds_pop <- panel_data %>%
   # keep data from fall 2019
   filter(year == 2019) %>%
   # which universities to keep:
@@ -167,55 +170,55 @@ df_ipeds <- panel_data %>%
 
 # Add variable labels to the tuit+fees variables and coa variables
   # tuition + fees variables
-    var_label(df_ipeds[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
-    var_label(df_ipeds[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
-    var_label(df_ipeds[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
-    var_label(df_ipeds[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
-    var_label(df_ipeds[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
-    var_label(df_ipeds[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
     
   # COA variables
-    var_label(df_ipeds[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
 
-df_ipeds %>% glimpse()
+df_ipeds_pop %>% glimpse()
 ```
 
 Show variable labels
 ```{r}
-df_ipeds %>% var_label()
+df_ipeds_pop %>% var_label()
 ```
 Show value labels for variables that are `labelled` class (code note run)
 ```{r, eval = FALSE}
-df_ipeds %>% select(control,locale,region,c15basic) %>% val_labels()
+df_ipeds_pop %>% select(control,locale,region,c15basic) %>% val_labels()
 ```
 
-## Investigate `df_ipeds`
+## Investigate `df_ipeds_pop`
 
 Investigate data structure
 
 - confirm one observation per unitid
 ```{r}
 
-df_ipeds %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+df_ipeds_pop %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
 ```
 
 ### Tuition/COA at UC campuses
 
 Graduate, state residents
 ```{r}
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep UC campuses
   filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
   select(instnm,unitid,tuit_grad_res,fee_grad_res,tuitfee_grad_res,books_supplies,roomboard_off,oth_expense_off,coa_grad_res)
 ```
 Graduate, non-resident
 ```{r}
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep UC campuses
   filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
   select(instnm,unitid,tuit_grad_nres,fee_grad_nres,tuitfee_grad_nres,books_supplies,roomboard_off,oth_expense_off,coa_grad_nres)
@@ -223,7 +226,7 @@ df_ipeds %>%
 
 MD, state resident
 ```{r}
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep UC campuses
   filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
   select(instnm,unitid,tuit_md_res,fee_md_res,tuitfee_md_res,books_supplies,roomboard_off,oth_expense_off,coa_md_res)
@@ -231,7 +234,7 @@ df_ipeds %>%
 
 MD, non-resident
 ```{r}
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep UC campuses
   filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
   select(instnm,unitid,tuit_md_nres,fee_md_nres,tuitfee_md_nres,books_supplies,roomboard_off,oth_expense_off,coa_md_nres)
@@ -240,7 +243,7 @@ df_ipeds %>%
 
 Law, state resident
 ```{r}
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep UC campuses
   filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
   select(instnm,unitid,tuit_law_res,fee_law_res,tuitfee_law_res,books_supplies,roomboard_off,oth_expense_off,coa_law_res)
@@ -248,7 +251,7 @@ df_ipeds %>%
 
 Law, non-resident
 ```{r}
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep UC campuses
   filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
   select(instnm,unitid,tuit_law_nres,fee_law_nres,tuitfee_law_nres,books_supplies,roomboard_off,oth_expense_off,coa_law_nres)
@@ -287,13 +290,13 @@ Graduate students
 - Some ludicrously unrealistic values for `roomboard_off` and `oth_expense_off`
 ```{r}
 # In-state
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep private fancy pants
   filter(unitid %in% c(123961,243744,190150,196468,193900,166027,221999,215062,147767,162928)) %>%
   select(instnm,unitid,tuit_grad_res,fee_grad_res,tuitfee_grad_res,books_supplies,roomboard_off,oth_expense_off,coa_grad_res)
 
 # Out-of-state
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep private fancy pants
   filter(unitid %in% c(123961,243744,190150,196468,193900,166027,221999,215062,147767,162928)) %>%
   select(instnm,unitid,tuit_grad_nres,fee_grad_nres,tuitfee_grad_nres,books_supplies,roomboard_off,oth_expense_off,coa_grad_nres)
@@ -301,7 +304,7 @@ df_ipeds %>%
 
 MD students
 ```{r}
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep private fancy pants
   filter(unitid %in% c(123961,243744,190150,196468,193900,166027,221999,215062,147767,162928)) %>%
   select(instnm,unitid,tuit_md_res,fee_md_res,tuitfee_md_res,books_supplies,roomboard_off,oth_expense_off,coa_md_res)
@@ -309,7 +312,7 @@ df_ipeds %>%
 
 Law students
 ```{r}
-df_ipeds %>%
+df_ipeds_pop %>%
   # keep private fancy pants
   filter(unitid %in% c(123961,243744,190150,196468,193900,166027,221999,215062,147767,162928)) %>%
   select(instnm,unitid,tuit_law_res,fee_law_res,tuitfee_law_res,books_supplies,roomboard_off,oth_expense_off,coa_law_res)
@@ -321,27 +324,27 @@ df_ipeds %>%
 Number of institutions by type
 ```{r}
 # Number of institutions
-df_ipeds %>% count()
+df_ipeds_pop %>% count()
 
 # Number of institutions by Carnegie type
-df_ipeds %>% count(c15basic) %>% as_factor()
+df_ipeds_pop %>% count(c15basic) %>% as_factor()
 
 # Number of institutions by public/private
-df_ipeds %>% count(control) %>% as_factor()
+df_ipeds_pop %>% count(control) %>% as_factor()
 
 # number of institutions by public/private and carnegie type
-df_ipeds %>% count(control,c15basic) %>% as_factor()
+df_ipeds_pop %>% count(control,c15basic) %>% as_factor()
 
 # number of institutions by level of urbanization
-df_ipeds %>% count(locale) %>% as_factor()
+df_ipeds_pop %>% count(locale) %>% as_factor()
 
 # number of institutions by public/private and level of urbanization
-df_ipeds %>% count(control,locale) %>% as_factor()
+df_ipeds_pop %>% count(control,locale) %>% as_factor()
 ```
 
 Tuition+fees by public/private and Carnegie type
 ```{r}
-df_ipeds %>% group_by(control,c15basic) %>% 
+df_ipeds_pop %>% group_by(control,c15basic) %>% 
   summarize(
     sample_size = n(),
     n_nonmiss_tuitfee_res = sum(!is.na(tuitfee_grad_res)),
@@ -353,7 +356,7 @@ df_ipeds %>% group_by(control,c15basic) %>%
 
 Cost of attendance by public/private and Carnegie type
 ```{r}
-df_ipeds %>% group_by(control,c15basic) %>% 
+df_ipeds_pop %>% group_by(control,c15basic) %>% 
   summarize(
     sample_size = n(),
     n_nonmiss_coa_res = sum(!is.na(coa_grad_res)),
@@ -364,6 +367,8 @@ df_ipeds %>% group_by(control,c15basic) %>%
 ```
 
 # Distributions
+
+
 
 # Sampling distribution
 

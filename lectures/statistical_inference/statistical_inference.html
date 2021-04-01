@@ -1701,6 +1701,10 @@ div.tocify {
 <ul>
 <li>these are calculated for undergraduate students, but should be highly correlated with graduate students</li>
 </ul></li>
+<li><strong>Note</strong>: none of these variables include the cost of healthcare
+<ul>
+<li>Therefore, assuming you must pay for the cost of healthcare, the measures of cost of attendance (COA) we create will understate the total cost of graduate school + life</li>
+</ul></li>
 </ul></li>
 </ul>
 <p><strong>Why use IPEDS data rather than <em>College Scorecard</em> data? and why these variables?</strong></p>
@@ -1782,15 +1786,15 @@ div.tocify {
 </ul>
 <p><em>Note</em>: “required fees” do not include the cost of healthcare (I think)</p>
 </div>
-<div id="create-dataset-df_ipeds" class="section level2">
-<h2><span class="header-section-number">2.3</span> Create dataset <code>df_ipeds</code></h2>
+<div id="create-dataset-df_ipeds_pop" class="section level2">
+<h2><span class="header-section-number">2.3</span> Create dataset <code>df_ipeds_pop</code></h2>
 <p>Load IPEDS dataset</p>
 <ul>
 <li>CONTAINS DATA ON THESE SORTS OF SOURCES</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">load</span>(<span class="dt">file =</span> <span class="kw">url</span>(<span class="st">&#39;https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData&#39;</span>))</span></code></pre></div>
 <p>Create data frame for use in teaching statistical inference</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>df_ipeds &lt;-<span class="st"> </span>panel_data <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>df_ipeds_pop &lt;-<span class="st"> </span>panel_data <span class="op">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="co"># keep data from fall 2019</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2019</span>) <span class="op">%&gt;%</span></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="st">  </span><span class="co"># which universities to keep:</span></span>
@@ -1831,22 +1835,22 @@ div.tocify {
 <span id="cb3-39"><a href="#cb3-39"></a></span>
 <span id="cb3-40"><a href="#cb3-40"></a><span class="co"># Add variable labels to the tuit+fees variables and coa variables</span></span>
 <span id="cb3-41"><a href="#cb3-41"></a>  <span class="co"># tuition + fees variables</span></span>
-<span id="cb3-42"><a href="#cb3-42"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;tuitfee_grad_res&#39;</span>]]) &lt;-<span class="st"> &#39;graduate, full-time, resident; avg tuition + required fees&#39;</span></span>
-<span id="cb3-43"><a href="#cb3-43"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;tuitfee_grad_nres&#39;</span>]]) &lt;-<span class="st"> &#39;graduate, full-time, non-resident; avg tuition + required fees&#39;</span></span>
-<span id="cb3-44"><a href="#cb3-44"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;tuitfee_md_res&#39;</span>]]) &lt;-<span class="st"> &#39;MD, full-time, state resident; avg tuition + required fees&#39;</span></span>
-<span id="cb3-45"><a href="#cb3-45"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;tuitfee_md_nres&#39;</span>]]) &lt;-<span class="st"> &#39;MD, full-time, non-resident; avg tuition + required fees&#39;</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;tuitfee_law_res&#39;</span>]]) &lt;-<span class="st"> &#39;Law, full-time, state resident; avg tuition + required fees&#39;</span></span>
-<span id="cb3-47"><a href="#cb3-47"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;tuitfee_law_nres&#39;</span>]]) &lt;-<span class="st"> &#39;Law, full-time, non-resident; avg tuition + required fees&#39;</span></span>
+<span id="cb3-42"><a href="#cb3-42"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;tuitfee_grad_res&#39;</span>]]) &lt;-<span class="st"> &#39;graduate, full-time, resident; avg tuition + required fees&#39;</span></span>
+<span id="cb3-43"><a href="#cb3-43"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;tuitfee_grad_nres&#39;</span>]]) &lt;-<span class="st"> &#39;graduate, full-time, non-resident; avg tuition + required fees&#39;</span></span>
+<span id="cb3-44"><a href="#cb3-44"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;tuitfee_md_res&#39;</span>]]) &lt;-<span class="st"> &#39;MD, full-time, state resident; avg tuition + required fees&#39;</span></span>
+<span id="cb3-45"><a href="#cb3-45"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;tuitfee_md_nres&#39;</span>]]) &lt;-<span class="st"> &#39;MD, full-time, non-resident; avg tuition + required fees&#39;</span></span>
+<span id="cb3-46"><a href="#cb3-46"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;tuitfee_law_res&#39;</span>]]) &lt;-<span class="st"> &#39;Law, full-time, state resident; avg tuition + required fees&#39;</span></span>
+<span id="cb3-47"><a href="#cb3-47"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;tuitfee_law_nres&#39;</span>]]) &lt;-<span class="st"> &#39;Law, full-time, non-resident; avg tuition + required fees&#39;</span></span>
 <span id="cb3-48"><a href="#cb3-48"></a>    </span>
 <span id="cb3-49"><a href="#cb3-49"></a>  <span class="co"># COA variables</span></span>
-<span id="cb3-50"><a href="#cb3-50"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;coa_grad_res&#39;</span>]]) &lt;-<span class="st"> &#39;graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
-<span id="cb3-51"><a href="#cb3-51"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;coa_grad_nres&#39;</span>]]) &lt;-<span class="st"> &#39;graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
-<span id="cb3-52"><a href="#cb3-52"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;coa_md_res&#39;</span>]]) &lt;-<span class="st"> &#39;MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
-<span id="cb3-53"><a href="#cb3-53"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;coa_md_nres&#39;</span>]]) &lt;-<span class="st"> &#39;MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
-<span id="cb3-54"><a href="#cb3-54"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;coa_law_res&#39;</span>]]) &lt;-<span class="st"> &#39;Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
-<span id="cb3-55"><a href="#cb3-55"></a>    <span class="kw">var_label</span>(df_ipeds[[<span class="st">&#39;coa_law_nres&#39;</span>]]) &lt;-<span class="st"> &#39;Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
+<span id="cb3-50"><a href="#cb3-50"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;coa_grad_res&#39;</span>]]) &lt;-<span class="st"> &#39;graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
+<span id="cb3-51"><a href="#cb3-51"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;coa_grad_nres&#39;</span>]]) &lt;-<span class="st"> &#39;graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
+<span id="cb3-52"><a href="#cb3-52"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;coa_md_res&#39;</span>]]) &lt;-<span class="st"> &#39;MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
+<span id="cb3-53"><a href="#cb3-53"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;coa_md_nres&#39;</span>]]) &lt;-<span class="st"> &#39;MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
+<span id="cb3-54"><a href="#cb3-54"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;coa_law_res&#39;</span>]]) &lt;-<span class="st"> &#39;Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
+<span id="cb3-55"><a href="#cb3-55"></a>    <span class="kw">var_label</span>(df_ipeds_pop[[<span class="st">&#39;coa_law_nres&#39;</span>]]) &lt;-<span class="st"> &#39;Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&#39;</span></span>
 <span id="cb3-56"><a href="#cb3-56"></a></span>
-<span id="cb3-57"><a href="#cb3-57"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()</span>
+<span id="cb3-57"><a href="#cb3-57"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()</span>
 <span id="cb3-58"><a href="#cb3-58"></a><span class="co">#&gt; Rows: 684</span></span>
 <span id="cb3-59"><a href="#cb3-59"></a><span class="co">#&gt; Columns: 38</span></span>
 <span id="cb3-60"><a href="#cb3-60"></a><span class="co">#&gt; $ instnm            &lt;chr&gt; &quot;Alabama A &amp; M University&quot;, &quot;University of Alabam...</span></span>
@@ -1888,7 +1892,7 @@ div.tocify {
 <span id="cb3-96"><a href="#cb3-96"></a><span class="co">#&gt; $ coa_law_res       &lt;dbl&gt; NA, NA, NA, 42846, NA, NA, NA, NA, NA, 58488, NA,...</span></span>
 <span id="cb3-97"><a href="#cb3-97"></a><span class="co">#&gt; $ coa_law_nres      &lt;dbl&gt; NA, NA, NA, 62296, NA, NA, NA, NA, NA, 58488, NA,...</span></span></code></pre></div>
 <p>Show variable labels</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">var_label</span>()</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">var_label</span>()</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; $instnm</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt; [1] &quot;Institution (entity) name&quot;</span></span>
 <span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; </span></span>
@@ -2003,16 +2007,16 @@ div.tocify {
 <span id="cb4-113"><a href="#cb4-113"></a><span class="co">#&gt; $coa_law_nres</span></span>
 <span id="cb4-114"><a href="#cb4-114"></a><span class="co">#&gt; [1] &quot;Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses&quot;</span></span></code></pre></div>
 <p>Show value labels for variables that are <code>labelled</code> class (code note run)</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(control,locale,region,c15basic) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">val_labels</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(control,locale,region,c15basic) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">val_labels</span>()</span></code></pre></div>
 </div>
-<div id="investigate-df_ipeds" class="section level2">
-<h2><span class="header-section-number">2.4</span> Investigate <code>df_ipeds</code></h2>
+<div id="investigate-df_ipeds_pop" class="section level2">
+<h2><span class="header-section-number">2.4</span> Investigate <code>df_ipeds_pop</code></h2>
 <p>Investigate data structure</p>
 <ul>
 <li>confirm one observation per unitid</li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a></span>
-<span id="cb6-2"><a href="#cb6-2"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(unitid) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="dt">n_per_key=</span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(n_per_key)</span>
+<span id="cb6-2"><a href="#cb6-2"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(unitid) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="dt">n_per_key=</span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(n_per_key)</span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt; # A tibble: 1 x 2</span></span>
 <span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt;   n_per_key     n</span></span>
 <span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt;       &lt;int&gt; &lt;int&gt;</span></span>
@@ -2020,7 +2024,7 @@ div.tocify {
 <div id="tuitioncoa-at-uc-campuses" class="section level3">
 <h3><span class="header-section-number">2.4.1</span> Tuition/COA at UC campuses</h3>
 <p>Graduate, state residents</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="co"># keep UC campuses</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">110398</span>,<span class="dv">110635</span>,<span class="dv">110644</span>,<span class="dv">110653</span>,<span class="dv">110662</span>,<span class="dv">110671</span>,<span class="dv">110680</span>,<span class="dv">110699</span>,<span class="dv">110705</span>,<span class="dv">110714</span>,<span class="dv">445188</span>,<span class="dv">110699</span>,<span class="dv">110398</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_grad_res,fee_grad_res,tuitfee_grad_res,books_supplies,roomboard_off,oth_expense_off,coa_grad_res)</span>
@@ -2039,7 +2043,7 @@ div.tocify {
 <span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; # ... with 3 more variables: roomboard_off &lt;dbl&gt;, oth_expense_off &lt;dbl&gt;,</span></span>
 <span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; #   coa_grad_res &lt;dbl&gt;</span></span></code></pre></div>
 <p>Graduate, non-resident</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="co"># keep UC campuses</span></span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">110398</span>,<span class="dv">110635</span>,<span class="dv">110644</span>,<span class="dv">110653</span>,<span class="dv">110662</span>,<span class="dv">110671</span>,<span class="dv">110680</span>,<span class="dv">110699</span>,<span class="dv">110705</span>,<span class="dv">110714</span>,<span class="dv">445188</span>,<span class="dv">110699</span>,<span class="dv">110398</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb8-4"><a href="#cb8-4"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_grad_nres,fee_grad_nres,tuitfee_grad_nres,books_supplies,roomboard_off,oth_expense_off,coa_grad_nres)</span>
@@ -2058,7 +2062,7 @@ div.tocify {
 <span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt; # ... with 3 more variables: roomboard_off &lt;dbl&gt;, oth_expense_off &lt;dbl&gt;,</span></span>
 <span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; #   coa_grad_nres &lt;dbl&gt;</span></span></code></pre></div>
 <p>MD, state resident</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a><span class="st">  </span><span class="co"># keep UC campuses</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">110398</span>,<span class="dv">110635</span>,<span class="dv">110644</span>,<span class="dv">110653</span>,<span class="dv">110662</span>,<span class="dv">110671</span>,<span class="dv">110680</span>,<span class="dv">110699</span>,<span class="dv">110705</span>,<span class="dv">110714</span>,<span class="dv">445188</span>,<span class="dv">110699</span>,<span class="dv">110398</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb9-4"><a href="#cb9-4"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_md_res,fee_md_res,tuitfee_md_res,books_supplies,roomboard_off,oth_expense_off,coa_md_res)</span>
@@ -2077,7 +2081,7 @@ div.tocify {
 <span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; # ... with 3 more variables: roomboard_off &lt;dbl&gt;, oth_expense_off &lt;dbl&gt;,</span></span>
 <span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt; #   coa_md_res &lt;dbl&gt;</span></span></code></pre></div>
 <p>MD, non-resident</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="st">  </span><span class="co"># keep UC campuses</span></span>
 <span id="cb10-3"><a href="#cb10-3"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">110398</span>,<span class="dv">110635</span>,<span class="dv">110644</span>,<span class="dv">110653</span>,<span class="dv">110662</span>,<span class="dv">110671</span>,<span class="dv">110680</span>,<span class="dv">110699</span>,<span class="dv">110705</span>,<span class="dv">110714</span>,<span class="dv">445188</span>,<span class="dv">110699</span>,<span class="dv">110398</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb10-4"><a href="#cb10-4"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_md_nres,fee_md_nres,tuitfee_md_nres,books_supplies,roomboard_off,oth_expense_off,coa_md_nres)</span>
@@ -2096,7 +2100,7 @@ div.tocify {
 <span id="cb10-17"><a href="#cb10-17"></a><span class="co">#&gt; # ... with 3 more variables: roomboard_off &lt;dbl&gt;, oth_expense_off &lt;dbl&gt;,</span></span>
 <span id="cb10-18"><a href="#cb10-18"></a><span class="co">#&gt; #   coa_md_nres &lt;dbl&gt;</span></span></code></pre></div>
 <p>Law, state resident</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a><span class="st">  </span><span class="co"># keep UC campuses</span></span>
 <span id="cb11-3"><a href="#cb11-3"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">110398</span>,<span class="dv">110635</span>,<span class="dv">110644</span>,<span class="dv">110653</span>,<span class="dv">110662</span>,<span class="dv">110671</span>,<span class="dv">110680</span>,<span class="dv">110699</span>,<span class="dv">110705</span>,<span class="dv">110714</span>,<span class="dv">445188</span>,<span class="dv">110699</span>,<span class="dv">110398</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb11-4"><a href="#cb11-4"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_law_res,fee_law_res,tuitfee_law_res,books_supplies,roomboard_off,oth_expense_off,coa_law_res)</span>
@@ -2115,7 +2119,7 @@ div.tocify {
 <span id="cb11-17"><a href="#cb11-17"></a><span class="co">#&gt; # ... with 3 more variables: roomboard_off &lt;dbl&gt;, oth_expense_off &lt;dbl&gt;,</span></span>
 <span id="cb11-18"><a href="#cb11-18"></a><span class="co">#&gt; #   coa_law_res &lt;dbl&gt;</span></span></code></pre></div>
 <p>Law, non-resident</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2"></a><span class="st">  </span><span class="co"># keep UC campuses</span></span>
 <span id="cb12-3"><a href="#cb12-3"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">110398</span>,<span class="dv">110635</span>,<span class="dv">110644</span>,<span class="dv">110653</span>,<span class="dv">110662</span>,<span class="dv">110671</span>,<span class="dv">110680</span>,<span class="dv">110699</span>,<span class="dv">110705</span>,<span class="dv">110714</span>,<span class="dv">445188</span>,<span class="dv">110699</span>,<span class="dv">110398</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb12-4"><a href="#cb12-4"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_law_nres,fee_law_nres,tuitfee_law_nres,books_supplies,roomboard_off,oth_expense_off,coa_law_nres)</span>
@@ -2186,7 +2190,7 @@ div.tocify {
 <li>Some ludicrously unrealistic values for <code>roomboard_off</code> and <code>oth_expense_off</code></li>
 </ul>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># In-state</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="st">  </span><span class="co"># keep private fancy pants</span></span>
 <span id="cb13-4"><a href="#cb13-4"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">123961</span>,<span class="dv">243744</span>,<span class="dv">190150</span>,<span class="dv">196468</span>,<span class="dv">193900</span>,<span class="dv">166027</span>,<span class="dv">221999</span>,<span class="dv">215062</span>,<span class="dv">147767</span>,<span class="dv">162928</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb13-5"><a href="#cb13-5"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_grad_res,fee_grad_res,tuitfee_grad_res,books_supplies,roomboard_off,oth_expense_off,coa_grad_res)</span>
@@ -2207,7 +2211,7 @@ div.tocify {
 <span id="cb13-20"><a href="#cb13-20"></a><span class="co">#&gt; #   coa_grad_res &lt;dbl&gt;</span></span>
 <span id="cb13-21"><a href="#cb13-21"></a></span>
 <span id="cb13-22"><a href="#cb13-22"></a><span class="co"># Out-of-state</span></span>
-<span id="cb13-23"><a href="#cb13-23"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<span id="cb13-23"><a href="#cb13-23"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb13-24"><a href="#cb13-24"></a><span class="st">  </span><span class="co"># keep private fancy pants</span></span>
 <span id="cb13-25"><a href="#cb13-25"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">123961</span>,<span class="dv">243744</span>,<span class="dv">190150</span>,<span class="dv">196468</span>,<span class="dv">193900</span>,<span class="dv">166027</span>,<span class="dv">221999</span>,<span class="dv">215062</span>,<span class="dv">147767</span>,<span class="dv">162928</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb13-26"><a href="#cb13-26"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_grad_nres,fee_grad_nres,tuitfee_grad_nres,books_supplies,roomboard_off,oth_expense_off,coa_grad_nres)</span>
@@ -2227,7 +2231,7 @@ div.tocify {
 <span id="cb13-40"><a href="#cb13-40"></a><span class="co">#&gt; # ... with 3 more variables: roomboard_off &lt;dbl&gt;, oth_expense_off &lt;dbl&gt;,</span></span>
 <span id="cb13-41"><a href="#cb13-41"></a><span class="co">#&gt; #   coa_grad_nres &lt;dbl&gt;</span></span></code></pre></div>
 <p>MD students</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2"></a><span class="st">  </span><span class="co"># keep private fancy pants</span></span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">123961</span>,<span class="dv">243744</span>,<span class="dv">190150</span>,<span class="dv">196468</span>,<span class="dv">193900</span>,<span class="dv">166027</span>,<span class="dv">221999</span>,<span class="dv">215062</span>,<span class="dv">147767</span>,<span class="dv">162928</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb14-4"><a href="#cb14-4"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_md_res,fee_md_res,tuitfee_md_res,books_supplies,roomboard_off,oth_expense_off,coa_md_res)</span>
@@ -2247,7 +2251,7 @@ div.tocify {
 <span id="cb14-18"><a href="#cb14-18"></a><span class="co">#&gt; # ... with 3 more variables: roomboard_off &lt;dbl&gt;, oth_expense_off &lt;dbl&gt;,</span></span>
 <span id="cb14-19"><a href="#cb14-19"></a><span class="co">#&gt; #   coa_md_res &lt;dbl&gt;</span></span></code></pre></div>
 <p>Law students</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>df_ipeds <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>df_ipeds_pop <span class="op">%&gt;%</span></span>
 <span id="cb15-2"><a href="#cb15-2"></a><span class="st">  </span><span class="co"># keep private fancy pants</span></span>
 <span id="cb15-3"><a href="#cb15-3"></a><span class="st">  </span><span class="kw">filter</span>(unitid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">123961</span>,<span class="dv">243744</span>,<span class="dv">190150</span>,<span class="dv">196468</span>,<span class="dv">193900</span>,<span class="dv">166027</span>,<span class="dv">221999</span>,<span class="dv">215062</span>,<span class="dv">147767</span>,<span class="dv">162928</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb15-4"><a href="#cb15-4"></a><span class="st">  </span><span class="kw">select</span>(instnm,unitid,tuit_law_res,fee_law_res,tuitfee_law_res,books_supplies,roomboard_off,oth_expense_off,coa_law_res)</span>
@@ -2271,14 +2275,14 @@ div.tocify {
 <h3><span class="header-section-number">2.4.3</span> Some basic descriptive statistics</h3>
 <p>Number of institutions by type</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Number of institutions</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>()</span>
+<span id="cb16-2"><a href="#cb16-2"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>()</span>
 <span id="cb16-3"><a href="#cb16-3"></a><span class="co">#&gt; # A tibble: 1 x 1</span></span>
 <span id="cb16-4"><a href="#cb16-4"></a><span class="co">#&gt;       n</span></span>
 <span id="cb16-5"><a href="#cb16-5"></a><span class="co">#&gt;   &lt;int&gt;</span></span>
 <span id="cb16-6"><a href="#cb16-6"></a><span class="co">#&gt; 1   684</span></span>
 <span id="cb16-7"><a href="#cb16-7"></a></span>
 <span id="cb16-8"><a href="#cb16-8"></a><span class="co"># Number of institutions by Carnegie type</span></span>
-<span id="cb16-9"><a href="#cb16-9"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(c15basic) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb16-9"><a href="#cb16-9"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(c15basic) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
 <span id="cb16-10"><a href="#cb16-10"></a><span class="co">#&gt; # A tibble: 4 x 2</span></span>
 <span id="cb16-11"><a href="#cb16-11"></a><span class="co">#&gt;   c15basic                                              n</span></span>
 <span id="cb16-12"><a href="#cb16-12"></a><span class="co">#&gt;   &lt;fct&gt;                                             &lt;int&gt;</span></span>
@@ -2288,7 +2292,7 @@ div.tocify {
 <span id="cb16-16"><a href="#cb16-16"></a><span class="co">#&gt; 4 Master^s Colleges &amp; Universities: Larger Programs   367</span></span>
 <span id="cb16-17"><a href="#cb16-17"></a></span>
 <span id="cb16-18"><a href="#cb16-18"></a><span class="co"># Number of institutions by public/private</span></span>
-<span id="cb16-19"><a href="#cb16-19"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(control) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb16-19"><a href="#cb16-19"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(control) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
 <span id="cb16-20"><a href="#cb16-20"></a><span class="co">#&gt; # A tibble: 2 x 2</span></span>
 <span id="cb16-21"><a href="#cb16-21"></a><span class="co">#&gt;   control                    n</span></span>
 <span id="cb16-22"><a href="#cb16-22"></a><span class="co">#&gt;   &lt;fct&gt;                  &lt;int&gt;</span></span>
@@ -2296,7 +2300,7 @@ div.tocify {
 <span id="cb16-24"><a href="#cb16-24"></a><span class="co">#&gt; 2 Private not-for-profit   326</span></span>
 <span id="cb16-25"><a href="#cb16-25"></a></span>
 <span id="cb16-26"><a href="#cb16-26"></a><span class="co"># number of institutions by public/private and carnegie type</span></span>
-<span id="cb16-27"><a href="#cb16-27"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(control,c15basic) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb16-27"><a href="#cb16-27"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(control,c15basic) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
 <span id="cb16-28"><a href="#cb16-28"></a><span class="co">#&gt; # A tibble: 8 x 3</span></span>
 <span id="cb16-29"><a href="#cb16-29"></a><span class="co">#&gt;   control                c15basic                                              n</span></span>
 <span id="cb16-30"><a href="#cb16-30"></a><span class="co">#&gt;   &lt;fct&gt;                  &lt;fct&gt;                                             &lt;int&gt;</span></span>
@@ -2310,7 +2314,7 @@ div.tocify {
 <span id="cb16-38"><a href="#cb16-38"></a><span class="co">#&gt; 8 Private not-for-profit Master^s Colleges &amp; Universities: Larger Programs   205</span></span>
 <span id="cb16-39"><a href="#cb16-39"></a></span>
 <span id="cb16-40"><a href="#cb16-40"></a><span class="co"># number of institutions by level of urbanization</span></span>
-<span id="cb16-41"><a href="#cb16-41"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(locale) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb16-41"><a href="#cb16-41"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(locale) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
 <span id="cb16-42"><a href="#cb16-42"></a><span class="co">#&gt; # A tibble: 12 x 2</span></span>
 <span id="cb16-43"><a href="#cb16-43"></a><span class="co">#&gt;    locale              n</span></span>
 <span id="cb16-44"><a href="#cb16-44"></a><span class="co">#&gt;    &lt;fct&gt;           &lt;int&gt;</span></span>
@@ -2328,7 +2332,7 @@ div.tocify {
 <span id="cb16-56"><a href="#cb16-56"></a><span class="co">#&gt; 12 Rural: Remote       1</span></span>
 <span id="cb16-57"><a href="#cb16-57"></a></span>
 <span id="cb16-58"><a href="#cb16-58"></a><span class="co"># number of institutions by public/private and level of urbanization</span></span>
-<span id="cb16-59"><a href="#cb16-59"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(control,locale) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
+<span id="cb16-59"><a href="#cb16-59"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(control,locale) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_factor</span>()</span>
 <span id="cb16-60"><a href="#cb16-60"></a><span class="co">#&gt; # A tibble: 22 x 3</span></span>
 <span id="cb16-61"><a href="#cb16-61"></a><span class="co">#&gt;    control locale              n</span></span>
 <span id="cb16-62"><a href="#cb16-62"></a><span class="co">#&gt;    &lt;fct&gt;   &lt;fct&gt;           &lt;int&gt;</span></span>
@@ -2344,7 +2348,7 @@ div.tocify {
 <span id="cb16-72"><a href="#cb16-72"></a><span class="co">#&gt; 10 Public  Rural: Fringe       4</span></span>
 <span id="cb16-73"><a href="#cb16-73"></a><span class="co">#&gt; # ... with 12 more rows</span></span></code></pre></div>
 <p>Tuition+fees by public/private and Carnegie type</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(control,c15basic) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(control,c15basic) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb17-2"><a href="#cb17-2"></a><span class="st">  </span><span class="kw">summarize</span>(</span>
 <span id="cb17-3"><a href="#cb17-3"></a>    <span class="dt">sample_size =</span> <span class="kw">n</span>(),</span>
 <span id="cb17-4"><a href="#cb17-4"></a>    <span class="dt">n_nonmiss_tuitfee_res =</span> <span class="kw">sum</span>(<span class="op">!</span><span class="kw">is.na</span>(tuitfee_grad_res)),</span>
@@ -2366,7 +2370,7 @@ div.tocify {
 <span id="cb17-20"><a href="#cb17-20"></a><span class="co">#&gt; # ... with 2 more variables: n_nonmiss_tuitfee_nres &lt;int&gt;,</span></span>
 <span id="cb17-21"><a href="#cb17-21"></a><span class="co">#&gt; #   mean_tuitfee_nres &lt;dbl&gt;</span></span></code></pre></div>
 <p>Cost of attendance by public/private and Carnegie type</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>df_ipeds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(control,c15basic) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>df_ipeds_pop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(control,c15basic) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb18-2"><a href="#cb18-2"></a><span class="st">  </span><span class="kw">summarize</span>(</span>
 <span id="cb18-3"><a href="#cb18-3"></a>    <span class="dt">sample_size =</span> <span class="kw">n</span>(),</span>
 <span id="cb18-4"><a href="#cb18-4"></a>    <span class="dt">n_nonmiss_coa_res =</span> <span class="kw">sum</span>(<span class="op">!</span><span class="kw">is.na</span>(coa_grad_res)),</span>
