@@ -1,0 +1,90 @@
+---
+title: "Distributions"
+author:
+date: 
+urlcolor: blue
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+    highlight: tango
+    theme: default
+    fig_caption: true
+    #fig_width = 7 #Default width (in inches) for figures
+    #fig_height = 5 #Default height (in inches) for figures
+    #html_preview: TRUE #TRUE to also generate an HTML file for the purpose of locally previewing what the document will look like on GitHub.    
+    df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
+    
+    #Options you are not using yet:
+      
+    #dev = "png" #Graphics device to use for figure output (defaults to png)
+    #includes = NULL #Named list of additional content to include within the document (typically created using the includes function).
+    #md_extensions = NULL # Markdown extensions to be added or removed from the default definition or R Markdown. See the rmarkdown_format for additional details.
+    #hard_line_breaks = TRUE # TRUE to generate markdown that uses a simple newline to represent a line break (as opposed to two-spaces and a newline).
+    #pandoc_args = NULL # Additional command line options to pass to pandoc
+
+---
+
+```{r global options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+# Distributions
+
+Load packages:
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+
+```{r}
+# https://www.datamentor.io/r-programming/examples/random-number/
+# https://stackoverflow.com/questions/28099590/create-sample-vector-data-in-r-with-a-skewed-distribution-with-limited-range
+
+num_obs <- 500
+
+# Generate standard normal distribution (default is mean = 0 and sd = 1)
+set.seed(124)
+stdnorm_dist <- rnorm(num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
+
+# Generate normal distribution w/ custom mean and sd
+set.seed(124)
+norm_dist <- rnorm(num_obs, mean = 10, sd = 2)
+
+# Generate left-skewed distribution
+set.seed(124)
+lskew_dist <- rbeta(num_obs, 5, 2)
+
+# Generate right-skewed distribution
+set.seed(124)
+rskew_dist <- rbeta(num_obs, 2, 5)
+
+# Create dataframe
+df_generated_pop <- data.frame(stdnorm_dist, norm_dist, lskew_dist, rskew_dist)
+```
+
+```{r}
+# Plot histograms
+hist(df_generated_pop$stdnorm_dist, main = 'Standard normal distribution', freq = F)
+lines(density(df_generated_pop$stdnorm_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_pop$stdnorm_dist),median(df_generated_pop$stdnorm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_pop$norm_dist, main = 'Normal distribution', freq = F)
+lines(density(df_generated_pop$norm_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_pop$norm_dist),median(df_generated_pop$norm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_pop$lskew_dist, main = 'Left-skewed distribution', freq = F)
+lines(density(df_generated_pop$lskew_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_pop$lskew_dist),median(df_generated_pop$lskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_pop$rskew_dist, main = 'Right-skewed distribution', freq = F)
+lines(density(df_generated_pop$rskew_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_pop$rskew_dist),median(df_generated_pop$rskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+```
+
+```{r}
+
+```
+
