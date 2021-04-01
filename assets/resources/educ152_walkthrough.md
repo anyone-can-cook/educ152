@@ -503,7 +503,8 @@ tail(df_school)
 
   - When writing code, the pipe symbol is `%>%`
   - The pipe operator `%>%` is created by the **magrittr** package, which is not part of base R
-  - However, the magrittr package is automatically loaded when you load the tidyverse package
+  - However, the magrittr package is automatically loaded when you load the tidyverse package  
+  - keyboard shortcut (cmd + shift + m "Mac") or (control + shift + m "Windows") 
 
 
 ```r
@@ -555,7 +556,7 @@ mean(1:10) # calculate mean without pipes
 - whenever you see a pipe `%>%` think of the words "__and then...__"
 
 
-Example: isolate all the first-generation prospects [output omitted]
+Example: isolate all the public schools [output omitted]
 
 - in words: start with object `df_school` __and then__ filter for public schools 
 
