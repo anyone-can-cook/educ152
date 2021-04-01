@@ -242,6 +242,27 @@ panel_data <- hd %>%
   left_join(ic, by = c('year', 'unitid')) %>% 
   left_join(ic_ay, by = c('year', 'unitid'))
 save(panel_data, file = file.path(output_dir, 'panel_data.RData'))
+rm(panel_data)
+
+
+load(file = file.path(output_dir, 'panel_data.RData'))
+rm(panel_data)
+
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+
+panel_data %>% glimpse()
+
+
+#confirm one obs per unitid-year
+panel_data %>% group_by(unitid,year) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+
+panel_data %>% count(year)
+
+
+  # load data from github
+  
+  
+  
 
 ## -----------------------------------------------------------------------------
 ## END SCRIPT
