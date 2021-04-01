@@ -1,0 +1,374 @@
+---
+title: "EDUC 152. Intro to quantitative research in education: Regression analysis"
+subtitle: "Statistical inference"
+author: 
+date: 
+urlcolor: blue
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+
+---
+
+
+```{r, echo=FALSE, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning = FALSE, message = FALSE)
+  #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
+```
+
+
+# Introduction
+
+
+## Lecture overview
+
+Statistical inference
+
+> The theory, methods, and practice of forming judgments about the parameters of a population and the reliability of statistical relationships, typically on the basis of random sampling 
+
+*credit: [Google](https://www.google.com/search?q=define+%22statistical+inference%22&sxsrf=ALeKk00lHj1hQ5jc8o_Xjsc7vOF6XFMPUg%3A1617292004292&ei=5OplYNCzEdOU-gTl2p_ACQ&oq=define+%22statistical+inference%22&gs_lcp=Cgdnd3Mtd2l6EAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsANQAFgAYPbvD2gBcAJ4AIABvgGIAb4BkgEDMC4xmAEAqgEHZ3dzLXdpesgBCMABAQ&sclient=gws-wiz&ved=0ahUKEwjQtaebst3vAhVTip4KHWXtB5gQ4dUDCA0&uact=5)*
+
+**Lecture overview**
+
+- la la
+
+
+## Libraries we will use
+
+```{r}
+#install.packages('tidyverse') # if you haven't installed already
+#install.packages('labelled') # if you haven't installed already
+
+library(tidyverse) # load tidyverse package
+library(labelled) # load labelled package package
+```
+# Introduce IPEDS data
+
+## What/why IPEDS
+
+**What is IPEDS?**
+
+- ADD TEXT
+
+**Which IPEDS variables will we be using to teach statistical inference**
+
+- Variables about annual cost of attendance for full-time graduate programs
+  - average tuition (in-state vs. out-of-state)
+  - required fees  (in-state vs. out-of-state)
+  - books and supplies; off-campus room and board; off-campus "other expenses"
+    - these are calculated for undergraduate students, but should be highly correlated with graduate students
+
+**Why use IPEDS data rather than *College Scorecard* data? and why these variables?**
+
+- *College Scorecard* brings together variables from many data sources, including IPEDS
+  - The most interesting variables in *College Scorecard* are debt and earnings from degree programs, which come from Office of Federal Student Aid and IRS (I think)
+- These university-level debt and earnings variables are measured as the mean (or median) of all students who graduated from the university
+  - so the underlying data (that we don't see) are student-level; these student-level data are aggregated to the university-level to create measures mean (or median) debt/earnings at that university
+  - Using these measures would make teaching statistical inference more confusing (e.g., trying to test hypotheses about the population mean of mean earnings)
+- Why teach inferential statistics using IPEDS measures about graduate tuition (and cost of attendance)?
+  - These measures are truly measured at the university-level
+  - Tuition and cost-of-attendance are the big drivers of student debt, so learning more about how tuition/cost-of-attendance varies across universities will help you make more informed decisions about pursuing graduate education in the future
+
+## Some definitions
+
+Some definitions related to tuition, fees, expenses, etc; from the IPEDS "Student Charges for Full Academic Year" 2019-20 academic year data dictionary [[LINK]](https://nces.ed.gov/ipeds/datacenter/data/IC2019_AY_Dict.zip):
+
+- "Full-time student" (graduate)
+  - Graduate - A student enrolled for 9 or more semester credits, or 9 or more quarter credits, or students involved in thesis or dissertation preparation that are considered full time by the institution
+- "Academic year"
+  - The period of time generally extending from September to June; usually equated to 2 semesters or trimesters, 3 quarters, or the period covered by a 4-1-4 plan
+- "Tuition"
+  - Amount of money charged to students for instructional services. Tuition may be charged per term, per course, or per credit
+- "In-state tuition"
+  - The tuition charged by institutions to those students who meet the state's or institution's residency requirements
+- "Out-of-state tuition"
+  - The tuition charged by institutions to those students who do not meet the state's or institution's residency requirements
+- "Required fees"
+  - Fixed sum charged to students for items not covered by tuition and required of such a large proportion of all students that the student who does NOT pay the charge is an exception
+- "In-state fees"
+  - The fees charged by institutions to those students who meet the state's or institution's residency requirements.
+- "Out-of-state fees"
+  - The fees charged by institutions to those students who do not meet the state's or institution's residency requirements
+- "Books and supplies" (undergraduate)
+  - Do not include unusual costs for special groups of students (e.g., engineering or art majors), unless they constitute the majority of students at your institution
+- "Room charges"
+  - The charges for an academic year for rooming accommodations for a typical student sharing a room with one other student. 
+- "Board charges"
+  - The charge for an academic year for meals, for a specified number of meals per week. 
+- "Other expenses"
+  - The amount of money (estimated by the financial aid office) needed by a student to cover expenses such as laundry, transportation, entertainment, and furnishings. (For the purpose of this survey room and board and tuition and fees are not included.) 
+
+*Note*: the IPEDS measures of full-time graduate tuition (both in-state and out-of-state) are "average" tuition price across different graduate degree programs (excluding "first-professional" degree programs like law and medicine)
+
+  - e.g., full-time annual tuition price for an MBA program is likely higher than that of an MA in education
+  - But in the context of using these measures to teach statistical inference, pretend these prices are not "averages" but rather the official tuition price
+  - make the same assumption for variables about fees, books/supplies, living expenses, etc.
+
+*Note*: "required fees" do not include the cost of healthcare (I think)
+
+## Create dataset `df_ipeds`
+
+Load IPEDS dataset
+
+- CONTAINS DATA ON THESE SORTS OF SOURCES
+```{r}
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+```
+
+Create data frame for use in teaching statistical inference
+```{r}
+df_ipeds <- panel_data %>%
+  # keep data from fall 2019
+  filter(year == 2019) %>%
+  # which universities to keep:
+    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities with "larger programs" (18)
+    # [REMOVE THIS] also keep: UC-San Francisco; and UC-Hastings College of Law
+      #filter((c15basic %in% c(15,16,17,18)) | unitid %in% c(110699,110398)) %>%
+  filter(c15basic %in% c(15,16,17,18)) %>%
+  # keep publics and private non-profits (i.e., remove for-profits)
+  filter(control %in% c(1,2)) %>%
+  # which variables to keep
+  select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
+         tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
+         isprof3,ispfee3,osprof3,ospfee3, # avg tuition and fees for MD, in-state and out-of-state
+         isprof9,ispfee9,osprof9,ospfee9, # avg tuition and fees for Law, in-state and out-of-state
+         chg4ay3,chg7ay3,chg8ay3) %>% # [undergraduate] books+supplies; off-campus (not with family) room and board; off-campus (not with family) other expenses
+  # rename variables; syntax <new_name> = <old_name>
+  rename(region = obereg, # revion
+         tuit_grad_res = tuition6, fee_grad_res = fee6, tuit_grad_nres = tuition7, fee_grad_nres = fee7, # grad
+         tuit_md_res = isprof3, fee_md_res = ispfee3, tuit_md_nres = osprof3, fee_md_nres = ospfee3, # md
+         tuit_law_res = isprof9, fee_law_res = ispfee9, tuit_law_nres = osprof9, fee_law_nres = ospfee9, # law
+         books_supplies = chg4ay3, roomboard_off = chg7ay3, oth_expense_off = chg8ay3) %>% # [undergraduate] expenses
+  # create measures of tuition+fees
+  mutate(
+    tuitfee_grad_res = tuit_grad_res + fee_grad_res, # graduate, state resident
+    tuitfee_grad_nres = tuit_grad_nres + fee_grad_nres, # graduate, non-resident
+    tuitfee_md_res = tuit_md_res + fee_md_res, # MD, state resident
+    tuitfee_md_nres = tuit_md_nres + fee_md_nres, # MD, non-resident
+    tuitfee_law_res = tuit_law_res + fee_law_res, # Law, state resident
+    tuitfee_law_nres = tuit_law_nres + fee_law_nres) %>% # Law, non-resident  
+  # create measures of cost-of-attendance (COA) as the sum of tuition, fees, book, living expenses
+  mutate(
+    coa_grad_res = tuit_grad_res + fee_grad_res + books_supplies + roomboard_off + oth_expense_off, # graduate, state resident
+    coa_grad_nres = tuit_grad_nres + fee_grad_nres + books_supplies + roomboard_off + oth_expense_off, # graduate, non-resident
+    coa_md_res = tuit_md_res + fee_md_res + books_supplies + roomboard_off + oth_expense_off, # MD, state resident
+    coa_md_nres = tuit_md_nres + fee_md_nres + books_supplies + roomboard_off + oth_expense_off, # MD, non-resident
+    coa_law_res = tuit_law_res + fee_law_res + books_supplies + roomboard_off + oth_expense_off, # Law, state resident
+    coa_law_nres = tuit_law_nres + fee_law_nres + books_supplies + roomboard_off + oth_expense_off) # Law, non-resident    
+
+# Add variable labels to the tuit+fees variables and coa variables
+  # tuition + fees variables
+    var_label(df_ipeds[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
+    var_label(df_ipeds[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
+    
+  # COA variables
+    var_label(df_ipeds[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+
+df_ipeds %>% glimpse()
+```
+
+Show variable labels
+```{r}
+df_ipeds %>% var_label()
+```
+Show value labels for variables that are `labelled` class (code note run)
+```{r, eval = FALSE}
+df_ipeds %>% select(control,locale,region,c15basic) %>% val_labels()
+```
+
+## Investigate `df_ipeds`
+
+Investigate data structure
+
+- confirm one observation per unitid
+```{r}
+
+df_ipeds %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+```
+
+### Tuition/COA at UC campuses
+
+Graduate, state residents
+```{r}
+df_ipeds %>%
+  # keep UC campuses
+  filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
+  select(instnm,unitid,tuit_grad_res,fee_grad_res,tuitfee_grad_res,books_supplies,roomboard_off,oth_expense_off,coa_grad_res)
+```
+Graduate, non-resident
+```{r}
+df_ipeds %>%
+  # keep UC campuses
+  filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
+  select(instnm,unitid,tuit_grad_nres,fee_grad_nres,tuitfee_grad_nres,books_supplies,roomboard_off,oth_expense_off,coa_grad_nres)
+```
+
+MD, state resident
+```{r}
+df_ipeds %>%
+  # keep UC campuses
+  filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
+  select(instnm,unitid,tuit_md_res,fee_md_res,tuitfee_md_res,books_supplies,roomboard_off,oth_expense_off,coa_md_res)
+```
+
+MD, non-resident
+```{r}
+df_ipeds %>%
+  # keep UC campuses
+  filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
+  select(instnm,unitid,tuit_md_nres,fee_md_nres,tuitfee_md_nres,books_supplies,roomboard_off,oth_expense_off,coa_md_nres)
+```
+
+
+Law, state resident
+```{r}
+df_ipeds %>%
+  # keep UC campuses
+  filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
+  select(instnm,unitid,tuit_law_res,fee_law_res,tuitfee_law_res,books_supplies,roomboard_off,oth_expense_off,coa_law_res)
+```
+
+Law, non-resident
+```{r}
+df_ipeds %>%
+  # keep UC campuses
+  filter(unitid %in% c(110398,110635,110644,110653,110662,110671,110680,110699,110705,110714,445188,110699,110398)) %>%
+  select(instnm,unitid,tuit_law_nres,fee_law_nres,tuitfee_law_nres,books_supplies,roomboard_off,oth_expense_off,coa_law_nres)
+```
+
+### Tuition/COA at fancy privates
+
+Some fancy-pants private universities
+
+- USC
+  - `unitid == 123961`
+- Stanford
+  - `unitid == 243744`
+- Columbia
+  - `unitid == 190150`
+- Columbia, Teacher's College
+  - `unitid == 196468`
+- NYU
+  - `unitid == 193900`
+- Harvard
+  - `unitid == 166027`
+- Vanderbilt
+  - `unitid == 221999`
+- University of Pennsylvania
+  - `unitid == 215062`
+- Northwestern University
+  - `unitid == 147767`
+- Johns Hopkins University
+  - `unitid == 162928`
+
+
+Graduate students
+
+- Note: no difference in prices between resident and non-resident
+- Note: Some universities did not provide `books_supplies`, `roomboard_off`, `oth_expense_off`
+- Some ludicrously unrealistic values for `roomboard_off` and `oth_expense_off`
+```{r}
+# In-state
+df_ipeds %>%
+  # keep private fancy pants
+  filter(unitid %in% c(123961,243744,190150,196468,193900,166027,221999,215062,147767,162928)) %>%
+  select(instnm,unitid,tuit_grad_res,fee_grad_res,tuitfee_grad_res,books_supplies,roomboard_off,oth_expense_off,coa_grad_res)
+
+# Out-of-state
+df_ipeds %>%
+  # keep private fancy pants
+  filter(unitid %in% c(123961,243744,190150,196468,193900,166027,221999,215062,147767,162928)) %>%
+  select(instnm,unitid,tuit_grad_nres,fee_grad_nres,tuitfee_grad_nres,books_supplies,roomboard_off,oth_expense_off,coa_grad_nres)
+```
+
+MD students
+```{r}
+df_ipeds %>%
+  # keep private fancy pants
+  filter(unitid %in% c(123961,243744,190150,196468,193900,166027,221999,215062,147767,162928)) %>%
+  select(instnm,unitid,tuit_md_res,fee_md_res,tuitfee_md_res,books_supplies,roomboard_off,oth_expense_off,coa_md_res)
+```
+
+Law students
+```{r}
+df_ipeds %>%
+  # keep private fancy pants
+  filter(unitid %in% c(123961,243744,190150,196468,193900,166027,221999,215062,147767,162928)) %>%
+  select(instnm,unitid,tuit_law_res,fee_law_res,tuitfee_law_res,books_supplies,roomboard_off,oth_expense_off,coa_law_res)
+```
+
+
+### Some basic descriptive statistics
+
+Number of institutions by type
+```{r}
+# Number of institutions
+df_ipeds %>% count()
+
+# Number of institutions by Carnegie type
+df_ipeds %>% count(c15basic) %>% as_factor()
+
+# Number of institutions by public/private
+df_ipeds %>% count(control) %>% as_factor()
+
+# number of institutions by public/private and carnegie type
+df_ipeds %>% count(control,c15basic) %>% as_factor()
+
+# number of institutions by level of urbanization
+df_ipeds %>% count(locale) %>% as_factor()
+
+# number of institutions by public/private and level of urbanization
+df_ipeds %>% count(control,locale) %>% as_factor()
+```
+
+Tuition+fees by public/private and Carnegie type
+```{r}
+df_ipeds %>% group_by(control,c15basic) %>% 
+  summarize(
+    sample_size = n(),
+    n_nonmiss_tuitfee_res = sum(!is.na(tuitfee_grad_res)),
+    mean_tuitfee_res = mean(tuitfee_grad_res, na.rm = TRUE),
+    n_nonmiss_tuitfee_nres = sum(!is.na(tuitfee_grad_nres)),
+    mean_tuitfee_nres = mean(tuitfee_grad_nres, na.rm = TRUE),    
+  ) %>% as_factor()
+```
+
+Cost of attendance by public/private and Carnegie type
+```{r}
+df_ipeds %>% group_by(control,c15basic) %>% 
+  summarize(
+    sample_size = n(),
+    n_nonmiss_coa_res = sum(!is.na(coa_grad_res)),
+    mean_coa_res = mean(coa_grad_res, na.rm = TRUE),
+    n_nonmiss_coa_nres = sum(!is.na(coa_grad_nres)),
+    mean_coa_nres = mean(coa_grad_nres, na.rm = TRUE),    
+  ) %>% as_factor()
+```
+
+# Distributions
+
+# Sampling distribution
+
+# Hypothesis testing about a population mean
+
+# Fundamentals of causal inference
+
+# Hypothesis testing about two populations
