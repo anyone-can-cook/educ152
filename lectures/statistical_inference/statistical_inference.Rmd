@@ -25,6 +25,9 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning
   #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
 ```
 
+LINK TO GOOGLE DOC WHERE I HAVE WRITTEN OUT TOPICS IN DETAIL
+
+- https://docs.google.com/document/d/1u1RhtIQyohjd87ZVDAm6wH9Pl0EPuYs0zY2sq_3iAaQ/edit 
 
 # Introduction
 
@@ -368,7 +371,148 @@ df_ipeds_pop %>% group_by(control,c15basic) %>%
 
 # Distributions
 
+**Definitions**
 
+- Probability distribution
+
+> In probability theory and statistics, a probability distribution is the mathematical function that gives the probabilities of occurrence of different possible outcomes
+
+A little easier to get your head around "frequency distribution" and "relative frequency distribution"
+
+- Frequency distribution
+  - for each value of a variable, the number of observations that have that value
+- Relative frequency distribution
+  - for each value of a variable, the percent of observations that have that value (the number of observations with that value divided by the total number of observations)
+
+We can show frequency distributions (or relative frequency distributions) as a table or as a graph
+
+- Frequency distribution of variable `tuit_grad_res` (for first few values)
+
+```{r}
+df_ipeds_pop %>% count(tuitfee_grad_res)
+```
+- Creating a histogram that shows the frequency distribution of `tuitfee_grad_res`
+
+```{r}
+hist(df_ipeds_pop$tuitfee_grad_res, main = 'Frequency distribution of tuitfee_grad_res', freq = FALSE)
+#hist(df_ipeds_pop$tuit_grad_res, main = 'Frequency distribution of tuit_grad_res', freq = TRUE)
+#lines(density(df_ipeds_pop$tuit_grad_res), col='red', lwd=3)
+abline(v = c(mean(df_ipeds_pop$tuitfee_grad_res),median(df_ipeds_pop$tuitfee_grad_res)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+```
+## Normal and skewed distributions
+
+Distributions of variables fall into a few general categories
+
+**Normal distribution**
+
+- a normal distribution is "bell shaped"; has symmetric "tails"
+- Below, we generate a variable that has a normal distribution and then plot the variable to visualize what a normal distribution looks like
+and then we graph this variable
+
+Create variable with normal distribution
+
+  - variable has a mean of `10`
+  - variable ahs a standard deviation of `2`
+    - on average, one random observation from the variable is `2` away from the mean
+```{r}
+num_obs <- 10000
+
+# Generate normal distribution w/ custom mean and sd
+set.seed(124)
+norm_dist <- rnorm(num_obs, mean = 10, sd = 2)
+
+mean(norm_dist) # calculate mean
+sd(norm_dist) # calculate standard deviation
+median(norm_dist) # calculate median
+```
+Graph the normally distributed variable and plot the mean, median, and standard deviation
+
+```{r}
+# ADD PLOT HERE  
+```
+
+**Skewed distribution**
+
+- for a variable with a "skewed distribution" one "tail" is longer than the other
+- "outliers" are often the cause of skewed distributions
+  - outliers are observations that are much higher or much lower than most observations
+- skewed distributions are either "left skewed" or "right skewed"
+
+Righ skewed distributions
+
+- the right "tail" is longer than the left due to the presence of positive outliers, defined as observations with very high values compared to most observations
+- so there are more positive outliers than you would expect in a bell (normal) shaped variable
+- these positive outliers increase the value of the mean, such that the value of the mean is higher than the value of the median
+  - mean > median
+- real-world variables that tend to be right-skewed
+  - income; enrollment size, city population
+
+Create and plot right-skewed variable
+```{r}
+# ADD CODE
+```
+
+  
+Left skwed distributions
+
+- the left tail is longer than right tail, usually due to the presence of negative outliers, defined as observations with very low values (e.g., extreme negative values) compared to most observations
+- more negative outliers than you would expect in bell shaped variable
+- these negative outliers decrease the value of the mean, such that the value of the mean is lower than the value of the median
+  - mean < median
+- real-world variables that tend to be left-skewed
+
+
+Create and plot left-skewed variable
+```{r}
+# ADD CODE
+```
+
+
+```{r}
+# https://www.datamentor.io/r-programming/examples/random-number/
+# https://stackoverflow.com/questions/28099590/create-sample-vector-data-in-r-with-a-skewed-distribution-with-limited-range
+
+num_obs <- 500
+
+# Generate standard normal distribution (default is mean = 0 and sd = 1)
+set.seed(124)
+stdnorm_dist <- rnorm(num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
+
+# Generate normal distribution w/ custom mean and sd
+set.seed(124)
+norm_dist <- rnorm(num_obs, mean = 10, sd = 2)
+
+# Generate left-skewed distribution
+set.seed(124)
+lskew_dist <- rbeta(num_obs, 5, 2)
+
+# Generate right-skewed distribution
+set.seed(124)
+rskew_dist <- rbeta(num_obs, 2, 5)
+
+# Create dataframe
+df_generated_pop <- data.frame(stdnorm_dist, norm_dist, lskew_dist, rskew_dist)
+```
+
+```{r}
+# Plot histograms
+hist(df_generated_pop$stdnorm_dist, main = 'Standard normal distribution', freq = F)
+lines(density(df_generated_pop$stdnorm_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_pop$stdnorm_dist),median(df_generated_pop$stdnorm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_pop$norm_dist, main = 'Normal distribution', freq = F)
+lines(density(df_generated_pop$norm_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_pop$norm_dist),median(df_generated_pop$norm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_pop$lskew_dist, main = 'Left-skewed distribution', freq = F)
+lines(density(df_generated_pop$lskew_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_pop$lskew_dist),median(df_generated_pop$lskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_pop$rskew_dist, main = 'Right-skewed distribution', freq = F)
+lines(density(df_generated_pop$rskew_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_pop$rskew_dist),median(df_generated_pop$rskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+```
 
 # Sampling distribution
 
