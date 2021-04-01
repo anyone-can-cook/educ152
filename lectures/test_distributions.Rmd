@@ -85,6 +85,43 @@ abline(v = c(mean(df_generated_pop$rskew_dist),median(df_generated_pop$rskew_dis
 ```
 
 ```{r}
-
+# Take single random sample
+df_generated_sample <- df_generated_pop[sample(nrow(df_generated_pop), 100), ]
 ```
 
+```{r}
+# Plot histograms
+hist(df_generated_sample$stdnorm_dist, main = 'Standard normal sample distribution', freq = F)
+lines(density(df_generated_sample$stdnorm_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_sample$stdnorm_dist),median(df_generated_sample$stdnorm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_sample$norm_dist, main = 'Normal sample distribution', freq = F)
+lines(density(df_generated_sample$norm_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_sample$norm_dist),median(df_generated_sample$norm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_sample$lskew_dist, main = 'Left-skewed sample distribution', freq = F)
+lines(density(df_generated_sample$lskew_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_sample$lskew_dist),median(df_generated_sample$lskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+
+hist(df_generated_sample$rskew_dist, main = 'Right-skewed sample distribution', freq = F)
+lines(density(df_generated_sample$rskew_dist), col='red', lwd=3)
+abline(v = c(mean(df_generated_sample$rskew_dist),median(df_generated_sample$rskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+```
+
+```{r}
+# Sampling distribution (right-skew)
+# https://campus.datacamp.com/courses/statistical-inference-and-data-analysis/lab-3a-foundations-for-inference-sampling-distributions?ex=6
+
+sample_means100 <- rep(NA, 500)
+
+# Take 500 samples of size 100 of rskew and store all of them in sample_means100
+for (i in 1:500) {
+  samp <- sample(df_generated_pop$rskew_dist, 100)
+  sample_means100[i] <- mean(samp)
+}
+
+# View the result. If you want, you can increase the bin width to show more detail by changing the breaks argument.
+hist(sample_means100, breaks = 13, freq = F)
+lines(density(sample_means100), col='red', lwd=3)
+abline(v = c(mean(sample_means100),median(sample_means100)), col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+```
