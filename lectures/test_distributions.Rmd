@@ -63,50 +63,62 @@ rskew_dist <- rbeta(num_obs, 2, 5)
 
 # Create dataframe
 df_generated_pop <- data.frame(stdnorm_dist, norm_dist, lskew_dist, rskew_dist)
+
+# tuitfee_grad_res
 ```
 
 ```{r}
-# Plot histograms
-hist(df_generated_pop$stdnorm_dist, main = 'Standard normal distribution', freq = F)
-lines(density(df_generated_pop$stdnorm_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_pop$stdnorm_dist),median(df_generated_pop$stdnorm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+# http://www.sthda.com/english/wiki/ggplot2-density-plot-quick-start-guide-r-software-and-data-visualization#prepare-the-data
+# https://datavizpyr.com/add-vertical-line-to-density-plot-with-ggplot2/
 
-hist(df_generated_pop$norm_dist, main = 'Normal distribution', freq = F)
-lines(density(df_generated_pop$norm_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_pop$norm_dist),median(df_generated_pop$norm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+p <- ggplot(df_generated_pop, aes(x=stdnorm_dist)) + 
+  geom_histogram(aes(y=..density..), alpha=0.5, position="identity") +
+  geom_density() +
+  geom_vline(aes(xintercept=mean(stdnorm_dist)), color="red", linetype="dashed", size=1) +
+  geom_text(aes(x=abs(mean(stdnorm_dist))*-6, label=paste0("Mean\n",round(mean(stdnorm_dist),2)), y=0.1)) +
+  geom_text(aes(x=abs(mean(stdnorm_dist))*-6, label=paste0("Std Dev\n",round(sd(stdnorm_dist),2)), y=0.03)) +
+  geom_vline(aes(xintercept=median(stdnorm_dist)), color="blue", linetype="dashed", size=1) +
+  geom_text(aes(x=abs(median(stdnorm_dist))*3, label=paste0("Median\n",round(median(stdnorm_dist),2)), y=0.05))
 
-hist(df_generated_pop$lskew_dist, main = 'Left-skewed distribution', freq = F)
-lines(density(df_generated_pop$lskew_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_pop$lskew_dist),median(df_generated_pop$lskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+p
 
-hist(df_generated_pop$rskew_dist, main = 'Right-skewed distribution', freq = F)
-lines(density(df_generated_pop$rskew_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_pop$rskew_dist),median(df_generated_pop$rskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+# Mean/median values in top corner like in legend
 ```
+
+
+```{r}
+# https://stackoverflow.com/questions/37660694/add-legend-to-geom-vline
+
+plot_distribution <- function(data_df, data_var) {
+  p <- ggplot(data_df, aes(x=data_var)) + xlab("") +
+    geom_histogram(aes(y=..density..), alpha=0.4, position="identity") +
+    geom_density() +
+    geom_vline(aes(xintercept=mean(data_var), color="mean"), linetype="dotted", size=0.8) +
+    geom_vline(aes(xintercept=median(data_var), color="median"), linetype="dotted", size=0.8) +
+    scale_color_manual(name = "Statistics",
+                       labels = c(paste("Mean:", round(mean(data_var), 2),
+                                        "\nStd Dev:", round(sd(data_var), 2)), 
+                                paste("Median:", round(median(data_var), 2))),
+                       values = c(median = "blue", mean = "red")) +
+    theme(legend.title = element_text(size=9, face="bold"),
+          legend.text = element_text(size=8))
+  print(p)
+}
+
+plot_distribution(df_generated_pop, stdnorm_dist)
+plot_distribution(df_generated_pop, norm_dist)
+plot_distribution(df_generated_pop, lskew_dist)
+plot_distribution(df_generated_pop, rskew_dist)
+```
+
+
+
 
 ```{r}
 # Take single random sample
 df_generated_sample <- df_generated_pop[sample(nrow(df_generated_pop), 100), ]
 ```
 
-```{r}
-# Plot histograms
-hist(df_generated_sample$stdnorm_dist, main = 'Standard normal sample distribution', freq = F)
-lines(density(df_generated_sample$stdnorm_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_sample$stdnorm_dist),median(df_generated_sample$stdnorm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
-
-hist(df_generated_sample$norm_dist, main = 'Normal sample distribution', freq = F)
-lines(density(df_generated_sample$norm_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_sample$norm_dist),median(df_generated_sample$norm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
-
-hist(df_generated_sample$lskew_dist, main = 'Left-skewed sample distribution', freq = F)
-lines(density(df_generated_sample$lskew_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_sample$lskew_dist),median(df_generated_sample$lskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
-
-hist(df_generated_sample$rskew_dist, main = 'Right-skewed sample distribution', freq = F)
-lines(density(df_generated_sample$rskew_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_sample$rskew_dist),median(df_generated_sample$rskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
-```
 
 ```{r}
 # Sampling distribution (right-skew)
