@@ -15,7 +15,7 @@ output:
     fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
     highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
     theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
-    df_print: tibble #options: default, tibble, paged
+    df_print: paged #options: default, tibble, paged
 
 ---
 
@@ -50,9 +50,11 @@ Statistical inference
 ```{r}
 #install.packages('tidyverse') # if you haven't installed already
 #install.packages('labelled') # if you haven't installed already
+#install.packages('patchwork') # if you haven't installed already
 
 library(tidyverse) # load tidyverse package
 library(labelled) # load labelled package package
+library(patchwork)
 ```
 # Introduce IPEDS data
 
@@ -136,12 +138,8 @@ df_ipeds_pop <- panel_data %>%
   # keep data from fall 2019
   filter(year == 2019) %>%
   # which universities to keep:
-    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities with "larger programs" (18)
-    # [REMOVE THIS] also keep: UC-San Francisco; and UC-Hastings College of Law
-      #filter((c15basic %in% c(15,16,17,18)) | unitid %in% c(110699,110398)) %>%
-  filter(c15basic %in% c(15,16,17,18)) %>%
-  # keep publics and private non-profits (i.e., remove for-profits)
-  filter(control %in% c(1,2)) %>%
+    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities (18,19,20)
+  filter(c15basic %in% c(15,16,17,18,19,20)) %>%
   # which variables to keep
   select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
          tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
@@ -195,6 +193,7 @@ Show variable labels
 ```{r}
 df_ipeds_pop %>% var_label()
 ```
+
 Show value labels for variables that are `labelled` class (code note run)
 ```{r, eval = FALSE}
 df_ipeds_pop %>% select(control,locale,region,c15basic) %>% val_labels()
@@ -206,7 +205,6 @@ Investigate data structure
 
 - confirm one observation per unitid
 ```{r}
-
 df_ipeds_pop %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
 ```
 
