@@ -301,26 +301,85 @@ __Skill-based learning goals__
 ```
 Below is an overview of the tentative course schedule, which is subject to change at the discretion of the instructor. Topics may be cut if we need to devote more time to learning the most central topics. It is unlikely that additional topics will be added. The official course schedule, required reading, and optional reading will be posted on the [course website](https://anyone-can-cook.github.io/educ152).
 
-
-__UNIT 1: STATISTICAL INFERENCE ABOUT DESCRIPTIVE CLAIMS__
-
-1. Introduction
-1. Statistical inference I (sampling distributions and central limit theorem)
-1. Statistical inference II (hypothesis testing)
-
-__UNIT 2: FUNDAMENTALS OF REGRESSION, FOR ASSOCIATION CLAIMS__
-
-4. Introduction to bivariate regression
-1. Prediction and measures of model fit
-1. Hypothesis testing and confidence intervals for $\beta_1$
-1. Categorical X variables and introduction to multivariate regression
-1. Reading and assessing research that uses regression; Ethical concerns and problematic practices associated with regression
+*We are still working out the problem set schedule and will post problem set due dates ASAP.* 
 
 
-__UNIT 3: REGRESSION FOR CAUSAL CLAIMS__
+__UNIT 1: FUNDAMENTALS OF STATISTICAL INFERENCE__
 
-9. Principles of causal inference: Rubin's Causal Model and why experiments yield unbiased estimates of causal effects
-1. Using regression for causal inference: OLS assumptions and omitted variable bias
+<span style="background-color: #CC76AD"> <b>WEEK 1 (04/02/21) </b></span>
+
+- Lecture topics  
+    - Course overview; Goal of statistics; Review of basic statistics concepts (e.g. standard deviation)
+    - *Asynchronous lecture posted **(Friday night on 3/26)***  
+
+
+<span style="background-color: #CC76AD"> <b>WEEK 2 (04/09/21) </b></span>
+
+- Lecture topics  
+    - Distributions; Sampling distribution; Central limit theorem  
+    - *Asynchronous lecture posted **(Friday night on 4/2)***  
+- **Problem set 1 distributed 04/09**
+
+
+<span style="background-color: #CC76AD"> <b>WEEK 3 (04/16/21) </b></span>
+
+- Lecture topics  
+    - Hypothesis testing; Hypothesis testing about a single population mean
+    - *Asynchronous lecture posted **(Friday night on 4/9)***   
+- **Problem set 1 due 04/16**  
+
+ 
+<span style="background-color: #CC76AD"> <b>WEEK 4 (04/23/21) </b></span>
+
+- Lecture topics  
+    - Fundamental concepts in causal inference; Why experiments work; Hypotheses comparing population means of two groups  
+    - *Asynchronous lecture posted **(Friday night on 4/16)***  
+
+__UNIT 2: FUNDAMENTALS OF REGRESSION__  
+
+<span style="background-color: #CC76AD"> <b>WEEK 5 (04/30/21) </b></span>
+
+- Lecture topics  
+    - Introduction to bivariate regression 
+    - *Asynchronous lecture posted **(Friday night on 4/23)***    
+
+
+<span style="background-color: #CC76AD"> <b>WEEK 6 (05/07/21) </b></span>
+
+- Lecture topics  
+    - Prediction/OLS prediction line; Measures of model fit
+    - *Asynchronous lecture posted **(Friday night on 4/30)***    
+
+
+<span style="background-color: #CC76AD"> <b>WEEK 7 (05/14/21) </b></span>
+
+- Lecture topics  
+    - Hypothesis testing and confidence intervals about Bhat; (also, interpretation of Bhat)
+    - *Asynchronous lecture posted **(Friday night on 5/7)***   
+
+
+<span style="background-color: #CC76AD"> <b>WEEK 8 (05/21/21) </b></span>
+
+- Lecture topics  
+    - Categorical X variables; Introduction to multivariate regression
+    - *Asynchronous lecture posted **(Friday night on 5/14)***  
+
+
+<span style="background-color: #CC76AD"> <b>WEEK 9 (05/28/21) </b></span>
+  
+- Lecture topics  
+    - Reading and assessing research that uses regression  
+    - *Asynchronous lecture posted **(Friday night on 5/21)***   
+
+
+<span style="background-color: #CC76AD"> <b>WEEK 10 (06/04/21) </b></span>
+
+- Lecture topics  
+    - Using regression for causal inference; OLS assumptions and omitted variable bias
+    - *Asynchronous lecture posted **(Friday night on 5/28)***  
+- **Final Problem set due 06/11**
+
+
 
 # Course policies
 
