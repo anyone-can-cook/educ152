@@ -262,7 +262,7 @@ char
 
 
 ```r
-#install.packages("tidyverse")
+#install.packages("kableExtra")
 ```
 
 - While you only have to install a package once, you have to load a package in your R session every time.  
@@ -270,24 +270,7 @@ char
 
 
 ```r
-library(tidyverse)
-```
-
-```
-## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
-```
-
-```
-## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
-## ✓ tibble  3.0.4     ✓ dplyr   1.0.2
-## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
-## ✓ readr   1.3.1     ✓ forcats 0.5.0
-```
-
-```
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
+library(kableExtra)
 ```
 
 
@@ -303,8 +286,10 @@ library(tidyverse)
 - You can load a data set by typing it's name (ex. `starwars`)
 
 
+
+
 ```r
-#dplyr::starwars  
+#dplyr::starwars
 starwars
 ```
 
@@ -495,7 +480,54 @@ tail(df_school)
 ## #   inst_110635 <chr>, inst_126614 <chr>, inst_100751 <chr>
 ```
 
-# Pipes 
+# Tidyverse and Pipes   
+
+## Tidyverse
+
+**What is Tidyverse**  
+
+- `Tidyverse` is a suite of packages designed for data science. All packages within Tidyverse share an underlying "philosophy, grammar, and data structures".   
+
+`Tidyverse` includes the following packages: 
+
+![](images/tidyverse.png)
+
+*Credit: [Tidyverse](https://www.tidyverse.org/) R packages for data science*  
+
+- We do not assume you have prior knowledge of any of the `Tidyverse` packages and will provide code throughout to help guide you.   
+
+- To install run the following code chunk  
+    - Remember that you only have to install a package once (that is why we have commented it out). You can uncomment the line below to install. 
+
+```r
+#install.packages("tidyverse")
+```
+
+- To load the `tidyverse` package, run the following code chunk
+
+```r
+library(tidyverse)
+```
+
+```
+## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
+```
+
+```
+## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+## ✓ tibble  3.0.4     ✓ stringr 1.4.0
+## ✓ tidyr   1.1.2     ✓ forcats 0.5.0
+## ✓ readr   1.3.1
+```
+
+```
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter()     masks stats::filter()
+## x dplyr::group_rows() masks kableExtra::group_rows()
+## x dplyr::lag()        masks stats::lag()
+```
+
+## Pipes
 
 **What are "pipes", %>%**
 

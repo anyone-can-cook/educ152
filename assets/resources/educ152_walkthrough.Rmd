@@ -164,14 +164,14 @@ char
 - To install a package, use the following R function `install.packages("package name")`  
 
 ```{r}
-#install.packages("tidyverse")
+#install.packages("kableExtra")
 ```
 
 - While you only have to install a package once, you have to load a package in your R session every time.  
 - To load a package in R use the following R function `library(package name)`  
 
 ```{r}
-library(tidyverse)
+library(kableExtra)
 ```
 
 
@@ -186,8 +186,13 @@ library(tidyverse)
 - It is common for packages to come with data. For example the  `dplyr` package includes the `starwars` data set (as a tibble) which comes from the [Star Wars API](https://swapi.dev/).  
 - You can load a data set by typing it's name (ex. `starwars`)
 
+```{r, echo=FALSE, message=FALSE}
+#install.packages("dplyr")
+library(dplyr)
+```
+
 ```{r}
-#dplyr::starwars  
+#dplyr::starwars
 starwars
 ```
  
@@ -259,7 +264,34 @@ head(df_school)
 tail(df_school)
 ```
 
-# Pipes 
+# Tidyverse and Pipes   
+
+## Tidyverse
+
+**What is Tidyverse**  
+
+- `Tidyverse` is a suite of packages designed for data science. All packages within Tidyverse share an underlying "philosophy, grammar, and data structures".   
+
+`Tidyverse` includes the following packages: 
+
+![](images/tidyverse.png)
+
+*Credit: [Tidyverse](https://www.tidyverse.org/) R packages for data science*  
+
+- We do not assume you have prior knowledge of any of the `Tidyverse` packages and will provide code throughout to help guide you.   
+
+- To install run the following code chunk  
+    - Remember that you only have to install a package once (that is why we have commented it out). You can uncomment the line below to install. 
+```{r}
+#install.packages("tidyverse")
+```
+
+- To load the `tidyverse` package, run the following code chunk
+```{r}
+library(tidyverse)
+```
+
+## Pipes
 
 **What are "pipes", %>%**
 
