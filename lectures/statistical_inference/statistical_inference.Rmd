@@ -785,7 +785,7 @@ Imagine if we take 1,000 random samples of size `n` (e.g., `30`) from a populati
 
 <br>
 
-**Awesome website for understanding how the sampling distribution works**
+**Excellent website for understanding how the sampling distribution works**
 
 - This very useful website does interactive simulations that show how the sampling distribution works [LINK](https://onlinestatbook.com/stat_sim/sampling_dist/index.html)
   - **Please** spend 5 minutes playing around with this website; this is really the most important concept in statistics
@@ -803,7 +803,7 @@ The sampling distribution of any statistic
 
 <br>
 
-### Plot sampling distribution
+## Plot sampling distribution
 
 **Plotting a single random sample and a sampling distribution**
 
@@ -893,6 +893,90 @@ plot_distribution(df_ipeds_pop$tuitfee_grad_res, plot_title = 'Population distri
                     plot_title = 'Sampling distribution') +
   plot_layout(ncol = 1)
 ```
+
+## Central limit theorem
+
+**Central limit theorem**
+
+
+- For random sampling with a large sample size, $n$, the sampling distribution of the sample mean is approximately normally distributed
+- In other words, no matter what the distribution of the variable, the sampling distribution will have a normal distribution
+
+What counts as a “large” sample size?
+
+- some say `n=30` or more
+
+Why is central limit theorem important?
+
+- We conducting hypothesis tests about a population parameter (e.g., about a population mean, about a population regression coefficient), based on the sampling distribution of the relevant sample statistic
+- even if the underlying variable of interest has a skewed population, the sampling distribution of the sample statistic (e.g., sample mean) will have a normal distribution
+- if the sampling distribution has a normal distribution, then we know the percent of observations that are a certain number of standard deviations from the mean
+
+Show central limit theorem using interactive simulation
+
+- [LINK](https://onlinestatbook.com/stat_sim/sampling_dist/index.html)
+
+<br>
+
+Show central limit theorem using a very skewed variable: non-resident, grad school cost of attendance
+
+```{r}
+
+plot_distribution(df_ipeds_pop$tuitfee_grad_nres, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$tuitfee_grad_nres, plot_title = 'Single sample distribution') +
+  plot_distribution(get_sampling_distribution(df_ipeds_pop$tuitfee_grad_nres),
+                    plot_title = 'Sampling distribution') +
+  plot_layout(ncol = 1)
+```
+
+## Standard error
+
+Sample standard deviation, of some variable $Y$
+
+- Sample standard deviation, $\hat{\sigma}_Y$, is the average distance between a random observation and the sample mean $\bar{Y}$
+- $\hat{\sigma}_Y = \sqrt{\frac{\sum_{i=1}^n (Y_i - \overline{Y})^2}{n-1}}$$
+
+Sample standard error, of the sample mean, $\bar{Y}$
+
+- Sample standard error, $\hat{\sigma}_{\bar{Y}}$, is based on the sampling distribution of the sample mean $\bar{Y}$
+- Sample standard error, $\hat{\sigma}_{\bar{Y}}$, is the average distance between one random sample mean, $\bar{Y}$ and the mean of the sample means, $\bar{Y}_{\bar{Y}}$
+  - note: assuming random sampling and a sufficiently large sample size, the mean of sample means, $\bar{Y}_{\bar{Y}}$, is equal to the population mean, $\mu_{Y}$
+- In other words, Sample standard error, $\hat{\sigma}_{\bar{Y}}$, is the standard deviation of the sampling distribution
+- Mathematically
+  - $\hat{\sigma}_{\bar{Y}} = \hat{\sigma}_{Y}/\sqrt{n}$
+  - equals sample standard deviation divided by the square root of sample size
+
+<br>
+
+Why is standard error so important?
+
+- Example: percent of people who will vote for Obama in 2012 election (I wrote these bullets a long time ago...)
+- Standard error tells us how much statistics derived from a sample are likely to diverge from population parameters
+- Sample mean, $\bar{Y}$, is best estimate of the population mean, $\mu_Y$,, the percent of people in the population who will vote for Obama
+- Standard error provides an indication of how far away each sample mean is likely to be from the population mean
+- Supporse: 
+    – Standard error=10%: On average, the sample mean from each poll is likely to be 10% away from population mean
+    – Standard error=2%: On average, the sample mean from each poll is likely to be 2% away from population mean
+
+<br>
+
+Do we want standard error to be large or small? Why?
+
+- We want standard error to be small, because small standard error means that our estimates -- based on sample data -- are likely to be closer to the value of the population parameter of interest
+- so, small standard error means more "precise" estimates
+
+<br>
+
+How to make standard error somaller?
+
+- $\hat{\sigma}_{\bar{Y}} = \hat{\sigma}_{Y}/\sqrt{n}$
+- Standard error decreases as size of your sample increases
+- If you have a large sample size, the sample mean from one random sample is likely to be close to population mean
+  – And when sample means are close to close to population mean, then standard error is small
+- Example: mean income in US, with sample size of 10 versus sample size of 2,000
+- Show in interactive demonstration
+    - [LINK](https://onlinestatbook.com/stat_sim/sampling_dist/index.html)
+  
 
 # Hypothesis testing about a population mean
 
