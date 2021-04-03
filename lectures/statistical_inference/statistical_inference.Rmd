@@ -15,34 +15,36 @@ output:
     fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
     highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
     theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
-    df_print: paged #options: default, tibble, paged
+    df_print: tibble #options: default, tibble, paged
 
 ---
+
+
+<!-- Code to enable scroll right for printing of data frames -->
+<style>
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: auto !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
 
 
 ```{r, echo=FALSE, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning = FALSE, message = FALSE)
   #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
+options(scipen=999)
+options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll right for printing of data frames
 ```
 
-LINK TO GOOGLE DOC WHERE I HAVE WRITTEN OUT TOPICS IN DETAIL
-
-- https://docs.google.com/document/d/1u1RhtIQyohjd87ZVDAm6wH9Pl0EPuYs0zY2sq_3iAaQ/edit 
-
 # Introduction
-
-
-## Lecture overview
 
 Statistical inference
 
 > The theory, methods, and practice of forming judgments about the parameters of a population and the reliability of statistical relationships, typically on the basis of random sampling 
 
 *credit: [Google](https://www.google.com/search?q=define+%22statistical+inference%22&sxsrf=ALeKk00lHj1hQ5jc8o_Xjsc7vOF6XFMPUg%3A1617292004292&ei=5OplYNCzEdOU-gTl2p_ACQ&oq=define+%22statistical+inference%22&gs_lcp=Cgdnd3Mtd2l6EAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsANQAFgAYPbvD2gBcAJ4AIABvgGIAb4BkgEDMC4xmAEAqgEHZ3dzLXdpesgBCMABAQ&sclient=gws-wiz&ved=0ahUKEwjQtaebst3vAhVTip4KHWXtB5gQ4dUDCA0&uact=5)*
-
-**Lecture overview**
-
-- la la
 
 
 ## Libraries we will use
@@ -389,45 +391,130 @@ We can show frequency distributions (or relative frequency distributions) as a t
 ```{r}
 df_ipeds_pop %>% count(tuitfee_grad_res)
 ```
-- Creating a histogram that shows the frequency distribution of `tuitfee_grad_res`
+
+We can also visualize the distribution of the variable `tuitfee_grad_res`. 
+
+- Instead of "visualize," sometimes we will say "plot" or "draw"
+
+
+Below, we write a function named `plot_distribution()` that we will call on below to plot variables. Our `plot_distribution()` function calls functions from the `ggplot2` library, which is part of the `tidyverse`
+
+- **Do not** worry about understanding this code!
+- I did not write this function. 
+- (Props to Crystal Han (data scientist extraordinaire) for writing this function -- and some other functions I use below -- in short order as I was way behind in writing this lecture!)
 
 ```{r}
-hist(df_ipeds_pop$tuitfee_grad_res, main = 'Frequency distribution of tuitfee_grad_res', freq = FALSE)
-#hist(df_ipeds_pop$tuit_grad_res, main = 'Frequency distribution of tuit_grad_res', freq = TRUE)
-#lines(density(df_ipeds_pop$tuit_grad_res), col='red', lwd=3)
-abline(v = c(mean(df_ipeds_pop$tuitfee_grad_res),median(df_ipeds_pop$tuitfee_grad_res)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
-
+# Function to generate plot
+plot_distribution <- function(data_vec, plot_title = '') {
+  p <- ggplot(as.data.frame(data_vec), aes(x=data_vec)) + xlab('') +
+    ggtitle(plot_title) +
+    geom_histogram(aes(y=..density..), alpha=0.4, position='identity') +
+    geom_density() +
+    geom_vline(aes(xintercept=mean(data_vec, na.rm = T), color='mean'),
+               linetype='dotted', size=0.8, alpha=0.8) +
+    geom_vline(aes(xintercept=median(data_vec, na.rm = T), color='median'),
+               linetype='dotted', size=0.8, alpha=0.8) +
+    scale_color_manual(name = 'Statistics',
+                       labels = c(paste('Mean:', round(mean(data_vec, na.rm = T), 2),
+                                        '\nStd Dev:', round(sd(data_vec, na.rm = T), 2)), 
+                                paste('Median:', round(median(data_vec, na.rm = T), 2))),
+                       values = c(median='blue', mean='red')) +
+    theme(plot.title = element_text(size=10, face='bold', hjust = 0.5),
+          legend.title = element_text(size=9, face='bold'),
+          legend.text = element_text(size=8))
+  
+  p
+}
 ```
-## Normal and skewed distributions
 
-Distributions of variables fall into a few general categories
+Call the `plot_distribution()` function to plot the variable `tuitfee_grad_res` from the data frame `df_ipeds_pop`. Essentially, the `plot_distribution()` function creates the following things:
 
-**Normal distribution**
+- draws a "histogram" of the variable
+- draws a "kernel density estimate," which -- according to the help file for the `geom_density()` function -- is a "smoothed version of the histogram. This is a useful alternative to the histogram for continuous data that comes from an underlying smooth distribution"
+- prints the value of the following descriptive statistics: mean, median, standard deviation
+- draws dotted vertical lines to indicate the value of the mean and the median
 
-- a normal distribution is "bell shaped"; has symmetric "tails"
-- Below, we generate a variable that has a normal distribution and then plot the variable to visualize what a normal distribution looks like
-and then we graph this variable
+```{r}
+plot_distribution(df_ipeds_pop$tuitfee_grad_res)
+```
 
-Create variable with normal distribution
 
-  - variable has a mean of `10`
-  - variable ahs a standard deviation of `2`
-    - on average, one random observation from the variable is `2` away from the mean
+
+
+## Normal, right-skew, left-skew
+
+
+The distributions of variables fall into a few general categories
+
+- we will talk about normally distributed variables, right-skewed variables, and left-skewed variables
+
+<br>
+
+In order to explain these concepts, we will generate a normally distributed variable, a right-skewed variable, and a left-skewed variable 
+
+- We will pretend that each variable contains all observations in the population for some population of interest
+  - Usually, we don't know the population; we collect a sample from that population and use the sample data to make statements (inferences) about the unknown population
+- we will put each of these variables in a dataset called `def_generated_pop`
+- don't worry about below code
+
 ```{r}
 num_obs <- 10000
 
 # Generate normal distribution w/ custom mean and sd
 set.seed(124)
-norm_dist <- rnorm(num_obs, mean = 10, sd = 2)
+norm_dist <- rnorm(n = num_obs, mean = 50, sd = 5)
 
-mean(norm_dist) # calculate mean
-sd(norm_dist) # calculate standard deviation
-median(norm_dist) # calculate median
+# Generate right-skewed distribution
+set.seed(124)
+rskew_dist <- rbeta(n = num_obs, shape1 = 2, shape2 = 5)
+
+# Generate left-skewed distribution
+set.seed(124)
+lskew_dist <- rbeta(n = num_obs, shape1 = 5, shape2 = 2)
+
+# Generate standard normal distribution (default is mean = 0 and sd = 1)
+set.seed(124)
+stdnorm_dist <- rnorm(n = num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
+
+# Create dataframe
+df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist)
+
 ```
-Graph the normally distributed variable and plot the mean, median, and standard deviation
+
+We can refer to variables in the data frame `df_generated_pop` using the following syntax:
+
+  - `data_frame_name$variable_name`
+  - e.g., `df_generated_pop$norm_dist`
+
+Examine the variable `norm_dist` in the data frame `df_generated_pop`
+```{r}
+length(df_generated_pop$norm_dist) # length() = number of "elements" = number of observations
+
+#mean
+mean(df_generated_pop$norm_dist, na.rm = TRUE)
+```
+
+
+**Normal distribution**
+
+- a normal distribution is "bell shaped"; has symmetric "tails"
+
+We generated a variable `df_generated_pop$norm_dist` that has a normal distribution and then plot the variable to visualize what a normal distribution looks
+
+- Descriptive statistics about the variable `df_generated_pop$norm_dist`
+  - It has a mean of `r round(mean(df_generated_pop$norm_dist, na.rm = TRUE), digits = 2)`
+  - It has a standard deviation of `r round(sd(df_generated_pop$norm_dist, na.rm = TRUE), digits = 2)`
+    - Standard deviation is a measure of how far away from the mean observations tend to be
+    - we can interpet this standard deviation as follows: on average, observations are `r round(sd(df_generated_pop$norm_dist, na.rm = TRUE), digits = 2)` away from the mean of `r round(mean(df_generated_pop$norm_dist, na.rm = TRUE), digits = 2)`
+
+
+We can also visualize the variable `df_generated_pop$norm_dist`, as shown below. Note the following:
+
+- symmetric, "bell" shape
+- the mean is (nearly) identical to the median
 
 ```{r}
-# ADD PLOT HERE  
+plot_distribution(df_generated_pop$norm_dist)
 ```
 
 **Skewed distribution**
@@ -437,82 +524,370 @@ Graph the normally distributed variable and plot the mean, median, and standard 
   - outliers are observations that are much higher or much lower than most observations
 - skewed distributions are either "left skewed" or "right skewed"
 
-Righ skewed distributions
+**Right skewed distributions**
 
-- the right "tail" is longer than the left due to the presence of positive outliers, defined as observations with very high values compared to most observations
+- The right "tail" is longer than the left due to the presence of positive outliers, defined as observations with very high values compared to most observations
 - so there are more positive outliers than you would expect in a bell (normal) shaped variable
 - these positive outliers increase the value of the mean, such that the value of the mean is higher than the value of the median
   - mean > median
 - real-world variables that tend to be right-skewed
   - income; enrollment size, city population
 
-Create and plot right-skewed variable
+
+We generated the right-skewed variable `df_generated_pop$rskew_dist`
+
+- This variable has the following descriptive statistics
+  - mean equals `r round(mean(df_generated_pop$rskew_dist, na.rm = TRUE), digits = 3)`
+  - median equals `r round(median(df_generated_pop$rskew_dist, na.rm = TRUE), digits = 3)`
+  - standard deviation equals `r round(sd(df_generated_pop$rskew_dist, na.rm = TRUE), digits = 3)`
+    - interpretation: on average, observations are `r round(sd(df_generated_pop$rskew_dist, na.rm = TRUE), digits = 3)` away from the mean of `r round(mean(df_generated_pop$rskew_dist, na.rm = TRUE), digits = 3)`
+- We can also visualize the right-skwed variable `df_generated_pop$rskew_dist`, as shown below. Note the following:
+  - The right "tail" is longer than the left tail
+  - the mean is larger than the median
+
+
 ```{r}
-# ADD CODE
+plot_distribution(df_generated_pop$rskew_dist)
 ```
 
   
-Left skwed distributions
+**Left skewed distributions**
 
-- the left tail is longer than right tail, usually due to the presence of negative outliers, defined as observations with very low values (e.g., extreme negative values) compared to most observations
-- more negative outliers than you would expect in bell shaped variable
+- The left tail is longer than right tail, usually due to the presence of more negative outliers than would be expected in a bell shaped variable
+  - where negative outliers are defined as observations with very low values (e.g., extreme negative values) compared to most observations
 - these negative outliers decrease the value of the mean, such that the value of the mean is lower than the value of the median
-  - mean < median
-- real-world variables that tend to be left-skewed
+- In social science research left-skewed variables are less common than right-skewed variables
 
+We generated the left-skewed variable `df_generated_pop$rskew_dist`
+
+- This variable has the following descriptive statistics
+  - mean equals `r round(mean(df_generated_pop$lskew_dist, na.rm = TRUE), digits = 3)`
+  - median equals `r round(median(df_generated_pop$lskew_dist, na.rm = TRUE), digits = 3)`
+  - standard deviation equals `r round(sd(df_generated_pop$lskew_dist, na.rm = TRUE), digits = 3)`
+    - interpretation: on average, observations are `r round(sd(df_generated_pop$lskew_dist, na.rm = TRUE), digits = 3)` away from the mean of `r round(mean(df_generated_pop$lskew_dist, na.rm = TRUE), digits = 3)`
+- We can also visualize the left-skwed variable `df_generated_pop$rskew_dist`, as shown below. Note the following:
+  - The left "tail" is longer than the right tail
+  - the mean is smaller than the median
 
 Create and plot left-skewed variable
 ```{r}
-# ADD CODE
+plot_distribution(df_generated_pop$lskew_dist)
 ```
 
 
+Having plotted generated variables that have normal, right skewed, and left skewed distributions, respectively, let's plot the real-life variable `tuitfee_grad_res` from the data frame `df_ipeds_pop` (below). How would you diagnose the distribution of `tuitfee_grad_res`?
+
 ```{r}
-# https://www.datamentor.io/r-programming/examples/random-number/
-# https://stackoverflow.com/questions/28099590/create-sample-vector-data-in-r-with-a-skewed-distribution-with-limited-range
+plot_distribution(df_ipeds_pop$tuitfee_grad_res)
+```
+How would you diagnose the distribution of `tuitfee_grad_res`?
 
-num_obs <- 500
+- right tail longer than the left
+- mean of `r round(mean(df_ipeds_pop$tuitfee_grad_res, na.rm = TRUE), digits = 0)` is larger than the median of `r round(median(df_ipeds_pop$tuitfee_grad_res, na.rm = TRUE), digits = 0)`
+- so this is a right skewed variable
 
-# Generate standard normal distribution (default is mean = 0 and sd = 1)
-set.seed(124)
-stdnorm_dist <- rnorm(num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
+## Properties of the normal distribution
 
-# Generate normal distribution w/ custom mean and sd
-set.seed(124)
-norm_dist <- rnorm(num_obs, mean = 10, sd = 2)
+The normal distribution -- symmetric, bell-shaped, mean equal to the median - has very useful properties that make it the basis of inferential statistics
 
-# Generate left-skewed distribution
-set.seed(124)
-lskew_dist <- rbeta(num_obs, 5, 2)
+- if we can reasonably assume a variable has a normal distribution, then we know a lot about that variable
 
-# Generate right-skewed distribution
-set.seed(124)
-rskew_dist <- rbeta(num_obs, 2, 5)
-
-# Create dataframe
-df_generated_pop <- data.frame(stdnorm_dist, norm_dist, lskew_dist, rskew_dist)
+```{r}
+plot_distribution(df_generated_pop$norm_dist)
 ```
 
+### Normal distribution and "the empirical rule"
+
+Recall our primary measure of dispersion, standard deviation, which measures how far away individual observations tend to be from the mean.
+
+- Here, for some variable $x$ I'll give the formuala for sample standard deviation, $\hat\sigma_x$, as opposed to the formula for population standard deviation, $\sigma_x$
+  - sometimes people will also refer to sample standard deviation of $x$ as $s_x$
+
+
+- $\hat\sigma_x = \sqrt{\frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n-1}}$
+
+**The empirical rule** states that if variable has an approximately normal distribution (i.e., approximately “bell shaped”) then:
+
+- About 68% of obs fall within one std. dev of mean
+  - i.e., between  $ x - \hat{\sigma{x}} $ and $ x + \hat{\sigma{x}} $
+- About 95% of obs fall within two std. dev of mean
+  - i.e., between $ x - 2\hat\sigma_x $ and $ x + 2\hat\sigma_x $
+- About 99% of obs fall within three std. dev of mean
+  - i.e., between $x - 3\hat\sigma_x $ and $x + 3\hat\sigma_x $
+
+<br>
+Show picture from old "chicken scratch" pdf conveying ideas about empirical rule
+<br>
+
+Why is the empirical rule so important for inferential statistics?
+
+- basically, if a variable has an approximately normal distribution, then we know how likely it would be to observe a variable that is a certain number of standard deviations away from the mean
+- for example: 
+  - only about 2.5% of observations have a value higher than two standard deviations or more from the mean; 
+  - the variable `norm_dist` has a mean of about `50` and a standard deviation of about `5`, so the value of `40` would be about two standard deviations below the mean. the empirical rule tells us that only about 2.5% of observations would have a value less than `40`
+- you might say, but most real-life variables are unlikely to have a normal distribution
+  - True! But the "sampling distribution" -- discussed below -- which is the basis for all inferential statistics/hypothesis testing, **always** has a normal distribution so long as our sample size is large enough
+  
+  
+### Z-scores
+
+The "z-score" of an observation is the number of standard deviations away from the mean
+
+- can define a z-score in terms of a population or a sample from that population; we'll introduce z-score in the context of sample data
+
+z-score formula
+
+- where $x$ is some variable of interest; subscript $i$ refers to observations
+- $z_i = (x_i - \bar{x})/(\hat{\sigma}_x)$
+- in words:
+  - z score for observation $i$ equals the difference between the observation $x_i$ and the mean $\bar{x}$ divided by the standard deviation $\hat{\sigma}_x$
+- Intuition behing z-score
+  - it's just the difference between an observation value and the mean value, scaled in terms of standard deviations
+  - that's why we say that the z-score represents the number of standard deviations away from the mean
+
+Calculating z-score for the variable `norm_dist` from data frame `df_generated_pop`
 ```{r}
-# Plot histograms
-hist(df_generated_pop$stdnorm_dist, main = 'Standard normal distribution', freq = F)
-lines(density(df_generated_pop$stdnorm_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_pop$stdnorm_dist),median(df_generated_pop$stdnorm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+# components of z-score
+mean(df_generated_pop$norm_dist, na.rm = TRUE)
+sd(df_generated_pop$norm_dist, na.rm = TRUE)
 
-hist(df_generated_pop$norm_dist, main = 'Normal distribution', freq = F)
-lines(density(df_generated_pop$norm_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_pop$norm_dist),median(df_generated_pop$norm_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+#create new variable z_norm_dist
+df_generated_pop <- df_generated_pop %>% mutate(
+  z_norm_dist = (norm_dist - mean(norm_dist, na.rm = TRUE))/sd(norm_dist, na.rm = TRUE)
+)
 
-hist(df_generated_pop$lskew_dist, main = 'Left-skewed distribution', freq = F)
-lines(density(df_generated_pop$lskew_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_pop$lskew_dist),median(df_generated_pop$lskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+#list a few observations
+df_generated_pop %>% select(norm_dist,z_norm_dist)
 
-hist(df_generated_pop$rskew_dist, main = 'Right-skewed distribution', freq = F)
-lines(density(df_generated_pop$rskew_dist), col='red', lwd=3)
-abline(v = c(mean(df_generated_pop$rskew_dist),median(df_generated_pop$rskew_dist)),  col=c("green", "red"), lty=c(2,2), lwd=c(3, 3))
+# mean of z-score variable
+round(mean(df_generated_pop$z_norm_dist, na.rm = TRUE), digits = 4)
+```
+
+Plot the new z-score variable, which has:
+
+- mean of about `0`
+- standard deviation of about `1`
+```{r}
+plot_distribution(df_generated_pop$z_norm_dist)
+```
+
+Recall empirical rule for normally distributed variables
+
+- About 68% of obs fall within one std. dev of mean
+  - i.e., between $x - z $ and $x + z $
+- About 95% of obs fall within two std. dev of mean
+  - i.e., between $x - 2z $ and $x + 2z $
+- About 99% of obs fall within three std. dev of mean
+  - i.e., between $x - 3z $ and $x + 3z $
+
+
+<br>
+Show picture from old "chicken scratch" pdf conveying ideas about z-score and empirical rule
+<br>
+
+Delete variable `z_norm_dist`
+```{r}
+df_generated_pop$z_norm_dist <- NULL
+```
+
+## Standard normal distribution
+
+Definition:
+
+- a bell-shaped (i.e., normal) distribution that has a mean of `0` and a standard deviation of `1`
+
+
+Above, we created a variable `stdnorm_dist` in the data frame `df_generated_pop` that has a standard normal distribution. Let's investigate and plot this variable:
+```{r}
+mean(df_generated_pop$stdnorm_dist, na.rm = TRUE)
+sd(df_generated_pop$stdnorm_dist, na.rm = TRUE)
+
+plot_distribution(df_generated_pop$stdnorm_dist)
+```
+
+Commentary about standard normal distribution:
+
+- The value of each observation is already in terms of z-scores
+- That is, the value of each observation shows how many standard deviations it is from the mean
+- Question: if the variable has a standard normal distribution, would it be likely to see an observation with a value of 3?
+  - No. because a value of 3 would mean that the observation is three standard deviations greater than the mean. we know that for any variable with a normal distribution, less than 1% of observations have a value that is three standard deviations greater than the mean.
+  
+  
+Question: If we have a variable with a roughly normal distribution (i.e., symmetrical), how could we transform it into a variable with a standard normal distribution (i.e., symmetrical with mean=0 and std deviation=1)?
+
+- Answer: create new variable that is the z-score associated with each value
+- This is exactly, what we did above (shown again here)
+
+```{r}
+# create variable that has a standard normal distribution from a variable that has a normal distribution
+df_generated_pop %>% mutate(
+  z_norm_dist = (norm_dist - mean(norm_dist, na.rm = TRUE))/sd(norm_dist, na.rm = TRUE)
+)
 ```
 
 # Sampling distribution
+
+The "sampling distribution" is the fundamental concept of inferential statistics
+
+Briefly, recall the goal of inferential statistics:
+
+- We want to make statements about population parameters, for example the population mean of some variable $x$, $\mu_x$
+  - But we usually cannot obtain data on the entire population
+- Therefore, we collect a representative (random) sample from the population
+- We calculate "estimates" based on this sample data. These estimates are our best guess abut the value of population parameters
+- For example, the sample mean $\bar{x}$ is our best guess of the population mean $\mu_x$
+
+Usually, we collect a single sample from the population. How do we know if the sample we collected is representative of the underlying population we want to make statements about?
+
+- This is a problem that statisticians have thought a lot about
+
+
+For example, for our variable `norm_dist` from the data frame `df_generated_pop`, we randomly draw `30` observations from a population of `10,000` observations
+```{r}
+set.seed(321)
+norm_dist_s1 <- sample(x = df_generated_pop$norm_dist, size = 30)
+
+mean(df_generated_pop$norm_dist)
+mean(norm_dist_s1) # mean of our sample
+```
+But, what if we had obtained a different random sample?
+```{r}
+set.seed(123)
+norm_dist_s1 <- sample(x = df_generated_pop$norm_dist, size = 30)
+
+mean(df_generated_pop$norm_dist)
+mean(norm_dist_s1) # mean of our sample
+```
+So we can see that the sample mean, $\bar{x}$, changes from sample to sample
+
+<br>
+
+Imagine if we take 1,000 random samples of size `n` (e.g., `30`) from a population
+
+- for each random sample, we calculate the sample mean, and record the value of the sample mean
+- we would have 1,000 observations, where each observation is the value of a sample mean
+- If we plotted these 1,000 observations, it would give us a distribution of sample means
+- More specifically, this would give us the "sampling distribution" of the sample mean
+
+
+<br>
+
+**Sampling distribution (of the sample mean)**
+
+- The sampling distribution of the sample mean is a relative frequency distribution where each observation is the sample mean of a single random sample from a population
+- The sampling distribution shows how the value of the sample mean varies from sample to sample
+
+
+<br>
+
+**Awesome website for understanding how the sampling distribution works**
+
+- This very useful website does interactive simulations that show how the sampling distribution works [LINK](https://onlinestatbook.com/stat_sim/sampling_dist/index.html)
+  - **Please** spend 5 minutes playing around with this website; this is really the most important concept in statistics
+
+
+
+<br>
+
+The sampling distribution of any statistic
+
+- So far, we have discussed the sampling distribution of the sample mean, but a sampling distribution can be created for any sample statistic (e.g., median, min, max, regression coefficient)
+- Once we get to the unit on regression, we'll be thinking about the sampling distribution of a regression coefficient. But the underlying concepts will be exactly the same as the sampling distribution of the sample mean
+
+
+
+<br>
+
+### Plot sampling distribution
+
+**Plotting a single random sample and a sampling distribution**
+
+- We are pretending our two data frames `df_generated_pop` and `df_ipeds_pop` contain all observations in the population
+- For each of these datasets we will create a version that is a single random sample
+- We will plot this single random sample
+- Then we will take a large number of random samples, calculate the sample mean for each, and plot these sample means to create the sampling distribution
+
+
+Create "sample" versions of our two datasets
+```{r}
+set.seed(124)
+
+# create sample version of our generated data
+df_generated_sample <- df_generated_pop[sample(nrow(df_generated_pop), 100), ]
+df_generated_sample %>% glimpse()
+
+# create sample version of our ipeds data
+df_ipeds_sample <- df_ipeds_pop[sample(nrow(df_ipeds_pop), 100), ]
+```
+
+Plot the variable `norm_dist` from the sample dataset
+```{r}
+plot_distribution(df_generated_sample$norm_dist)
+```
+Plot the variable `tuitfee_grad_res` from the sample IPEDS dataset
+```{r}
+plot_distribution(df_ipeds_sample$tuitfee_grad_res)
+```
+
+
+Write function to get the sampling distribution from a variable (defaults equal 500 samples of size 100)
+```{r}
+# Function to get sampling distribution (default: 500 samples of size 100)
+get_sampling_distribution <- function(data_vec, num_samples = 500, sample_size = 100) {
+  sample_means <- vector(mode = 'numeric', num_samples)
+
+  for (i in 1:length(sample_means)) {
+    samp <- sample(data_vec, sample_size)
+    sample_means[[i]] <- mean(samp, na.rm = T)
+  }
+
+  sample_means
+}
+```
+
+Plot the sampling distribution of of the sample mean for the normally distributed variable `norm_dist`
+```{r}
+plot_distribution(get_sampling_distribution(df_generated_pop$norm_dist))
+```
+
+Plot the sampling distribution of of the sample mean for the right-skewed variable `rskew_dist`
+```{r}
+plot_distribution(get_sampling_distribution(df_generated_pop$rskew_dist))
+```
+Create visualization that stacks three plots on top of one another: 1= population distribution; 2 = distribution of a single random sample; 3 = sampling distribution
+
+- do this for the normally distributed variable  `norm_dist`
+```{r}
+plot_distribution(df_generated_pop$norm_dist, plot_title = 'Population distribution') +
+  plot_distribution(df_generated_sample$norm_dist, plot_title = 'Single sample distribution') +
+  plot_distribution(get_sampling_distribution(df_generated_pop$norm_dist),
+                    plot_title = 'Sampling distribution') +
+  plot_layout(ncol = 1)
+```
+
+Create visualization that stacks three plots on top of one another: 1= population distribution; 2 = distribution of a single random sample; 3 = sampling distribution
+
+- do this for the right-skewed variable  `rskew_dist`
+- Notice that even though the underlying population is right skewed and the sample is right-skewed, the sampling distribution has a normal distribution
+```{r}
+plot_distribution(df_generated_pop$rskew_dist, plot_title = 'Population distribution') +
+  plot_distribution(df_generated_sample$rskew_dist, plot_title = 'Single sample distribution') +
+  plot_distribution(get_sampling_distribution(df_generated_pop$rskew_dist),
+                    plot_title = 'Sampling distribution') +
+  plot_layout(ncol = 1)
+```
+
+Create visualization that stacks three plots on top of one another: 1= population distribution; 2 = distribution of a single random sample; 3 = sampling distribution
+
+- do this for the right-skewed variable  `tuitfee_grad_res` from IPEDS
+- Notice that even though the underlying population is right skewed and the sample is right-skewed, the sampling distribution has a normal distribution
+```{r}
+plot_distribution(df_ipeds_pop$tuitfee_grad_res, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$tuitfee_grad_res, plot_title = 'Single sample distribution') +
+  plot_distribution(get_sampling_distribution(df_ipeds_pop$tuitfee_grad_res),
+                    plot_title = 'Sampling distribution') +
+  plot_layout(ncol = 1)
+```
 
 # Hypothesis testing about a population mean
 
