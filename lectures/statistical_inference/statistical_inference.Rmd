@@ -600,7 +600,7 @@ plot_distribution(df_generated_pop$norm_dist)
 
 Recall our primary measure of dispersion, standard deviation, which measures how far away individual observations tend to be from the mean.
 
-- Here, for some variable $x$ I'll give the formuala for sample standard deviation, $\hat\sigma_x$, as opposed to the formula for population standard deviation, $\sigma_x$
+- Here, for some variable $x$, I'll give the formula for sample standard deviation, $\hat\sigma_x$, as opposed to the formula for population standard deviation, $\sigma_x$
   - sometimes people will also refer to sample standard deviation of $x$ as $s_x$
 
 
@@ -608,16 +608,19 @@ Recall our primary measure of dispersion, standard deviation, which measures how
 
 **The empirical rule** states that if variable has an approximately normal distribution (i.e., approximately “bell shaped”) then:
 
-- About 68% of obs fall within one std. dev of mean
-  - i.e., between  $ x - \hat{\sigma{x}} $ and $ x + \hat{\sigma{x}} $
-- About 95% of obs fall within two std. dev of mean
-  - i.e., between $ x - 2\hat\sigma_x $ and $ x + 2\hat\sigma_x $
-- About 99% of obs fall within three std. dev of mean
-  - i.e., between $x - 3\hat\sigma_x $ and $x + 3\hat\sigma_x $
+- About 68% of obs fall within one std. dev of mean  
+  - i.e., between $x - \hat{\sigma{x}}$ and $x + \hat{\sigma{x}}$
+  
+- About 95% of obs fall within two std. dev of mean  
+  - i.e., between $x - 2\hat\sigma_x$ and $x + 2\hat\sigma_x$
+  
+- About 99% of obs fall within three std. dev of mean  
+  - i.e., between $x - 3\hat\sigma_x$ and $x + 3\hat\sigma_x$
 
 <br>
-Show picture from old "chicken scratch" pdf conveying ideas about empirical rule
+<!--Show picture from old "chicken scratch" pdf conveying ideas about empirical rule
 <br>
+-->
 
 Why is the empirical rule so important for inferential statistics?
 
@@ -673,12 +676,14 @@ plot_distribution(df_generated_pop$z_norm_dist)
 
 Recall empirical rule for normally distributed variables
 
-- About 68% of obs fall within one std. dev of mean
-  - i.e., between $x - z $ and $x + z $
-- About 95% of obs fall within two std. dev of mean
-  - i.e., between $x - 2z $ and $x + 2z $
-- About 99% of obs fall within three std. dev of mean
-  - i.e., between $x - 3z $ and $x + 3z $
+- About 68% of obs fall within one std. dev of mean  
+  - i.e., between $x - z$ and $x + z$
+
+- About 95% of obs fall within two std. dev of mean  
+  - i.e., between $x - 2z$ and $x + 2z$
+  
+- About 99% of obs fall within three std. dev of mean  
+  - i.e., between $x - 3z$ and $x + 3z$
 
 
 <br>
