@@ -48,8 +48,20 @@ Statistical inference
 *credit: [Google](https://www.google.com/search?q=define+%22statistical+inference%22&sxsrf=ALeKk00lHj1hQ5jc8o_Xjsc7vOF6XFMPUg%3A1617292004292&ei=5OplYNCzEdOU-gTl2p_ACQ&oq=define+%22statistical+inference%22&gs_lcp=Cgdnd3Mtd2l6EAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsANQAFgAYPbvD2gBcAJ4AIABvgGIAb4BkgEDMC4xmAEAqgEHZ3dzLXdpesgBCMABAQ&sclient=gws-wiz&ved=0ahUKEwjQtaebst3vAhVTip4KHWXtB5gQ4dUDCA0&uact=5)*
 
 
-## Libraries we will use
+## Libraries, data, functions
 
+Purpose of this section:
+
+- load all libraries/packages we will use
+- load and create all datasets we will use
+- create all functions we will use
+
+Why do all of this in one place?
+
+- so you don't have to run code chunks scattered randomly throughout the lecture
+- dont worry about understanding all code, especially for functions we create
+
+Libraries
 ```{r}
 #install.packages('tidyverse') # if you haven't installed already
 #install.packages('labelled') # if you haven't installed already
@@ -59,6 +71,241 @@ library(tidyverse) # load tidyverse package
 library(labelled) # load labelled package package
 library(patchwork)
 ```
+IPEDS data
+```{r}
+# Load ipeds dataset from course website url
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+
+# Create ipeds data frame with fewer variables/observations
+df_ipeds_pop <- panel_data %>%
+  # keep data from fall 2019
+  filter(year == 2019) %>%
+  # which universities to keep:
+    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities (18,19,20)
+  filter(c15basic %in% c(15,16,17,18,19,20)) %>%
+  # which variables to keep
+  select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
+         tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
+         isprof3,ispfee3,osprof3,ospfee3, # avg tuition and fees for MD, in-state and out-of-state
+         isprof9,ispfee9,osprof9,ospfee9, # avg tuition and fees for Law, in-state and out-of-state
+         chg4ay3,chg7ay3,chg8ay3) %>% # [undergraduate] books+supplies; off-campus (not with family) room and board; off-campus (not with family) other expenses
+  # rename variables; syntax <new_name> = <old_name>
+  rename(region = obereg, # revion
+         tuit_grad_res = tuition6, fee_grad_res = fee6, tuit_grad_nres = tuition7, fee_grad_nres = fee7, # grad
+         tuit_md_res = isprof3, fee_md_res = ispfee3, tuit_md_nres = osprof3, fee_md_nres = ospfee3, # md
+         tuit_law_res = isprof9, fee_law_res = ispfee9, tuit_law_nres = osprof9, fee_law_nres = ospfee9, # law
+         books_supplies = chg4ay3, roomboard_off = chg7ay3, oth_expense_off = chg8ay3) %>% # [undergraduate] expenses
+  # create measures of tuition+fees
+  mutate(
+    tuitfee_grad_res = tuit_grad_res + fee_grad_res, # graduate, state resident
+    tuitfee_grad_nres = tuit_grad_nres + fee_grad_nres, # graduate, non-resident
+    tuitfee_md_res = tuit_md_res + fee_md_res, # MD, state resident
+    tuitfee_md_nres = tuit_md_nres + fee_md_nres, # MD, non-resident
+    tuitfee_law_res = tuit_law_res + fee_law_res, # Law, state resident
+    tuitfee_law_nres = tuit_law_nres + fee_law_nres) %>% # Law, non-resident  
+  # create measures of cost-of-attendance (COA) as the sum of tuition, fees, book, living expenses
+  mutate(
+    coa_grad_res = tuit_grad_res + fee_grad_res + books_supplies + roomboard_off + oth_expense_off, # graduate, state resident
+    coa_grad_nres = tuit_grad_nres + fee_grad_nres + books_supplies + roomboard_off + oth_expense_off, # graduate, non-resident
+    coa_md_res = tuit_md_res + fee_md_res + books_supplies + roomboard_off + oth_expense_off, # MD, state resident
+    coa_md_nres = tuit_md_nres + fee_md_nres + books_supplies + roomboard_off + oth_expense_off, # MD, non-resident
+    coa_law_res = tuit_law_res + fee_law_res + books_supplies + roomboard_off + oth_expense_off, # Law, state resident
+    coa_law_nres = tuit_law_nres + fee_law_nres + books_supplies + roomboard_off + oth_expense_off) %>% # Law, non-resident    
+  # keep only observations that have non-missing values for the variable coa_grad_res
+    # this does cause us to lose some interesting universities, but doing this will eliminate some needless complications with respect to learning core concepts about statistical inference
+  filter(!is.na(coa_grad_res))
+
+# Add variable labels to the tuit+fees variables and coa variables
+  # tuition + fees variables
+    var_label(df_ipeds_pop[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
+    
+  # COA variables
+    var_label(df_ipeds_pop[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+
+df_ipeds_pop %>% glimpse()
+```
+
+
+Create data frame of generated variables, with each variable meant to represent the entire population
+```{r}
+num_obs <- 10000
+
+# Generate normal distribution w/ custom mean and sd
+set.seed(124)
+norm_dist <- rnorm(n = num_obs, mean = 50, sd = 5)
+
+# Generate right-skewed distribution
+set.seed(124)
+rskew_dist <- rbeta(n = num_obs, shape1 = 2, shape2 = 5)
+
+# Generate left-skewed distribution
+set.seed(124)
+lskew_dist <- rbeta(n = num_obs, shape1 = 5, shape2 = 2)
+
+# Generate standard normal distribution (default is mean = 0 and sd = 1)
+set.seed(124)
+stdnorm_dist <- rnorm(n = num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
+
+# Create dataframe
+df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist)
+
+# drop individual objects associated with each variable
+rm(norm_dist,rskew_dist,lskew_dist,stdnorm_dist)
+rm(num_obs)
+```
+
+
+Create sample versions of generated population data frame and IPEDS population data frame
+```{r}
+# create sample version of our generated data
+  set.seed(124) # set seed so that everyone ends up with the same random sample
+  
+  df_generated_sample <- df_generated_pop %>% sample_n(size = 200)
+  df_generated_sample %>% glimpse()
+
+
+# create sample version of our ipeds data
+
+  set.seed(124) # set seed so that everyone ends up with the same random sample
+  
+  df_ipeds_sample <- df_ipeds_pop %>% sample_n(size = 200) 
+  
+  # compare mean of coa_grad_res between population and sample
+  mean(df_ipeds_pop$coa_grad_res, na.rm = TRUE)
+  mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE)
+```
+Load user-defined functions
+
+- props to data scientist extraordinare Crystal Han for creating most of these functions!
+```{r}
+##########
+# Create function to generate plots of variable distributions
+##########
+
+plot_distribution <- function(data_vec, plot_title = '') {
+  p <- ggplot(as.data.frame(data_vec), aes(x=data_vec)) + xlab('') +
+    ggtitle(plot_title) +
+    geom_histogram(aes(y=..density..), alpha=0.4, position='identity') +
+    geom_density() +
+    geom_vline(aes(xintercept=mean(data_vec, na.rm = T), color='mean'),
+               linetype='dotted', size=0.8, alpha=0.8) +
+    geom_vline(aes(xintercept=median(data_vec, na.rm = T), color='median'),
+               linetype='dotted', size=0.8, alpha=0.8) +
+    scale_color_manual(name = 'Statistics',
+                       labels = c(paste('Mean:', round(mean(data_vec, na.rm = T), 2),
+                                        '\nStd Dev:', round(sd(data_vec, na.rm = T), 2)), 
+                                paste('Median:', round(median(data_vec, na.rm = T), 2))),
+                       values = c(median='blue', mean='red')) +
+    theme(plot.title = element_text(size=10, face='bold', hjust = 0.5),
+          legend.title = element_text(size=9, face='bold'),
+          legend.text = element_text(size=8))
+  
+  p
+}
+
+
+##########
+# Write function to get the sampling distribution from a variable (defaults equal 500 samples of size 200)
+##########
+
+get_sampling_distribution <- function(data_vec, num_samples = 500, sample_size = 200) {
+  sample_means <- vector(mode = 'numeric', num_samples)
+
+  for (i in 1:length(sample_means)) {
+    samp <- sample(data_vec, sample_size)
+    sample_means[[i]] <- mean(samp, na.rm = T)
+  }
+
+  sample_means
+}
+
+##########
+# Write Function to generate sampling distribution (with t-test value) assuming null hypothesis is correct
+##########
+
+
+plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '') {
+  
+  data_vec <- na.omit(data_vec)
+  
+  # Calculate t-statistics
+  sample_size <- length(data_vec)
+  deg_freedom <- sample_size - 1
+  xbar <- mean(data_vec)
+  s <- sd(data_vec)
+  
+  t <- (xbar - mu) / (s / sqrt(sample_size))
+  
+  # Calculate critical value and p-value
+  if (alternative == 'less') {  # left-tailed
+    cv_lower <- qt(p = alpha, df = deg_freedom, lower.tail = T)
+    cv_legend <- round(cv_lower, 2)
+    pval <- pt(q = t, df = deg_freedom, lower.tail = T)
+  } else if (alternative == 'greater') {  # right-tailed
+    cv_upper <- qt(p = alpha, df = deg_freedom, lower.tail = F)
+    cv_legend <- round(cv_upper, 2)
+    pval <- pt(q = t, df = deg_freedom, lower.tail = F)
+  } else {  # two-tailed
+    cv_lower <- qt(p = alpha / 2, df = deg_freedom, lower.tail = T)
+    cv_upper <- qt(p = alpha / 2, df = deg_freedom, lower.tail = F)
+    cv_legend <- str_c('\u00B1', round(cv_upper, 2))
+    pval <- 2 * pt(q = t, df = deg_freedom, lower.tail = t < 0)
+  }
+  
+  # Plot t-distribution
+  p <- ggplot(data.frame(x = -c(-4, 4)), aes(x)) +
+    ggtitle(plot_title) + xlab('') + ylab('') +
+    stat_function(fun = dt, args = list(df = deg_freedom))
+  
+  # Shade rejection region using critical value
+  if (alternative != 'greater') {
+    p <- p +
+      stat_function(fun = dt, args = list(df = deg_freedom),
+                    xlim = c(-4, cv_lower),
+                    geom = 'area', alpha = 0.3, fill = 'red') +
+      geom_vline(aes(xintercept = cv_lower, color = 'cval'),
+                 linetype = 'dotted', size = 0.8, alpha = 0.8)
+  }
+  if (alternative != 'less') {
+    p <- p +
+      stat_function(fun = dt, args = list(df = deg_freedom),
+                    xlim = c(cv_upper, 4),
+                    geom = 'area', alpha = 0.3, fill = 'red') +
+      geom_vline(aes(xintercept = cv_upper, color = 'cval'),
+                 linetype = 'dotted', size = 0.8, alpha = 0.8)
+  }
+  
+  # Label plot
+  p <- p +
+    geom_vline(aes(xintercept = t, color = 'tstat'),
+               linetype = 'dotted', size = 0.8, alpha = 0.8) +
+    scale_color_manual(name = 'Legend',
+                       breaks = c('tstat', 'cval'),
+                       labels = c(str_c('t-statistics: ', round(t, 2),
+                                        '\n(p-value: ', round(pval, 3), ')'),
+                                  str_c('Critical value: ', cv_legend,
+                                        '\n(alpha: ', round(alpha, 2), ')')),
+                       values = c(tstat='blue', cval='red')) +
+    theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
+          legend.title = element_text(size = 9, face = 'bold'),
+          legend.text = element_text(size = 8))
+
+  p
+}
+
+```
+
+
 # Introduce IPEDS data
 
 ## What/why IPEDS
@@ -126,71 +373,7 @@ Some definitions related to tuition, fees, expenses, etc; from the IPEDS "Studen
 
 *Note*: "required fees" do not include the cost of healthcare (I think)
 
-## Create dataset `df_ipeds_pop`
-
-Load IPEDS dataset
-
-- CONTAINS DATA ON THESE SORTS OF SOURCES
-```{r}
-load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
-```
-
-Create data frame for use in teaching statistical inference
-```{r}
-df_ipeds_pop <- panel_data %>%
-  # keep data from fall 2019
-  filter(year == 2019) %>%
-  # which universities to keep:
-    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities (18,19,20)
-  filter(c15basic %in% c(15,16,17,18,19,20)) %>%
-  # which variables to keep
-  select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
-         tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
-         isprof3,ispfee3,osprof3,ospfee3, # avg tuition and fees for MD, in-state and out-of-state
-         isprof9,ispfee9,osprof9,ospfee9, # avg tuition and fees for Law, in-state and out-of-state
-         chg4ay3,chg7ay3,chg8ay3) %>% # [undergraduate] books+supplies; off-campus (not with family) room and board; off-campus (not with family) other expenses
-  # rename variables; syntax <new_name> = <old_name>
-  rename(region = obereg, # revion
-         tuit_grad_res = tuition6, fee_grad_res = fee6, tuit_grad_nres = tuition7, fee_grad_nres = fee7, # grad
-         tuit_md_res = isprof3, fee_md_res = ispfee3, tuit_md_nres = osprof3, fee_md_nres = ospfee3, # md
-         tuit_law_res = isprof9, fee_law_res = ispfee9, tuit_law_nres = osprof9, fee_law_nres = ospfee9, # law
-         books_supplies = chg4ay3, roomboard_off = chg7ay3, oth_expense_off = chg8ay3) %>% # [undergraduate] expenses
-  # create measures of tuition+fees
-  mutate(
-    tuitfee_grad_res = tuit_grad_res + fee_grad_res, # graduate, state resident
-    tuitfee_grad_nres = tuit_grad_nres + fee_grad_nres, # graduate, non-resident
-    tuitfee_md_res = tuit_md_res + fee_md_res, # MD, state resident
-    tuitfee_md_nres = tuit_md_nres + fee_md_nres, # MD, non-resident
-    tuitfee_law_res = tuit_law_res + fee_law_res, # Law, state resident
-    tuitfee_law_nres = tuit_law_nres + fee_law_nres) %>% # Law, non-resident  
-  # create measures of cost-of-attendance (COA) as the sum of tuition, fees, book, living expenses
-  mutate(
-    coa_grad_res = tuit_grad_res + fee_grad_res + books_supplies + roomboard_off + oth_expense_off, # graduate, state resident
-    coa_grad_nres = tuit_grad_nres + fee_grad_nres + books_supplies + roomboard_off + oth_expense_off, # graduate, non-resident
-    coa_md_res = tuit_md_res + fee_md_res + books_supplies + roomboard_off + oth_expense_off, # MD, state resident
-    coa_md_nres = tuit_md_nres + fee_md_nres + books_supplies + roomboard_off + oth_expense_off, # MD, non-resident
-    coa_law_res = tuit_law_res + fee_law_res + books_supplies + roomboard_off + oth_expense_off, # Law, state resident
-    coa_law_nres = tuit_law_nres + fee_law_nres + books_supplies + roomboard_off + oth_expense_off) # Law, non-resident    
-
-# Add variable labels to the tuit+fees variables and coa variables
-  # tuition + fees variables
-    var_label(df_ipeds_pop[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
-    
-  # COA variables
-    var_label(df_ipeds_pop[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-
-df_ipeds_pop %>% glimpse()
-```
+## Investigate `df_ipeds_pop`
 
 Show variable labels
 ```{r}
@@ -202,7 +385,7 @@ Show value labels for variables that are `labelled` class (code note run)
 df_ipeds_pop %>% select(control,locale,region,c15basic) %>% val_labels()
 ```
 
-## Investigate `df_ipeds_pop`
+
 
 Investigate data structure
 
@@ -398,35 +581,9 @@ We can also visualize the distribution of the variable `tuitfee_grad_res`.
 - Instead of "visualize," sometimes we will say "plot" or "draw"
 
 
-Below, we write a function named `plot_distribution()` that we will call on below to plot variables. Our `plot_distribution()` function calls functions from the `ggplot2` library, which is part of the `tidyverse`
+Below, we call a function named `plot_distribution()` that we will call on below to plot variables. Our `plot_distribution()` function calls functions from the `ggplot2` library, which is part of the `tidyverse`
 
-- **Do not** worry about understanding this code!
-- I did not write this function. 
 - (Props to Crystal Han (data scientist extraordinaire) for writing this function -- and some other functions I use below -- in short order as I was way behind in writing this lecture!)
-
-```{r}
-# Function to generate plot
-plot_distribution <- function(data_vec, plot_title = '') {
-  p <- ggplot(as.data.frame(data_vec), aes(x=data_vec)) + xlab('') +
-    ggtitle(plot_title) +
-    geom_histogram(aes(y=..density..), alpha=0.4, position='identity') +
-    geom_density() +
-    geom_vline(aes(xintercept=mean(data_vec, na.rm = T), color='mean'),
-               linetype='dotted', size=0.8, alpha=0.8) +
-    geom_vline(aes(xintercept=median(data_vec, na.rm = T), color='median'),
-               linetype='dotted', size=0.8, alpha=0.8) +
-    scale_color_manual(name = 'Statistics',
-                       labels = c(paste('Mean:', round(mean(data_vec, na.rm = T), 2),
-                                        '\nStd Dev:', round(sd(data_vec, na.rm = T), 2)), 
-                                paste('Median:', round(median(data_vec, na.rm = T), 2))),
-                       values = c(median='blue', mean='red')) +
-    theme(plot.title = element_text(size=10, face='bold', hjust = 0.5),
-          legend.title = element_text(size=9, face='bold'),
-          legend.text = element_text(size=8))
-  
-  p
-}
-```
 
 Call the `plot_distribution()` function to plot the variable `tuitfee_grad_res` from the data frame `df_ipeds_pop`. Essentially, the `plot_distribution()` function creates the following things:
 
@@ -438,7 +595,6 @@ Call the `plot_distribution()` function to plot the variable `tuitfee_grad_res` 
 ```{r}
 plot_distribution(df_ipeds_pop$tuitfee_grad_res)
 ```
-
 
 
 
@@ -459,26 +615,6 @@ In order to explain these concepts, we will generate a normally distributed vari
 - don't worry about below code
 
 ```{r}
-num_obs <- 10000
-
-# Generate normal distribution w/ custom mean and sd
-set.seed(124)
-norm_dist <- rnorm(n = num_obs, mean = 50, sd = 5)
-
-# Generate right-skewed distribution
-set.seed(124)
-rskew_dist <- rbeta(n = num_obs, shape1 = 2, shape2 = 5)
-
-# Generate left-skewed distribution
-set.seed(124)
-lskew_dist <- rbeta(n = num_obs, shape1 = 5, shape2 = 2)
-
-# Generate standard normal distribution (default is mean = 0 and sd = 1)
-set.seed(124)
-stdnorm_dist <- rnorm(n = num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
-
-# Create dataframe
-df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist)
 
 ```
 
@@ -763,6 +899,9 @@ norm_dist_s1 <- sample(x = df_generated_pop$norm_dist, size = 30)
 
 mean(df_generated_pop$norm_dist)
 mean(norm_dist_s1) # mean of our sample
+
+# remove object norm_dist_s1
+rm(norm_dist_s1)
 ```
 So we can see that the sample mean, $\bar{x}$, changes from sample to sample
 
@@ -814,18 +953,6 @@ The sampling distribution of any statistic
 - Then we will take a large number of random samples, calculate the sample mean for each, and plot these sample means to create the sampling distribution
 
 
-Create "sample" versions of our two datasets
-```{r}
-set.seed(124)
-
-# create sample version of our generated data
-df_generated_sample <- df_generated_pop[sample(nrow(df_generated_pop), 100), ]
-df_generated_sample %>% glimpse()
-
-# create sample version of our ipeds data
-df_ipeds_sample <- df_ipeds_pop[sample(nrow(df_ipeds_pop), 100), ]
-```
-
 Plot the variable `norm_dist` from the sample dataset
 ```{r}
 plot_distribution(df_generated_sample$norm_dist)
@@ -835,21 +962,6 @@ Plot the variable `tuitfee_grad_res` from the sample IPEDS dataset
 plot_distribution(df_ipeds_sample$tuitfee_grad_res)
 ```
 
-
-Write function to get the sampling distribution from a variable (defaults equal 500 samples of size 100)
-```{r}
-# Function to get sampling distribution (default: 500 samples of size 100)
-get_sampling_distribution <- function(data_vec, num_samples = 500, sample_size = 100) {
-  sample_means <- vector(mode = 'numeric', num_samples)
-
-  for (i in 1:length(sample_means)) {
-    samp <- sample(data_vec, sample_size)
-    sample_means[[i]] <- mean(samp, na.rm = T)
-  }
-
-  sample_means
-}
-```
 
 Plot the sampling distribution of of the sample mean for the normally distributed variable `norm_dist`
 ```{r}
@@ -1055,7 +1167,7 @@ In real research projects, do researchers always follow these exact steps? In th
 
 Example we will use to introduce steps in hypothesis testing
 
-- The population mean cost of attendance (COA) for full-time (resident) graduate students, $\mu_Y$, is $25,000
+- The population mean cost of attendance (COA) for full-time (resident) graduate students, $\mu_Y$, is $28,000
 
 <br>
 
@@ -1104,8 +1216,8 @@ When developing a hypothesis for quantitative research, we always specify a **nu
 **Null hypothesis ($H_0$)**
 
 - In univariate statistics, a null hypothesis ($H_0$) is a declarative statement that the population parameter has a specific value
-- (in words) $H_0:$ the population mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is $25,000
-- (using symbols) $H_0: \mu_Y = \mu_{Y0} = \$25,000 $
+- (in words) $H_0:$ the population mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is $28,000
+- (using symbols) $H_0: \mu_Y = \mu_{Y0} = \$28,000 $
     - where $\mu_{Y0}$ refers to the parameter value associated with the null hypothesis
     - when testing a hypothesis about a single population mean, we can refer to $\mu_{Y0}$ as the "null population mean"
 
@@ -1119,19 +1231,19 @@ When developing a hypothesis for quantitative research, we always specify a **nu
 
 Two-sided alternative hypothesis
 
-- (in words) $H_a:$ the population mean mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is not equal to $25,000
-- (using symbols) $ H_a: \mu_Y \ne \$25,000 $
+- (in words) $H_a:$ the population mean mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is not equal to $28,000
+- (using symbols) $ H_a: \mu_Y \ne \$28,000 $
 
 
-One-sided alternative hypothesis (mean is greater than $\$25,000$)
+One-sided alternative hypothesis (mean is greater than $\$28,000$)
 
-- (in words) $H_a:$ the population mean mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is greater than $25,000
-- (using symbols) $H_a: \mu_Y \gt \$25,000 $
+- (in words) $H_a:$ the population mean mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is greater than $28,000
+- (using symbols) $H_a: \mu_Y \gt \$28,000 $
 
-One-sided alternative hypothesis (mean is less than $\$25,000$)
+One-sided alternative hypothesis (mean is less than $\$28,000$)
 
-- (in words) $H_a:$ the population mean mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is less than $25,000
-- (using symbols) $H_a: \mu_Y \lt \$25,000 $
+- (in words) $H_a:$ the population mean mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is less than $28,000
+- (using symbols) $H_a: \mu_Y \lt \$28,000 $
 
 ISSUE - EQUATIONS NOT FORMATTING CORRECTLY, EVEN WHEN I CHANGE INDENTATION ASSOCIATED WITH BULLETS
 
@@ -1198,30 +1310,98 @@ Because *EDUC152* is a course about regression rather than univariate/bivariate 
 
 ## Test statistic
 
-DEFINE TEST STATISTIC
+restate null, $H_0$, and alternative (two-sided), $H_a$, hypothesis for our practical example
 
-WHAT YOU WANT CRYSTAL TO CREATE:
+- $H_0$
+  - (in words) $H_0:$ the population mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is $28,000
+  - (symbols) $H_0: \mu_Y = \mu_{Y0} = \$28,000 $
+- $H_a$
+  - (in words) $H_a:$ the population mean mean cost of attendance for for full-time (resident) graduate students, $\mu_Y$, is not equal to $28,000
+  - (symbols) $ H_a: \mu_Y \ne \$28,000 $
 
-changes to make to the set of functions that plot variable distributions; create sampling distribution, etc.
+<br> 
 
-- specify a null hypothesis value that will be associated with a t-test about a hypothesized population mean value
-  - e.g., H_0: population mean of coa_grad_res is $25,000
-- create sampling distribution under assumption null hypothesis is correct (as opposed to sampling distribution based on pulling n random samples from the population)
-- Plots the three graphs on top of one another:
-  - population distribution
-  - single sample distribution
-  - sampling distribution (assuming H_0 is true)
-    - add vertical line associated with the value of the t-test statistic (which is calculated based on the data from the single sample we actually observe)
-    - function allows you to add vertical lines associated with alpha-level/rejection region for a two-sided alternative hypothesis 
-      - e.g. if alpha-level is .05 and two-sided alternative hypothesis, then there would be a vertical line associated with 2.5 percentile (and label t=-1.96 or whatever it is); and a vertical line associated with 97.5 percentile (and label t= 1.96 or whatever it is)
-    
+We must conduct a formal statistical test to decide whether we should reject the null hypothesis
+
+- this is true for testing hypotheses about a population mean from a single population; testing hypotheses about whether two population means are equal; testing hypotheses about a regression coefficient, etc.
+- **key to understanding hypothesis testing**: We conduct our test under the assumption that the null hypothesis, $H_0$, is true
+
+Logic of the test statistic
+
+- What the test statistic calculates
+  - if the null hypothesis is true, how unlikely would it be to randomly draw the sample estimate (e.g., sample mean $\bar{Y}$) at least as far away from the null hypothesis value as the one we observed in our single random sample
+  - e.g., "if the null hypothesis is true, there is a 1.5% chance of observing a sample mean at least as far away from the null hypothesis value ($\mu_{Y0} = \$28,000$) as the one we observed in our single random sample
+- Logic of the test statistic  
+  - if -- under the assumption that the null hypothesis is true -- it would be very unlikely to observe the sample estimate we observed, then it is unlikely that the null hypothesis is true
 
 
+<br> 
+
+General formula for test statistic (for pretty much any kind of hypothesis test):
+
+$$ test\_statistic = \frac{sample\_estimate - value\_associated\_with\_H_0}{sample\_standard\_error}$$
+Test statistic for testing hypothesis about a single population mean
+
+- in words: test-statistic $t$ equals difference between the sample mean $\bar{Y}$ and the population mean associated with the null hypothesis $\mu_{Y0}$ divided by the sample standard error of the sample mean $\hat{\sigma}_{\bar{Y}}$
+- equation:
+  - $t = \frac{\bar{Y} - \mu_{Y0}}{\hat{\sigma}_{\bar{Y}}}$
+- where:
+  - $\hat{\sigma}_{Y}$ refers to sample standard deviation of variable $Y$
+  - $n$ refers to sample size
+  - sample standard error of the sample mean $ = \hat{\sigma}_{\bar{Y}} = \frac{\hat{\sigma}_{Y}}{\sqrt{n}}$
+ 
+
+
+
+la la la
+
+- Perform a t-test to check whether there is a significant difference between the population mean (which is equal to the mean of sample means from last week's sampling distribution) and the hypothesized value
+  - Compute the standard error of $\bar{Y}$; $SE(\bar{Y}) =s_Y/\sqrt{n}$
+  - Compute the t-statistic; $t = \bar{Y} - \mu_{Y,0}/SE(\bar{Y})$        
+  - Compute the p-value (significance probability) of null hypothesis; $p-value = 2\Phi(-|t|)$
+  - P-value is the probability of drawing $\bar{Y}$ at least as far in the tails of its distribution under the assumption that the null hypothesis is correct as the sample average you actually computed
+
+
+**General formula for test statistic** (for pretty much any kind of hypothesis test)
+
+
+
+
+
+
+PLAYING WITH T-TEST FUNCTION AND PLOT_T_DISTRIBUTION FUNCTION CRYSTAL CREATED
 ```{r}
-plot_distribution(df_ipeds_pop$tuitfee_grad_nres, plot_title = 'Population distribution') +
-  plot_distribution(df_ipeds_sample$tuitfee_grad_nres, plot_title = 'Single sample distribution') +
-  plot_distribution(get_sampling_distribution(df_ipeds_pop$tuitfee_grad_nres),
-                    plot_title = 'Sampling distribution') +
+
+#### 
+mean(df_ipeds_pop$coa_grad_res, na.rm = TRUE)
+mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE)
+
+t.test(df_ipeds_sample$coa_grad_res, mu = 32000)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 32000)
+
+mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE)
+t.test(df_ipeds_sample$coa_grad_res, mu = 29000)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000)
+
+
+mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE)
+t.test(df_ipeds_sample$coa_grad_res, mu = 28000)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000)
+```
+
+Experiment with plotting population distribution on top of single sample distribution on top of sampling distribution assuming H_0
+```{r}
+plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
+  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000, plot_title = 'Sampling distribution, assuming H_0') +
+  plot_layout(ncol = 1)
+```
+
+Experiment with plotting population distribution on top of single sample distribution on top of sampling distribution
+```{r}
+plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
+  plot_distribution(get_sampling_distribution(df_ipeds_pop$coa_grad_res), plot_title = 'Sampling distribution') +
   plot_layout(ncol = 1)
 ```
 
