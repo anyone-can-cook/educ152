@@ -1337,37 +1337,183 @@ Logic of the test statistic
 
 <br> 
 
-General formula for test statistic (for pretty much any kind of hypothesis test):
+**General formula for test statistic (for pretty much any kind of hypothesis test)**:
 
 $$ test\_statistic = \frac{sample\_estimate - value\_associated\_with\_H_0}{sample\_standard\_error}$$
-Test statistic for testing hypothesis about a single population mean
+**Formula for test statistic about a single population mean**
 
-- in words: test-statistic $t$ equals difference between the sample mean $\bar{Y}$ and the population mean associated with the null hypothesis $\mu_{Y0}$ divided by the sample standard error of the sample mean $\hat{\sigma}_{\bar{Y}}$
+- in words: 
+  - test-statistic $t$ equals difference between the sample mean $\bar{Y}$ and the population mean associated with the null hypothesis $\mu_{Y0}$ divided by the sample standard error of the sample mean $\hat{\sigma}_{\bar{Y}}$
 - equation:
   - $t = \frac{\bar{Y} - \mu_{Y0}}{\hat{\sigma}_{\bar{Y}}}$
 - where:
   - $\hat{\sigma}_{Y}$ refers to sample standard deviation of variable $Y$
   - $n$ refers to sample size
   - sample standard error of the sample mean $ = \hat{\sigma}_{\bar{Y}} = \frac{\hat{\sigma}_{Y}}{\sqrt{n}}$
+
  
+**Calculating t-test statistic for our practical example**
+
+$H_0: \mu_Y = \mu_{Y0} = \$28,000$ ; $H_a: \mu_Y \ne \$28,000$
+
+<br> 
+Calculate components of t-test (using functions and by hand)
+```{r}
+# sample size
+  length(df_ipeds_sample$coa_grad_res) # assuming no missing observations
+  df_ipeds_sample %>% summarize(n_non_miss = sum(!(is.na(coa_grad_res)))) # count only number of non-missing
+
+# sample mean of coa_grad_res
+  mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE) # using function
+  
+# sample standard deviation of coa_grad_res
+  sd(df_ipeds_sample$coa_grad_res, na.rm = TRUE)
+
+# sample standard error of sample mean of coa_grad_res = std_dev/sqrt(n)
+  sd(df_ipeds_sample$coa_grad_res, na.rm = TRUE)/sqrt(length(df_ipeds_sample$coa_grad_res))
+
+```
+Components of t-test:
+
+- sample size, $n$ = `r length(df_ipeds_sample$coa_grad_res)`
+- sample mean, $\bar{Y}$ = `r round(mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE), digits = 4)`
+- Population mean associated with $H_0$, $\mu_{Y0} = \$28,000$
+- sample standard deviation, $\hat{\sigma}_{Y}$ = `r round(sd(df_ipeds_sample$coa_grad_res, na.rm = TRUE), digits = 4)`
+- sample standard error of the sample mean, $\hat{\sigma}_{\bar{Y}}$ = `r round(sd(df_ipeds_sample$coa_grad_res, na.rm = TRUE)/sqrt(length(df_ipeds_sample$coa_grad_res)), digits = 4)`
 
 
+Calculating t-test
 
-la la la
+$$t = \frac{\bar{Y} - \mu_{Y0}}{\hat{\sigma}_{\bar{Y}}} = \frac{30002.74 - 28000}{810.1332} = 2.4721$$
 
-- Perform a t-test to check whether there is a significant difference between the population mean (which is equal to the mean of sample means from last week's sampling distribution) and the hypothesized value
-  - Compute the standard error of $\bar{Y}$; $SE(\bar{Y}) =s_Y/\sqrt{n}$
-  - Compute the t-statistic; $t = \bar{Y} - \mu_{Y,0}/SE(\bar{Y})$        
-  - Compute the p-value (significance probability) of null hypothesis; $p-value = 2\Phi(-|t|)$
-  - P-value is the probability of drawing $\bar{Y}$ at least as far in the tails of its distribution under the assumption that the null hypothesis is correct as the sample average you actually computed
+**`t.test()` function**
+
+- what `t.test()` does
+  - "Performs one and two sample t-tests on vectors of data"
+  - we use one sample t-test to test hypothesis about single population mean
+  - later, we will use two-samle t-test to test hypotheses about whether two population means are equal
+- syntax:
+  - `t.test(x, y = NULL, alternative = c("two.sided", "less", "greater"), mu = 0, paired = FALSE, var.equal = FALSE, conf.level = 0.95, ...)`
+- selected arguments
+  - `x`: vector (variable) you want to calculate t-test for
+  - `alternative`: whether you want two-sided or one-sided alternative hypothesis (default is `two.sided`)
+  - `mu`: value associated with null hypothesis (default is `0`)
 
 
-**General formula for test statistic** (for pretty much any kind of hypothesis test)
+Calculating t-test value (using function and by hand)
+```{r}
+# t-statistic = (sample_mean - mu_H_0)/(sample std err)
+  
+# using function
+#?t.test # to see help file for function
+t.test(x = df_ipeds_sample$coa_grad_res, mu = 28000)
+
+# by hand
+(mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE) - 28000)/(sd(df_ipeds_sample$coa_grad_res, na.rm = TRUE)/sqrt(length(df_ipeds_sample$coa_grad_res)))
+```
+
+### conceptual understanding of test statistic (**MOST IMPORTANT!**)
+
+The test statistic refers to a **sampling distribution** not the distribution of your single sample
+
+- in particular, the test statistic refers to the sampling distribution under the assumption that the null hypothesis is true, $H_0: \mu_Y = \mu_{Y0}$
+
+Recall core ideas of sampling distribution (we will refer to sampling distribution of sample mean, $\bar{Y}$)
+
+- The sampling distribution of the sampling mean is a distribution where each observation is a sample mean, $\bar{Y}$, from one random sample taken from the population
+- The sampling distribution shows how the value of the sample mean varies from sample to sample
+- Standard error (i.e., the standard deviation of the sampling distribution), $\hat{\sigma}_{\bar{Y}}$ is the average distance between one random sample mean, $\bar{Y}$, and the mean of sample means $\bar{Y}_{\bar{Y}}$
+  - (Note: we refer to sample standard error of the sample mean $\hat{\sigma}_{\bar{Y}} = \frac{\hat{\sigma}_{Y}}{\sqrt{n}}$, which can be calculated from sample data, rather than population standard error of the sample mean $\sigma_{\bar{Y}}$, which is a population parameter that is only known if we have data on the entire population)
+- Drawing from the central limit theorem, we know that sampling distributions will always be normally distributed so long as sample size is not small
+- Therefore, sampling distributions follow the empirical rule:
+  - 68% of observations within one standard error
+  - 95% of observations wtithin two standard erros
+  - 99% of observations within three standard errors
+
+<br>
+
+Here we visually stack the following for the variable `coa_grad_res`: 
+
+- the population distribution; distribution from a single random sample; and sampling distribution of sample mean
+
+```{r}
+plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
+  plot_distribution(get_sampling_distribution(df_ipeds_pop$coa_grad_res), plot_title = 'Sampling distribution') +
+  plot_layout(ncol = 1)
+```
+
+<br>
+
+**Usually we cannot know the sampling distribution because we do not have data on the entire population; we only have data on our single random sample**
+
+<br>
+
+However, hypothesis testing is not based on the true sampling distribution of the sample mean. It is based on the sampling distribution under the assumption that the null hypothesis is correct
+
+- Thanks to the central limit theorem, we have a pretty good idea of the sampling distribution assuming $H_0$ is true, even when we only have a single random sample!
+
+<br>
+
+Here we visually stack the following for the variable `coa_grad_res`: 
+
+- the population distribution; distribution from a single random sample; and sampling distribution of assuming that $H_0$ is true
+
+```{r}
+plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
+  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000, plot_title = 'Sampling distribution, assuming H_0') +
+  plot_layout(ncol = 1)
+```
 
 
+The t-test statistic is the distance between the hypothesized $H_0$ value and the observed sample estimate value $\bar{Y}$ scaled in terms of standard errors
+
+- e.g., it would be unlikely to observe a t-value of greater than `2` or a t-value less than `-2` because we know (from empirical rule and central limit theorem) that 95% of observations fall within two standard deviations of the mean for a normally distributed variable
+
+## p-value
+
+Define p-value
+
+- Under the assumption that $H_0$ is true, the p-value is the probability of observing a sample estimate (and its associated test-statistic) that is at least as far away from the null hypothesis value $\mu_{Y0}$ as the one we observed
 
 
+A small p-Small p-value means that it would be unusual to find the sample estimate we observed if the null hypothesis $H_0$ is find the observed data if 𝐻0were true.
 
+TWEAK THIS TEXT COPIED FROM GOOGLE DOC
+
+–t= value of your t-test
+Two-sided hypothesis (𝐻𝑎:𝜇≠𝜇0)
+Pr(obs>t) + pr(obs<-t)
+
+CALCULATE T-TEST FOR SAMPLE AND ONE H_0; INTERPRET P-VALUE
+
+- MEAN = 
+- HO = 
+```{r}
+mean(x = df_ipeds_sample$coa_grad_res)
+t.test(x = df_ipeds_sample$coa_grad_res, mu = 28000)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000)
+```
+CALCULATE T-TEST FOR SAMPLE AND ONE H_0; INTERPRET P-VALUE
+
+- MEAN = 
+- HO = 
+```{r}
+mean(x = df_ipeds_sample$coa_grad_res)
+t.test(x = df_ipeds_sample$coa_grad_res, mu = 29000)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000)
+```
+
+CALCULATE T-TEST FOR SAMPLE AND ONE H_0; INTERPRET P-VALUE
+
+- MEAN = 
+- HO = 
+```{r}
+mean(x = df_ipeds_sample$coa_grad_res)
+t.test(x = df_ipeds_sample$coa_grad_res, mu = 31500)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 31500)
+```
 
 PLAYING WITH T-TEST FUNCTION AND PLOT_T_DISTRIBUTION FUNCTION CRYSTAL CREATED
 ```{r}
@@ -1397,6 +1543,13 @@ plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distributi
   plot_layout(ncol = 1)
 ```
 
+Experiment with single sample distribution on top of sampling distribution assuming H_0
+```{r}
+  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
+  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000, plot_title = 'Sampling distribution, assuming H_0') +
+  plot_layout(ncol = 1)
+```
+
 Experiment with plotting population distribution on top of single sample distribution on top of sampling distribution
 ```{r}
 plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
@@ -1406,9 +1559,7 @@ plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distributi
 ```
 
 
-## p-value
 
-text
 
 ## Rejection region and conclusion
 
