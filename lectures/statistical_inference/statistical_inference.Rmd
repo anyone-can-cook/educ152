@@ -53,26 +53,33 @@ Statistical inference
 Purpose of this section:
 
 - load all libraries/packages we will use
-- load and create all datasets we will use
+- loads and creates IPEDS data frame (population)
+- creates data frame of generated variables (population)
+- creates sample versions of the IPEDS and gnerated data frames
 - create all functions we will use
+  - **credit to data scientist extraordinaire Crystal Han for creating most of these functions!**
+
 
 Why do all of this in one place?
 
 - so you don't have to run code chunks scattered randomly throughout the lecture
 - dont worry about understanding all code, especially for functions we create
 
-Libraries
 ```{r}
-#install.packages('tidyverse') # if you haven't installed already
-#install.packages('labelled') # if you haven't installed already
-#install.packages('patchwork') # if you haven't installed already
+# Libraries
+  #install.packages('tidyverse') # if you haven't installed already
+  #install.packages('labelled') # if you haven't installed already
+  #install.packages('patchwork') # if you haven't installed already
 
 library(tidyverse) # load tidyverse package
 library(labelled) # load labelled package package
 library(patchwork)
-```
-IPEDS data
-```{r}
+
+
+##########
+########## IPEDS
+##########
+
 # Load ipeds dataset from course website url
 load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
 
@@ -133,11 +140,13 @@ df_ipeds_pop <- panel_data %>%
     var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
 
 df_ipeds_pop %>% glimpse()
-```
 
 
-Create data frame of generated variables, with each variable meant to represent the entire population
-```{r}
+##########
+########## Create data frame of generated variables, with each variable meant to represent the entire population
+##########
+
+
 num_obs <- 10000
 
 # Generate normal distribution w/ custom mean and sd
@@ -162,11 +171,12 @@ df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist)
 # drop individual objects associated with each variable
 rm(norm_dist,rskew_dist,lskew_dist,stdnorm_dist)
 rm(num_obs)
-```
 
 
-Create sample versions of generated population data frame and IPEDS population data frame
-```{r}
+##########
+########## Create sample versions of generated population data frame and IPEDS population data frame
+##########
+
 # create sample version of our generated data
   set.seed(124) # set seed so that everyone ends up with the same random sample
   
@@ -183,11 +193,8 @@ Create sample versions of generated population data frame and IPEDS population d
   # compare mean of coa_grad_res between population and sample
   mean(df_ipeds_pop$coa_grad_res, na.rm = TRUE)
   mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE)
-```
-Load user-defined functions
 
-- props to data scientist extraordinare Crystal Han for creating most of these functions!
-```{r}
+
 ##########
 # Create function to generate plots of variable distributions
 ##########
@@ -308,9 +315,7 @@ plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.s
 
   p
 }
-
 ```
-
 
 # Introduce IPEDS data
 
@@ -1560,51 +1565,166 @@ plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 31500)
 
 ## Rejection region and conclusion
 
-PASTED TEXT FROM GOOGLE DOCS
+### Alpha level (rejection region)
 
-Define rejection region (alpha level)
-𝛼 𝑙𝑒𝑣𝑒𝑙 (alpha level) is a number such that we reject 𝐻0 if the observed p-value is less than or equal to the alpha level.
-–We reject the null hypothesis if the observed p-value is less than or equal to the rejection region
-– In practice, most common alpha levels are .05 or .01
-–So if we choose 𝛼 𝑙𝑒𝑣𝑒𝑙 of .05 and find a p-value of .02, we reject 𝐻0
-In practice
-define rejection region prior to running analyses; you don’t really get to choose rejection region; follow accepted standards
-Alpha-level of .05 is common
-Draw picture
-Compare p-value to alpha level for our example
-Choose alpha-level of .05
-Draw picture with p-value and labels and such
-Make conclusion about hypothesis test
-𝐻0: 𝜇=𝜇0=40
-•𝐻𝑎: 𝜇≠𝜇0
-•Alpha level= rejection region=.05
-•P-value=.0836
-•Conclusion:
-–do not reject 𝐻0.
-–We do not have sufficient evidence to reject the null hypothesis that population mean hours worked is equal to 40 hours per week.
+$\alpha$ level (referred to as "alpha level" or "rejection region")
 
+- Definition: $\alpha$ level is a number such that we reject the null hypothesis $H_0$ the observed p-value is less than or equal to the alpha level.
+
+<br>
+
+In practice, the most common alpha level $\alpha$ is `.05`
+
+- e.g., if we choose $\alpha= .05$ and our t-statistic is associated with a p-value of .02, then we reject $H_0$; if we choose $\alpha= .05$ and our t-statistic is associated with a p-value of .07, then we do not reject $H_0$
+- sometimes researchers choose an alpha level of `.10` but usually this is viewed as not sufficiently strong threshold to reject $H_0$
+
+<br>
+
+Usually, you define alpha level **prior** to running analyses
+
+- when researchers define alpha level (rejection region) *after* running analyses, there may be a temptation to choose an alpha level that allows them to reject $H_0$
+
+<br>
+
+To show how alpha level is used in practice, we'll test the null hypothesis that population mean grad resident cost of attendance is `28,500`, initially using an alpha level of .05
+
+- $H_0: \mu_Y = \mu_{Y0} = \$28,500 $ and $H_a: \mu_Y \ne \$28,500 $
+- Sample mean, $\bar{Y} = $ `r round(mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE), digits = 4)`
+- $t =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$statistic, digits=2)`
+- p-value $= Pr(obs > t) + Pr(obs< -t) =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$p.value, digits=3)`
+  - $Pr(obs>t)=$ `r round((t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$p.value)/2, digits=4)`
+  - $Pr(obs<-t)=$ `r round((t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$p.value)/2, digits=4)`
+
+
+Note that the `t.test()` function doesn't have an argument that let's you specify the alpha level (rejection region); rather, the idea is that you choose the alpha level and then compare that to the p-value calculated by `t.test()`
+```{r}
+t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)
+```
+
+
+Note that the user-defined `plot_t_distribution()` includes an optional argument that allows you to specify the alpha-level
+
+- syntax (including default argument values for arguments with defaults)
+  - `plot_t_distribution(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '')`
+  - So we can set the alpha level with the argument `alpha`, which has the default value of `0.05`  
+
+Below, we run `plot_t_distribution()`, manually setting the `alpha` argument to the the default value of `0.05`  
+
+- the blue dotted line denotes the t-value from our test statistic
+  - $t =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$statistic, digits=2)`
+- the red dotted lines denote the t-value associated with the chosen alpha level (rejection region)
+  - the t-value associated with the alpha level is referred to as the "critical value"
+  - the t-statistic of `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$statistic, digits=2)` is less than the critical value of 1.97, indicating that we won't reject $H_0$
+- the shaded region denotes the probability associated with the chosen alpha level
+  - given our choice of `alpha = .05`, the shaded region represents .05, that is the percent of all observations that lie in the rejection region
+  - our p-value of `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 29000)$p.value, digits=3)` is greater than our alpha level of .05, indicating that we won't reject $H_0$
+- Since our p-value is greater than our alpha level, we do not reject $H_0$
+
+```{r}
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28500, alpha = .05)
+```
+
+How would our conclusion change if we chose an alpha level of .10?
+
+- $H_0: \mu_Y = \mu_{Y0} = \$28,500 $ and $H_a: \mu_Y \ne \$28,500 $
+- Sample mean, $\bar{Y} = $ `r round(mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE), digits = 4)`
+- $t =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$statistic, digits=2)`
+- p-value $= Pr(obs > t) + Pr(obs< -t) =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$p.value, digits=3)`
+  - $Pr(obs>t)=$ `r round((t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$p.value)/2, digits=4)`
+  - $Pr(obs<-t)=$ `r round((t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$p.value)/2, digits=4)`
+- Since our p-value of `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$p.value, digits=3)` is less than the alpha level of .10, we reject $H_0$
+
+
+```{r}
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28500, alpha = .10)
+```
+
+### Conclusion
+
+Last step is to make a conclusion about your hypothesis based on comparing the p-value you observed to the alpha level
+
+
+**How to state the conclusion**
+
+- if p-value is greater than the alpha level $\alpha$ (e.g., $p-val =.06, \alpha = .05$)
+  - conclusion: do not reject $H_0$
+  - longer version: "We do not have sufficient evidence to reject the null hypothesis, $H_0$, that population mean $\mu_Y$ is equal to $\mu_{Y0}$"
+  - do not say "we accept $H_0$ because we don't know the exact value of the population parameter
+- if p-value is less than the alpha level $\alpha$ (e.g., $p-val =.04, \alpha = .05$)
+  - conclusion: we reject $H_0$
+    - can also say "we accept $H_a$, but people usually say "reject $H_0$
+  - longer version: "we reject the null hypothesis $H_0$, that population mean $\mu_Y$ is equal to $\mu_{Y0}$"
+
+
+This example:
+
+
+- $H_0: \mu_Y = \mu_{Y0} = \$28,500 $ and $H_a: \mu_Y \ne \$28,500 $ and alpha level $\alpha = .05$
+- p-value $= Pr(obs > t) + Pr(obs< -t) =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)$p.value, digits=3)`
+- conclusion:
+  - do not reject $H_0$
+  - We do not have sufficient evidence to reject the null hypothesis, $H_0$, that population mean full-time resident graduate cost of attendance is equal to `28,500`
+
+```{r}
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28500, alpha = .05)
+```
 
 ## Assumptions
 
-PASTED TEXT FROM GOOGLE DOCS
+All statistical tests (based on some statistical analysis) depends on "assumptions"
 
-Assumptions for hypothesis tests about population mean
-–(1) sample is a random sample from population
-–(2) population distribution of variable is normal
-“Roust”
-A statistical method is robust with respect to a particular assumption, when it performs adequately even when that assumption is violated
-Statisticians have shown that hypothesis tests about population means are robust against violations of normal population assumption, especially when sample size > 30
-Why is hypothesis test about population means robust to normal population assumption? Because of central limit theorem
+- *if* the researcher is confident that the assumptions have been satisfied, then the researcher can make inferences about the population parameter by applying the relevant statistical analysis/test to sample data
+- if we are concerned that one or more assumptions have not been satisfied, then the researcher should not make inferences about the population parameter
+
+
+Assumptions necessary for testing hypotheses about a population mean
+
+1. sample is a random sample from population
+1. population distribution of variable is normal
+
+“Robust”
+
+- A statistical method is robust with respect to a particular assumption, when it performs adequately even when that assumption is violated
+
+Hyptohesis tests about a population mean is "robust" to the normal distribution assumption
+
+- Statisticians have shown that hypothesis tests about population means are robust against violations of normal population assumption, especially when sample size > 30
+- Why is hypothesis test about population means robust to normal population assumption? Because of central limit theorem
+
 Central limit theorem:
-when sample size is large, the sampling distribution of the sample mean, 𝑦 , is approximately normal, even if the population distribution of the variable is not normal
-How large is large enough?
-If population distribution is normal then sampling distribution is normal for any sample size
-If population distribution is not normal, sample size of about 30 is sufficient
-Show in Applet
-Hypothesis test about population means is not robust to violations of random sampling
-(i.e., if you take a non-random sample from the population, you cannot make good predictions about the population)
 
-## Example, all steps
+- when sample size is large, the sampling distribution of the sample mean, 𝑦 , is approximately normal, even if the population distribution of the variable is not normal
+- If population distribution is normal then sampling distribution is normal for any sample size
+- If population distribution is not normal, sample size of about 30 is sufficient
+
+Hypothesis test about population means is not robust to violations of random sampling
+
+- i.e., if you take a non-random sample from the population, you cannot make good predictions about the population
+
+## Hypothesis test example, all steps
+
+Research question:
+
+- What is the population mean price of full-time nonresident graduate tuition + fees? [variable = `tuitfee_grad_nres`]
+
+Let's imagine we want to test whether the population mean, $\mu_Y = \$17,000$, using a two-sided alternative hypothesis and an alpha level of .05
+
+- step: state null and alternative hypothesis
+  - HERE
+
+TEST STATISTIC
+
+P-VALUE
+
+CONCLUSION
+
+```{r}
+mean(df_ipeds_pop$tuitfee_grad_nres)
+mean(df_ipeds_sample$tuitfee_grad_nres)
+
+t.test(df_ipeds_sample$tuitfee_grad_nres, mu = 17000)
+```
+
 
 what variable to use?
 
