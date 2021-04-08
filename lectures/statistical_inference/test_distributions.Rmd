@@ -286,21 +286,25 @@ plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.s
   xbar <- mean(data_vec)
   s <- sd(data_vec)
   
-  t <- (xbar - mu) / (s / sqrt(sample_size))
+  std_err <- s / sqrt(sample_size)
+  t <- (xbar - mu) / std_err
   
   # Calculate critical value and p-value
   if (alternative == 'less') {  # left-tailed
     cv_lower <- qt(p = alpha, df = deg_freedom, lower.tail = T)
     cv_legend <- round(cv_lower, 2)
+    cv_legend2 <- round(cv_lower * std_err + mu, 2)
     pval <- pt(q = t, df = deg_freedom, lower.tail = T)
   } else if (alternative == 'greater') {  # right-tailed
     cv_upper <- qt(p = alpha, df = deg_freedom, lower.tail = F)
     cv_legend <- round(cv_upper, 2)
+    cv_legend2 <- round(cv_upper * std_err + mu, 2)
     pval <- pt(q = t, df = deg_freedom, lower.tail = F)
   } else {  # two-tailed
     cv_lower <- qt(p = alpha / 2, df = deg_freedom, lower.tail = T)
     cv_upper <- qt(p = alpha / 2, df = deg_freedom, lower.tail = F)
     cv_legend <- str_c('\u00B1', round(cv_upper, 2))
+    cv_legend2 <- str_c(round(cv_lower * std_err + mu, 2), ' & ', round(cv_upper * std_err + mu, 2))
     pval <- 2 * pt(q = t, df = deg_freedom, lower.tail = t < 0)
   }
   
@@ -331,11 +335,13 @@ plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.s
   p <- p +
     geom_vline(aes(xintercept = t, color = 'tstat'),
                linetype = 'dotted', size = 0.8, alpha = 0.8) +
+    scale_x_continuous(sec.axis = sec_axis(trans = ~ . * std_err + mu)) +
     scale_color_manual(name = 'Legend',
                        breaks = c('tstat', 'cval'),
-                       labels = c(str_c('t-statistics: ', round(t, 2),
+                       labels = c(str_c('t-statistics: ', round(t, 2), ' / ', round(xbar, 2),
+                                        ' (SE: ', round(std_err, 2), ')',
                                         '\n(p-value: ', round(pval, 3), ')'),
-                                  str_c('Critical value: ', cv_legend,
+                                  str_c('Critical value: ', cv_legend, ' / ', cv_legend2,
                                         '\n(alpha: ', round(alpha, 2), ')')),
                        values = c(tstat='blue', cval='red')) +
     theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
