@@ -1514,7 +1514,7 @@ Here we visually stack the following for the variable `coa_grad_res`:
 ```{r}
 plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
   plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
-  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000, plot_title = 'Sampling distribution, assuming H_0') +
+  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000,shade_rejection = F, shade_pval = T, plot_title = 'Sampling distribution, assuming H_0') +
   plot_layout(ncol = 1)
 ```
 
