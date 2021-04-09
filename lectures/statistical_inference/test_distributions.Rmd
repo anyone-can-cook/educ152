@@ -152,7 +152,7 @@ df_ipeds_pop <- panel_data %>%
 # Function to generate plot
 plot_distribution <- function(data_vec, plot_title = '') {
   p <- ggplot(as.data.frame(data_vec), aes(x = data_vec)) +
-    ggtitle(plot_title) + xlab('') +
+    ggtitle(plot_title) + xlab('') + ylab('') +
     geom_histogram(aes(y = ..density..), alpha = 0.4, position = 'identity') +
     geom_density() +
     geom_vline(aes(xintercept = mean(data_vec, na.rm = T), color = 'mean'),
@@ -163,7 +163,7 @@ plot_distribution <- function(data_vec, plot_title = '') {
                        labels = c(paste('Mean:', round(mean(data_vec, na.rm = T), 2),
                                         '\nStd Dev:', round(sd(data_vec, na.rm = T), 2)),
                                   paste('Median:', round(median(data_vec, na.rm = T), 2))),
-                       values = c(mean = 'red', median = 'blue')) +
+                       values = c(mean = 'blue', median = 'red')) +
     theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
           legend.title = element_text(size = 9, face = 'bold'),
           legend.text = element_text(size = 8))
@@ -276,7 +276,7 @@ df_generated_pop %>% head()
 
 ```{r}
 # Function to generate t-distribution plot
-plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T) {
+plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F) {
   
   data_vec <- na.omit(data_vec)
   
@@ -349,29 +349,40 @@ plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.s
   }
   
   # Legend text
-  legend_text <- c(str_c('t-statistics: ', round(t, 2)),
-                   str_c('SE: ', round(std_err, 2)),
-                   str_c('p-value: ', pval),
-                   str_c('Critical value: ', cv_legend),
-                   str_c('alpha: ', round(alpha, 2)))
+  legend_text <- c('t-statistics / p-value', 'critical value / alpha')
   
-  p <- p +
-    annotate('text', size = 9*5/14, x = 4.81, y = 0.14, hjust = 0,
-             label = 'bold(Statistics)', parse = T) +
-    annotate('text', size = 8*5/14, x = 4.86, y = 0:4 * -0.015 + 0.12, hjust = 0,
-             label = legend_text)
+  if (stacked) {
+    legend_text <- c(str_c('t-statistics: ', round(t, 2),
+                     '\n(p-value: ', str_extract(pval, '[\\d.-]+$'), ')'),
+                     str_c('Critical value: ', cv_legend,
+                     '\n(alpha: ', round(alpha, 2), ')'))
+  }
+  
+  stats_text <- c(str_c('t-statistics: ', round(t, 2)),
+                  str_c('SE: ', round(std_err, 2)),
+                  str_c('p-value: ', pval),
+                  str_c('Critical value: ', cv_legend),
+                  str_c('alpha: ', round(alpha, 2)))
+  
+  if (!stacked) {
+    p <- p +
+      annotate('text', size = 9*5/14, x = 4.84, y = 0.14, hjust = 0,
+               label = 'bold(Statistics)', parse = T) +
+      annotate('text', size = 8*5/14, x = 4.89, y = 0:4 * -0.015 + 0.12, hjust = 0,
+               label = stats_text)
+  }
   
   # Label plot
   p <- p +
     geom_vline(aes(xintercept = t, color = 'tstat'),
                linetype = 'dotted', size = 0.8, alpha = 0.8) +
     scale_x_continuous(sec.axis = sec_axis(trans = ~ . * std_err + mu)) +
-    scale_color_manual(name = 'Legend',
+    scale_color_manual(name = if_else(stacked, 'Statistics', 'Legend'),
                        breaks = c('tstat', 'cval'),
-                       labels = c('t-statistics / p-value', 'critical value / alpha'),
+                       labels = legend_text,
                        values = c(tstat = 'blue', cval = 'red')) +
     theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
-          plot.margin = unit(c(5.5, 28, 5.5, 5.5), 'pt'),
+          plot.margin = unit(c(5.5, if_else(stacked, 5.5, 30), 5.5, 5.5), 'pt'),
           legend.title = element_text(size = 9, face = 'bold'),
           legend.text = element_text(size = 8)) +
     coord_cartesian(xlim = c(-4, 4),
@@ -407,9 +418,9 @@ plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 31000, alternative = 'gre
 
 
 ```{r}
-plot_distribution(df_generated_pop$stdnorm_dist, plot_title = 'Population distribution') +
-  plot_distribution(df_generated_sample$stdnorm_dist, plot_title = 'Single sample distribution') +
-  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000) +
+plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
+  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000, plot_title = 'Sampling distribution under null', stacked = T) +
   plot_layout(ncol = 1)
 ```
 
