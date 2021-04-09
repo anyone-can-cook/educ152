@@ -518,13 +518,13 @@ df_school %>% select(name, school_type, state_code, avgmedian_inc_2564) %>%
 
 # Functions
 
-What are **functions**?
+__What are functions__?
 
 - **Functions** are pre-written bits of code that accomplish some task
 - Functions allow you to "automate" tasks that you perform more than once
 - We can call functions whenever we want to use them, again and again
 
-Functions generally follow **three sequential steps**:
+__Functions generally follow three sequential steps__:
 
 1. Take in __input__ object(s)
 2. __Process__ the input
@@ -557,19 +557,19 @@ sum(c(1,2,3)) %>% str()
 
 ## User-written functions
 
-What are "__user-written functions__"? [_Ozan's term_]
+__What are "__user-written functions__"? [_Ozan's term_]__
 
 - __User-written functions__ are functions _you_ write to perform some specific task
 - It can often be for a data-manipulation or analysis task specific to your project
 
-Like all functions, user-written functions usually follow **three steps**:
+__Like all functions, user-written functions usually follow three steps__:
 
 1. Take in one or more __input__ object(s)
 2. __Process__ the input
     - This may include utilizing existing functions from other packages, for example `sum()` or `length()`
 3. __Return__ a new object
 
-**Three components** of a function:
+__Three components of a function__:
 
 1. __Function name__
     - Define a function using `function()` and give it a **name** using the assignment operator `<-`
