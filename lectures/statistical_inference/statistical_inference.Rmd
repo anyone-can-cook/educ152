@@ -241,7 +241,7 @@ get_sampling_distribution <- function(data_vec, num_samples = 500, sample_size =
 ##########
 
 
-plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '') {
+plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = TRUE, shade_pval = FALSE) {
   
   data_vec <- na.omit(data_vec)
   
@@ -259,42 +259,72 @@ plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.s
     cv_lower <- qt(p = alpha, df = deg_freedom, lower.tail = T)
     cv_legend <- round(cv_lower, 2)
     cv_legend2 <- round(cv_lower * std_err + mu, 2)
-    pval <- pt(q = t, df = deg_freedom, lower.tail = T)
+    pval <- round(pt(q = t, df = deg_freedom, lower.tail = T), 4)
   } else if (alternative == 'greater') {  # right-tailed
     cv_upper <- qt(p = alpha, df = deg_freedom, lower.tail = F)
     cv_legend <- round(cv_upper, 2)
     cv_legend2 <- round(cv_upper * std_err + mu, 2)
-    pval <- pt(q = t, df = deg_freedom, lower.tail = F)
+    pval <- round(pt(q = t, df = deg_freedom, lower.tail = F), 4)
   } else {  # two-tailed
     cv_lower <- qt(p = alpha / 2, df = deg_freedom, lower.tail = T)
     cv_upper <- qt(p = alpha / 2, df = deg_freedom, lower.tail = F)
     cv_legend <- str_c('\u00B1', round(cv_upper, 2))
     cv_legend2 <- str_c(round(cv_lower * std_err + mu, 2), ' & ', round(cv_upper * std_err + mu, 2))
-    pval <- 2 * pt(q = t, df = deg_freedom, lower.tail = t < 0)
+    pval_half <- round(pt(q = t, df = deg_freedom, lower.tail = t < 0), 4)
+    pval <- str_c(pval_half, ' + ', pval_half, ' = ', 2 * pval_half)
   }
   
   # Plot t-distribution
   p <- ggplot(data.frame(x = -c(-4, 4)), aes(x)) +
     ggtitle(plot_title) + xlab('') + ylab('') +
-    stat_function(fun = dt, args = list(df = deg_freedom))
+    stat_function(fun = dt, args = list(df = deg_freedom), xlim = c(-4, 4))
   
   # Shade rejection region using critical value
   if (alternative != 'greater') {
-    p <- p +
-      stat_function(fun = dt, args = list(df = deg_freedom),
-                    xlim = c(-4, cv_lower),
-                    geom = 'area', alpha = 0.3, fill = 'red') +
-      geom_vline(aes(xintercept = cv_lower, color = 'cval'),
-                 linetype = 'dotted', size = 0.8, alpha = 0.8)
+    p <- p + geom_vline(aes(xintercept = cv_lower, color = 'cval'),
+                        linetype = 'dotted', size = 0.8, alpha = 0.8)
+    
+    if (shade_rejection) {
+      p <- p + stat_function(fun = dt, args = list(df = deg_freedom),
+                             xlim = c(-4, cv_lower),
+                             geom = 'area', alpha = 0.3, fill = 'red')
+    }
+    
+    if (shade_pval) {
+      p <- p + stat_function(fun = dt, args = list(df = deg_freedom),
+                             xlim = c(-4, if_else(alternative == 'two.sided', -abs(t), t)),
+                             geom = 'area', alpha = 0.3, fill = 'blue')
+    }
   }
   if (alternative != 'less') {
-    p <- p +
-      stat_function(fun = dt, args = list(df = deg_freedom),
-                    xlim = c(cv_upper, 4),
-                    geom = 'area', alpha = 0.3, fill = 'red') +
-      geom_vline(aes(xintercept = cv_upper, color = 'cval'),
-                 linetype = 'dotted', size = 0.8, alpha = 0.8)
+    p <- p + geom_vline(aes(xintercept = cv_upper, color = 'cval'),
+                        linetype = 'dotted', size = 0.8, alpha = 0.8)
+    
+    if (shade_rejection) {
+      p <- p + stat_function(fun = dt, args = list(df = deg_freedom),
+                             xlim = c(cv_upper, 4),
+                             geom = 'area', alpha = 0.3, fill = 'red')
+    }
+    
+    if (shade_pval) {
+      p <- p + stat_function(fun = dt, args = list(df = deg_freedom),
+                             xlim = c(if_else(alternative == 'two.sided', abs(t), t), 4),
+                             geom = 'area', alpha = 0.3, fill = 'blue')
+    }
   }
+  
+  # Legend text
+  legend_text <- c(str_c('t-statistics: ', round(t, 2)),
+                   str_c('SE: ', round(std_err, 2)),
+                   str_c('p-value: ', pval),
+                   str_c('Critical value: ', cv_legend),
+                   str_c('alpha: ', round(alpha, 2)))
+  
+  p <- p +
+    annotate('text', size = 9*5/14, x = 4.81, y = 0.14, hjust = 0,
+             label = 'bold(Statistics)', parse = T) +
+    annotate('text', size = 8*5/14, x = 4.86, y = 0:4 * -0.015 + 0.12, hjust = 0,
+             label = legend_text)
   
   # Label plot
   p <- p +
@@ -303,15 +333,14 @@ plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.s
     scale_x_continuous(sec.axis = sec_axis(trans = ~ . * std_err + mu)) +
     scale_color_manual(name = 'Legend',
                        breaks = c('tstat', 'cval'),
-                       labels = c(str_c('t-statistics: ', round(t, 2), ' / ', round(xbar, 2),
-                                        ' (SE: ', round(std_err, 2), ')',
-                                        '\n(p-value: ', round(pval, 3), ')'),
-                                  str_c('Critical value: ', cv_legend, ' / ', cv_legend2,
-                                        '\n(alpha: ', round(alpha, 2), ')')),
-                       values = c(tstat='blue', cval='red')) +
+                       labels = c('t-statistics / p-value', 'critical value / alpha'),
+                       values = c(tstat = 'blue', cval = 'red')) +
     theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
+          plot.margin = unit(c(5.5, 28, 5.5, 5.5), 'pt'),
           legend.title = element_text(size = 9, face = 'bold'),
-          legend.text = element_text(size = 8))
+          legend.text = element_text(size = 8)) +
+    coord_cartesian(xlim = c(-4, 4),
+                    clip = 'off')
 
   p
 }
@@ -1666,7 +1695,8 @@ This example:
   - We do not have sufficient evidence to reject the null hypothesis, $H_0$, that population mean full-time resident graduate cost of attendance is equal to `28,500`
 
 ```{r}
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28500, alpha = .05)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28500, alpha = .05,
+                    shade_rejection = TRUE, shade_pval = FALSE)
 ```
 
 ## Assumptions
@@ -1709,43 +1739,63 @@ Research question:
 
 Let's imagine we want to test whether the population mean, $\mu_Y = \$17,000$, using a two-sided alternative hypothesis and an alpha level of .05
 
-- step: state null and alternative hypothesis
-  - HERE
+State null and alternative hypotheses
 
-TEST STATISTIC
+- Null hypothesis, $H_0$
+  - $H_0: \mu_Y = \mu_{Y0} = \$17,000 $
+  - $H_0:$ population mean price of full-time nonresident graduate tuition + fees is $17,000
+- Alternative hypothesis, $H_a$
+  - $H_0: \mu_Y \ne \$17,000 $
+  
+Test statistic and p-value
 
-P-VALUE
+- $t = \frac{\bar{Y} - \mu_{Y0}}{\hat{\sigma}_{\bar{Y}}}$
+- where:
+  - $\hat{\sigma}_{Y}$ refers to sample standard deviation of variable $Y$
+  - $n$ refers to sample size
+  - sample standard error of the sample mean $ = \hat{\sigma}_{\bar{Y}} = \frac{\hat{\sigma}_{Y}}{\sqrt{n}}$
 
-CONCLUSION
+Components of t-test
+
+- sample size, $n$ = `r length(df_ipeds_sample$tuitfee_grad_nres)`
+- sample mean, $\bar{Y}$ = `r round(mean(df_ipeds_sample$tuitfee_grad_nres, na.rm = TRUE), digits = 4)`
+- Population mean associated with $H_0$, $\mu_{Y0} = \$17,000$
+- sample standard deviation, $\hat{\sigma}_{Y}$ = `r round(sd(df_ipeds_sample$tuitfee_grad_nres, na.rm = TRUE), digits = 4)`
+- sample standard error of the sample mean, $\hat{\sigma}_{\bar{Y}}$ = `r round(sd(df_ipeds_sample$tuitfee_grad_nres, na.rm = TRUE)/sqrt(length(df_ipeds_sample$tuitfee_grad_nres)), digits = 4)`
+
+Calculating t-test p-value using `t.test()`
+
+- $t =$ `r round(t.test(x = df_ipeds_sample$tuitfee_grad_nres, mu = 17000)$statistic, digits=2)`
+- p-value $= Pr(obs > t) + Pr(obs< -t) =$ `r round(t.test(x = df_ipeds_sample$tuitfee_grad_nres, mu = 17000)$p.value, digits=3)`
+  - $Pr(obs>t)=$ `r round((t.test(x = df_ipeds_sample$tuitfee_grad_nres, mu = 17000)$p.value)/2, digits=4)`
+  - $Pr(obs<-t)=$ `r round((t.test(x = df_ipeds_sample$tuitfee_grad_nres, mu = 17000)$p.value)/2, digits=4)`
+- below code chunk runs t-test and plots t-value against sampling distribution assuming $H_0$ is true, using alpha of .05
 
 ```{r}
-mean(df_ipeds_pop$tuitfee_grad_nres)
-mean(df_ipeds_sample$tuitfee_grad_nres)
-
 t.test(df_ipeds_sample$tuitfee_grad_nres, mu = 17000)
+plot_t_distribution(df_ipeds_sample$tuitfee_grad_nres, mu = 17000, alpha = .05, 
+  shade_rejection = TRUE, shade_pval = FALSE)
 ```
 
+**Conclusion**
 
-what variable to use?
+- Because the p-value of `r round(t.test(x = df_ipeds_sample$tuitfee_grad_nres, mu = 17000)$p.value, digits=3)` is less than the alpha level of `.05`, we reject $H_0$
+- we reject the null hypothesis $H_0$, population mean price of full-time nonresident graduate tuition + fees, $\mu_Y$, is equal to $17,000$
+- We can also say that $\mu_Y$ is greater than $17,000$
 
-- maybe something about off-campus room and board?
-- or something about tuition + fees
+Finally, we usually don't have all data on the population. But since we do for IPEDS, we can plot:
 
-Research question:
-
-- la la
-
-Null and alternative hypothesis:
-
-- la la
-
-
-
-text
-
-## Example [all steps]
-
-text
+- the population distribution (usually unknown)
+- on top of the distribution from our single random sample
+- on top of the sampling distribution  (usually unknown)
+- on top of the sampling distribution assuming $H_0$ is true
+```{r}
+plot_distribution(df_ipeds_pop$tuitfee_grad_nres, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$tuitfee_grad_nres, plot_title = 'Single sample distribution') +
+  plot_distribution(get_sampling_distribution(df_ipeds_pop$tuitfee_grad_nres), plot_title = 'True Sampling distribution') +
+  plot_t_distribution(df_ipeds_sample$tuitfee_grad_nres, mu = 17000, plot_title = 'Sampling distribution, assuming H_0') +
+  plot_layout(ncol = 1)
+```
 
 # Fundamentals of causal inference
 
