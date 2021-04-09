@@ -225,7 +225,7 @@ plot_distribution <- function(data_vec, plot_title = '') {
 # Write function to get the sampling distribution from a variable (defaults equal 500 samples of size 200)
 ##########
 
-get_sampling_distribution <- function(data_vec, num_samples = 500, sample_size = 100) {
+get_sampling_distribution <- function(data_vec, num_samples = 1000, sample_size = 200) {
   sample_means <- vector(mode = 'numeric', num_samples)
 
   for (i in 1:length(sample_means)) {
@@ -242,7 +242,7 @@ get_sampling_distribution <- function(data_vec, num_samples = 500, sample_size =
 
 
 # Function to generate t-distribution plot
-plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F) {
+plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = F, stacked = F) {
   
   data_vec <- na.omit(data_vec)
   
@@ -1514,7 +1514,7 @@ Here we visually stack the following for the variable `coa_grad_res`:
 ```{r}
 plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
   plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
-  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000, plot_title = 'Sampling distribution, assuming H_0') +
+  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000,shade_rejection = F, shade_pval = T, plot_title = 'Sampling distribution, assuming H_0') +
   plot_layout(ncol = 1)
 ```
 
@@ -1554,7 +1554,7 @@ Let's calculate and visualize p-value for a couple different hypothesized values
 
 <br>
 
-$H_0: \mu_Y = \mu_{Y0} = \$29,000 $ and $H_a: \mu_Y \ne \$29,000 $
+$H_0: \mu_Y = \mu_{Y0} = \$29,000$ and $H_a: \mu_Y \ne \$29,000$
 
 - Sample mean, $\bar{Y} = $ `r round(mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE), digits = 4)`
 - $t =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 29000)$statistic, digits=2)`
@@ -1566,12 +1566,12 @@ $H_0: \mu_Y = \mu_{Y0} = \$29,000 $ and $H_a: \mu_Y \ne \$29,000 $
 ```{r}
 mean(x = df_ipeds_sample$coa_grad_res)
 t.test(x = df_ipeds_sample$coa_grad_res, mu = 29000)
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000,shade_rejection = F, shade_pval = T)
 ```
 
 <br>
 
-$H_0: \mu_Y = \mu_{Y0} = \$28,000 $ and $H_a: \mu_Y \ne \$28,000 $
+$H_0: \mu_Y = \mu_{Y0} = \$28,000$ and $H_a: \mu_Y \ne \$28,000$
 
 - Sample mean, $\bar{Y} = $ `r round(mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE), digits = 4)`
 - $t =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 28000)$statistic, digits=2)`
@@ -1583,13 +1583,13 @@ $H_0: \mu_Y = \mu_{Y0} = \$28,000 $ and $H_a: \mu_Y \ne \$28,000 $
 ```{r}
 mean(x = df_ipeds_sample$coa_grad_res)
 t.test(x = df_ipeds_sample$coa_grad_res, mu = 28000)
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000,shade_rejection = F, shade_pval = T)
 ```
 
 
 <br>
 
-$H_0: \mu_Y = \mu_{Y0} = \$31,500 $ and $H_a: \mu_Y \ne \$31,500$
+$H_0: \mu_Y = \mu_{Y0} = \$31,500$ and $H_a: \mu_Y \ne \$31,500$
 
 - Sample mean, $\bar{Y} =$ `r round(mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE), digits = 4)`
 - $t =$ `r round(t.test(x = df_ipeds_sample$coa_grad_res, mu = 31500)$statistic, digits=2)`
