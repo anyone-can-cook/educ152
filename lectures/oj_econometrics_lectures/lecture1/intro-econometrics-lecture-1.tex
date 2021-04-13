@@ -1,0 +1,393 @@
+
+%external style tex file
+%Karina's directory
+\input{C:/Users/ozanj/Dropbox/econometrics-course/lectures/header-tex/hed612-lecture-style3} 
+
+%Ozan's directory- need to change the style tex file to reflect UCLA email, course number, logos, etc.
+%\input{C:/Users/ozanj/Documents/Dropbox/hed612/lectures/beamer-style/hed612-lecture-style2}
+
+
+%\title [Short Title]{Long Title}
+\title[EDUC 263, Lecture 1] {EDUC 263: Introduction to Econometrics, Lecture 1}
+\subtitle{Introduction}
+\date{Month Date, Year}
+
+
+\begin{document}
+	
+	
+	\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}{What we will do today}
+	%\textbf{Today}
+	%\vspace{2mm}
+	\tableofcontents
+	\vspace{5mm}
+	Next class 
+	\begin{itemize}
+		\item Why experiments work
+		\item Core concepts in experimental and non-experimental research design
+	\end{itemize}				
+\end{frame}
+
+
+\section[Introductions]{Introductions}
+
+\section[Course overview]{Overview of econometrics/causal inference/program evaluation research}
+
+
+\begin{frame}{The goal of causal inference research}
+	Descriptive research questions
+	\begin{itemize}
+		\item Can investigate the magnitude of a problem (univariate):
+		\begin{itemize}
+			\item What percentage of high school graduates attend college?
+			%\item 
+		\end{itemize}
+		\item Investigate correlational relationship between variables:
+		\begin{itemize}
+			\item Relationship between buying felt furniture pads and credit score?
+			\item Relationship between avg. income at a high school and the number of off-campus recruiting visits by universities?
+		\end{itemize}		
+	\end{itemize}
+	\vspace{2mm}	
+	Causal research questions
+	\begin{itemize}
+	\item Want to know the ``causal effect'' of independent variable (X) on outcome (Y); If you change value of X, causal effect is the change in Y due to the change in X
+	\item Have the form ``what is effect of X on Y?'' Examples: 
+		\begin{itemize}
+		\item What is the effect of class size on math scores? 
+		\item What is effect of grant aid on graduation?
+		\end{itemize} 
+	\end{itemize}
+\end{frame} 
+
+
+
+\begin{frame}{What is the ``true'' causal effect of an treatment? Actual minus counterfactual}
+
+	Example: What is effect of participating in Mexican American Studies (MAS) program (X) on high school graduation (Y)
+	\vspace{2mm}	
+	\begin{itemize}
+		\item Actual: Julie participated in MAS (X=1) and graduated from HS (Y=1)
+		%\begin{itemize}
+		%	\item Julie participated in MAS (X=1) and graduated from HS (Y=1)
+		%\end{itemize}		
+		\item Counterfactual: for a person that received treatment, counterfactual is what outcome would have been if person had not received treatment
+		\begin{itemize}
+			\item If Julie didn't participate in MAS would she graduate?
+		\end{itemize}
+
+	\end{itemize}
+	\vspace{2mm}
+	True causal effect of an intervention:
+		\begin{itemize}
+		\item Causal effect= (actual outcome for treated) minus (counterfactual outcome for treated)
+		\item Note: causal effect could be different for each person
+		\item What is the problem with this approach to calculating causal effects?
+		\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{The primary challenge in program evaluation/causal inference research}
+	\begin{itemize}
+	\item Causal effect= (actual outcome for treated) minus (counterfactual outcome for treated)
+	\vspace{2mm}	
+	\item Primary challenge in program evaluation methods is finding a substitute for the counterfactual
+		\begin{itemize}
+		\item This substitute is called the ``comparison group''
+		\end{itemize}
+	\vspace{2mm}			
+	\item Creating comparison groups for the counterfactual
+		\begin{enumerate}
+		\item treated vs. untreated research designs (cross-sectional)
+			\begin{itemize}
+			\item use ``untreated'' groups as ``comparison group'' for treated
+			\end{itemize}
+		\item before vs. after research designs (longitudinal)
+			\begin{itemize}
+			\item use ``outcome before treatment'' groups as comparison group for ``outcome after treatment''
+			\end{itemize}		
+		\item Some research designs use both cross-sectional and longitudinal variation (e.g., ``difference-in-difference'')
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Treated vs. untreated research designs}
+		\begin{itemize}
+		\item Use ``untreated'' people as ``comparison group'' for treated
+		\begin{itemize}
+			\item We use non-participants to represent the counterfactual for participants (i.e., what would have happened to participants if they hadn't participated)
+		\end{itemize}
+		\vspace{2mm}
+		\item Example:
+		\begin{itemize}
+			\item What is effect of participation in MAS on HS graduation?
+		\end{itemize}
+		\vspace{2mm}
+		\item Estimate of causal effect based on ``cross-sectional'' variation (also called ``between'' variation)
+			\begin{itemize}
+			\item Outcome measured at one point in time
+			\item Uses ``between'' variation: variation in Y between treated and untreated at time outcome variable is measured
+			\end{itemize}
+		\item Sample:
+			\begin{itemize}
+			\item People who participate in MAS \textbf{and} people who do not participate in MAS
+			\end{itemize}
+		\vspace{2mm}
+		\item This course will focus on treated vs. untreated designs
+		\end{itemize}
+
+\end{frame}
+
+%
+\begin{frame}[shrink=10]{Before vs. after research designs}
+
+	\begin{itemize}
+		\item Use ``outcome before treatment'' as comparison group for ``outcome after treatment''
+		\begin{itemize}
+		\item Assumes outcome prior to treatment is counterfactual for outcome after treatment (i.e., what would have happened to participants if they hadn't participated)
+		\end{itemize}
+		\vspace{2mm}
+		\item Example
+			\begin{itemize}
+			\item What is the effect of participating in MAS (X) on days absent (Y)?
+			%\item Can answer this RQ using ``treated vs. untreated'' or ``before vs. after'' methods. Let's focus on before vs. after
+			\end{itemize}
+		\item Sample:
+			\begin{itemize}
+			\item Only students who participate in MAS
+			\end{itemize}	
+		\item Calculate causal effect from longitudinal (``within'' )rather than cross-sectional (``between'') variation:
+			\begin{itemize}
+				\item ``within'' variation: change over time in Y within each person
+				\item Must observe outcome before treatment \textbf{and} after treatment
+			\end{itemize}
+			
+		\vspace{2mm}			
+		\item Most of my research uses before vs. after designs because I study change in organizational behavior over time
+		%\item Major assumption:
+		%	\begin{itemize}
+		%	\item After including [time-varying] covariates, there are no omitted variables that affect outcome (graduation) and are correlated with change in X for participants
+		%	\end{itemize}
+	\end{itemize}		
+\end{frame}
+
+
+\begin{frame}{Types of treated vs. untreated designs}
+
+
+		Types of treated vs. untreated designs				
+		\begin{enumerate}
+			\item Random assignment experiment designs
+			\item Observational (i.e., non-experimental) ``selection on observables'' designs
+			\begin{itemize}
+				\item These designs control for variables that affect outcome and treatment. 
+				\item Multivariate regression
+				\item Matching estimatros (e.g., propensity score matching)
+			\end{itemize}
+			\item Observational ``natural experiments'' designs
+			\begin{itemize}
+				\item These designs utilize experimental variation in X in real world settings (e.g., access to school determined by lottery)
+				\item Regression discontinuity
+				\item Instrumental variables
+			\end{itemize}
+			
+		\end{enumerate}
+	
+\end{frame}
+
+\begin{frame}{Random assignment experiments: The ``gold standard'' treated vs. untreated designs}
+
+	How experiments work:
+	\begin{itemize}
+		\item Randomly assign people to values of X (MAS or no MAS)
+		\begin{itemize}
+			\item group randomly assigned to ``no MAS'' serves as counterfactual to group assigned to MAS
+		\end{itemize}
+		\item On average, ``treated'' group is identical to control group on variables (e.g., parental education, math achievement) that affect outcome (e.g., graduation)
+		\item Only difference between ``treated'' and ``control'' group is participation in treatment
+		\item Therefore, can say that difference in outcome between treatment and control is due to treatment
+	\end{itemize}
+	\vspace{2mm}
+	Experiments can only identify \textbf{average} causal effect	
+	\begin{itemize}
+	\item If we knew the true counterfactual for each person, we could identify causal effect for each person
+
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Random assignment experiment vs. observational designs}
+	
+	Observational (i.e., non-experimental) design
+	\begin{itemize}
+		\item People not randomly assigned to values of treatment (X)
+		\item Rather, people self-select into treatment, or some other assignment mechanism
+	\end{itemize}
+	\vspace{2mm}	
+	Methods for observational data (e.g., matching, regression discontinuity) attempt to recreate experimental conditions
+	\begin{itemize}
+		\item Important to understand why experiments work so you can assess whether the observational method is recreating experimental conditions
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{Primary difference between observational methods: ``Exogenous'' vs. ``endogenous'' variation}
+	
+	``Exogenous'' variation
+		\begin{itemize}
+			\item Means ``determined outside the system''
+			\item In causal inference research: means people in the sample have no influence over the value of X
+			\item In experiment, all variation in X is exogenous
+		\end{itemize}
+	\vspace{2mm}			
+	``Endogenous'' variation
+		\begin{itemize}
+			\item Means ``determined inside the system''
+			\item In causal inference research: means people in the sample control the value of X (e.g., choose to be in MAS)
+		\end{itemize}
+	\vspace{2mm}		
+	X usually contains exogenous and endogenous variation
+	\begin{itemize}
+		\item ``natural experiment'' methods isolate exogenous variation
+		\item ``selection on observables'' methods controls for factors related to X that affect Y
+	\end{itemize}
+	
+	
+
+\end{frame}
+
+\begin{frame}{``Selection on observables'' methods (e.g., regression, matching)}
+	
+	X of interest contains endogenous variation; control for variables that affect the outcome and related to X \\
+	\vspace{2mm}
+	Example: effect of MAS (X1) on graduation (Y)
+	\begin{itemize}
+		\item Attendance (X2 )positively affects graduation (Y)
+		\item People with higher attendance (X2) more likely to choose MAS (X1)
+		\item By including attendance (X2) in regression/matching model, we are ``holding attendance constant'': compare MAS students to non-MAS students with same attendance
+	\end{itemize}
+	\vspace{2mm}		
+	Major assumption (usually false)
+	\begin{itemize}
+		\item After including control variables, no omitted variables that affect outcome and are related to value of X
+		\item If false, treatment effect contains correlational variation
+	\end{itemize}
+	
+	
+
+\end{frame}
+
+\begin{frame}[shrink=10]{``Quasi experimental'' methods that take advantage of ``natural experiment'' conditions}
+	
+	X of interest contains endogenous and exogenous variation; isolate exogenous variation, and use that variation to estimate effect of X on Y
+	\vspace{2mm}
+	
+	Example: effect of serving in Vietnam War (X) on subsequent earnings (Y)
+	\begin{itemize}
+		\item Some people volunteered to serve (X endogenous)
+		\item Low ``draft lottery'' number made Vietnam service more likely
+		\item Lottery number (Z) is randomly assigned; 
+		\item Isolate variation in Vietnam service (X) due to draft lottery number (Z) to estimate effect of Vietnam service (X) on earning (Y) 
+	\end{itemize}
+	\vspace{2mm}	
+	Common quasi experimental methods
+	\begin{itemize}
+		\item Instrumental variables; regression discontinuity; difference-in-difference
+	\end{itemize}
+	\vspace{2mm}
+	Quasi experiments stronger than ``selection on observables'' methods
+	\begin{itemize}
+		\item Isolating experimental (exogenous) variation rather than trying to control for all the factors that affect Y and related to X
+	\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{Why take a class on econometrics?}
+	\begin{itemize}
+		\item This is a different language/culture; helpful to have a guide
+		\item Change policy at the local level
+		\item Fight for issues you care about
+		\item Get a seat at the table at state/national level
+		\item Learn language of power; then critique language of power
+		\item On causal inference, economists are often right
+		\item Learn how to ``muddle through''; helpful for getting published
+
+	\end{itemize}
+\end{frame}
+
+
+\section[Syllabus]{Syllabus}
+
+\section[Rubin's causal model]{Rubin's causal model: The potential outcomes framework}
+
+\begin{frame}{Overview of potential outcomes framework (Rubin's causal model)}
+
+	In this overview, I present slides from the presentation ``Causal Inference, Potential Outcomes, and RCTs'' by Vivian C. Wong
+	\vspace{2mm}
+	\begin{itemize}
+		\item Dr. Wong is an assistant professor of at University of Virginia
+		\item The presentation is from a 2017 Institute for Education Sciences workshop on quasi-experimental designs
+
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Notation for the potential outcomes framework}{Write this down on separate sheet of paper}
+
+	\begin{itemize}
+		\item let $ i=1...N $ be units (people) in sample
+		\item $ D_i $ indicates receipt of treatment (e.g., Head Start)
+		\begin{itemize}
+			\item $ D_i=1 $ for treated units; $ D_i=0 $ for untreated units
+		\end{itemize}
+		\item ``Potential outcomes''
+		\begin{itemize}
+			\item $ Y_i(1) $: outcome for person $ i $ if $ i $ receives treatment $ D_i=1 $
+			\item $ Y_i(0) $: outcome for $ i $ if $ i $ doesn't receives treatment $ D_i=0 $
+			\item In real world, we only observe one outcome; missing outcome is the counterfactual			
+		\end{itemize}
+		\item ``Observed outcome''
+		\begin{itemize}
+			\item $ Y_i=Y_i(1)D_i+Y_i(0)(1-D_i)$
+			\item if $ D_i=1 $ (treated):
+			\begin{itemize}
+				\item  $Y_i=Y_i(1)*1+Y_i(0)(1-1)=Y_i(1)$
+			\end{itemize}
+			\item if $ D_i=0 $ (untreated): 
+			\begin{itemize}
+				\item $Y_i=Y_i(1)*0+Y_i(0)(1-0)=Y_i(0)$
+			\end{itemize}
+			
+		\end{itemize}
+		
+
+	\end{itemize}
+\end{frame}
+
+
+\section[Stata]{Introduction to Stata}
+
+\begin{frame}{Introduction to Stata}
+	
+	
+	
+	\begin{itemize}
+		\item I'm assuming that all of you have experience with some statistical software package (e.g., SAS, SPSS, R)
+		\item Some of you have experience with Stata; others not
+		\item This is not a class about statistical programming
+		\item I will try to give you as much relevant code as I can
+		\item People with Stata experience: please help students without Stata experience until they feel comfortable
+	\end{itemize}
+	\vspace{2mm}
+	We will now work with some lecture material from my \textit{Data Management Using Stata} course
+		
+\end{frame}
+
+\end{document}
+

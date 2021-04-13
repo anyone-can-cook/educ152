@@ -1,0 +1,1657 @@
+
+%external style tex file
+%Karina's directory
+\input{C:/Users/ozanj/Dropbox/econometrics-course/lectures/header-tex/hed612-lecture-style3} 
+
+%Ozan's directory- need to change the style tex file to reflect UCLA email, course number, logos, etc.
+%\input{C:/Users/ozanj/Documents/Dropbox/hed612/lectures/beamer-style/hed612-lecture-style2}
+
+
+%\title [Short Title]{Long Title}
+\title[EDUC 263, Lecture 2] {EDUC 263: Introduction to Econometrics, Lecture 2}
+\subtitle{Experimental and observational designs}
+\date{Month Date, Year}
+
+\begin{document}
+
+\begin{frame}{Do this at beginning of class}
+	\begin{itemize}
+
+		\item Download lecture 2 Stata ``do-file'' \href{https://www.dropbox.com/s/qou0320ctms7gcw/intro-econometrics-lecture-2-do-file.do?dl=0}{\beamergotobutton{link}}
+		\begin{itemize}
+			\item Save to a folder you can easily find
+		\end{itemize}
+	
+		\item Download lecture 2 datasets
+		\begin{itemize}
+			\item Save to folder you can easily find; do not change file names
+			\item California school dataset \href{https://www.dropbox.com/s/zudnfqugke33onf/caschool-v2.dta?dl=0}{\beamergotobutton{link}}
+			\item Tennessee STAR Experiment dataset  \href{https://www.dropbox.com/s/784ej11tn8q9ykk/STAR_Students.dta?dl=0}{\beamergotobutton{link}}
+		\end{itemize}
+		\vspace{4mm}		 
+		\item Try doing this in Stata:
+		\begin{enumerate}
+			\item Open Stata
+			\item Open ``do-file'' editor
+			\item Open lecture 2 do-file
+			\item ``change directories'' in do-file so that file-path in ``cd'' command points to where you saved the data
+			\begin{itemize}
+				\item You will change file-paths in two places in do-file: once for CA school data; once for Tennesee STAR data
+			\end{itemize}
+			
+		\end{enumerate}
+		
+	\end{itemize}
+\end{frame}
+
+	
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}{What we will do today}
+	%\textbf{Today}
+	%\vspace{2mm}
+	\tableofcontents
+\end{frame}
+
+\section[Stata]{Introduction to Stata}
+
+\begin{frame}{Understanding syntax of Stata commands}
+
+	Let's open a dataset in Stata. The ``auto'' dataset is a sample dataset saved on your computer when you install Stata. \\
+	\vspace{3mm}
+	Type the following text in the Stata commandline and then press ``Enter'' on your keyboard: \\
+	
+	\begin{itemize}
+		\item [] \texttt{sysuse auto, clear}
+	\end{itemize}	
+	
+	Type the following text in the Stata commandline and then press ``Enter'' on your keyboard: \\
+	
+	\begin{itemize}
+		\item [] \texttt{describe}
+	\end{itemize}	
+
+\end{frame}
+
+%**********
+\begin{frame}{Understanding syntax of Stata commands}
+	
+	Stata commands often follow the following format:
+	
+	\begin{itemize}
+		\item [] \texttt{\underline{com}mandname [varlist] [if] [in] [, options]}	
+		\begin{itemize}
+			\item only need to type underlined part of command name
+			\item anything in brackets doesn't need to be included for command to run
+			\item  text after the comma are options
+		\end{itemize}		
+	\end{itemize}
+	
+	\vspace{3mm}
+	For example, the summarize command:
+	\begin{itemize}
+		\item [] 	\texttt{\underline{su}mmarize [varlist] [if] [in] [weight] [, options]}
+	\end{itemize}	
+	
+	\vspace{3mm}
+	Try typing these commands in Stata command line:
+	\begin{itemize}
+		\item [] \texttt{summarize}
+		\item [] \texttt{sum price}
+		\item [] \texttt{sum price, detail}		
+	\end{itemize}	
+	
+\end{frame}
+
+\begin{frame}{Executing Stata commands}
+
+	Three ways to execute Stata commands:	
+	\vspace{2mm}	
+	\begin{itemize}
+		\item Point-and-click (Ugh!)
+		\item Stata command line
+		\begin{itemize}
+			\item Will use this to run individual commands
+		\end{itemize}			
+		\item Stata do-file
+		\begin{itemize}
+			\item Best way to run Stata commands; required for all homework assignments
+			\item Will review working with do-files later in this lecture
+		\end{itemize}			
+	\end{itemize}	
+	
+\end{frame}
+
+\begin{frame}{Stata help files}
+	
+	In Stata, type following syntax:
+	\begin{itemize}
+		\item [] \texttt{help \underline{com}mandname}
+		\item [] \texttt{help generate}
+		\item [] \texttt{help gen}
+		\item [] \texttt{help reg}
+	\end{itemize}
+
+\end{frame}
+
+%**********
+\begin{frame}[shrink=10]{Reading Stata help files}
+	
+	Help files may feel too technical at first, but you'll become more comfortable with practice
+
+	\vspace{3mm}	
+	Help files follow a standard outline (e.g., \texttt{help reg}): 
+	\begin{itemize}
+		\item Syntax (command syntax and list of options)
+		\item Menu (how to execute command using point-and-click)
+		\item Description (text overview of what command does)
+		\item Options (detailed description of command options)
+		\item Examples (examples of how to use command)
+		\item Video example (some commands have this)
+		\item Stored results (stored results created by command)
+	\end{itemize}	
+	\vspace{3mm}	
+	Top right corner of help file:
+	\begin{itemize}
+		\item ``Dialog'' (run command using point and click)
+		\item ``Also see'' (link to PDF documentation; related Stata commands)		
+	\end{itemize}			
+
+\end{frame}
+
+%**********
+\begin{frame}{Working with Stata ``do-files''}
+	
+	A Stata do-file is just a text-file that contains Stata commands \\
+	\vspace{3mm}
+	Opening a do-file:
+	\begin{itemize}
+		\item Open do-files from \textbf{within} Stata rather than from Windows Explorer (or Mac equivalent)
+		\item In Stata, click on the ``\textcolor{red}{New do-file editor}'' button; this opens a new do-file
+		\item In the do-file, click on ``\textcolor{red}{file}'' then ``\textcolor{red}{open}'' and the find the do-file you want to open
+		%\item Let's open the do-file called \textcolor{red}{\texttt{hed616-lecture1-do-file1}}
+	\end{itemize}
+	
+\end{frame}
+
+%**********
+\begin{frame}[shrink=3]{Executing Stata commands within a do-file}
+	
+	Within a do-file you can run commands several different ways (try doing this within the do-file):
+	\begin{enumerate}
+		\item One command at a time by highlighting only that command and clicking \textcolor{red}{Execute(do)} button in do-file
+		\item Several commands at a time by highlighting several commands and clicking \textcolor{red}{Execute(do)} button in the do-file
+		\item can run the entire do-file by not highlighting any commands and clicking \textcolor{red}{Execute(do)} button in do-file
+	\end{enumerate}	
+	
+	\vspace{3mm}
+	
+	\textcolor{red}{Comments}: text that Stata will ignore when executing do-file
+	\begin{itemize}	
+		\item Different ways to start a comment:
+		\begin{itemize}
+			\item \texttt{* COMMENT}
+			\item \texttt{// COMMENT}
+			\item \texttt{/* COMMENT */}
+		\end{itemize}
+	\end{itemize}		
+\end{frame}
+
+%**********
+\begin{frame}{Changing directories within a Stata do-file}
+	
+	``Working directory'' is the directory (i.e., filepath) where Stata looks to find files (e.g., datasets)
+
+	\vspace{3mm}
+	The \textcolor{red}{\texttt{cd}} command changes the filepath of the working directory. Syntax: \\
+	\begin{itemize}
+		\item [] \texttt{cd "filepath"}
+		\begin{itemize}
+			\item [] Note: PC uses backslash ``\textbackslash'' to separate folders in filepath
+			\item [] Note: Mac uses forward-slash ``/'' to separate folders in filepath
+		\end{itemize}
+	\end{itemize}
+	
+	\vspace{3mm}	
+	Essential that you become comfortable changing directories within do-files \\
+	\vspace{3mm}
+	Let's practice in the do-file	
+	
+\end{frame}
+
+\section[Goal of statistics]{Goal of statistics}
+
+\begin{frame}\frametitle{Goal of statistics}
+
+	Goal of statistics (including econometrics):
+	\bi
+		\item use sample data to make statement about population
+	\ei
+	\vspace{2mm}	
+	Population parameter: some measure of the population
+	\bi
+		\item e.g., mean income across all U.S. households
+		\item Usually don't know this; need data on entire population
+	\ei
+	\vspace{2mm}	
+
+	Estimator
+	\bi
+		\item A formula or procedure used to calculate an educated guess of the value of the population parameter
+		\item e.g., calculating difference between treated and untreated mean in experiments; ordinary least squares (OLS) estimator
+	\ei
+	Point estimate (or estimate):
+	\bi
+		\item Numeric value calculated when you apply an estimator to a specific sample of data.
+		\item e.g., calculate sample mean income is \$45,000
+	\ei
+	
+\end{frame}
+
+\begin{comment}
+\begin{frame}
+	\frametitle{Parameters and point estimates}
+	
+	
+	In introductory statistics class, the primary parameter we were interested in was the population mean, $ \mu_Y $, and the estimator we used most often was the sample mean, $ \bar{Y} $ \\
+	
+	\vspace{3mm}
+	In multivariate regression, primary parameter we are interested in is the population regression coefficient, $ \beta $, which we estimate with the sample regression coefficient, $ \hat{\beta} $
+	\vspace{2mm}
+	\bi
+		\item RQ: what is the effect of living in residence halls on GPA?
+		\item Population regression coefficient for living on campus would tell us the true causal effect of living on campus on GPA for the entire population
+	\ei
+	
+	%$ Y_{it}=\beta X_{i,t-1} +W'_{i,t-1}\gamma+\delta_t+\alpha_i+\epsilon_{i,t} $
+	
+	
+\end{frame}
+\end{comment}
+
+\begin{frame}
+	\frametitle{Notation: parameters vs. estimates}
+	
+	
+	Population parameters
+	\bi
+		\item Described using lowercase Greek letters (e.g., $ \mu, \sigma, \beta $)
+		\bi
+			\item e.g., $ \mu $ (``mu'') refers to population mean; $ \sigma $ (``sigma'') refers to population standard deviation
+		\ei
+		Subscripts usually denote variables (e.g., $ \mu_Y, \sigma_X, \beta_X $)
+		\bi
+			\item $ \sigma_X $ refers to population standard deviation of variable X
+		\ei
+	\ei
+	\vspace{3mm}
+	
+	Estimates of population parameters
+	\bi
+		\item Described using Greek letters with ``hat''
+		\bi
+			\item e.g., $ \hat{\mu}_Y $ is the estimate of $ \mu_Y $
+			\item $ \hat{\sigma}_X $ is estimate of $ \sigma_X $ based on sample data
+		\ei
+			\item Also described using Arabic letters
+		\bi
+			\item e.g., $ \bar{Y} $ is estimate of $ \mu_Y $ based on sample data
+			\item $ s_X $ is estimate of $ \sigma_X $ based on sample data
+		\ei
+	\ei
+
+\end{frame}
+
+\subsection[Bias \& Efficiency]{Bias \& Efficiency}
+
+\begin{frame}{Desirable properties of estimators: Efficiency and unbiasedness}
+	\begin{itemize}
+	\item Desirable properties of your point estimates (e.g., $\hat{\beta}$ or $\overline{Y}$)
+		\begin{itemize}
+		\item Desire point estimates to be ``unbiased"
+		\item Desire point estimates to be ``efficient"
+		\end{itemize}
+	\item Efficiency 
+		\begin{itemize}
+		\item Definition:
+			\begin{itemize}
+			\item Efficiency refers to how close your point estimate is to the population parameter
+			\end{itemize}
+		\item Standard error:
+			\begin{itemize}
+			\item On average, how far away is a point estimate from one random sample from the value of the population parameter			
+			\end{itemize}
+		\item Therefore, an efficient point estimate is one with low standard error
+		\end{itemize}	
+	\end{itemize}
+\end{frame} 
+
+\begin{frame}[shrink=10]{Bias}
+	\begin{itemize}
+	\item An ``unbiased" point estimate
+		\begin{itemize}
+		\item A point estimate is ``unbiased" if value of point estimate gets closer to value of true population parameter as sample size increases
+		\end{itemize}
+	\item Bias
+		\begin{itemize}
+		\item Bias occurs when point estimate does not get closer to population parameter as sample size increases
+		\item A biased estimate consistently overestimates or underestimates population parameter in repeated random samples
+		\item There are many different types of bias
+		\end{itemize}
+	\item Sampling bias:
+		\begin{itemize}
+		\item The estimate of population parameter is biased because you fail to take a random sample
+		\item Example: goal is to estimate high school graduation rate
+			\begin{itemize}
+			\item You take random sample of 10th grades and see if they graduate within three years
+			\end{itemize}
+		\end{itemize}
+	\item Omitted variable bias: 
+		\begin{itemize}
+		\item Bias in estimate of $\beta$ due to omitting necessary ``control" variables from your regression model
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Unbiased estimates of causal relationships more difficult than descriptive relationships}
+	\begin{itemize}
+		\item Unbiased estimate of a population mean
+		\begin{itemize}
+			\item  e.g., what is mean hours worked per week in U.S.
+			\item Primary threat is sampling bias; is your sample representative of the population
+		\end{itemize}
+		\item Unbiased estimate of a correlational relationship
+		\begin{itemize}
+			\item e.g., how much longer (shorter) do married men live compared to unmarried men?
+			\item Primary threat is sampling bias		
+		\end{itemize}
+		\item Unbiased estimate of a causal relationship
+		\begin{itemize}
+			\item Effect of marriage (X) on life expectency (Y) for men?
+			\item Threats to unbiased estimate
+			\begin{itemize}
+				\item Sample unrepresentative of population
+				\item Mistaking a correlational relationship for a causal one; even if you had data on \textbf{entire population}, your estimate could be biased 
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\section[Experiments]{Experiments}
+
+\begin{frame}{Potential outcomes}
+
+	Example: what is effect of having an internship in college (X) on earning after college (Y)?
+	\begin{itemize}
+		\item let $ i=1...N $ be units (e.g., people) in sample
+		\item $ d_i $ indicates receipt of treatment (e.g., internship)
+		\begin{itemize}
+			\item $ d_i=1 $ for treated units; $ d_i=0 $ for untreated units
+		\end{itemize}
+		\item ``Potential outcomes'', $ Y_i(1) $ and $ Y_i(0) $
+		\begin{itemize}
+			\item $ Y_i(1) $: outcome if $ i $ if $ i $ receives treatment $ d_i=1 $
+			\item $ Y_i(0) $: outcome if $ i $ if $ i $ doesn't receives treatment $ d_i=0 $
+			%\item In real world, we only observe one outcome; missing outcome is the counterfactual			
+			%\item In general, potential outcomes may be written $ Y_i(d ) $, where $ d $ indexes the treatment
+		\end{itemize}
+		\item ``Observed outcome,'' $ Y_i $
+		\begin{itemize}
+			\item For each person, we observe $ Y_i(1) $ or $ Y_i(0)$ but never both
+			\item $ Y_i=Y_i(1)d_i+Y_i(0)(1-d_i)$
+			\item if $ d_i=1 $ (treated):
+			\begin{itemize}
+				\item  $Y_i=Y_i(1)*1+Y_i(0)(1-1)=Y_i(1)$
+				%\item The observed outcome, $ Y_i $, equals the potential outcome, $Y_i(1)$ if the treatment is administered ($d_i=1$)
+			\end{itemize}
+			\item if $ d_i=0 $ (untreated): 
+			\begin{itemize}
+				\item $Y_i=Y_i(1)*0+Y_i(0)(1-0)=Y_i(0)$
+				%\item The observed outcome, $ Y_i $, equals the potential outcome, $Y_i(0)$ if the treatment is administered ($d_i=0$)
+			\end{itemize}
+
+		\end{itemize}
+
+	\end{itemize}
+
+\end{frame}
+
+
+\begin{comment}
+		\item distinction between $ d_i $ and $ D_i $ 
+		\begin{itemize}
+		\item $ d_i $ the treatment that a given subject receives (a variable that one observes in an actual dataset)
+		\item $ D_i $ the treatment that could be administered hypothetically. 
+		\begin{itemize}
+			\item $ D_i $ is a random variable
+			\item the $i$th subject might be treated in one hypothetical study and not another
+			\item $ Y_i(1)|D_i=1 $ refers to the ``treated potential outcome for a subject who would be treated under some hypothetical allocation of treatments
+		\end{itemize}
+				
+		\end{itemize}
+\end{comment}
+
+\begin{frame}{Table of potential outcomes}
+
+	Example: what is effect of having an internship in college (X) on annual income after college (\$000s) (Y)? \\
+	\vspace{3mm}
+	\begin{tabular}{ l r r r}
+		\multirow{2}{*} & $ Y_i(1) $ & $ Y_i(0) $ & $ \tau_i $ \\ \textbf{$ i $} & \textbf{Treated} & \textbf{Untreated} & \textbf{Treatment effect} \\ \hline
+		1 & 65 & 60 & 5 \\
+		2 & 30 & 35 & -5 \\
+		3 & 55 & 60 & -5 \\
+		4 & 25 & 30 & -5 \\
+		5 & 50 & 50 & 0 \\
+		6 & 80 & 70 & 10 \\										
+		7 & 45 & 45 & 0 \\ \hline
+		\textbf{Average} & \textbf{50} & \textbf{50} & \textbf{0} \\				
+	\end{tabular}	
+\end{frame}
+
+\begin{frame}[shrink=10]{How to think about relationship between potential outcomes and observed outcome}
+
+	%Example: what is effect of having an internship in college (X) on annual income after college (\$000s) (Y)?
+	%\vspace{3mm}
+	\begin{tabular}{ l r r r}
+		\multirow{2}{*} & $ Y_i(1) $ & $ Y_i(0) $ & $ \tau_i $ \\ \textbf{$ i $} & \textbf{Treated} & \textbf{Untreated} & \textbf{Treatment effect} \\ \hline
+		1 & 65 & 60 & 5 \\
+		2 & 30 & 35 & -5 \\
+		3 & 55 & 60 & -5 \\
+		4 & 25 & 30 & -5 \\
+		5 & 50 & 50 & 0 \\
+		6 & 80 & 70 & 10 \\										
+		7 & 45 & 45 & 0 \\ \hline
+		\textbf{Average} & \textbf{50} & \textbf{50} & \textbf{0} \\				
+	\end{tabular}
+	\vspace{3mm}
+	
+	How to think about potential vs. observed outcomes:
+	\begin{itemize}
+		\item for each person $ i$, the treated potential outcome $ Y_i(1) $ and the untreated potential outcome $ Y_i(0) $ already exist
+		\item Treatment $ d_i $ just determines which of the two potential outcomes we get to observe
+		\item for each paerson, the only difference between $ Y_i(1) $ and $ Y_i(0) $ is the treatment
+		\item Value of potential outcomes is driven by the treatment and by characteristics that affect $Y_i$ (e.g., parental income)
+	\end{itemize}		
+\end{frame}
+
+\begin{frame}[shrink=10]{Average treatment effect (ATE)}
+
+	\begin{tabular}{ l r r r}
+		\multirow{2}{*} & $ Y_i(1) $ & $ Y_i(0) $ & $ \tau_i $ \\ \textbf{$ i $} & \textbf{Treated} & \textbf{Untreated} & \textbf{Treatment effect} \\ \hline
+		1 & 65 & 60 & 5 \\
+		2 & 30 & 35 & -5 \\
+		3 & 55 & 60 & -5 \\
+		4 & 25 & 30 & -5 \\
+		5 & 50 & 50 & 0 \\
+		6 & 80 & 70 & 10 \\										
+		7 & 45 & 45 & 0 \\ \hline
+		\textbf{Average} & \textbf{50} & \textbf{50} & \textbf{0} \\				
+	\end{tabular}	
+	\vspace{3mm}
+	
+	
+	%\begin{split}
+	\begin{equation}	
+		ATE \equiv \frac{1}{N} \sum_{i=1}^{N} \tau_i
+	\end{equation}
+	\begin{equation}	
+		 \frac{1}{N} \sum_{i=1}^{N} Y_i(1) - \frac{1}{N} \sum_{i=1}^{N} Y_i(0) = \frac{1}{N} \sum_{i=1}^{N} (Y_i(1)-Y_i(0)) = \frac{1}{N} \sum_{i=1}^{N} \tau_i
+	\end{equation}	
+	%\end{split}
+
+		
+\end{frame}
+
+\begin{frame}{Repeated random sampling and expected values}
+
+	Repeated random sampling
+	\begin{itemize}
+		\item Imagine we take an infinite number of samples of size N from the population
+	\end{itemize}
+	\vspace{3mm}
+	Expected value
+	\begin{itemize}
+		\item Expected value of a variable is the average value of a random variable based on an infinite number of samples
+		\item expected value of discrete random variable X: $E[X]=\sum xPr[X=x] $
+		\begin{itemize}
+		\item $ Pr[X=x] $ is probability that $X$ takes on the value $x$, where summation is taken over all possible values of X
+		\end{itemize}			
+		\item Example of expected value of dice role, $ X $:
+		\begin{itemize}
+			\item $E[X]=(1)(\frac{1}{6}) +(2)(\frac{1}{6})+(3)(\frac{1}{6})+(4)(\frac{1}{6})+(5)(\frac{1}{6})+(6)(\frac{1}{6})=3.5$
+		\end{itemize}
+
+	\end{itemize}	
+
+\end{frame}
+
+\begin{frame}{Conditional expectations}
+
+	Conditional expectations refer to subgroup averages \\
+	\vspace{3mm}
+	
+	Example: $Y_i$=income; $d_i$=internship (0,1); $Z_i$=GPA	
+	\begin{itemize}
+
+		\item $ E[Y_i|d_i=1]$
+		\begin{itemize}
+			\item Expected value of (observed) income, given that student got internship
+		\end{itemize}		 
+		\item $ E[Y_i|Z_i >3.5]$
+		\begin{itemize}
+			\item Expected value of (observed) income, given that college GPA was greater than 3.5
+		\end{itemize}
+		\item $ E[Y_i(1)|d_i=1]$
+		\begin{itemize}
+			\item Expected value of of treated potential outcome, given that treatment student received treatment
+		\end{itemize}		
+		\item $ E[Y_i(0)|d_i=1]$
+		\begin{itemize}
+			\item Expected value of untreated potential outcome, given that student did receive internship
+		\end{itemize}
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}[shrink=10]{Conditional expectations, potential outcomes, and random assignment}
+
+	Random variable $ D_i $
+	\begin{itemize}
+		\item $ D_i $ is a variable whose value is randomly assigned (e.g., coin flip, or some random number generator)
+		\item Value of $ D_i $ determines whether person $i$ receives treatment
+	\end{itemize}
+	\vspace{3mm}	
+	Potential outcomes
+	\begin{itemize}
+		\item $ E[Y_i(1)|D_i=1]$
+		\begin{itemize}
+			\item Treated potential outcome, given $i$ assigned to treatment
+			\item Observed?: Yes 
+		\end{itemize}	
+		\item $ E[Y_i(1)|D_i=0]$
+		\begin{itemize}
+			\item Treated potential outcome, given $i$ not assigned to treatment
+			\item Observed?: No 			
+		\end{itemize}		 
+		\item $ E[Y_i(0)|D_i=1]$
+		\begin{itemize}
+			\item Untreated potential outcome, given $i$ assigned to treatment
+			\item Observed?: No		
+		\end{itemize}		 
+		\item $ E[Y_i(0)|D_i=0]$
+		\begin{itemize}
+			\item Untreated potential outcome, given $i$ not assigned to treatment
+			\item Observed?: Yes		
+		\end{itemize}		 
+			 
+	\end{itemize}		
+\end{frame}
+
+\begin{frame}[shrink=10]{Random assignment and unbiased inference: why random assignment works}
+
+	Imagine 3 people [in our sample of 7] randomly assigned to internship \\
+	\vspace{3mm}	
+	
+	\begin{tabular}{ l r r r}
+		\multirow{2}{*} & $ Y_i(1) $ & $ Y_i(0) $ & $ \tau_i $ \\ \textbf{$ i $} & \textbf{Treated} & \textbf{Untreated} & \textbf{Treatment effect} \\ \hline
+		1 & 65 & \textbf{60} & ? \\
+		2 & 30 & \textbf{35} & ? \\
+		3 & \textbf{55} & 60 & ? \\
+		4 & \textbf{25} & 30 & ? \\
+		5 & 50 & \textbf{50} & ? \\
+		6 & 80 & \textbf{70} & ? \\										
+		7 & \textbf{45} & 45 & ? \\ \hline
+		\textbf{Avg. (observed)} & \textbf{45} & \textbf{53.75} & \textbf{-8.75} \\
+		\textbf{Avg. (potential)} & \textbf{50} & \textbf{50} & \textbf{0} \\
+	\end{tabular}				 
+	
+\end{frame}
+
+
+\begin{frame}[shrink=10]{Random assignment and unbiased inference: why random assignment works}
+
+	Now imagine that start over (re-sample): randomly assign 3 people to receive internship \\ 
+	
+	\begin{tabular}{ l r r r}
+		\multirow{2}{*} & $ Y_i(1) $ & $ Y_i(0) $ & $ \tau_i $ \\ \textbf{$ i $} & \textbf{Treated} & \textbf{Untreated} & \textbf{Treatment effect} \\ \hline
+		1 & \textbf{65} & 60 & 5 \\
+		2 & 30 & \textbf{35} & -5 \\
+		3 & 55 & \textbf{60} & -5 \\
+		4 & \textbf{25} & 30 & -5 \\
+		5 & 50 & \textbf{50} & 0 \\
+		6 & \textbf{80} & 70 & 10 \\										
+		7 & 45 & \textbf{45} & 0 \\ \hline
+		\textbf{Avg. (observed)} & \textbf{56.67} & \textbf{47.5} & \textbf{9.17} \\
+		\textbf{Avg. (potential)} & \textbf{50} & \textbf{50} & \textbf{0} \\								
+	\end{tabular}
+	\vspace{3mm}
+	
+	If we re-sampled an infinite number of times, and calculated the average of the ``average observed treatment effect'' it would equal the ``average potential treatment effect''
+		
+	
+\end{frame}
+
+\begin{frame}[shrink=10]{Why random assignment works}
+
+	\begin{itemize}
+		
+		%\item Since people randomly assigned to treatment, assignment to treatment $ (D_i=1) $ not related to the value of treated potential outcome ($Y_i(1)$) or untreated potential outcome ($Y_i(0)$)
+		%\item for the group randomly assigned to treatment ($D_i=1$), the expected value of the treated potential outcomes $E[Y_i(1)|D_i=1]$ equals the expected value of treated potential outcome for all people in sample $E[Y_i(1)$
+		\item Every person has same probability of getting treatment ($D_i=1$); therefore, expected treated potential outcome among treated people is same as expected outcome for all people in sample
+		\begin{itemize}
+			\item $E[Y_i(1)|D_i=1]=E[Y_i(1)]$
+		\end{itemize}
+		\item Every person has same probability of getting control  ($D_i=0$); therefore, expected untreated potential outcome among untreated people is same as expected outcome for all people in sample
+		\begin{itemize}
+			\item $E[Y_i(0)|D_i=0]=E[Y_i(0)]$
+		\end{itemize}
+		%\item Potential outcomes for the treated group are on avg. the same as potential outcomes of control group
+		\item Because assignment to treatment is random:
+		\begin{itemize}
+			\item Assignment to treatment has no effect on value of the potential outcomes; it just affects which potential outcome is observed for each person
+			\item Assignment to treatment has no relationship to characteristics (e.g., parental income) that affect value of potential outcomes
+		\end{itemize}		
+		\item $ATE=E[Y_i(1)-Y_i(0)]=  E[Y_i(1)] - E[Y_i(0)] = E[Y_i(1)|D_i=1]-E[Y_i(0)|D_i=0]$
+		\begin{itemize}
+			\item recall: for each person, only difference between $ Y_i(1) $ and $Y_i(0)$ is the treatment
+		\end{itemize}
+	\end{itemize}
+		
+	
+\end{frame}
+
+
+\begin{frame}[shrink=1]{Observed outcomes, self-select into internship}
+
+	Imagine if people self-selected into the internship; do you think assignment to treatment would be unrelated to value of potential outcomes $ Y_i(1) $ and $Y_i(0)$ \\
+	\vspace{3mm}	
+	\begin{tabular}{ l r r r}
+		\multirow{2}{*} & $ Y_i(1) $ & $ Y_i(0) $ & $ \tau_i $ \\ \textbf{$ i $} & \textbf{Treated} & \textbf{Untreated} & \textbf{Treatment effect} \\ \hline
+		1 & \textbf{65} & 60 & ? \\
+		2 & 30 & \textbf{35} & ? \\
+		3 & \textbf{55} & 60 & ? \\
+		4 & 25 & \textbf{30} & ? \\
+		5 & \textbf{50} & 50 & ? \\
+		6 & \textbf{80} & 70 & ? \\										
+		7 & 45 & \textbf{45} & ? \\ \hline
+		\textbf{Average} & \textbf{59.75} & \textbf{36.67} & \textbf{23.08} \\				
+	\end{tabular}		
+	\vspace{3mm}
+	
+	The same characteristics (e.g., parental income, GPA) that determine the value of the dependent variable (income) also drive selection into the treatment (internship)
+\end{frame}
+
+\section[Observational design]{Observational design}
+
+\subsection[Regression]{Components of the Population Regression Model}
+
+\begin{frame}{Population linear regression model}
+	\begin{itemize}
+	\item *Population* Linear Regression Model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\end{itemize}
+	\item Where:
+		\begin{itemize}
+		\item $Y_{i}$ = income for person i 
+		\item $ X_{i}$ = hours worked for person i 
+		\item $ \beta_{0}$ (called ``population intercept") = average income for someone with X=0 (i.e., works zero hours)
+		\item $ \beta_{1}$ (called ``population regression coefficient") = average effect of a one-unit increase in X on value of Y
+		\item $u_{i}$ (called ``error terms") = all other variables not included in your model that affect value of Y
+		\end{itemize}
+	\vspace{3mm}
+	\item Draw scatterplot and population regression line
+		\begin{itemize}
+			\item label components (e.g., residual=actual-predicted)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{comment}
+
+\begin{frame}{Population linear regression model}
+	\begin{itemize}
+	\vspace{5mm}
+	\item *Population* Linear Regression Model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\end{itemize}
+	\vspace{5mm}
+	\item Draw Picture
+		\begin{itemize}
+		\item Draw scatterplot of population
+		\vspace{2mm}
+		\item Draw population regression line
+		\vspace{2mm}
+		\item Label different components of population linear regression model
+			\begin{itemize}
+			\item Residual=actual=expected
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame} 
+
+
+\begin{frame}{Population linear regression model}
+	\begin{itemize}
+	\item Population Linear Regression Model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\end{itemize}
+	\item *population* linear regression model contains two ``population parameters" based on the data from entire population
+		\begin{itemize}
+		\item $ \beta_{0}$ (called ``population intercept") = average income for someone with X=0 (i.e., works zero hours)
+		\item $ \beta_{1}$ (called ``population regression coefficient") = average effect of a one-unit increase in X on value of Y
+		\end{itemize}
+	\item Questions for class:
+		\begin{itemize}
+		\item How do we know that these are population parameters? 
+		\item Do we usually know the value of $\beta_{0}$ and $\beta_{1}$?
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\end{comment}
+
+\begin{frame}{Population regression coefficient, $\beta_{1}$}
+	\footnotesize %too much text on this slide had to decrease font size for it all to fit and remove first set of bullets
+	RQ: What is the effect of hours worked per week (X) on income (Y)?
+		\begin{itemize}
+		\item Answer: population regression coefficient, $\beta_{1}$
+		\item Estimating $\beta_{1}$ is the fundamental goal of program evaluation research
+		\end{itemize}
+	What is the population regression coefficient, $\beta_{1}$?
+		\begin{itemize}
+		\item $\beta_{1}$ measures the average change in Y for a one-unit increase in X
+		\item Think of $\beta_{1}$ as measuring the slope of a line
+			\begin{itemize}
+			\item $\beta_{1} = \frac{\Delta Y}{\Delta X} = \frac{\Delta (income)}{\Delta (hours worked)}$
+			\item $Example = \frac{\$5,000 \Delta \text{in income}}{\text{1 hour} \Delta \text{in hours worked per week}} = \$5,000 = \beta_{1} $
+			\end{itemize}
+		\end{itemize}
+	Interpretation
+		\begin{itemize}
+		\item General interpretation:
+			\begin{itemize}
+			\item On average, a one-unit increase in X is associated with a $\beta_{1}$ increase in the value of Y
+			\end{itemize}
+		\item Interpretation for our research question:
+			\begin{itemize}
+			\item On average, a one-hour increase in hours worked per week (X) is associated with a \$$\beta_{1}$ increase in annual income
+			\end{itemize}
+		\item Imagine that $\beta_{1}$=2,000; How do we interpret this? $\beta_{1}$=4,000?
+		\end{itemize}
+\end{frame}
+
+\begin{comment}
+
+\begin{frame}{Population regression coefficient, $\beta_{1}$}
+	\begin{itemize}
+	\item Other important stuff
+		\begin{itemize}
+		\vspace{5mm}
+		\item If $\beta_{1}$ -the relationship between X and Y- is linear, then the average change in Y for a one-unit increase in X is the same, no matter what the starting value of X
+			\begin{itemize}
+			\item Draw in scatterplot
+			\end{itemize}
+		\vspace{5mm}
+		\item $\beta_{1}$ is a *population parameter*; we don't know it. We estimate $\beta_{1}$ using sample data
+		\vspace{5mm}
+		\item $\beta_{1}$ measures the *average* effect on Y for one-unit increase in X; effect on an individual person may be different than this average effect
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\end{comment}
+
+\begin{frame}{Population Intercept, $\beta_{0}$}
+	\begin{itemize}
+	\item RQ: What is the effect of hours worked per week (X) on annual income (Y) 
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\end{itemize}
+	\item $\beta_{0}$ (called ``population intercept")
+		\begin{itemize}
+		\item $\beta_{0}$ represents average value of Y when X=0
+		\item In our example, $\beta_{0}$ is average income for someone who works zero hours per week (X=0)
+		\item Draw in scatterplot
+		\end{itemize}
+	\item Note:
+		\begin{itemize}
+		\item Usually we are substantively interested in $\beta_{0}$
+		\item Also, do not believe $\beta_{0}$ if there are few observations where X=0 (e.g., effect of height on income) 
+		\end{itemize}
+	\end{itemize}
+\end{frame} 
+
+\begin{comment}
+\begin{frame}{Population linear regression \textbf{*line*}} 
+	\begin{itemize}
+	\item Population linear regression model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\end{itemize}
+		\vspace{5mm}
+	\item Population linear regression line
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i}$
+		\vspace{5mm}
+		\item Population linear regression line does not include the error term, $u_{i}$
+		\vspace{5mm}
+		\item It is just a linear line, like the scatterplot if the scatterplot contained all observations in the population [show]
+		\vspace{5mm} 
+		\item It measures the ``average" or ``expected" relationship between X and Y, ignoring variables that we excluded from the model
+		\end{itemize}		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=20]{Population linear regression \textbf{*line*}} %too much text, had to shrink here
+	\begin{itemize}
+	\item It measures the *expected* relationship between X and Y
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i}$ 
+		\end{itemize}
+		\vspace{5mm}
+	\item Population regression line and Expected value, E(Y)
+		\begin{itemize}
+		\item Expected value of Y [one variable]
+			\begin{itemize}
+			\item $E(Y) = \mu_{Y}$
+			\end{itemize}
+		\item Expected value of Y, given the value of X [relationship between two vars]
+			\begin{itemize}
+			\item $E(Y | X) = \beta_{0} + \beta_{1}X_{i}$
+			\item population regression line is expected value of Y for a given value of X
+			\end{itemize}
+		\end{itemize}
+		\vspace{5mm}
+	\item Population regression line and prediction
+		\begin{itemize}
+		\item If we know value of parameters $\beta_{0}$ and $\beta_{1}$, we can predict value of Y
+		\item Example: assume, $\beta_{0}$ = 5,000, $\beta_{1}$ = 1,000, and $X_{i}$ = 40
+			\begin{itemize}
+			\item $E(Y | X) = \beta_{0} + \beta_{1}X_{i}$
+			\item $E(Y | 40) = 5,000 + 1,000 * 40$
+			\item Predict that someone who works 40 hours per week makes \$45,000 per year 
+			\end{itemize}
+		\item Note: Will spend time on prediction next week
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\end{comment}
+
+\begin{frame}{Thinking about $u_{i}$ as the ``error term"}
+	\begin{itemize}
+	\item Population linear regression model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\item $Y$=income ; $X_{i}$ = hours worked
+		\end{itemize}
+	\item Thinking about $u_{i}$ as the ``error term"
+		\begin{itemize}
+		\item In econometrics:
+			\begin{itemize}
+			\item Error term, $u_{i}$, consists of all other variables not included in your model that affect the dependent variable
+			\item This interpretation of $u_{i}$ is very important for program evaluation research
+			\item What variables besides hours worked (X) affect income (Y)?
+			\end{itemize}
+		\item In ``conventional" statistics textbooks:
+			\begin{itemize}
+			\item Overall error in prediction of Y (due to random variation)
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Thinking about $u_{i}$ as the ``residual"}
+	\begin{itemize}
+	\item Population linear regression model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\item $Y$=income ; $X_{i}$ = hours worked
+		\end{itemize}
+	\item Draw scatterplot
+		\begin{itemize}
+		\item Population regression line represents the predicted value of Y (income) for each value of X (hours worked)
+		\end{itemize}	
+	\item Thinking about $u_{i}$ in terms of each observation, i
+		\begin{itemize}
+		\item $Y_{i}$ = actual value of income for person i
+		\item $(\beta_{0} + \beta_{1}X_{i})$ = population regression line
+			\begin{itemize}
+			\item Equals the predicted value of income for person i with hours worked = $X_{i}$
+			\end{itemize}
+		\item Residual, $u_{i}$
+			\begin{itemize}
+			\item Residual, $u_{i}$, is the difference between actual value, $Y_{i}$, and predicted value from the population regression model for observation i
+			\item $u_{i} = Y_{i} - (\beta_{0} + \beta_{1}X_{i})$
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection[Estimation]{Estimating Regression Parameters}
+
+\begin{frame}{General things we do in regression analysis}
+	\begin{enumerate}
+	\item Estimation
+		\begin{itemize}
+		\item Choose estimates of $\beta_{0}$ and $\beta_{1}$ based on sample data
+		\item $\hat{\beta_{0}}$ is an estimate of $\beta_{0}$; $\hat{\beta_{1}}$ is an estimate of $\beta_{1}$ 
+		%\item How should we draw a line through the data to estimate the population slope (i.e., to estimate %$\beta_{1}$)
+		%	\begin{itemize}
+		%	\item To draw a straight line we just need to know Y-intercept and slope
+		%	\end{itemize}
+		\end{itemize}
+	\item Prediction
+		\begin{itemize}
+		\item What is the predicted value of Y for someone with a particular value of X
+			\begin{itemize}
+			\item e.g., what is the predicted income for someone w/ an undergraduate degree in chemistry?
+			\end{itemize}
+		\end{itemize}
+	\item Hypothesis testing [focus of causal inference]
+		\begin{itemize}
+		\item  Causal interpretation of $\beta_{1}$:
+		\begin{itemize}
+			\item  the effect of a one-unit increase in $ X $ is a $\beta_{1}$ increase in $ Y $		
+		\end{itemize}
+		\item Hypothesis testing and confidence intervals about $\beta_{1}$
+		\begin{itemize}
+			\item  Use $\hat{\beta_{1}}$ to test hypotheses about $\beta_{1}$
+			\item  If we knew $\beta_{1}$, we would not need hypothesis testing
+		\end{itemize}
+
+
+		\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+\begin{comment}
+\begin{frame}{Step 1 of regression: estimate parameters}
+	\begin{itemize}
+	\item Population linear regression model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\end{itemize}
+	\vspace{5mm}
+	\item Goal of estimation
+		\begin{itemize}
+		\item use sample data to estimate population intercept, $\beta_{0}$, and population regression coefficient, $\beta_{1}$
+		\item $\hat{\beta_{0}}$ is an estimate of $\beta_{0}$; $\hat{\beta_{1}}$ is an estimate of $\beta_{1}$ 
+			\begin{itemize}
+			\item how do we know that symbol $\hat{\beta_{1}}$ is based on sample data?
+			\end{itemize}
+		\end{itemize}	
+	\vspace{5mm}
+	\item Estimation problem:
+		\begin{itemize}
+		\item Need to develop a method for choosing values of $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$
+		\end{itemize}	
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estimation (population mean)}
+	\begin{itemize}
+	\item In intro stat class we faced a similar problem:
+		\begin{itemize}
+		\item Use sample to calculate ``best" estimate of population mean, $\mu_{Y}$
+		\item We decided that sample mean, $\overline{Y}$, was the ``best" estimate of $\mu_{Y}$
+		\end{itemize}	
+	\item Criteria used to decide $\overline{Y}$ was the ``best" estimate of $\mu_{Y}$?:
+		\begin{itemize}
+		\item Imagine that \emph{m} represents potential estimates for $\mu_{Y}$
+		\item Goal: choose the value, \emph{m}, that minimizes the ``sum of squares"
+			\begin{itemize}
+			\item Sum of squares = $\sum_{i=1}^{n} (Y_{i} - m)^{2}$
+			\vspace{2mm}
+			\item $\overline{Y}$ is the value of m that minimizes sum of squares 
+			\vspace{2mm}
+			\item So $\overline{Y}$ is the ``least squares" estimator of $\mu_{Y}$
+			\end{itemize}
+		\end{itemize}		
+	\item Draw two scatterplots:
+		\begin{itemize}
+		\item (1) horizontal line representing sample mean; (2) horizontal line representing some other value (e.g., median)
+		\item Show some calculations of sum of squared errors for each
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+\end{comment}
+
+\begin{frame}[shrink=10]{Estimation (regression) [SKIP]}
+	\begin{itemize}
+	\item Problem in regression:
+		\begin{itemize}
+		\item Need to develop a method for choosing values of $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ 
+		\item Solution: similar to what we did for population mean 
+		\end{itemize}
+	\vspace{5mm}	
+	\item First, some terminology (draw scatterplot):
+		\begin{itemize}
+		\vspace{2mm}	
+		\item $Y_{i}$ is the actual value of Y for individual i 
+		\vspace{2mm}	
+		\item $\hat{Y_{i}}$ is the predicted value $Y_{i}$, based on sample data
+			\begin{itemize}
+			\item $\hat{Y_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}X_{i}$
+			\end{itemize}
+		\vspace{2mm}	
+		\item Residual, $\hat u_{i}$ = difference between actual, $Y_{i}$, and predicted, $\hat{Y_{i}}$
+			\begin{itemize}
+			\item $Y_{i} - \hat{Y_{i}} = \hat u_{i}$
+			\item $Y_{i} - (\hat{\beta_{0}} + \hat{\beta_{1}}X_{i}) = \hat u_{i}$
+			\item Note: residuals, $\hat u_{i}$, are often referred to as ``errors"
+			\end{itemize}
+		\end{itemize}		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estimation (regression)  [SKIP]}
+	\begin{itemize}
+	\item Criteria for choosing $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$
+		\begin{itemize}
+		\item Choose values for that minimize ``sum of squared residuals"
+		\end{itemize}
+	\item Residuals, $\hat u_{i}$
+		\begin{itemize}
+		\item $\hat u_{i} = Y_{i} - \hat{Y_{i}} = Y_{i} - (\hat{\beta_{0}} + \hat{\beta_{1}}X_{i})$
+		\end{itemize}
+	\item Sum of squared residuals [or ``sum of squared errors"]:
+		\begin{itemize}
+		\item $\sum_{i=1}^{n} (Y_{i} - \hat{Y_{i}})^{2}$
+		\vspace{2mm}
+		\item $\sum_{i=1}^{n} (Y_{i} - (\hat{\beta_{0}} + \hat{\beta_{1}}X_{i}))^{2}$
+		\vspace{2mm}
+		\item $\sum_{i=1}^{n} (\hat u_{i})^{2}$
+		\end{itemize}
+	\item Draw on scatterplot with two different regression lines
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ordinary least squares estimates}
+	\begin{itemize}
+	\item The OLS estimates $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ are the values that minimize the sum of squared residuals:
+		\begin{itemize}
+		\item $\sum_{i=1}^{n} (Y_{i} - \hat{Y_{i}})^{2} = \sum_{i=1}^{n} (Y_{i} - (\hat{\beta_{0}} + \hat{\beta_{1}}X_{i}))^{2} = \sum_{i=1}^{n} (\hat u_{i})^{2}$
+		\end{itemize}
+		\vspace{2mm}		
+	\item This minimization problem is solved using calculus
+		\begin{itemize}
+		\item Stata does this for you
+		\end{itemize}
+	\item Important point:
+		\begin{itemize}
+		\item Any other choice of $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ will result in higher sum of squared errors
+			\begin{itemize}
+			\item Same idea as when we found estimate of population mean, $\mu_{Y}$
+			\end{itemize}
+		\item Draw two scatterplots: one with OLS estimates; one with non-OLS estimates (e.g., mean)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{OLS prediction line}
+	\begin{itemize}
+	\item *Population* linear regression model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\item Where Y =  income (\$000); X= hours worked
+		\end{itemize}
+	\item OLS prediction line (based on OLS estimates)
+		\begin{itemize}
+		\item $\hat{Y_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}X_{i}$
+		\item Note: OLS prediction line also called ``OLS regression line"
+		\end{itemize}
+	\item Imagine OLS estimates are $\hat{\beta_{0}}$=5 and $\hat{\beta_{1}}$=2
+		\begin{itemize}
+		\item What is the predicted income for someone who works 0 hours per week?
+		\item What is the predicted income for someone who works 10 hours per week?
+		\end{itemize}
+	%\item Draw scatterplot; write out pop regression model; OLS prediction line; OLS prediction line w/ estimates
+	\end{itemize}
+\end{frame}
+
+
+\begin{comment}
+\begin{frame}{OLS prediction line and residuals}
+	\begin{itemize}
+	\item *Population* linear regression model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\end{itemize}
+	\item OLS prediction line (based on OLS estimates)
+		\begin{itemize}
+		\item $\hat{Y_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}X_{i}$
+		\end{itemize}
+	\item Residuals, $\mu_{i}$
+		\begin{itemize}
+		\item Residual= (actual value -  predicted value based on OLS)
+			\begin{itemize}
+			\item Each observation has a residual
+			\end{itemize}
+		\item Residual= $\hat u_{i} = Y_{i} - \hat{Y_{i}} $
+		\item Residual= $\hat u_{i} = Y_{i} - (\hat \beta_{0} + \hat \beta_{1}X_{i})$
+		\end{itemize}
+	\item Show residuals on scatterplot in Stata
+		\begin{itemize}
+		\item Prediction = mean vs. prediction = OLS prediction
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\end{comment}
+
+\subsection[Assumption I]{Ordinary least squares (OLS) Assumption I}
+
+
+\begin{frame}{OLS Assumption 1 (mathematically)}
+	\begin{itemize}
+	\item Role of assumptions in statistics and causal inference
+	\item Population linear regression model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+			\begin{itemize}
+			\item Y= HS test score; X=0/1 MAS; $u_{i}$ = all other variables that affect Y but were not included in regression model
+			\end{itemize}
+		\end{itemize}
+	\item Assumption 1 mathematically
+		\begin{itemize}
+			\item $E(u_{i}|X_{i}) = 0$
+			\item ``expected value of $u_{i}$, given any value of $X$, equals $0$''
+		\end{itemize}
+	\item OLS Assumption 1 in words
+		\begin{itemize}
+		\item the independent variable $X_{i}$ is unrelated to the ``other variables", $u_{i}$, not included in model
+				
+			\item Pretend that $u_{i}$ consists of only one variable (e.g., ``grit'')
+			\item OLS assumption 1 states that the mean value of omitted variable is equal to zero no matter what the value of variable X is			
+		\end{itemize}
+
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[shrink=10]{OLS Assumption 1}
+	\begin{itemize}
+	\item Population linear regression model
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+			\begin{itemize}
+			\item Y= HS test score; X=0/1 MAS; $u_{i}$ = all other variables that affect Y but were not included in regression model
+			\end{itemize}
+		\end{itemize}
+	\item Assumption 1: $E(u_{i}|X_{i}) = 0$
+		\begin{itemize}
+		\item In words: the independent variable $X_{i}$ is unrelated to the ``other variables", $u_{i}$, not included in model
+		\end{itemize}
+	\item Assumption is *always* satisfied in random assignment experiment
+		\begin{itemize}
+		\item Example: effect of MAS participation (X) on graduation (Y)
+			\begin{itemize}
+			\item X=0 (non participant); X=1 (MAS participant) 
+			\end{itemize}	
+		\item We randomly assign students to MAS participation (X)
+		\item Other factors, $u_{i}$ (includes ``grit", parental involvement, ``aptitude", etc.) are *by construction* unrelated to values of X because we randomly assigned students to values of X
+		\end{itemize}
+	\item In observational studies, this assumption is usually violated
+		\begin{itemize}
+		\item E.g., MAS participation (X) is likely correlated with omitted variables $u_{i}$, (e.g. motivation) that affect Y
+		\end{itemize}	
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{OLS Assumption 1 in practice}
+	\begin{itemize}
+	\item Assumption 1: $E(u_{i}|X_{i}) = 0$
+		\begin{itemize}
+		\item In words: the independent variable $X_{i}$ is unrelated to the ``other factors", $u_{i}$, not included in model
+		\end{itemize}
+	\item How to think about it in practice:
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\item Are there any variables that are not in your model that affect Y and have a relationship (positive or negative) with X? If so, Assumption 1 is violated
+		\end{itemize}	
+	\item Any omitted variables that violate assumption 1?
+		\begin{itemize}
+		\item Effect of participating in fraternity (X) on GPA (Y)?
+		\item Effect of years of education (X) on income (Y)?
+		\item Effect of participating in ``summer bridge program" (X) on first-year retention (Y)?
+		\item Effect of participating in Think Tank (X) on first-year retention?
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\subsection[Omitted Variable Bias]{Omitted Variable Bias}
+
+\begin{frame}{Omitted Variable Bias}
+	\begin{itemize}
+	\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$; Y=test score; X=class size
+		\begin{itemize}
+		\item We want to know the *causal effect* of X on Y
+		\end{itemize}
+	\item Omitted Variable Bias
+		\begin{itemize}
+		\item Bias in estimate $\hat{\beta}_{1}$ due to variables being omitted from the model (part of $u_i$ rather than included in model)
+		\item Omitted variable bias is really about OLS assumption \#1
+		\end{itemize}
+	\vspace{3mm}	
+	\item For omitted variable bias to occur, the omitted variable ``Z" must satisfy two conditions:
+		\begin{enumerate}
+		\item Z affects value of Y (i.e. Z is part of $u$); \textbf{*and*}
+		\item Z has a relationship with X (e.g., correlation; $corr(Z,X) \neq 0$)
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{OLS Assumption 1 \& Omitted Variable Bias}
+	\begin{itemize}
+	\item OLS Assumption 1: $E(u_{i}|X_{i}) = 0$
+		\begin{itemize}
+		\item the independent variable $X_{i}$ is unrelated to the ``other factors," $u_{i}$, that affect Y and are not included in model
+		\item assumption violated if there are omitted variables that affect Y that also have relationship with X
+		\end{itemize}
+	\item Omitted Variable Bias
+		\begin{itemize}
+		\item omitted variable bias: bias in estimate $\hat{\beta}_{1}$ due to variables being omitted from the model
+		\item For omitted variable bias to occur, the omitted variable ``Z" must satisfy two conditions:
+			\begin{enumerate}
+			\item Z affects value of Y (i.e. Z is part of $u$); \textbf{*and*}
+			\item Z has a relationship with X (e.g., correlation; $corr(Z,X) \neq 0$)
+			\end{enumerate}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Omitted variable bias in practice}
+	\begin{itemize}
+	\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$; 
+		\begin{itemize}
+		\item Y=test score; X=class size
+		\item Z = \% of students in district with English as a second language (ESL) [omitted from model]
+		\end{itemize}
+	\item For omitted variable bias to occur, the omitted variable ``Z" must satisfy two conditions:
+		\begin{enumerate}
+		\item Z affects value of Y (i.e. Z is part of $u$); \textbf{*and*}
+			\begin{itemize}
+			\item Would ESL affect standardized test scores? Why?
+			\end{itemize}
+		\item Z has a relationship with X (e.g., correlation; $corr(Z,X) \neq 0$)
+			\begin{itemize}
+			\item Is ESL likely to be correlated with student-teacher ratio? Why?
+			\end{itemize}		
+		\end{enumerate}
+	\item If *both* conditions satisfied, then omission from ESL from model results in $\hat{\beta}_{1}$ having omitted variable bias
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Omitted variable bias in practice}
+	\begin{itemize}
+	\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$; 
+		\begin{itemize}
+		\item Y=test score; X=class size; Z= variable omitted from model
+		\end{itemize}
+	\item For omitted variable bias to occur, the omitted variable ``Z" must satisfy two conditions:
+		\begin{enumerate}
+		\item Z affects [causal] value of Y (i.e. Z is part of $u$); \textbf{*and*}
+		\item Z has a relationship with X (e.g., correlation; $corr(Z,X) \neq 0$)
+		\end{enumerate}
+	\item Would omitting Z = ``time of day test administered" result in omitted variable bias?
+		\begin{itemize}
+		\item Does test-time affect Y? Is test-time correlated with student-teacher ratio?
+		\end{itemize}
+	\item Would omitting Z = ``number of desks in class" result in omitted variable bias?
+		\begin{itemize}
+		\item Does parking space per pupil affect Y? Is parking space per pupil correlated with student-teacher ratio?
+		\end{itemize}
+	\end{itemize}
+\end{frame}	
+
+\begin{frame}{How to check for omitted variable bias}
+	\begin{itemize}
+	\item Ask yourself: 
+		\begin{itemize}
+		\item Could omitted variable Z affect Y? 
+		\item Could omitted variable Z have some relationship with X?
+		\end{itemize}
+	\item How researchers think about omitted variable bias in practice
+		\begin{itemize}
+		\item Rely on logical argument
+		\item Rely on theory
+		\item Rely on prior research
+			\begin{itemize}
+				\item e.g., past studies show that Z affects Y
+				\item past studies of ``effect of X on Y'' control for Z
+			\end{itemize}
+		\end{itemize}
+		\item descriptive statistics (e.g., correlations)	
+		\begin{itemize}
+			\item only works if you have a good measure of Z
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+		
+\begin{comment}
+\begin{frame}{How to check for omitted variable bias}
+	\begin{itemize}
+	\item In practice, diagnostic tests not used as much as logical arguments/literature review
+		\begin{itemize}
+		\vspace{2mm}
+		\item Correlation only picks up linear relationships; omitted variable bias includes non-linear relationships
+		\vspace{2mm}
+		\item Relationship between X and Z is about ``conditional relationship" after controlling for other covariates
+		\vspace{2mm}
+		\item Sometimes you don't have a good measure of omitted variable Z
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\end{comment}
+
+\begin{frame}{When is omitted variable bias big/small}
+	\begin{itemize}
+	\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+	\vspace{3mm}
+	\item Imagine there is only one omitted variable, Z
+	\vspace{3mm}
+	\item Omitted variable bias is likely big when:
+		\begin{itemize}
+		\item The omitted variable, Z, has a big causal effect on Y
+		\item The correlation between X and the omitted variable, Z, is strong
+		\end{itemize}
+	\vspace{3mm}
+	\item Example:
+		\begin{itemize}
+		\item Y= earnings ; X= participation in internship; Z= parental income
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[shrink=10]{Omitted Variable Bias Formula [SKIP]}
+	\begin{itemize}
+	\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+	\item Omitted variable bias formula [assume u is one variable]
+		\begin{itemize}
+		\item $\hat{\beta}_{1}$   $\underrightarrow{p}$   $\beta_{1} + corr(X_{i},u_{i}) * \frac{\sigma_{u}}{\sigma_{x}} $
+		\end{itemize}
+	\item What do different components of formula mean?
+		\begin{itemize}
+		\item $\underrightarrow{p}$= ``approaches this value as sample size increases"
+		\item $\sigma_{u}$ = standard deviation of omitted variable(s), $u$?
+		\item $\sigma_{X}$ = standard deviation of X
+		\end{itemize}
+	\item Formula in words
+		\begin{itemize}
+		\item As sample size increases, the OLS estimate, $\hat{\beta}_{1}$, approaches the population regression coefficient $\beta_{1}$ + the correlation between X and $u$ times the standard deviation of $u$ divided by the standard deviation of X
+		\end{itemize}
+	\item What value do we want $\hat{\beta}_{1}$ to approach as sample size increases?
+	\item Omitted variable bias is this part of formula: $corr(X_{i},u_{i}) * \frac{\sigma_{u}}{\sigma_{x}} $
+		\begin{itemize}
+		\item Omitted variable bias is high when:
+			\begin{itemize}
+			\item strong correlation between X and u [can see from formula]
+			\item the omitted variable, u, has a big effect on Y
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Omitted Variable Bias Formula [SKIP]}
+	\begin{itemize}
+	\item $\hat{\beta}_{1}$   $\underrightarrow{p}$   $\beta_{1} + corr(X_{i},u_{i}) * \frac{\sigma_{u}}{\sigma_{x}} $
+	\item Consistency
+		\begin{itemize}
+		\item The point estimate approaches the population parameter as sample size increases (e.g. imagine if your sample is the entire population)
+		\item $\hat{\beta}_{1}$ is inconsistent when there is omitted variable bias; $\hat{\beta}_{1}$ does not approach $\beta_{1}$ as sample size increases
+		\end{itemize}
+	\item $corr(X_{i},u_{i})$
+		\begin{itemize}
+		\item If $corr(X_{i},u_{i}) = 0$ then there is no bias; $\hat{\beta}_{1}$   $\underrightarrow{p}$   $\beta_{1}$
+		\item The size of the omitted variable bias depends on the strength of the correlation between X and u
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10]{Upwards/Downwards Bias [SKIP]}
+	\begin{itemize}
+	\item $Y_{i} = \beta_{0} + \beta_{1}* MAS_{i} + u_{i}$
+		\begin{itemize}
+		\item Y= graduation; X=0/1 in MAS; X2= motivation; X3= household income
+		\item $\beta_{1}$ = true causal effect of participation in MAS on graduation
+		\end{itemize}	
+	\item	Upwards bias: $\hat{\beta}_{1}$   $>$   $\beta_{1}$
+		\begin{itemize}
+		\item Estimate of the causal effect $\hat{\beta}_{1}$, is greater than true causal effect,  $\beta_{1}$
+		\item Example: Omit Z1, student motivation
+			\begin{itemize}
+			\item motivation positively affects graduation; positive correlation w/ participation in MAS
+			\item If we omit student motivation from model, our estimate $\hat{\beta}_{1}$ is partially picking up positive effect of motivation on graduation
+			\end{itemize}
+		\end{itemize}
+	\item	Downwards bias: $\hat{\beta}_{1}$   $<$   $\beta_{1}$
+		\begin{itemize}
+		\item Estimate of the causal effect $\hat{\beta}_{1}$, is less than true causal effect,  $\beta_{1}$
+		\item Example: Omit Z2, household income
+			\begin{itemize}
+			\item household income positively affects graduation; negative correlation w/ participation in MAS
+			\item If we omit household income from model, our estimate $\hat{\beta}_{1}$ is partially picking up negative effect of being low-income on graduation (because low income students are more likely to participate in MAS)
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How to deal with Omitted Variable Bias}
+	\begin{itemize}
+	\item Random assignment experiments
+		\begin{itemize}
+		\item The ``gold standard"
+		\end{itemize}
+	\item Attempt to ``recreate" experimental conditions
+		\begin{itemize}
+		\item Multiple regression, matching
+			\begin{itemize}
+			\item Include omitted variables in your model, so they are no longer omitted
+			\item This is the purpose of regression; otherwise you can use ANOVA
+			\end{itemize}
+		\item ``quasi-experimental" techniques
+			\begin{itemize}
+			\item More advanced methods for recreating experimental conditions 
+			\item e.g., regression discontinuity; instrumental variables
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{How to deal with Omitted Variable Bias}
+	\begin{itemize}
+	\item Research question: What is the effect of student teacher ration (X) on district average test scores (Y)?
+		\begin{itemize}
+		\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$
+		\item Imagine that we have two omitted variables 
+			\begin{itemize}
+			\item Z1= pct English as a Second Language (ESL)
+			\item Z2= average income in the district
+			\end{itemize}
+		\end{itemize}
+	\item Multiple regression:
+		\begin{itemize}
+		\item Attempt to recreate experimental conditions by including ``omitted variables" in your model, so they are no longer omitted
+			\begin{itemize}
+			\item Once you include Z1 and Z2 in your model, they are called ``control" variables because they control for omitted variable bias; also called ``covariates"
+			\end{itemize}
+		\end{itemize}
+	\item Do in Stata
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10]{Why no control variables in experiments}
+	\begin{itemize}
+	\item $Y_{i} = \beta_{0} + \beta_{1}X_{i} + u_{i}$; Y=graduation; X: 0=no MAS, 1=MAS
+		\begin{itemize}
+		\item Omitted vars: Z1= student motivation; Z2= household income
+		\end{itemize}
+	\item Omitted variable bias conditions:
+		\begin{enumerate}
+		\item Z affects value of Y (i.e. Z is part of $u$); \textbf{*and*}
+		\item Z has a relationship with X (e.g., correlation)
+		\end{enumerate}
+	\item Imagine students randomly assigned to MAS
+		\begin{itemize}
+		\item Z1 = student motivation
+			\begin{itemize}
+			\item[(1)] does student motivation affect HS graduation(Y)?
+			\item[(2)] could student motivation be related (e.g., correlation) with value of X (MAS)?
+			\end{itemize}
+		\item Z2 = household income
+			\begin{itemize}
+			\item[(1)] does household income affect HS graduation(Y)?
+			\item[(2)] could household income be related to value of X (MAS)?
+			\end{itemize}
+		\end{itemize}
+	\item Randomization in treatment vs. control group
+		\begin{itemize}
+		\item Any differences between treatment and control group on factors that affect Y have no relationship w/ value of X (treatment)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Why no control variables in experiments: Tennessee STAR Experiment}
+	\begin{itemize}
+	\item Where to get data
+		\begin{itemize}
+		\item \url{https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/10766} 
+		\end{itemize}
+	\item Overview of experiment
+		\begin{itemize}
+		\item ``The Student/Teacher Achievement Ratio (STAR) was a four- year longitudinal class-size study funded by the Tennessee General Assembly and conducted by the State Department of Education. Over 7,000 students in 79 schools were randomly assigned into one of three interventions: small class (13 to 17 students per teacher), regular class (22 to 25 students per teacher), and regular-with-aide class (22 to 25 students with a full-time teacher's aide)
+		\vspace{2mm}
+		\end{itemize}
+	\item RQ: what is effect of class-size treatment (X) on first-grade math scores (Y)
+		\begin{itemize}
+		\item Do in Stata
+		\end{itemize}
+	
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=10]{Conditional Independence Assumption}
+	\begin{itemize}
+	\item Assume students choose to participate in MAS
+	\item $Y_{i} = \beta_{0} + \beta_{1}X_{1i} + \beta_{2}X_{2i} + \beta_{3}X_{3i} + u_{i}$
+		\begin{itemize}
+		\item Y= graduation; X=0/1 in MAS; X2= motivation; X3= income
+		\end{itemize}
+	\item Conditional independence assumption
+		\begin{itemize}
+		\item Once we include control variables, there are no omitted variables, Z, that satisfy *both* of these two conditions
+			\begin{itemize}
+			\item[(1)] Z affects value of Y (i.e. Z is part of $u$); \textbf{*and*}
+			\item[(2)] Z has a relationship with X (e.g., correlation)
+			\end{itemize}
+		\end{itemize}
+	\item If the conditional independence assumption is true:
+		\begin{itemize}
+		\item Once we include relevant control variables, there are no omitted variables that affect Y and have a systemic relationship with X
+		\item Main point: if we satisfy the conditional independence assumption through control variables, then multiple regression is just as good as random assignment experiment!
+			\begin{itemize}
+			\item In random assignment experiments, there are omitted variables that affect Y, but none of these omitted variables have a systemic relationship with X because X is randomly assigned
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection[Multiple Regression]{Introduction to Multiple Regression}
+
+
+\begin{frame}[shrink=10]{Population Multiple Regression Model}
+	\begin{itemize}
+	\item $Y_{i}$ = $\beta_{0} + \beta_{1}X_{1i} + \beta_{2}X_{2i} +$ .... $+\beta_{k}X_{ki} +  u_{i}$
+	\item Where:
+		\begin{itemize}
+		\item $Y_{i}$ = observation i of dependent variable
+		\item $X_{1i}$ = observation i for the first regressor, $X_{1}$
+		\item $X_{2i}$ = observation i for the second regressor, $X_{2}$
+		\item $X_{ki}$ = observation i for the kth regressor, $X_{2}$
+		\item $\beta_{1}$ = population average effect on Y for a one-unit increase in $X_{1}$
+		\item $\beta_{2}$ = population average effect on Y for a one-unit increase in $X_{2}$
+		\item $\beta_{k}$ = population average effect on Y for a one-unit increase in $X_{k}$
+		\item $\beta_{0}$ = average value of Y when the value of all independent variables, $X_{1}, X_{2},...X_{k}$, are equal to zero
+		\item $u_{i}$ = all other variables that *affect* the value of $Y_{i}$ but are not included in the model (i.e., not $X_{1}$ or $X_{2}$)
+		\item k = refers to the number of independent variables in your model
+			\begin{itemize}
+			\item e.g., model where independent variables are age, education level, and income has k=3
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10]{Multivariate Regression \& Program Evaluation}
+	\begin{itemize}
+	\item $Y_{i} = \beta_{0} + \beta_{1}X_{1i} + \beta_{2}X_{2i} + \beta_{3}X_{3i} + u_{i}$
+	\item Program evaluation research [econometrics]
+		\begin{itemize}
+		\item We are only interested in estimating $\beta_{1}$ [causal effect of X1 on Y]
+		\item The only reason we include other variables in the model beside X1 is to eliminate omitted variable bias
+		\item Therefore, we include all control variables that satisfy *both* conditions of omitted variable bias:
+		\item Once we include control variables, there are no omitted variables, Z, that satisfy *both* of these two conditions
+			\begin{itemize}
+			\item[(1)] Z affects value of Y (i.e. Z is part of $u$); \textbf{*and*}
+			\item[(2)] Z has a relationship with X (e.g., correlation)
+			\end{itemize}
+		\end{itemize}
+	\item Traditional social science statistics
+		\begin{itemize}
+		\item Purpose of multiple regression is to add new variable to your model (e.g. $X_{3}$) to see effect of variable $X_{3}$ on Y
+		\item Can lead to sloppy research! If you don't get an ``interesting" result for $\hat{\beta}_{1}$, then focus on a variable with a more interesting coefficient (e.g. $X_{3}$)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=10]{What does ``holding constant" mean?}
+	\begin{itemize}
+	\item RQ: What is the relationship between years of education(X1) on income(Y), after controlling for years of work experience (X2)?
+	\item ``Holding the value of X2 constant"
+		\begin{itemize}
+		\item Means to estimate the relationship between X1 and Y when we don't allow value of X2 to vary [partial derivative]
+		\item Said different: relationship between education (X1) and income (Y) for applicants that have same years of experience (X2)
+		\end{itemize}	
+	\item General interpretation of $\beta_{1}$ (assuming causal relationship):
+		\begin{itemize}
+		\item The average effect of a one-unit increase in $X_{1}$ is a $\beta_{1}$ unit increase in Y, holding the value of $X_{2}$ constant 
+		\end{itemize}
+	\item Interpretation of $\beta_{1}$, applied to example
+		\begin{itemize}
+		\item The effect of having one additional year of education (X1) on income (Y), when we don't allow value ``years of experience" (X2) to change
+		\item Said different: the effect of increasing years of education on income for people who have same years of experience
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\end{document}
+
