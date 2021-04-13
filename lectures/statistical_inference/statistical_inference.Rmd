@@ -1161,7 +1161,7 @@ Some examples of research questions co-authors and I have answered over the year
 
 - What is the relationship between state appropriations and nonresident enrollment at public universities [@RN3753]?
 - What is the effect of nonresident enrollment growth on the number of resident students enrolled at public research universities [@RN4290]?
-- What is the effect of participation in the Mexican American Studies on the probability of high school graduation for students in the Tucscon Unified School District [@RN3292]?
+- What is the effect of participation in the Mexican American Studies program on the probability of high school graduation for students in the Tucscon Unified School District [@RN3292]?
 - Are high schools with a higher percentage of white students more likely to receive recruiting visits from university admissions officer than high schools with a lower percentage of white students [@RN4450]?
 
 

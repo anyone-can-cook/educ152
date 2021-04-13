@@ -1,0 +1,450 @@
+---
+title: "EDUC 152. Intro to quantitative research in education: Regression analysis"
+subtitle: "Statistical inference"
+author: 
+date: 
+urlcolor: blue
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+bibliography: ../../assets/bib/educ152_bib.bib
+csl: ../../assets/bib/apa.csl
+---
+
+
+<!-- Code to enable scroll right for printing of data frames -->
+<style>
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: auto !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+
+
+```{r, echo=FALSE, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning = FALSE, message = FALSE)
+  #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
+options(scipen=999)
+options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll right for printing of data frames
+```
+
+# Introduction
+
+[Statistical inference](https://www.google.com/search?q=define+%22statistical+inference%22&sxsrf=ALeKk00lHj1hQ5jc8o_Xjsc7vOF6XFMPUg%3A1617292004292&ei=5OplYNCzEdOU-gTl2p_ACQ&oq=define+%22statistical+inference%22&gs_lcp=Cgdnd3Mtd2l6EAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsANQAFgAYPbvD2gBcAJ4AIABvgGIAb4BkgEDMC4xmAEAqgEHZ3dzLXdpesgBCMABAQ&sclient=gws-wiz&ved=0ahUKEwjQtaebst3vAhVTip4KHWXtB5gQ4dUDCA0&uact=5)
+
+> The theory, methods, and practice of forming judgments about the parameters of a population and the reliability of statistical relationships, typically on the basis of random sampling 
+
+
+[Causal inference](https://en.wikipedia.org/wiki/Causal_inference)
+
+> Causal inference is the process of determining the independent, actual effect of a particular phenomenon that is a component of a larger system
+
+- said differently, the process of identifying the effect of an independent variable on an outcome of interest
+
+
+
+## Libraries, data, functions
+
+Purpose of this section:
+
+- load all libraries/packages we will use
+- loads and creates IPEDS data frame (population)
+- creates data frame of generated variables (population)
+- creates sample versions of the IPEDS and gnerated data frames
+- create all functions we will use
+  - **credit to data scientist extraordinaire Crystal Han for creating most of these functions!**
+
+
+Why do all of this in one place?
+
+- so you don't have to run code chunks scattered randomly throughout the lecture
+- dont worry about understanding all code, especially for functions we create
+
+```{r}
+# Libraries
+  #install.packages('tidyverse') # if you haven't installed already
+  #install.packages('labelled') # if you haven't installed already
+  #install.packages('patchwork') # if you haven't installed already
+
+library(tidyverse) # load tidyverse package
+library(labelled) # load labelled package package
+library(patchwork)
+
+
+##########
+########## IPEDS
+##########
+
+# Load ipeds dataset from course website url
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+
+# Create ipeds data frame with fewer variables/observations
+df_ipeds_pop <- panel_data %>%
+  # keep data from fall 2019
+  filter(year == 2019) %>%
+  # which universities to keep:
+    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities (18,19,20)
+  filter(c15basic %in% c(15,16,17,18,19,20)) %>%
+  # which variables to keep
+  select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
+         tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
+         isprof3,ispfee3,osprof3,ospfee3, # avg tuition and fees for MD, in-state and out-of-state
+         isprof9,ispfee9,osprof9,ospfee9, # avg tuition and fees for Law, in-state and out-of-state
+         chg4ay3,chg7ay3,chg8ay3) %>% # [undergraduate] books+supplies; off-campus (not with family) room and board; off-campus (not with family) other expenses
+  # rename variables; syntax <new_name> = <old_name>
+  rename(region = obereg, # revion
+         tuit_grad_res = tuition6, fee_grad_res = fee6, tuit_grad_nres = tuition7, fee_grad_nres = fee7, # grad
+         tuit_md_res = isprof3, fee_md_res = ispfee3, tuit_md_nres = osprof3, fee_md_nres = ospfee3, # md
+         tuit_law_res = isprof9, fee_law_res = ispfee9, tuit_law_nres = osprof9, fee_law_nres = ospfee9, # law
+         books_supplies = chg4ay3, roomboard_off = chg7ay3, oth_expense_off = chg8ay3) %>% # [undergraduate] expenses
+  # create measures of tuition+fees
+  mutate(
+    tuitfee_grad_res = tuit_grad_res + fee_grad_res, # graduate, state resident
+    tuitfee_grad_nres = tuit_grad_nres + fee_grad_nres, # graduate, non-resident
+    tuitfee_md_res = tuit_md_res + fee_md_res, # MD, state resident
+    tuitfee_md_nres = tuit_md_nres + fee_md_nres, # MD, non-resident
+    tuitfee_law_res = tuit_law_res + fee_law_res, # Law, state resident
+    tuitfee_law_nres = tuit_law_nres + fee_law_nres) %>% # Law, non-resident  
+  # create measures of cost-of-attendance (COA) as the sum of tuition, fees, book, living expenses
+  mutate(
+    coa_grad_res = tuit_grad_res + fee_grad_res + books_supplies + roomboard_off + oth_expense_off, # graduate, state resident
+    coa_grad_nres = tuit_grad_nres + fee_grad_nres + books_supplies + roomboard_off + oth_expense_off, # graduate, non-resident
+    coa_md_res = tuit_md_res + fee_md_res + books_supplies + roomboard_off + oth_expense_off, # MD, state resident
+    coa_md_nres = tuit_md_nres + fee_md_nres + books_supplies + roomboard_off + oth_expense_off, # MD, non-resident
+    coa_law_res = tuit_law_res + fee_law_res + books_supplies + roomboard_off + oth_expense_off, # Law, state resident
+    coa_law_nres = tuit_law_nres + fee_law_nres + books_supplies + roomboard_off + oth_expense_off) %>% # Law, non-resident    
+  # keep only observations that have non-missing values for the variable coa_grad_res
+    # this does cause us to lose some interesting universities, but doing this will eliminate some needless complications with respect to learning core concepts about statistical inference
+  filter(!is.na(coa_grad_res))
+
+# Add variable labels to the tuit+fees variables and coa variables
+  # tuition + fees variables
+    var_label(df_ipeds_pop[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
+    
+  # COA variables
+    var_label(df_ipeds_pop[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+
+df_ipeds_pop %>% glimpse()
+
+
+##########
+########## Create data frame of generated variables, with each variable meant to represent the entire population
+##########
+
+
+num_obs <- 10000
+
+# Generate normal distribution w/ custom mean and sd
+set.seed(124)
+norm_dist <- rnorm(n = num_obs, mean = 50, sd = 5)
+
+# Generate right-skewed distribution
+set.seed(124)
+rskew_dist <- rbeta(n = num_obs, shape1 = 2, shape2 = 5)
+
+# Generate left-skewed distribution
+set.seed(124)
+lskew_dist <- rbeta(n = num_obs, shape1 = 5, shape2 = 2)
+
+# Generate standard normal distribution (default is mean = 0 and sd = 1)
+set.seed(124)
+stdnorm_dist <- rnorm(n = num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
+
+# Create dataframe
+df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist)
+
+# drop individual objects associated with each variable
+rm(norm_dist,rskew_dist,lskew_dist,stdnorm_dist)
+rm(num_obs)
+
+
+##########
+########## Create sample versions of generated population data frame and IPEDS population data frame
+##########
+
+# create sample version of our generated data
+  set.seed(124) # set seed so that everyone ends up with the same random sample
+  
+  df_generated_sample <- df_generated_pop %>% sample_n(size = 200)
+  df_generated_sample %>% glimpse()
+
+
+# create sample version of our ipeds data
+
+  set.seed(124) # set seed so that everyone ends up with the same random sample
+  
+  df_ipeds_sample <- df_ipeds_pop %>% sample_n(size = 200) 
+  
+  # compare mean of coa_grad_res between population and sample
+  mean(df_ipeds_pop$coa_grad_res, na.rm = TRUE)
+  mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE)
+
+
+
+```
+# STAR data
+
+```{r, eval = FALSE}
+data("STAR")
+df_star <- STAR
+rm(STAR)
+
+df_star %>% glimpse()
+```
+
+
+
+
+
+# Fundamentals of causal inference
+
+## Overview of causal inference
+
+Descriptive research questions
+
+- Can investigate the magnitude of a problem (univariate):
+	- What percentage of high school graduates attend college?
+- Investigate correlational relationship between variables (sometimes called "associational" relationships):
+	- Relationship between buying felt furniture pads and credit score?
+	- Relationship between avg. income at a high school and the number of off-campus recruiting visits by universities?
+
+Causal research questions
+
+- Want to know the "causal effect" of independent variable (X) on outcome (Y); If you change value of X, causal effect is the change in Y due to the change in X
+- Have the form "what is effect of X on Y?" Examples: 
+  - What is the effect of class size on math scores? 
+  - What is effect of grant aid on graduation?
+
+<br>
+
+
+**What is the "true" causal effect of an treatment? (answer: actual minus counterfactual)**
+
+Example we will use
+
+- What is the effect of participating in the Mexican American Studies (MAS) program ($X$) on the probability of high school graduation  ($Y$) for students in the Tucscon Unified School District [@RN3292]?
+  - Cabrera, N. L., Milem, J. F., Jaquette, O., & Marx, R. (2014). Missing the (student achievement) forest for all the (political) trees: Empiricism and the Mexican American Studies controversy in Tucson. *American Educational Research Journal*, 51(6), 1084-1118. 
+
+Actual and counterfactual
+
+- Actual event
+  - actual treatment/control assignment and observed outcome
+  - e.g., person $i$ participated in MAS ($X_i =1$) and graduated from high school ($Y_i=1$)
+- counterfactual
+  - for a person that received treatment, counterfactual is what outcome would have been if person had not received treatment
+  - e.g., if person $i$ (who we know participated in MAS) had instead not participated in MAS ($X_i =0$), what would their value of high school graduation ($Y$) have been?
+
+
+True causal effect of an intervention:
+	
+- Causal effect for person $i$ who actually participated in the treatment
+  - The causal effect for person $i$ is the observed "treated" outcome minus the counterfactual outcome had they not been treated
+- Note: causal effect could be different for each person
+- What is the problem with this approach to calculating causal effects?
+  - we only observe the **actual** treatment assignment and outcome
+  - we do not observe the counterfactual; it is counter to fact!
+
+
+**The primary challenge in program evaluation/causal inference research**
+
+Given that the true causal effect is observed outcome minus the counterfactual outcome, the primary challenge in program evaluation methods is finding a substitute for the counterfactual
+
+- This substitute is called the "comparison group"
+
+ Creating comparison groups for the counterfactual
+ 
+ 1. treated vs. untreated research designs (cross-sectional)
+     - use "untreated" groups as "comparison group" for treated
+ 2. before vs. after research designs (longitudinal)
+     - use "outcome before treatment" groups as comparison group for "outcome after treatment"
+ 3. Some research designs use both cross-sectional and longitudinal variation (e.g., "difference-in-difference")
+		
+
+**Treated vs. untreated research designs**
+	
+- Use "untreated" people as "comparison group" for treated
+	- We use non-participants to represent the counterfactual for participants (i.e., what would have happened to participants if they hadn't participated)
+- Example:
+	- What is effect of participation in MAS on HS graduation?
+- Estimate of causal effect based on "cross-sectional" variation (also called "between" variation)
+	- Outcome measured at one point in time
+	- Uses "between" variation: variation in Y between treated and untreated at time outcome variable is measured
+- Sample:
+	- People who participate in MAS \textbf{and} people who do not participate in MAS
+- This course will focus on treated vs. untreated designs
+
+
+**Before vs. after research designs**
+
+- Use "outcome before treatment" as comparison group for "outcome after treatment"
+  - Assumes outcome prior to treatment is counterfactual for outcome after treatment (i.e., what would have happened to participants if they hadn't participated)
+- Example
+	- What is the effect of participating in MAS (X) on days absent (Y)?
+Can answer this RQ using "treated vs. untreated" or "before vs. after" methods. Let's focus on before vs. after
+- Sample:
+	- Only students who participate in MAS
+- Calculate causal effect from longitudinal ("within" )rather than cross-sectional ("between") variation:
+		- "within" variation: change over time in Y within each person
+		- Must observe outcome before treatment \textbf{and} after treatment
+- Most of my research uses before vs. after designs because I study change in organizational behavior over time
+
+<!--
+Major assumption: After including [time-varying] covariates, there are no omitted variables that affect outcome (graduation) and are correlated with change in X for participants
+-->
+
+
+**Types of treated vs. untreated designs**
+
+1. Random assignment experiment designs
+  - randomly assign each TUSD high school student to participate in MAS or not; and then observe their outcome (e.g., graduation, high school exit exam score)
+2. Observational (i.e., non-experimental) "selection on observables" designs
+	- These designs control for variables that affect outcome and treatment. 
+	- Multivariate regression
+	- Matching estimatros (e.g., propensity score matching)
+3. Observational "natural experiments" designs
+	- These designs utilize experimental variation in X in real world settings (e.g., access to school determined by lottery)
+	- Regression discontinuity
+	- Instrumental variables
+
+
+**Random assignment experiments: The "gold standard" treated vs. untreated designs**
+
+How experiments work:
+
+- Randomly assign people to values of X (MAS or no MAS)
+	- group randomly assigned to "no MAS" serves as counterfactual to group assigned to MAS
+- On average, "treated" group is identical to control group on variables (e.g., parental education, math achievement) that affect outcome (e.g., graduation)
+- Only difference between "treated" and "control" group is participation in treatment
+- Therefore, can say that difference in outcome between treatment and control is due to treatment
+
+Experiments can only identify **average** causal effect	
+
+- If we knew the true counterfactual for each person, we could identify causal effect for each person
+
+
+**Observational treated vs. untreated designs**
+	
+Observational (i.e., non-experimental) design
+
+- People not randomly assigned to values of treatment (X)
+- Rather, people self-select into treatment, or some other assignment mechanism
+
+
+The problem with observational designs
+
+- students with other characteristics (e.g., "motivation") that affect the outcome of interest may be more/less likely to participate in the treatment (e.g., MAS)
+- If students in the treatment tend to have higher values of outcome variable, hard to know whether this is because of participation in the treatment (i.e., causal) or because students who participated in MAS tended to be those who were more motivated about school (correlational)
+
+Methods for observational data (e.g., multivariate regression) attempt to recreate experimental conditions
+
+- Important to understand why experiments work so you can assess whether the observational method is recreating experimental conditions
+
+## Rubin's causal model
+
+Rubin's causal model: The potential outcomes framework
+
+- Rubin's causal model (also called "the potential outcomes framework") is the most important conceptual approach to understanding causal effects
+- it lays out the logic of "true causal effect equals actual minus counterfactual" in a more rigorous way
+
+
+Example research question we will use to explain :
+
+- What is the effect of participating in the Mexican American Studies (MAS) program ($T_i=1$) vs. not participating in MAS ($T_i=0$) on statewide standardized test ($Y$)?
+- Note:
+  - in @RN3292, we modeled the effect of MAS participation on probability of high school graduation and on statewide standardized test scores (in writing, reading, and math)
+  - we use $Y$ statewide standardized test score because easier to explain Rubin's causal model using a continuous outcome variable
+
+<br>
+
+**Potential outcomes**
+
+Each person $i$ has two **potential outcomes** $Y_i$
+	
+- $Y_i(1)$ -- the "treated potential outcome" -- equals high school test score when student $i$ participates in MAS ($T_i=1$)
+- $Y_i(0)$ -- the "untreated potential outcome" -- equals high school test score when student $i$ does not participate in MAS ($T_i=0$)
+	
+How to think about potential outcomes
+	
+- for each person $i$, imagine that the treated potential outcome $Y_i(1)$ and the untreated potential outcome $Y_i(0)$ already exist
+- Treatment variable $T_i$ just determines which of the two potential outcomes we actually get to observe
+
+
+### Review potential outcomes notation
+
+**What is effect of attending community college (CC) vs. 4-year on salary (Y)?**
+	
+- Treatment, $T_i$
+	- 1=treated (CC); 0= untreated/control (4-year)
+- Four combinations of potential outcome and treatment assignment:
+	- $Y_i(1) \mid T_i=1$ => salary after treatment for those actually assigned to treatment (**observed**)
+	- $Y_i(0) \mid T_i=1$ => salary after no treatment for those actually assigned to treatment (**not observed**)
+	- $Y_i(1) \mid T_i=0$ => salary after treatment for those assigned to control (**not observed**)			
+	- $Y_i(0) \mid T_i=0$ => salary after no treatment for those assigned to control (**observed**)
+
+
+|   | **Actually treated (T=1)**  | **Actually not treated (T=0)**  |
+|---|:-:|:-:|
+| <b>$Y_i(1)$</b>  | <span style="color:blue;">$Y_i(1) \mid T_i=1$</span>  | <span style="color:red;">$Y_i(1) \mid T_i=0$</span>  |
+| <b>$Y_i(0)$</b>  | <span style="color:red;">$Y_i(0) \mid T_i=1$  | <span style="color:blue;">$Y_i(0) \mid T_i=0$</span>  |
+
+The two blue cells show the notation for the _actual_ outcomes
+	
+- E.g., for those who were actually treated (attended CC), their salary in 2011 is represented by $Y_i(1) \mid T_i=1$
+- "The treated potential outcome, for those who underwent treatment"
+
+Red cells are _counterfactual_ outcomes, which we never see
+	
+- Need counterfactual to estimate "true" causal effect
+- Need some substitute for the counterfactual to estimate causal effect
+	
+
+**Table of potential outcomes**
+
+Imagine we know treated $Y_i(1)$ and untreated $Y_i(0)$ potential outcomes for all $i$
+
+| $i$ | $Y_i(1)$ <br> Treated  | $Y_i(0)$ <br> Untreated | $\tau_i$ <br> Unit effect |
+|:---|--:|--:|--:|
+| 1  | 65  | 60  | 5  |
+| 2  | 30  | 35  | -5  |
+| 3  | 55  | 60  | -5  |
+| 4  | 25  | 30  | -5  |
+| 5  | 50  | 50  | 0  |
+| 6  | 80  | 70  | 10  |
+| 7  | 45  | 45  | 0  |
+| **Average**  | **50**  | **50**  | **0** |
+	
+True causal effect for each $i$
+	
+- Unit treatment effect: for each person, compare their treated salary to untreated salary
+- $UTE_i=Y_i(1)-Y_i(0)$
+
+
+## Why experiments work
+
+# Hypothesis testing about two populations
+
+text
+
+
+# References
