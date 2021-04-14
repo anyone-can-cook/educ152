@@ -9,22 +9,10 @@ output:
     toc_depth: 3
     toc_float: true
     number_sections: true
-    highlight: tango # “default”, “tango”, “pygments”, “kate”, “monochrome”, “espresso”, “zenburn”, “haddock”, “breezedark”, “textmate”
-    theme: default # “default”, “cerulean”, “journal”, “flatly”, “darkly”, “readable”, “spacelab”, “united”, “cosmo”, “lumen”, “paper”, “sandstone”, “simplex”, “yeti”
+    highlight: tango
+    theme: default
     fig_caption: true
-    #fig_width = 7 #Default width (in inches) for figures
-    #fig_height = 5 #Default height (in inches) for figures
-    #html_preview: TRUE #TRUE to also generate an HTML file for the purpose of locally previewing what the document will look like on GitHub.    
-    df_print: default # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
-    
-    #Options you are not using yet:
-      
-    #dev = "png" #Graphics device to use for figure output (defaults to png)
-    #includes = NULL #Named list of additional content to include within the document (typically created using the includes function).
-    #md_extensions = NULL # Markdown extensions to be added or removed from the default definition or R Markdown. See the rmarkdown_format for additional details.
-    #hard_line_breaks = TRUE # TRUE to generate markdown that uses a simple newline to represent a line break (as opposed to two-spaces and a newline).
-    #pandoc_args = NULL # Additional command line options to pass to pandoc
-
+    df_print: default
 ---
 
 <style>
@@ -37,13 +25,13 @@ pre code, pre, code {
 </style>
 
 ```{r global options, include = FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE)
-options(tibble.width = Inf, width = 10000, scipen=999)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+options(tibble.width = Inf, width = 10000, scipen = 999)
 ```
 
 **Load packages**:
 
-```{r, message=FALSE}
+```{r, message = FALSE}
 library(tidyverse)
 library(labelled)
 ```
@@ -59,6 +47,7 @@ library(labelled)
 - https://ggplot2-book.org/arranging-plots.html
 - https://www.statology.org/t-critical-value-r/
 - https://www.statology.org/p-value-of-t-score-r/
+
 
 # Generate random distributions
 
@@ -85,7 +74,7 @@ rskew_dist <- rbeta(num_obs, 2, 5)
 df_generated_pop <- data.frame(stdnorm_dist, norm_dist, lskew_dist, rskew_dist)
 ```
 
-```{r, echo=F}
+```{r, echo = FALSE}
 load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
 
 df_ipeds_pop <- panel_data %>%
@@ -151,19 +140,25 @@ df_ipeds_pop <- panel_data %>%
 ```{r}
 # Function to generate plot
 plot_distribution <- function(data_vec, plot_title = '') {
+  
+  legend_text <- c(paste('Mean:', round(mean(data_vec, na.rm = T), 2),
+                         '\nStd Dev:', round(sd(data_vec, na.rm = T), 2)),
+                   paste('Median:', round(median(data_vec, na.rm = T), 2)))
+  
   p <- ggplot(as.data.frame(data_vec), aes(x = data_vec)) +
     ggtitle(plot_title) + xlab('') + ylab('') +
     geom_histogram(aes(y = ..density..), alpha = 0.4, position = 'identity') +
     geom_density() +
-    geom_vline(aes(xintercept = mean(data_vec, na.rm = T), color = 'mean'),
-               linetype = 'dotted', size = 0.8, alpha = 0.8) +
-    geom_vline(aes(xintercept = median(data_vec, na.rm = T), color = 'median'),
-               linetype = 'dotted', size = 0.8, alpha = 0.8) +
+    geom_vline(aes(xintercept = mean(data_vec, na.rm = T), color = 'mean', linetype = 'mean'),
+               size = 0.8, alpha = 0.8) +
+    geom_vline(aes(xintercept = median(data_vec, na.rm = T), color = 'median', linetype = 'median'),
+               size = 0.8, alpha = 0.8) +
     scale_color_manual(name = 'Statistics',
-                       labels = c(paste('Mean:', round(mean(data_vec, na.rm = T), 2),
-                                        '\nStd Dev:', round(sd(data_vec, na.rm = T), 2)),
-                                  paste('Median:', round(median(data_vec, na.rm = T), 2))),
+                       labels = legend_text,
                        values = c(mean = 'blue', median = 'red')) +
+    scale_linetype_manual(name = 'Statistics',
+                          labels = legend_text,
+                          values = c(mean = 'dotted', median = 'dashed')) +
     theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
           legend.title = element_text(size = 9, face = 'bold'),
           legend.text = element_text(size = 8))
@@ -425,5 +420,231 @@ plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Population distrib
 ```
 
 
+```{r}
+t.test(formula = tuitfee_grad_res ~ control, mu = 0, data = df_ipeds_sample, subset = unclass(control) != 3)
+```
 
+
+```{r}
+# Function to generate plot
+plot_distribution <- function(data_df, data_var, plot_title = '') {
+  
+  data_vec <- data_df[[data_var]]
+  
+  legend_text <- c(paste('Mean:', round(mean(data_vec, na.rm = T), 2),
+                         '\nStd Dev:', round(sd(data_vec, na.rm = T), 2)),
+                   paste('Median:', round(median(data_vec, na.rm = T), 2)))
+  
+  p <- ggplot() +
+    ggtitle(plot_title) + xlab('') + ylab('') +
+    geom_histogram(aes(x = data_vec, y = ..density..), alpha = 0.4, position = 'identity') +
+    geom_density(aes(x = data_vec)) +
+    geom_vline(aes(xintercept = mean(data_vec, na.rm = T), color = 'mean', linetype = 'mean'),
+               size = 0.8, alpha = 0.8) +
+    geom_vline(aes(xintercept = median(data_vec, na.rm = T), color = 'median', linetype = 'median'),
+               size = 0.8, alpha = 0.8) +
+    scale_color_manual(name = 'Statistics',
+                       labels = legend_text,
+                       values = c(mean = 'blue', median = 'red')) +
+    scale_linetype_manual(name = 'Statistics',
+                          labels = legend_text,
+                          values = c(mean = 'dotted', median = 'dashed')) +
+    theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
+          legend.title = element_text(size = 9, face = 'bold'),
+          legend.text = element_text(size = 8))
+
+  p
+}
+
+# Randomly generated data: standard normal
+df_generated_pop %>% plot_distribution('stdnorm_dist')
+```
+
+
+```{r}
+# Function to generate plot
+plot_distribution <- function(data_df, data_var, group_var = NULL, group_cat = NULL, plot_title = '') {
+  
+  # If group_cat not provided, use 2 values from group_var
+  if (!is.null(group_var) && is.null(group_cat)) {
+    group_cat <- unique(unclass(data_df[[group_var]]))[1:2]
+  }
+  
+  # Create population vector(s)
+  if (is.null(group_var)) {
+    data_vec1 <- data_df[[data_var]] %>% unclass() %>% na.omit()
+  } else {
+    data_vec1 <- (data_df %>% filter(unclass(get(group_var)) == group_cat[[1]]))[[data_var]] %>% unclass() %>% na.omit()
+    data_vec2 <- (data_df %>% filter(unclass(get(group_var)) == group_cat[[2]]))[[data_var]] %>% unclass() %>% na.omit()
+  }
+  
+  # Legend text
+  legend_text <- c(paste('Mean:', round(mean(data_vec1), 2),
+                         '\nStd Dev:', round(sd(data_vec1), 2)),
+                   paste('Median:', round(median(data_vec1), 2)))
+  
+  # Plot distribution(s)
+  p <- ggplot() +
+    ggtitle(plot_title) + xlab('') + ylab('') +
+    geom_histogram(aes(x = data_vec1, y = ..density..), alpha = 0.4, position = 'identity') +
+    geom_density(aes(x = data_vec1)) +
+    geom_vline(aes(xintercept = mean(data_vec1),
+                   color = 'mean', linetype = if_else(is.null(group_var), 'dotted', 'pop1')),
+               size = 0.8, alpha = 0.8) +
+    geom_vline(aes(xintercept = median(data_vec1),
+                   color = 'median', linetype = if_else(is.null(group_var), 'dotted', 'pop1')),
+               size = 0.8, alpha = 0.8)
+  
+  if (!is.null(group_var)) {
+    legend_text <- c(legend_text, 
+                     paste('Mean:', round(mean(data_vec2), 2),
+                           '\nStd Dev:', round(sd(data_vec2), 2)),
+                     paste('Median:', round(median(data_vec2), 2)))
+    print(legend_text)
+    p <- p + 
+      geom_histogram(aes(x = data_vec2, y = ..density..), fill = 'purple', alpha = 0.4, position = 'identity') +
+      geom_density(aes(x = data_vec2)) +
+      geom_vline(aes(xintercept = mean(data_vec2),
+                     color = 'mean', linetype = 'pop2'),
+                 size = 0.8, alpha = 0.8) +
+      geom_vline(aes(xintercept = median(data_vec2),
+                     color = 'median', linetype = 'pop2'),
+                 size = 0.8, alpha = 0.8) +
+      scale_linetype_manual(name = 'Statistics',
+                            labels = legend_text,
+                            values = rep(c(pop1 = 'dotted', pop2 = 'dashed'), each = 2))
+    print(rep(c(pop1 = 'dotted', pop2 = 'dashed'), each = 2))
+  }
+  
+  p <- p +
+    scale_color_manual(name = 'Statistics',
+                       labels = legend_text,
+                       values = rep(c(mean = 'blue', median = 'red'), times = if_else(is.null(group_var), 1, 2))) +
+    theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
+          legend.title = element_text(size = 9, face = 'bold'),
+          legend.text = element_text(size = 8))
+  print(rep(c(mean = 'blue', median = 'red'), times = if_else(is.null(group_var), 1, 2)))
+  p
+}
+
+# Randomly generated data: standard normal
+df_ipeds_sample %>% plot_distribution('tuitfee_grad_res', 'control')
+```
+
+```{r}
+test_df <- data.frame(pop = c('dotted', 'dotted', 'dashed', 'dashed'), stat = c('blue', 'red', 'blue', 'red'), val = c(-1, 2.5, -0.5, 2))
+
+ggplot() +
+  geom_vline(data = test_df, aes(xintercept = val, color = interaction(stat, pop), linetype = interaction(stat, pop))) +
+  scale_color_manual(name = 'Statistics',
+                     labels = c('a', 'b', 'c', 'd'),
+                     values = as.character(test_df$stat)) +
+  scale_linetype_manual(name = 'Statistics',
+                     labels = c('a', 'b', 'c', 'd'),
+                     values = as.character(test_df$pop))
+```
+
+
+```{r}
+# Function to generate plot
+plot_distribution <- function(data_df, data_var, group_var = NULL, group_cat = NULL, plot_title = '') {
+  
+  # Prep dataframe
+  two_pop <- !is.null(group_var)
+  
+  data_df[[data_var]] <- unclass(data_df[[data_var]])  # unclass haven_labelled
+  if (two_pop) {
+    data_df[[group_var]] <- unclass(data_df[[group_var]])
+  }
+  
+  data_df <- data_df %>% filter(!is.na(get(data_var)))  # remove NA rows
+  
+  # If group_cat not provided, use 2 values from group_var
+  if (two_pop && is.null(group_cat)) {
+    group_cat <- sort(unique(na.omit(data_df[[group_var]])))[1:2]
+  }
+
+  # Create population vector(s)
+  if (!two_pop) {  # single population
+    data_vec1 <- data_df[[data_var]]
+    
+    lines_vec <- c('dotted')
+    stats_vec <- c(mean(data_vec1), median(data_vec1))
+    legend_title <- 'Statistics'
+  } else {  # two populations
+    data_vec1 <- (data_df %>% filter(get(group_var) == group_cat[[1]]))[[data_var]]
+    data_vec2 <- (data_df %>% filter(get(group_var) == group_cat[[2]]))[[data_var]]
+    
+    lines_vec <- c('dotted', 'dotdash')
+    stats_vec <- c(mean(data_vec1), median(data_vec1), mean(data_vec2), median(data_vec2))
+    legend_title <- paste0('Statistics\n(', group_var, '=', group_cat[[1]], ' vs. ', group_var, '=', group_cat[[2]], ')')
+  }
+  
+  # Create statistics dataframe
+  stats_df <- data.frame(
+    pop = rep(lines_vec, each = 2),
+    stat = rep(c('blue', 'red'), times = if_else(two_pop, 2, 1)),
+    val = stats_vec
+  )
+  
+  # Legend text
+  legend_text <- c(paste('Mean:', round(mean(data_vec1), 2),
+                         '\nStd Dev:', round(sd(data_vec1), 2)),
+                   paste('Median:', round(median(data_vec1), 2)))
+  
+  if (two_pop) {
+    legend_text <- c(legend_text, 
+                     paste('Mean:', round(mean(data_vec2), 2),
+                           '\nStd Dev:', round(sd(data_vec2), 2)),
+                     paste('Median:', round(median(data_vec2), 2)))
+  }
+  
+  # Plot distribution(s)
+  p <- ggplot() +
+    ggtitle(plot_title) + xlab('') + ylab('') +
+    geom_histogram(aes(x = data_vec1, y = ..density..), alpha = 0.4, position = 'identity') +
+    geom_density(aes(x = data_vec1))
+  
+  if (two_pop) {
+    p <- p + 
+      geom_histogram(aes(x = data_vec2, y = ..density..), alpha = 0.4, position = 'identity', fill = 'wheat4') +
+      geom_density(aes(x = data_vec2))
+  }
+  
+  p <- p +
+    geom_vline(data = stats_df,
+               aes(xintercept = val, color = interaction(stat, pop), linetype = interaction(stat, pop)),
+               size = 0.6, alpha = 0.8) +
+    scale_color_manual(name = legend_title,
+                       labels = legend_text,
+                       values = as.character(stats_df$stat)) +
+    scale_linetype_manual(name = legend_title,
+                          labels = legend_text,
+                          values = as.character(stats_df$pop)) +
+    theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
+          legend.title = element_text(size = 9, face = 'bold'),
+          legend.text = element_text(size = 8)) +
+    guides(col = guide_legend(ncol = if_else(two_pop, 2, 1)))
+  
+  p
+}
+
+
+# Randomly generated data: standard normal
+df_ipeds_sample %>% plot_distribution('tuitfee_grad_res', 'control')
+
+# Randomly generated data: standard normal
+df_ipeds_sample %>% plot_distribution('tuitfee_grad_res')
+```
+
+```{r}
+ggplot(mtcars, aes(mpg, wt, color = gear,fill = "a")) + 
+  geom_point() + labs(caption = "Your text here") +
+  scale_fill_manual(name = "Your custom caption\ngoes here", labels = '', values = c('white')) + 
+  theme(legend.key = element_rect(fill = "white"),
+        plot.caption = element_text(colour = "red", hjust = 1, angle = 15)) +
+  guides(color = guide_legend(order = 2),
+      fill = guide_legend(order = 1, title.vjust = 5,
+                          override.aes = list(linetype = 0, shape=NA))) # setting the order parameter in guide_legend will help place it below your existing legend(s)
+```
 
