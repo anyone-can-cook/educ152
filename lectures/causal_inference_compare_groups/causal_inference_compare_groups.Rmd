@@ -238,15 +238,25 @@ Causal research questions
 
 <br>
 
+**Example research questions we will use to explain causal inference concepts**
+
+What is the effect of participating in the Mexican American Studies (MAS) program ($T_i=1$) vs. not participating in MAS ($T_i=0$) on statewide standardized high school test score ($Y$) for students in the Tucson Unified School District [@RN3292]?
+
+- Cabrera, N. L., Milem, J. F., Jaquette, O., & Marx, R. (2014). Missing the (student achievement) forest for all the (political) trees: Empiricism and the Mexican American Studies controversy in Tucson. *American Educational Research Journal*, 51(6), 1084-1118.
+- This study was an observational research design, rather than an experiment. Cannot use the data because I am not allowed to share, but good example for introducing causal effects
+- *Note*. in @RN3292, we modeled the effect of MAS participation on probability of high school graduation and on statewide standardized test scores (in writing, reading, and math)
+  - in this lecture, we use $Y=$ statewide standardized test score because easier to explain Rubin's causal model using a continuous outcome variable
+
+<br>
+
+What is the effect of having a "small" class size ($T_i=1$) vs. "large" class size ($T_i=0$) on achievement test score ($Y$) for elementary school students?
+
+- This research question is from the Tennessee Student Teacher Achievement Ratio (STAR) experiment
+- We have data from this experiment
 
 **What is the "true" causal effect of an treatment? (answer: actual minus counterfactual)**
 
-Example we will use
-
-- What is the effect of participating in the Mexican American Studies (MAS) program ($X$) on the probability of high school graduation  ($Y$) for students in the Tucscon Unified School District [@RN3292]?
-  - Cabrera, N. L., Milem, J. F., Jaquette, O., & Marx, R. (2014). Missing the (student achievement) forest for all the (political) trees: Empiricism and the Mexican American Studies controversy in Tucson. *American Educational Research Journal*, 51(6), 1084-1118. 
-
-Actual and counterfactual
+Actual and counterfactual (using the Mexican American Studies (MAS) example)
 
 - Actual event
   - actual treatment/control assignment and observed outcome
@@ -367,61 +377,94 @@ Rubin's causal model: The potential outcomes framework
 - Rubin's causal model (also called "the potential outcomes framework") is the most important conceptual approach to understanding causal effects
 - it lays out the logic of "true causal effect equals actual minus counterfactual" in a more rigorous way
 
-
-Example research question we will use to explain :
-
-- What is the effect of participating in the Mexican American Studies (MAS) program ($T_i=1$) vs. not participating in MAS ($T_i=0$) on statewide standardized test ($Y$)?
-- Note:
-  - in @RN3292, we modeled the effect of MAS participation on probability of high school graduation and on statewide standardized test scores (in writing, reading, and math)
-  - we use $Y$ statewide standardized test score because easier to explain Rubin's causal model using a continuous outcome variable
-
 <br>
+
+**Notation**
+
+- $i=1,\ldots,n$ refers to "units" or "subjects" (e.g., students)
+- $Y_i$: actual observed outcome $Y$ for unit $i$
+- $T_i$: actual observed treatment condition for unit $i$. $T_i=1$ is "treated"; $T_i=0$ is "untreated" or "control"
+
 
 **Potential outcomes**
 
-Each person $i$ has two **potential outcomes** $Y_i$
+A **potential outcome** is what the outcome would be for a unit if it received a given treatment condition
+
+Each person $i$ has two **potential outcomes** (using the Mexican American Studies (MAS) example)
 	
-- $Y_i(1)$ -- the "treated potential outcome" -- equals high school test score when student $i$ participates in MAS ($T_i=1$)
-- $Y_i(0)$ -- the "untreated potential outcome" -- equals high school test score when student $i$ does not participate in MAS ($T_i=0$)
-	
-How to think about potential outcomes
-	
-- for each person $i$, imagine that the treated potential outcome $Y_i(1)$ and the untreated potential outcome $Y_i(0)$ already exist
-- Treatment variable $T_i$ just determines which of the two potential outcomes we actually get to observe
+1. $Y_i(1)$, the "treated potential outcome," equals the outcome for unit $i$ if it had received the treatment
+1. $Y_i(0)$, the "untreated potential outcome," equals the outcome for unit $i$ if it had not received the treatment
 
 
-### Review potential outcomes notation
+The two **potential outcomes**, using the Mexican American Studies (MAS) example
 
-**What is effect of attending community college (CC) vs. 4-year on salary (Y)?**
+1. $Y_i(1)$, the "treated potential outcome," equals the outcome -- statewide high school test score -- for unit $i$ if it had participated in MAS program
+1. $Y_i(0)$, the "untreated potential outcome," equals the outcome -- statewide high school test score -- for unit $i$ if it had not participated in MAS program
+
+
+**How to think about potential outcomes**
 	
-- Treatment, $T_i$
-	- 1=treated (CC); 0= untreated/control (4-year)
-- Four combinations of potential outcome and treatment assignment:
-	- $Y_i(1) \mid T_i=1$ => salary after treatment for those actually assigned to treatment (**observed**)
-	- $Y_i(0) \mid T_i=1$ => salary after no treatment for those actually assigned to treatment (**not observed**)
-	- $Y_i(1) \mid T_i=0$ => salary after treatment for those assigned to control (**not observed**)			
-	- $Y_i(0) \mid T_i=0$ => salary after no treatment for those assigned to control (**observed**)
+- for each person $i$, imagine that the both the treated potential outcome $Y_i(1)$ and the untreated potential outcome $Y_i(0)$ already exist
+- The observed value of the treatment variable $T_i$ just determines which of the two potential outcomes we actually get to observe
 
+<br>
+
+Relationship between potential and observed outcomes, $Y_i$
+
+- $Y_i=T_i*Y_i(1)+(1-T_i)*Y_i(0)$
+- if subject is assigned to the treatment group ($T_i=1$) then the above equation simplifies to $Y_i=Y_i(1)$ meaning that the outcome we actually observe is the treated potential outcome, $Y_i(1)$
+- if subject is assigned to the control group ($T_i=0$) then the above equation simplifies to $Y_i=Y_i(0)$ meaning that the outcome we actually observe is the untreated potential outcome, $Y_i(0)$
+
+<br>
+
+There are four combinations of potential outcome and treated assignment, two of which we actually observe and two of which we do not observe because they are counterfactuals
+
+- Below, we will use this sort of notation: $Y_i(1) \mid T_i=1$ 
+  - means "the treated potential outcome for unit $i$ **given** that unit $i$ actually received the treatment (i.e., $T_i=1$)
+
+
+Four combinations of potential outcome and treated assignment
+
+- $Y_i(1) \mid T_i=1$ => treated potential outcome for those actually assigned to treatment (**observed**)
+  - For people actually assigned to the treatment, we get to observe their treated potential outcome
+- $Y_i(0) \mid T_i=1$ => untreated potential outcome for those actually assigned to treatment (**not observed**)
+  - For people actually assigned to the treatment, we do not get to observe their untreated potential outcome
+- $Y_i(1) \mid T_i=0$ => treated potential outcome for those actually assigned to control (**not observed**)			
+  - For people actually assigned to the control, we do not get to observe their treated potential outcome
+- $Y_i(0) \mid T_i=0$ => untreated potential outcome for those actually assigned to control (**observed**)
+  - For people actually assigned to the control, we get to observe their untreated potential outcome
+
+<br>
+
+Below, we present these four combinations of potential outcome and treatment assignment in tabular form. 
 
 |   | **Actually treated (T=1)**  | **Actually not treated (T=0)**  |
 |---|:-:|:-:|
 | <b>$Y_i(1)$</b>  | <span style="color:blue;">$Y_i(1) \mid T_i=1$</span>  | <span style="color:red;">$Y_i(1) \mid T_i=0$</span>  |
 | <b>$Y_i(0)$</b>  | <span style="color:red;">$Y_i(0) \mid T_i=1$  | <span style="color:blue;">$Y_i(0) \mid T_i=0$</span>  |
 
-The two blue cells show the notation for the _actual_ outcomes
-	
-- E.g., for those who were actually treated (attended CC), their salary in 2011 is represented by $Y_i(1) \mid T_i=1$
-- "The treated potential outcome, for those who underwent treatment"
 
-Red cells are _counterfactual_ outcomes, which we never see
-	
-- Need counterfactual to estimate "true" causal effect
+The <span style="color:blue;">Blue</span> cells show notation for _actual_ outcomes we get to observe (i.e., the observed outcome $Y$ is the same as the potential outcome) 
+
+- e.g., "The treated potential outcome, for those who underwent treatment"
+
+The <span style="color:red;">Red</span> cells are _counterfactual_ outcomes, which we never get to see (i.e., the observed outcome $Y$ is not the same as the potential outcome) 
+
+- We need counterfactual to calculate the "true" causal effect
 - Need some substitute for the counterfactual to estimate causal effect
 	
+**unit-level causal effect** ("true" causal effect)
+
+Unit causal effect: $\tau_i = Y_i(1) - (Y_0)$
+
+- in words: the causal effect of the treatment for unit $i$ is the treated potential outcome ($Y_i(1)$) -- outcome had they received the treatment -- minus the untreated potential outcome ($Y_i(0)$) -- outcome had they not received the treatment
+- note that the unit causal effect differs for different subject
+- in reality, we can never calculate the true unit causal effect because we can never observe both the treated potential outcome and the untreated potential outcome for a unit, $i$
 
 **Table of potential outcomes**
 
-Imagine we know treated $Y_i(1)$ and untreated $Y_i(0)$ potential outcomes for all $i$
+
+But imagine we know treated $Y_i(1)$ and untreated $Y_i(0)$ potential outcomes for all $i$
 
 | $i$ | $Y_i(1)$ <br> Treated  | $Y_i(0)$ <br> Untreated | $\tau_i$ <br> Unit effect |
 |:---|--:|--:|--:|
@@ -436,11 +479,227 @@ Imagine we know treated $Y_i(1)$ and untreated $Y_i(0)$ potential outcomes for a
 	
 True causal effect for each $i$
 	
-- Unit treatment effect: for each person, compare their treated salary to untreated salary
-- $UTE_i=Y_i(1)-Y_i(0)$
+- Unit treatment effect: for each person, compare their treated potential outcome to their untreated potential outcome
+- ${UTE}_i=\tau_i=Y_i(1)-Y_i(0)$
 
+
+# Experiments
+
+Calculating the true (unit) causal effect of a treatment requires knowing the actual outcome and the counterfactual outcome (the potential outcome had the unit been assigned to a different treatment/control condition than what they actually received), for each unit $i$
+
+- we can never do this
+
+<br>
+
+The most important/difficult part of causal inference research is creating a "comparison group" that is a good substitute for the counterfactual
+
+An experiment (subjects randomly assigned to treatment vs. control) is the "gold standard" approach for creating a comparison group
+
+- when we conduct an experiment, we cannot calculate the unit treatment effect (causal effect of the treatment that is different for each unit $i$), but we can calculate an "average treatment effect"
+
+
+## Expected values
+
+Repeated random sampling
+	
+- Imagine we take an infinite number of samples of size N from the population
+
+Expected value
+
+- Expected value of a variable is the average value of a random variable based on an infinite number of samples
+- expected value of discrete random variable X: $E[X]=\sum xPr[X=x]$
+  - $Pr[X=x]$ is probability that $X$ takes on the value $x$, where summation is taken over all possible values of X
+- Example of expected value of dice role, $X$:
+	- $E[X]=(1)(\frac{1}{6}) +(2)(\frac{1}{6})+(3)(\frac{1}{6})+(4)(\frac{1}{6})+(5)(\frac{1}{6})+(6)(\frac{1}{6})=3.5$
+
+### Conditional expectations
+
+Conditional expectations refer to subgroup averages 
+
+Using Tennesee STAR example: $Y_i$=achievement test score; $T_i$=treatment assignment (1="small" class, treated; 0="big" class, untreated); $Z_i$=parental education
+	
+- $E[Y_i|T_i=1]$
+	- Expected value of observed test score, given that student got internship
+- $E[Y_i|Z_i >= baccalaureate\_degree"]$
+	- Expected value of observed test score, given that parents level of education is baccalaureate degree or higher
+- $E[Y_i(1)|T_i=1]$
+	- Expected value of treated potential outcome test score, given that student received the treatment (assigned to small class) [we get to observe this]
+- $E[Y_i(0)|T_i=1]$
+	- Expected value of untreated potential outcome test score, given that student received the treatment  [we do not get to observe this]
+
+## Random assignment
+
+In an experiment, we randomly assign subjects to receive treatment or not (i.e., control)
+
+Random assignment variable, $T_i$
+
+- $T_i$ is a variable whose value is randomly assigned (e.g., coin flip, or some random number generator)
+- Value of $T_i$ determines whether person $i$ receives treatment
+  - e.g., student with $T_i=1$ enroll in "small class" (treatment); units with $T_i=0$ enroll in "big class" (control)
+
+Potential outcomes and random assignment
+
+- $E[Y_i(1)|T_i=1]$
+	- Treated potential outcome, given $i$ assigned to treatment
+	- Observed?: Yes 
+- $E[Y_i(1)|T_i=0]$
+	- Treated potential outcome, given $i$ not assigned to treatment
+	- Observed?: No 			
+- $E[Y_i(0)|T_i=1]$
+	- Untreated potential outcome, given $i$ assigned to treatment
+	- Observed?: No		
+- $E[Y_i(0)|T_i=0]$
+	- Untreated potential outcome, given $i$ not assigned to treatment
+	- Observed?: Yes
+	
+### Random assignment and repeated random sampling
+
+Below table shows table of treated and untreated potential outcomes for 7 people, in the hypothetical case where we know both the treated and untreated potential outcome for each person
+
+
+| $i$ | $Y_i(1)$ <br> Treated  | $Y_i(0)$ <br> Untreated | $\tau_i$ <br> Treatment effect |
+|:---|--:|--:|--:|
+| 1  | 65  | 60  | 5  |
+| 2  | 30  | 35  | -5  |
+| 3  | 55  | 60  | -5  |
+| 4  | 25  | 30  | -5  |
+| 5  | 50  | 50  | 0  |
+| 6  | 80  | 70  | 10  |
+| 7  | 45  | 45  | 0  |
+| **Average**  | **50**  | **50**  | **0** |
+
+Below equations show the the calculation of average treatment effect (ATE)
+
+$ATE \equiv \frac{1}{N} \sum_{i=1}^{N} \tau_i$
+
+$ATE \equiv \frac{1}{N} \sum_{i=1}^{N} Y_i(1) - \frac{1}{N} \sum_{i=1}^{N} Y_i(0) = \frac{1}{N} \sum_{i=1}^{N} (Y_i(1)-Y_i(0)) = \frac{1}{N} \sum_{i=1}^{N} \tau_i$
+
+<br>
+
+Now imagine that 3 of the 7 people are randomly assigned to receive the treatment (small class size)
+
+- in the below table, **bolded** cells indicate cells we actually observe
+- e.g., in the first row for unit $i=1$ we observe the untreated outcome $Y_i(0)=60$ (indicating that $T_i=0$ for unit $i=1$), but we would not observe the treated outcome $Y_i(1)=65$ because unit $i=1$ was not assigned to the treatment
+
+| $i$ | $Y_i(1)$ <br> Treated  | $Y_i(0)$ <br> Untreated | $\tau_i$ <br> Treatment effect |
+|:---|--:|--:|--:|
+| 1  | 65  | **60**  | ?  |
+| 2  | 30  | **35**  | ?  |
+| 3  | **55**  | 60  | ?  |
+| 4  | **25**  | 30  | ?  |
+| 5  | 50  | **50**  | ?  |
+| 6  | 80  | **70**  | ?  |
+| 7  | **45**  | 45  | ?  |
+| **Avg. observed**  | **45**  | **53.75**  | **-8.75** |
+| Avg. potential (unobserved)  | 50  | 50  | 0 |
+
+
+<br>
+
+Now imagine that start over (re-sample) and randomly assign 3 of the 7 people people to receive the treatment
+
+| $i$ | $Y_i(1)$ <br> Treated  | $Y_i(0)$ <br> Untreated | $\tau_i$ <br> Treatment effect |
+|:---|--:|--:|--:|
+| 1  | **65**  | 60  | 5  |
+| 2  | 30  | **35**  | -5  |
+| 3  | 55  | **60**  | -5  |
+| 4  | **25**  | 30  | -5  |
+| 5  | 50  | **50**  | 0  |
+| 6  | **80**  | 70  | 10  |
+| 7  | 45  | **45**  | 0  |
+| **Avg. observed**  | **56.67**  | **47.5**  | **9.17** |
+| Avg. potential (unobserved)  | 50  | 50  | 0 |
+	
+	
+**If we re-sampled an infinite number of times, and calculated the average of the "average observed treatment effect" it would equal the "average potential treatment effect"**
+
+- this is the exaxt same idea as: if we take an infinite number of random samples and calculate the sample mean $\bar{Y}$ for each sample, the mean of all sample means would equal the population mean, $\mu_Y$
 
 ## Why experiments work
+
+Why are experiments viewed as the "gold standard" approach for estimating causal effects?
+
+<br>
+
+Recall from Rubin's causal model:
+
+- for each person $i$, both the value of the treated potential outcome $Y_i(1)$ and the value of the untreated potential outcome $Y_i(0)$ already exist
+- The observed value of the treatment variable $T_i$ just determines which of the two potential outcomes we actually get to observe, $Y_i$
+  - If $T_i=1$ then the observed outcome, $Y_i$, is the treated potential outcome, $Y_i(1)$
+  - If $T_i=0$ then the observed outcome, $Y_i$, is the untreated potential outcome, $Y_i(0)$
+
+<br>
+
+In experiments, treatment status is randomly assigned (if $T_i=1$ then treated; $T_i=0$ then untreated)
+
+- treatment assignment $T_i$ does not affect the value of the either the treated potential outcome ($Y_i(1)$) or the untreated potential outcome ($Y_i(0)$)
+- rather, treatment assignment $T_i$ just affects which treated potential outcome we observe
+  - If $T_i=1$ then the observed outcome, $Y_i$, is the treated potential outcome, $Y_i(1)$
+  - If $T_i=0$ then the observed outcome, $Y_i$, is the untreated potential outcome, $Y_i(0)$
+
+<br>
+
+**Random assignment and expected values**
+
+- Every person has same probability of getting treatment ($T_i=1$); therefore, expected treated potential outcome among treated people ($E[Y_i(1)|T_i=1]$) is same as expected treated outcome for all people in sample ($E[Y_i(1)]$):
+	- $E[Y_i(1)|T_i=1]=E[Y_i(1)]$
+- Every person has same probability of getting control  ($T_i=0$); therefore, expected untreated potential outcome among untreated people ($E[Y_i(0)|T_i=0]$) is same as expected outcome for all people in sample ($E[Y_i(0)]$):
+	- $E[Y_i(0)|T_i=0]=E[Y_i(0)]$
+
+
+<br>
+
+**Why experiments work (i.e., why they calculate unbiased estimates of causal effects**
+
+For any outcome of interest (e.g., reading achievement scores of 3rd graders), there are many variables -- aside from the treatment (e.g., "small class size") -- that affect the value of the outcome
+
+- e.g., parental education; household income; access to a quiet place to do homework; access to good nutrition; sleep
+
+<br>
+
+But because assignment to treatment is random:
+ 
+- Assignment to treatment has no effect on value of the potential outcomes; it just affects which potential outcome is observed for each person
+- **Assignment to treatment has no relationship to characteristics (e.g., parental income) that affect value of potential outcomes**
+
+<br>
+
+**Why observational studies (people self-select into treatment) don't calculate unbiased estimates of causal effects**
+
+For any outcome of interest (e.g., reading achievement scores of 3rd graders), there are many variables -- aside from the treatment (e.g., "small class size") -- that affect the value of the outcome
+
+- e.g., parental education; household income; access to a quiet place to do homework; access to good nutrition; sleep
+
+When people self-select into the treatment (as opposed to treatment being randomly assigned), it is likely that people with certain characteristics are more likely to select into the treatment than others
+
+- e.g., affluent parents are more likely to get their children into classes with small class size
+
+So in observational research designs, the same characteristics (e.g., parental income) that determine the value of the dependent variable (student achievement score) also drive selection into the treatment (small class size)
+
+- This makes it difficult to determine whether the higher outcome values for "treated" units are due to the treatment or due to other characteristics that are associated with both the treatment and the outcome
+
+<br>
+
+**Calculating average treatment effects (ATE) for random assingment experiments**
+
+In a random assignment experiment, we can calculate the population average treatment effect (ATE) as follows
+
+- $ATE=\tau=E[Y_i(1)-Y_i(0)]=  E[Y_i(1)] - E[Y_i(0)] = E[Y_i(1)|T_i=1]-E[Y_i(0)|T_i=0]= E[Y_i|T_i=1] - E[Y_i|T_i=0]$
+
+However, knowing expected values -- e.g., $E[Y_i|T_i=1]$, the expected value of $Y_i$ amongst treated units -- requires taking an infinute number of samples
+
+- In real research, we are only able to randomly assign a single sample
+- Using data from that single sample we calculate an estimate of the average treatment effect
+- Using hypothesis testing methods we learned previously, we use our estimate of the average treatment effect to test hypotheses about the population treatment effect
+
+Formula for the "difference in means" estimator of the average treatment effect
+
+- $\hat{ATE} = \hat{\tau} = \bar{Y}_{treat} - \bar{Y}_{control}$
+
+```{r}
+# add data
+```
+
 
 # Hypothesis testing about two populations
 

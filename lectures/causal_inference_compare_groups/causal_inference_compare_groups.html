@@ -1911,15 +1911,24 @@ pre code, pre, code {
 </ul></li>
 </ul>
 <p><br></p>
-<p><strong>What is the “true” causal effect of an treatment? (answer: actual minus counterfactual)</strong></p>
-<p>Example we will use</p>
-<ul>
-<li>What is the effect of participating in the Mexican American Studies (MAS) program (<span class="math inline">\(X\)</span>) on the probability of high school graduation (<span class="math inline">\(Y\)</span>) for students in the Tucscon Unified School District <span class="citation">(Cabrera, Milem, Jaquette, &amp; Marx, 2014)</span>?
+<p><strong>Example research questions we will use to explain causal inference concepts</strong></p>
+<p>What is the effect of participating in the Mexican American Studies (MAS) program (<span class="math inline">\(T_i=1\)</span>) vs. not participating in MAS (<span class="math inline">\(T_i=0\)</span>) on statewide standardized high school test score (<span class="math inline">\(Y\)</span>) for students in the Tucson Unified School District <span class="citation">(Cabrera, Milem, Jaquette, &amp; Marx, 2014)</span>?</p>
 <ul>
 <li>Cabrera, N. L., Milem, J. F., Jaquette, O., &amp; Marx, R. (2014). Missing the (student achievement) forest for all the (political) trees: Empiricism and the Mexican American Studies controversy in Tucson. <em>American Educational Research Journal</em>, 51(6), 1084-1118.</li>
+<li>This study was an observational research design, rather than an experiment. Cannot use the data because I am not allowed to share, but good example for introducing causal effects</li>
+<li><em>Note</em>. in <span class="citation">Cabrera et al. (2014)</span>, we modeled the effect of MAS participation on probability of high school graduation and on statewide standardized test scores (in writing, reading, and math)
+<ul>
+<li>in this lecture, we use <span class="math inline">\(Y=\)</span> statewide standardized test score because easier to explain Rubin’s causal model using a continuous outcome variable</li>
 </ul></li>
 </ul>
-<p>Actual and counterfactual</p>
+<p><br></p>
+<p>What is the effect of having a “small” class size (<span class="math inline">\(T_i=1\)</span>) vs. “large” class size (<span class="math inline">\(T_i=0\)</span>) on achievement test score (<span class="math inline">\(Y\)</span>) for elementary school students?</p>
+<ul>
+<li>This research question is from the Tennessee Student Teacher Achievement Ratio (STAR) experiment</li>
+<li>We have data from this experiment</li>
+</ul>
+<p><strong>What is the “true” causal effect of an treatment? (answer: actual minus counterfactual)</strong></p>
+<p>Actual and counterfactual (using the Mexican American Studies (MAS) example)</p>
 <ul>
 <li>Actual event
 <ul>
@@ -2055,43 +2064,73 @@ Major assumption: After including [time-varying] covariates, there are no omitte
 <li>Important to understand why experiments work so you can assess whether the observational method is recreating experimental conditions</li>
 </ul>
 </div>
-<div id="rubins-causal-modelpotential-outcomes" class="section level2">
-<h2><span class="header-section-number">3.2</span> Rubin’s causal model[potential outcomes]</h2>
-<div id="review-rubin-causal-model-rcm-of-potential-outcomes" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> Review Rubin causal model (RCM) of potential outcomes</h3>
-<p>Example research question:</p>
+<div id="rubins-causal-model" class="section level2">
+<h2><span class="header-section-number">3.2</span> Rubin’s causal model</h2>
+<p>Rubin’s causal model: The potential outcomes framework</p>
 <ul>
-<li>What is the effect of participating in the Mexican American Studies (MAS) program (<span class="math inline">\(T_i=1\)</span>) vs. not participating in MAS (<span class="math inline">\(T_i=0\)</span>) on high school exit exam score (<span class="math inline">\(Y\)</span>)?</li>
+<li>Rubin’s causal model (also called “the potential outcomes framework”) is the most important conceptual approach to understanding causal effects</li>
+<li>it lays out the logic of “true causal effect equals actual minus counterfactual” in a more rigorous way</li>
 </ul>
-<p>Each person <span class="math inline">\(i\)</span> has two <strong>potential outcomes</strong> <span class="math inline">\(Y_i\)</span></p>
+<p><br></p>
+<p><strong>Notation</strong></p>
 <ul>
-<li><span class="math inline">\(Y_i(1)\)</span> salary when assigned to treatment (community college)<br />
-</li>
-<li><span class="math inline">\(Y_i(0)\)</span> salary when assigned to control (4-year institution)</li>
+<li><span class="math inline">\(i=1,\ldots,n\)</span> refers to “units” or “subjects” (e.g., students)</li>
+<li><span class="math inline">\(Y_i\)</span>: actual observed outcome <span class="math inline">\(Y\)</span> for unit <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(T_i\)</span>: actual observed treatment condition for unit <span class="math inline">\(i\)</span>. <span class="math inline">\(T_i=1\)</span> is “treated”; <span class="math inline">\(T_i=0\)</span> is “untreated” or “control”</li>
 </ul>
-<p>How to think about potential outcomes</p>
+<p><strong>Potential outcomes</strong></p>
+<p>A <strong>potential outcome</strong> is what the outcome would be for a unit if it received a given treatment condition</p>
+<p>Each person <span class="math inline">\(i\)</span> has two <strong>potential outcomes</strong> (using the Mexican American Studies (MAS) example)</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(Y_i(1)\)</span>, the “treated potential outcome,” equals the outcome for unit <span class="math inline">\(i\)</span> if it had received the treatment</li>
+<li><span class="math inline">\(Y_i(0)\)</span>, the “untreated potential outcome,” equals the outcome for unit <span class="math inline">\(i\)</span> if it had not received the treatment</li>
+</ol>
+<p>The two <strong>potential outcomes</strong>, using the Mexican American Studies (MAS) example</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(Y_i(1)\)</span>, the “treated potential outcome,” equals the outcome – statewide high school test score – for unit <span class="math inline">\(i\)</span> if it had participated in MAS program</li>
+<li><span class="math inline">\(Y_i(0)\)</span>, the “untreated potential outcome,” equals the outcome – statewide high school test score – for unit <span class="math inline">\(i\)</span> if it had not participated in MAS program</li>
+</ol>
+<p><strong>How to think about potential outcomes</strong></p>
 <ul>
-<li>for each person <span class="math inline">\(i\)</span>, the treated potential outcome <span class="math inline">\(Y_i(1)\)</span> and the untreated potential outcome <span class="math inline">\(Y_i(0)\)</span> already exist</li>
-<li>Treatment variable <span class="math inline">\(T_i\)</span> just determines which of the two potential outcomes we get to observe</li>
+<li>for each person <span class="math inline">\(i\)</span>, imagine that the both the treated potential outcome <span class="math inline">\(Y_i(1)\)</span> and the untreated potential outcome <span class="math inline">\(Y_i(0)\)</span> already exist</li>
+<li>The observed value of the treatment variable <span class="math inline">\(T_i\)</span> just determines which of the two potential outcomes we actually get to observe</li>
 </ul>
-</div>
-<div id="review-potential-outcomes-notation" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Review potential outcomes notation</h3>
-<p><strong>What is effect of attending community college (CC) vs. 4-year on salary (Y)?</strong></p>
+<p><br></p>
+<p>Relationship between potential and observed outcomes, <span class="math inline">\(Y_i\)</span></p>
 <ul>
-<li>Treatment, <span class="math inline">\(T_i\)</span>
+<li><span class="math inline">\(Y_i=T_i*Y_i(1)+(1-T_i)*Y_i(0)\)</span></li>
+<li>if subject is assigned to the treatment group (<span class="math inline">\(T_i=1\)</span>) then the above equation simplifies to <span class="math inline">\(Y_i=Y_i(1)\)</span> meaning that the outcome we actually observe is the treated potential outcome, <span class="math inline">\(Y_i(1)\)</span></li>
+<li>if subject is assigned to the control group (<span class="math inline">\(T_i=0\)</span>) then the above equation simplifies to <span class="math inline">\(Y_i=Y_i(0)\)</span> meaning that the outcome we actually observe is the untreated potential outcome, <span class="math inline">\(Y_i(0)\)</span></li>
+</ul>
+<p><br></p>
+<p>There are four combinations of potential outcome and treated assignment, two of which we actually observe and two of which we do not observe because they are counterfactuals</p>
 <ul>
-<li>1=treated (CC); 0= untreated/control (4-year)</li>
+<li>Below, we will use this sort of notation: <span class="math inline">\(Y_i(1) \mid T_i=1\)</span>
+<ul>
+<li>means &quot;the treated potential outcome for unit <span class="math inline">\(i\)</span> <strong>given</strong> that unit <span class="math inline">\(i\)</span> actually received the treatment (i.e., <span class="math inline">\(T_i=1\)</span>)</li>
 </ul></li>
-<li>Four combinations of potential outcome and treatment assignment:
+</ul>
+<p>Four combinations of potential outcome and treated assignment</p>
 <ul>
-<li><span class="math inline">\(Y_i(1) \mid T_i=1\)</span> =&gt; salary after treatment for those actually assigned to treatment (<strong>observed</strong>)</li>
-<li><span class="math inline">\(Y_i(0) \mid T_i=1\)</span> =&gt; salary after no treatment for those actually assigned to treatment (<strong>not observed</strong>)</li>
-<li><span class="math inline">\(Y_i(1) \mid T_i=0\)</span> =&gt; salary after treatment for those assigned to control (<strong>not observed</strong>)<br />
-</li>
-<li><span class="math inline">\(Y_i(0) \mid T_i=0\)</span> =&gt; salary after no treatment for those assigned to control (<strong>observed</strong>)</li>
+<li><span class="math inline">\(Y_i(1) \mid T_i=1\)</span> =&gt; treated potential outcome for those actually assigned to treatment (<strong>observed</strong>)
+<ul>
+<li>For people actually assigned to the treatment, we get to observe their treated potential outcome</li>
+</ul></li>
+<li><span class="math inline">\(Y_i(0) \mid T_i=1\)</span> =&gt; untreated potential outcome for those actually assigned to treatment (<strong>not observed</strong>)
+<ul>
+<li>For people actually assigned to the treatment, we do not get to observe their untreated potential outcome</li>
+</ul></li>
+<li><span class="math inline">\(Y_i(1) \mid T_i=0\)</span> =&gt; treated potential outcome for those actually assigned to control (<strong>not observed</strong>)
+<ul>
+<li>For people actually assigned to the control, we do not get to observe their treated potential outcome</li>
+</ul></li>
+<li><span class="math inline">\(Y_i(0) \mid T_i=0\)</span> =&gt; untreated potential outcome for those actually assigned to control (<strong>observed</strong>)
+<ul>
+<li>For people actually assigned to the control, we get to observe their untreated potential outcome</li>
 </ul></li>
 </ul>
+<p><br></p>
+<p>Below, we present these four combinations of potential outcome and treatment assignment in tabular form.</p>
 <table>
 <thead>
 <tr class="header">
@@ -2113,18 +2152,24 @@ Major assumption: After including [time-varying] covariates, there are no omitte
 </tr>
 </tbody>
 </table>
-<p>The two blue cells show the notation for the <em>actual</em> outcomes</p>
+<p>The <span style="color:blue;">Blue</span> cells show notation for <em>actual</em> outcomes we get to observe (i.e., the observed outcome <span class="math inline">\(Y\)</span> is the same as the potential outcome)</p>
 <ul>
-<li>E.g., for those who were actually treated (attended CC), their salary in 2011 is represented by <span class="math inline">\(Y_i(1) \mid T_i=1\)</span></li>
-<li>“The treated potential outcome, for those who underwent treatment”</li>
+<li>e.g., “The treated potential outcome, for those who underwent treatment”</li>
 </ul>
-<p>Red cells are <em>counterfactual</em> outcomes, which we never see</p>
+<p>The <span style="color:red;">Red</span> cells are <em>counterfactual</em> outcomes, which we never get to see (i.e., the observed outcome <span class="math inline">\(Y\)</span> is not the same as the potential outcome)</p>
 <ul>
-<li>Need counterfactual to estimate “true” causal effect</li>
+<li>We need counterfactual to calculate the “true” causal effect</li>
 <li>Need some substitute for the counterfactual to estimate causal effect</li>
 </ul>
+<p><strong>unit-level causal effect</strong> (“true” causal effect)</p>
+<p>Unit causal effect: <span class="math inline">\(\tau_i = Y_i(1) - (Y_0)\)</span></p>
+<ul>
+<li>in words: the causal effect of the treatment for unit <span class="math inline">\(i\)</span> is the treated potential outcome (<span class="math inline">\(Y_i(1)\)</span>) – outcome had they received the treatment – minus the untreated potential outcome (<span class="math inline">\(Y_i(0)\)</span>) – outcome had they not received the treatment</li>
+<li>note that the unit causal effect differs for different subject</li>
+<li>in reality, we can never calculate the true unit causal effect because we can never observe both the treated potential outcome and the untreated potential outcome for a unit, <span class="math inline">\(i\)</span></li>
+</ul>
 <p><strong>Table of potential outcomes</strong></p>
-<p>Imagine we know treated <span class="math inline">\(Y_i(1)\)</span> and untreated <span class="math inline">\(Y_i(0)\)</span> potential outcomes for all <span class="math inline">\(i\)</span></p>
+<p>But imagine we know treated <span class="math inline">\(Y_i(1)\)</span> and untreated <span class="math inline">\(Y_i(0)\)</span> potential outcomes for all <span class="math inline">\(i\)</span></p>
 <table>
 <thead>
 <tr class="header">
@@ -2187,17 +2232,395 @@ Major assumption: After including [time-varying] covariates, there are no omitte
 </table>
 <p>True causal effect for each <span class="math inline">\(i\)</span></p>
 <ul>
-<li>Unit treatment effect: for each person, compare their treated salary to untreated salary</li>
-<li><span class="math inline">\(UTE_i=Y_i(1)-Y_i(0)\)</span></li>
+<li>Unit treatment effect: for each person, compare their treated potential outcome to their untreated potential outcome</li>
+<li><span class="math inline">\({UTE}_i=\tau_i=Y_i(1)-Y_i(0)\)</span></li>
+</ul>
+</div>
+</div>
+<div id="experiments" class="section level1">
+<h1><span class="header-section-number">4</span> Experiments</h1>
+<p>Calculating the true (unit) causal effect of a treatment requires knowing the actual outcome and the counterfactual outcome (the potential outcome had the unit been assigned to a different treatment/control condition than what they actually received), for each unit <span class="math inline">\(i\)</span></p>
+<ul>
+<li>we can never do this</li>
+</ul>
+<p><br></p>
+<p>The most important/difficult part of causal inference research is creating a “comparison group” that is a good substitute for the counterfactual</p>
+<p>An experiment (subjects randomly assigned to treatment vs. control) is the “gold standard” approach for creating a comparison group</p>
+<ul>
+<li>when we conduct an experiment, we cannot calculate the unit treatment effect (causal effect of the treatment that is different for each unit <span class="math inline">\(i\)</span>), but we can calculate an “average treatment effect”</li>
+</ul>
+<div id="expected-values" class="section level2">
+<h2><span class="header-section-number">4.1</span> Expected values</h2>
+<p>Repeated random sampling</p>
+<ul>
+<li>Imagine we take an infinite number of samples of size N from the population</li>
+</ul>
+<p>Expected value</p>
+<ul>
+<li>Expected value of a variable is the average value of a random variable based on an infinite number of samples</li>
+<li>expected value of discrete random variable X: <span class="math inline">\(E[X]=\sum xPr[X=x]\)</span>
+<ul>
+<li><span class="math inline">\(Pr[X=x]\)</span> is probability that <span class="math inline">\(X\)</span> takes on the value <span class="math inline">\(x\)</span>, where summation is taken over all possible values of X</li>
+</ul></li>
+<li>Example of expected value of dice role, <span class="math inline">\(X\)</span>:
+<ul>
+<li><span class="math inline">\(E[X]=(1)(\frac{1}{6}) +(2)(\frac{1}{6})+(3)(\frac{1}{6})+(4)(\frac{1}{6})+(5)(\frac{1}{6})+(6)(\frac{1}{6})=3.5\)</span></li>
+</ul></li>
+</ul>
+<div id="conditional-expectations" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Conditional expectations</h3>
+<p>Conditional expectations refer to subgroup averages</p>
+<p>Using Tennesee STAR example: <span class="math inline">\(Y_i\)</span>=achievement test score; <span class="math inline">\(T_i\)</span>=treatment assignment (1=“small” class, treated; 0=“big” class, untreated); <span class="math inline">\(Z_i\)</span>=parental education</p>
+<ul>
+<li><span class="math inline">\(E[Y_i|T_i=1]\)</span>
+<ul>
+<li>Expected value of observed test score, given that student got internship</li>
+</ul></li>
+<li><span class="math inline">\(E[Y_i|Z_i &gt;= baccalaureate\_degree&quot;]\)</span>
+<ul>
+<li>Expected value of observed test score, given that parents level of education is baccalaureate degree or higher</li>
+</ul></li>
+<li><span class="math inline">\(E[Y_i(1)|T_i=1]\)</span>
+<ul>
+<li>Expected value of treated potential outcome test score, given that student received the treatment (assigned to small class) [we get to observe this]</li>
+</ul></li>
+<li><span class="math inline">\(E[Y_i(0)|T_i=1]\)</span>
+<ul>
+<li>Expected value of untreated potential outcome test score, given that student received the treatment [we do not get to observe this]</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="random-assignment" class="section level2">
+<h2><span class="header-section-number">4.2</span> Random assignment</h2>
+<p>In an experiment, we randomly assign subjects to receive treatment or not (i.e., control)</p>
+<p>Random assignment variable, <span class="math inline">\(T_i\)</span></p>
+<ul>
+<li><span class="math inline">\(T_i\)</span> is a variable whose value is randomly assigned (e.g., coin flip, or some random number generator)</li>
+<li>Value of <span class="math inline">\(T_i\)</span> determines whether person <span class="math inline">\(i\)</span> receives treatment
+<ul>
+<li>e.g., student with <span class="math inline">\(T_i=1\)</span> enroll in “small class” (treatment); units with <span class="math inline">\(T_i=0\)</span> enroll in “big class” (control)</li>
+</ul></li>
+</ul>
+<p>Potential outcomes and random assignment</p>
+<ul>
+<li><span class="math inline">\(E[Y_i(1)|T_i=1]\)</span>
+<ul>
+<li>Treated potential outcome, given <span class="math inline">\(i\)</span> assigned to treatment</li>
+<li>Observed?: Yes</li>
+</ul></li>
+<li><span class="math inline">\(E[Y_i(1)|T_i=0]\)</span>
+<ul>
+<li>Treated potential outcome, given <span class="math inline">\(i\)</span> not assigned to treatment</li>
+<li>Observed?: No<br />
+</li>
+</ul></li>
+<li><span class="math inline">\(E[Y_i(0)|T_i=1]\)</span>
+<ul>
+<li>Untreated potential outcome, given <span class="math inline">\(i\)</span> assigned to treatment</li>
+<li>Observed?: No<br />
+</li>
+</ul></li>
+<li><span class="math inline">\(E[Y_i(0)|T_i=0]\)</span>
+<ul>
+<li>Untreated potential outcome, given <span class="math inline">\(i\)</span> not assigned to treatment</li>
+<li>Observed?: Yes</li>
+</ul></li>
+</ul>
+<div id="random-assignment-and-repeated-random-sampling" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Random assignment and repeated random sampling</h3>
+<p>Below table shows table of treated and untreated potential outcomes for 7 people, in the hypothetical case where we know both the treated and untreated potential outcome for each person</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><span class="math inline">\(i\)</span></th>
+<th align="right"><span class="math inline">\(Y_i(1)\)</span> <br> Treated</th>
+<th align="right"><span class="math inline">\(Y_i(0)\)</span> <br> Untreated</th>
+<th align="right"><span class="math inline">\(\tau_i\)</span> <br> Treatment effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">65</td>
+<td align="right">60</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">30</td>
+<td align="right">35</td>
+<td align="right">-5</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right">55</td>
+<td align="right">60</td>
+<td align="right">-5</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="right">25</td>
+<td align="right">30</td>
+<td align="right">-5</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="right">80</td>
+<td align="right">70</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="right">45</td>
+<td align="right">45</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Average</strong></td>
+<td align="right"><strong>50</strong></td>
+<td align="right"><strong>50</strong></td>
+<td align="right"><strong>0</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Below equations show the the calculation of average treatment effect (ATE)</p>
+<p><span class="math inline">\(ATE \equiv \frac{1}{N} \sum_{i=1}^{N} \tau_i\)</span></p>
+<p><span class="math inline">\(ATE \equiv \frac{1}{N} \sum_{i=1}^{N} Y_i(1) - \frac{1}{N} \sum_{i=1}^{N} Y_i(0) = \frac{1}{N} \sum_{i=1}^{N} (Y_i(1)-Y_i(0)) = \frac{1}{N} \sum_{i=1}^{N} \tau_i\)</span></p>
+<p><br></p>
+<p>Now imagine that 3 of the 7 people are randomly assigned to receive the treatment (small class size)</p>
+<ul>
+<li>in the below table, <strong>bolded</strong> cells indicate cells we actually observe</li>
+<li>e.g., in the first row for unit <span class="math inline">\(i=1\)</span> we observe the untreated outcome <span class="math inline">\(Y_i(0)=60\)</span> (indicating that <span class="math inline">\(T_i=0\)</span> for unit <span class="math inline">\(i=1\)</span>), but we would not observe the treated outcome <span class="math inline">\(Y_i(1)=65\)</span> because unit <span class="math inline">\(i=1\)</span> was not assigned to the treatment</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><span class="math inline">\(i\)</span></th>
+<th align="right"><span class="math inline">\(Y_i(1)\)</span> <br> Treated</th>
+<th align="right"><span class="math inline">\(Y_i(0)\)</span> <br> Untreated</th>
+<th align="right"><span class="math inline">\(\tau_i\)</span> <br> Treatment effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">65</td>
+<td align="right"><strong>60</strong></td>
+<td align="right">?</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">30</td>
+<td align="right"><strong>35</strong></td>
+<td align="right">?</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right"><strong>55</strong></td>
+<td align="right">60</td>
+<td align="right">?</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="right"><strong>25</strong></td>
+<td align="right">30</td>
+<td align="right">?</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="right">50</td>
+<td align="right"><strong>50</strong></td>
+<td align="right">?</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="right">80</td>
+<td align="right"><strong>70</strong></td>
+<td align="right">?</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="right"><strong>45</strong></td>
+<td align="right">45</td>
+<td align="right">?</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Avg. observed</strong></td>
+<td align="right"><strong>45</strong></td>
+<td align="right"><strong>53.75</strong></td>
+<td align="right"><strong>-8.75</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Avg. potential (unobserved)</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Now imagine that start over (re-sample) and randomly assign 3 of the 7 people people to receive the treatment</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><span class="math inline">\(i\)</span></th>
+<th align="right"><span class="math inline">\(Y_i(1)\)</span> <br> Treated</th>
+<th align="right"><span class="math inline">\(Y_i(0)\)</span> <br> Untreated</th>
+<th align="right"><span class="math inline">\(\tau_i\)</span> <br> Treatment effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right"><strong>65</strong></td>
+<td align="right">60</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">30</td>
+<td align="right"><strong>35</strong></td>
+<td align="right">-5</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right">55</td>
+<td align="right"><strong>60</strong></td>
+<td align="right">-5</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="right"><strong>25</strong></td>
+<td align="right">30</td>
+<td align="right">-5</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="right">50</td>
+<td align="right"><strong>50</strong></td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="right"><strong>80</strong></td>
+<td align="right">70</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="right">45</td>
+<td align="right"><strong>45</strong></td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Avg. observed</strong></td>
+<td align="right"><strong>56.67</strong></td>
+<td align="right"><strong>47.5</strong></td>
+<td align="right"><strong>9.17</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Avg. potential (unobserved)</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>If we re-sampled an infinite number of times, and calculated the average of the “average observed treatment effect” it would equal the “average potential treatment effect”</strong></p>
+<ul>
+<li>this is the exaxt same idea as: if we take an infinite number of random samples and calculate the sample mean <span class="math inline">\(\bar{Y}\)</span> for each sample, the mean of all sample means would equal the population mean, <span class="math inline">\(\mu_Y\)</span></li>
 </ul>
 </div>
 </div>
 <div id="why-experiments-work" class="section level2">
-<h2><span class="header-section-number">3.3</span> Why experiments work</h2>
+<h2><span class="header-section-number">4.3</span> Why experiments work</h2>
+<p>Why are experiments viewed as the “gold standard” approach for estimating causal effects?</p>
+<p><br></p>
+<p>Recall from Rubin’s causal model:</p>
+<ul>
+<li>for each person <span class="math inline">\(i\)</span>, both the value of the treated potential outcome <span class="math inline">\(Y_i(1)\)</span> and the value of the untreated potential outcome <span class="math inline">\(Y_i(0)\)</span> already exist</li>
+<li>The observed value of the treatment variable <span class="math inline">\(T_i\)</span> just determines which of the two potential outcomes we actually get to observe, <span class="math inline">\(Y_i\)</span>
+<ul>
+<li>If <span class="math inline">\(T_i=1\)</span> then the observed outcome, <span class="math inline">\(Y_i\)</span>, is the treated potential outcome, <span class="math inline">\(Y_i(1)\)</span></li>
+<li>If <span class="math inline">\(T_i=0\)</span> then the observed outcome, <span class="math inline">\(Y_i\)</span>, is the untreated potential outcome, <span class="math inline">\(Y_i(0)\)</span></li>
+</ul></li>
+</ul>
+<p><br></p>
+<p>In experiments, treatment status is randomly assigned (if <span class="math inline">\(T_i=1\)</span> then treated; <span class="math inline">\(T_i=0\)</span> then untreated)</p>
+<ul>
+<li>treatment assignment <span class="math inline">\(T_i\)</span> does not affect the value of the either the treated potential outcome (<span class="math inline">\(Y_i(1)\)</span>) or the untreated potential outcome (<span class="math inline">\(Y_i(0)\)</span>)</li>
+<li>rather, treatment assignment <span class="math inline">\(T_i\)</span> just affects which treated potential outcome we observe
+<ul>
+<li>If <span class="math inline">\(T_i=1\)</span> then the observed outcome, <span class="math inline">\(Y_i\)</span>, is the treated potential outcome, <span class="math inline">\(Y_i(1)\)</span></li>
+<li>If <span class="math inline">\(T_i=0\)</span> then the observed outcome, <span class="math inline">\(Y_i\)</span>, is the untreated potential outcome, <span class="math inline">\(Y_i(0)\)</span></li>
+</ul></li>
+</ul>
+<p><br></p>
+<p><strong>Random assignment and expected values</strong></p>
+<ul>
+<li>Every person has same probability of getting treatment (<span class="math inline">\(T_i=1\)</span>); therefore, expected treated potential outcome among treated people (<span class="math inline">\(E[Y_i(1)|T_i=1]\)</span>) is same as expected treated outcome for all people in sample (<span class="math inline">\(E[Y_i(1)]\)</span>):
+<ul>
+<li><span class="math inline">\(E[Y_i(1)|T_i=1]=E[Y_i(1)]\)</span></li>
+</ul></li>
+<li>Every person has same probability of getting control (<span class="math inline">\(T_i=0\)</span>); therefore, expected untreated potential outcome among untreated people (<span class="math inline">\(E[Y_i(0)|T_i=0]\)</span>) is same as expected outcome for all people in sample (<span class="math inline">\(E[Y_i(0)]\)</span>):
+<ul>
+<li><span class="math inline">\(E[Y_i(0)|T_i=0]=E[Y_i(0)]\)</span></li>
+</ul></li>
+</ul>
+<p><br></p>
+<p><strong>Why experiments work (i.e., why they calculate unbiased estimates of causal effects</strong></p>
+<p>For any outcome of interest (e.g., reading achievement scores of 3rd graders), there are many variables – aside from the treatment (e.g., “small class size”) – that affect the value of the outcome</p>
+<ul>
+<li>e.g., parental education; household income; access to a quiet place to do homework; access to good nutrition; sleep</li>
+</ul>
+<p><br></p>
+<p>But because assignment to treatment is random:</p>
+<ul>
+<li>Assignment to treatment has no effect on value of the potential outcomes; it just affects which potential outcome is observed for each person</li>
+<li><strong>Assignment to treatment has no relationship to characteristics (e.g., parental income) that affect value of potential outcomes</strong></li>
+</ul>
+<p><br></p>
+<p><strong>Why observational studies (people self-select into treatment) don’t calculate unbiased estimates of causal effects</strong></p>
+<p>For any outcome of interest (e.g., reading achievement scores of 3rd graders), there are many variables – aside from the treatment (e.g., “small class size”) – that affect the value of the outcome</p>
+<ul>
+<li>e.g., parental education; household income; access to a quiet place to do homework; access to good nutrition; sleep</li>
+</ul>
+<p>When people self-select into the treatment (as opposed to treatment being randomly assigned), it is likely that people with certain characteristics are more likely to select into the treatment than others</p>
+<ul>
+<li>e.g., affluent parents are more likely to get their children into classes with small class size</li>
+</ul>
+<p>So in observational research designs, the same characteristics (e.g., parental income) that determine the value of the dependent variable (student achievement score) also drive selection into the treatment (small class size)</p>
+<ul>
+<li>This makes it difficult to determine whether the higher outcome values for “treated” units are due to the treatment or due to other characteristics that are associated with both the treatment and the outcome</li>
+</ul>
+<p><br></p>
+<p><strong>Calculating average treatment effects (ATE) for random assingment experiments</strong></p>
+<p>In a random assignment experiment, we can calculate the population average treatment effect (ATE) as follows</p>
+<ul>
+<li><span class="math inline">\(ATE=\tau=E[Y_i(1)-Y_i(0)]= E[Y_i(1)] - E[Y_i(0)] = E[Y_i(1)|T_i=1]-E[Y_i(0)|T_i=0]= E[Y_i|T_i=1] - E[Y_i|T_i=0]\)</span></li>
+</ul>
+<p>However, knowing expected values – e.g., <span class="math inline">\(E[Y_i|T_i=1]\)</span>, the expected value of <span class="math inline">\(Y_i\)</span> amongst treated units – requires taking an infinute number of samples</p>
+<ul>
+<li>In real research, we are only able to randomly assign a single sample</li>
+<li>Using data from that single sample we calculate an estimate of the average treatment effect</li>
+<li>Using hypothesis testing methods we learned previously, we use our estimate of the average treatment effect to test hypotheses about the population treatment effect</li>
+</ul>
+<p>Formula for the “difference in means” estimator of the average treatment effect</p>
+<ul>
+<li><span class="math inline">\(\hat{ATE} = \hat{\tau} = \bar{Y}_{treat} - \bar{Y}_{control}\)</span></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># add data</span></span></code></pre></div>
 </div>
 </div>
 <div id="hypothesis-testing-about-two-populations" class="section level1">
-<h1><span class="header-section-number">4</span> Hypothesis testing about two populations</h1>
+<h1><span class="header-section-number">5</span> Hypothesis testing about two populations</h1>
 <p>text</p>
 </div>
 <div id="references" class="section level1 unnumbered">
