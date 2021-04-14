@@ -55,7 +55,7 @@ names(star)[5:15] <- nam
 star$id <- factor(star$id)
 star$grade <- factor(star$grade, levels = lev, labels = c("kindergarten", "1st", "2nd", "3rd"))
 rm(nam, lev)
-
+rm(STAR)
 
 #investigate data structure
   # one observation per id and grade
@@ -83,7 +83,8 @@ star %>% val_labels()
   # as_factor(star, only_labelled = TRUE)
 
 df_star_panel <- star
-  
+rm(star)
+
 # save file to disk
 save(df_star_panel, file = file.path(star_dir, 'star_panel_data.RData'))
 

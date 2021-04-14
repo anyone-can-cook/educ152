@@ -53,23 +53,37 @@ options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll rig
 - said differently, the process of identifying the effect of an independent variable on an outcome of interest
 
 
+<br>
+
+## Example research questions
+
+We will use two different example research questions to explain causal inference concepts:
+
+1. **What is the effect of participating in the Mexican American Studies (MAS) program ($T_i=1$) vs. not participating in MAS ($T_i=0$) on statewide standardized high school test score ($Y$) for students in the Tucson Unified School District [@RN3292]?**
+    - Cabrera, N. L., Milem, J. F., Jaquette, O., & Marx, R. (2014). Missing the (student achievement) forest for all the (political) trees: Empiricism and the Mexican American Studies controversy in Tucson. *American Educational Research Journal*, 51(6), 1084-1118.
+    - This study was an observational research design, rather than an experiment. Cannot use the data because I am not allowed to share, but good example for introducing causal effects
+    - *Note*. in @RN3292, we modeled the effect of MAS participation on probability of high school graduation and on statewide standardized test scores (in writing, reading, and math)
+      - in this lecture, we use $Y=$ statewide standardized test score because easier to explain Rubin's causal model using a continuous outcome variable
+
+<br>
+
+2. **What is the effect of having a "small" class size ($T_i=1$) vs. "large" class size ($T_i=0$) on reading test score ($Y$) for elementary school students?**
+    - This research question is from the Tennessee Student Teacher Achievement Ratio (STAR) experiment
+    - We have data from this experiment
+    - [LINK](https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/10766) to information and data on the Tennessee STAR project
+
+Note: I got the data from the `AER` package (code chunk not run)
+```{r, eval = FALSE}
+#install.packages('AER')
+library(AER)
+
+data(STAR) # load data frame
+```
+
+LINK of script to process STAR data
 
 ## Libraries, data, functions
 
-Purpose of this section:
-
-- load all libraries/packages we will use
-- loads and creates IPEDS data frame (population)
-- creates data frame of generated variables (population)
-- creates sample versions of the IPEDS and gnerated data frames
-- create all functions we will use
-  - **credit to data scientist extraordinaire Crystal Han for creating most of these functions!**
-
-
-Why do all of this in one place?
-
-- so you don't have to run code chunks scattered randomly throughout the lecture
-- dont worry about understanding all code, especially for functions we create
 
 ```{r}
 # Libraries
@@ -83,136 +97,53 @@ library(patchwork)
 
 
 ##########
-########## IPEDS
+########## STAR DATA
 ##########
 
-# Load ipeds dataset from course website url
-load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+# load star data
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/star/star_panel_data.RData'))
 
-# Create ipeds data frame with fewer variables/observations
-df_ipeds_pop <- panel_data %>%
-  # keep data from fall 2019
-  filter(year == 2019) %>%
-  # which universities to keep:
-    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities (18,19,20)
-  filter(c15basic %in% c(15,16,17,18,19,20)) %>%
-  # which variables to keep
-  select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
-         tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
-         isprof3,ispfee3,osprof3,ospfee3, # avg tuition and fees for MD, in-state and out-of-state
-         isprof9,ispfee9,osprof9,ospfee9, # avg tuition and fees for Law, in-state and out-of-state
-         chg4ay3,chg7ay3,chg8ay3) %>% # [undergraduate] books+supplies; off-campus (not with family) room and board; off-campus (not with family) other expenses
-  # rename variables; syntax <new_name> = <old_name>
-  rename(region = obereg, # revion
-         tuit_grad_res = tuition6, fee_grad_res = fee6, tuit_grad_nres = tuition7, fee_grad_nres = fee7, # grad
-         tuit_md_res = isprof3, fee_md_res = ispfee3, tuit_md_nres = osprof3, fee_md_nres = ospfee3, # md
-         tuit_law_res = isprof9, fee_law_res = ispfee9, tuit_law_nres = osprof9, fee_law_nres = ospfee9, # law
-         books_supplies = chg4ay3, roomboard_off = chg7ay3, oth_expense_off = chg8ay3) %>% # [undergraduate] expenses
-  # create measures of tuition+fees
+#df_star_panel %>% glimpse()
+
+# create data frame for STAR experiment, keeping only kindergarten
+df_stark <- df_star_panel %>% 
+  # keep only kindergarten year
+  filter(grade ==1) %>% 
+  # keep only observations with non-missing value for reading score
+  filter(!is.na(read)) %>%
+  # keep only observations with non-missing values for treatment assignment
+  filter(!is.na(star)) %>%
+  # drop observations where treatment status is regular+aide
+  filter(star !=3) %>%
+  # keep selected variables
+  select(id,grade,star,read,gender,ethnicity,lunch,school,degree,experience) %>%
+  # create a variable "treatment" that equals 1 if student receives treatment (small class) and equals 0 otherwise
   mutate(
-    tuitfee_grad_res = tuit_grad_res + fee_grad_res, # graduate, state resident
-    tuitfee_grad_nres = tuit_grad_nres + fee_grad_nres, # graduate, non-resident
-    tuitfee_md_res = tuit_md_res + fee_md_res, # MD, state resident
-    tuitfee_md_nres = tuit_md_nres + fee_md_nres, # MD, non-resident
-    tuitfee_law_res = tuit_law_res + fee_law_res, # Law, state resident
-    tuitfee_law_nres = tuit_law_nres + fee_law_nres) %>% # Law, non-resident  
-  # create measures of cost-of-attendance (COA) as the sum of tuition, fees, book, living expenses
-  mutate(
-    coa_grad_res = tuit_grad_res + fee_grad_res + books_supplies + roomboard_off + oth_expense_off, # graduate, state resident
-    coa_grad_nres = tuit_grad_nres + fee_grad_nres + books_supplies + roomboard_off + oth_expense_off, # graduate, non-resident
-    coa_md_res = tuit_md_res + fee_md_res + books_supplies + roomboard_off + oth_expense_off, # MD, state resident
-    coa_md_nres = tuit_md_nres + fee_md_nres + books_supplies + roomboard_off + oth_expense_off, # MD, non-resident
-    coa_law_res = tuit_law_res + fee_law_res + books_supplies + roomboard_off + oth_expense_off, # Law, state resident
-    coa_law_nres = tuit_law_nres + fee_law_nres + books_supplies + roomboard_off + oth_expense_off) %>% # Law, non-resident    
-  # keep only observations that have non-missing values for the variable coa_grad_res
-    # this does cause us to lose some interesting universities, but doing this will eliminate some needless complications with respect to learning core concepts about statistical inference
-  filter(!is.na(coa_grad_res))
-
-# Add variable labels to the tuit+fees variables and coa variables
-  # tuition + fees variables
-    var_label(df_ipeds_pop[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
-    
-  # COA variables
-    var_label(df_ipeds_pop[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-
-df_ipeds_pop %>% glimpse()
+    treatment = if_else(star==2,1,0)
+  )
 
 
-##########
-########## Create data frame of generated variables, with each variable meant to represent the entire population
-##########
-
-
-num_obs <- 10000
-
-# Generate normal distribution w/ custom mean and sd
-set.seed(124)
-norm_dist <- rnorm(n = num_obs, mean = 50, sd = 5)
-
-# Generate right-skewed distribution
-set.seed(124)
-rskew_dist <- rbeta(n = num_obs, shape1 = 2, shape2 = 5)
-
-# Generate left-skewed distribution
-set.seed(124)
-lskew_dist <- rbeta(n = num_obs, shape1 = 5, shape2 = 2)
-
-# Generate standard normal distribution (default is mean = 0 and sd = 1)
-set.seed(124)
-stdnorm_dist <- rnorm(n = num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
-
-# Create dataframe
-df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist)
-
-# drop individual objects associated with each variable
-rm(norm_dist,rskew_dist,lskew_dist,stdnorm_dist)
-rm(num_obs)
-
-
-##########
-########## Create sample versions of generated population data frame and IPEDS population data frame
-##########
-
-# create sample version of our generated data
-  set.seed(124) # set seed so that everyone ends up with the same random sample
-  
-  df_generated_sample <- df_generated_pop %>% sample_n(size = 200)
-  df_generated_sample %>% glimpse()
-
-
-# create sample version of our ipeds data
-
-  set.seed(124) # set seed so that everyone ends up with the same random sample
-  
-  df_ipeds_sample <- df_ipeds_pop %>% sample_n(size = 200) 
-  
-  # compare mean of coa_grad_res between population and sample
-  mean(df_ipeds_pop$coa_grad_res, na.rm = TRUE)
-  mean(df_ipeds_sample$coa_grad_res, na.rm = TRUE)
-
-
-
-```
-# STAR data
-
-```{r, eval = FALSE}
-data("STAR")
-df_star <- STAR
-rm(STAR)
-
-df_star %>% glimpse()
+df_stark %>% glimpse()
 ```
 
+Investigate STAR data
+
+- basically, we want to know if Kindergarten students randomly assigned to "small" class size (variable `treatment` equals `1`) have higher values of reading test score than students randomly assigned to "large" class size (variable `treatment` equals `0`)
+```{r}
+# frequency count of treatment variable
+  #df_stark %>% count(star)
+  #df_stark %>% count(star) %>% as_factor()
+df_stark %>% count(treatment)
+
+# calculate mean value of reading score separately for treated and nontreated
+df_stark %>% group_by(treatment) %>% summarize(
+  mean_read = mean(read, na.rm = TRUE),
+  sd_read = sd(read, na.rm = TRUE)
+)
+
+# t.test
+#t.test(formula = read ~ treatment, mu = 0, data = df_stark)
+```
 
 
 
@@ -238,32 +169,21 @@ Causal research questions
 
 <br>
 
-**Example research questions we will use to explain causal inference concepts**
+**Example research question **
 
 What is the effect of participating in the Mexican American Studies (MAS) program ($T_i=1$) vs. not participating in MAS ($T_i=0$) on statewide standardized high school test score ($Y$) for students in the Tucson Unified School District [@RN3292]?
 
-- Cabrera, N. L., Milem, J. F., Jaquette, O., & Marx, R. (2014). Missing the (student achievement) forest for all the (political) trees: Empiricism and the Mexican American Studies controversy in Tucson. *American Educational Research Journal*, 51(6), 1084-1118.
-- This study was an observational research design, rather than an experiment. Cannot use the data because I am not allowed to share, but good example for introducing causal effects
-- *Note*. in @RN3292, we modeled the effect of MAS participation on probability of high school graduation and on statewide standardized test scores (in writing, reading, and math)
-  - in this lecture, we use $Y=$ statewide standardized test score because easier to explain Rubin's causal model using a continuous outcome variable
 
-<br>
-
-What is the effect of having a "small" class size ($T_i=1$) vs. "large" class size ($T_i=0$) on achievement test score ($Y$) for elementary school students?
-
-- This research question is from the Tennessee Student Teacher Achievement Ratio (STAR) experiment
-- We have data from this experiment
-
-**What is the "true" causal effect of an treatment? (answer: actual minus counterfactual)**
+**Counterfactuals**
 
 Actual and counterfactual (using the Mexican American Studies (MAS) example)
 
 - Actual event
   - actual treatment/control assignment and observed outcome
-  - e.g., person $i$ participated in MAS ($X_i =1$) and graduated from high school ($Y_i=1$)
+  - e.g., person $i$ participated in MAS ($T_i =1$) and graduated from high school ($Y_i=1$)
 - counterfactual
   - for a person that received treatment, counterfactual is what outcome would have been if person had not received treatment
-  - e.g., if person $i$ (who we know participated in MAS) had instead not participated in MAS ($X_i =0$), what would their value of high school graduation ($Y$) have been?
+  - e.g., if person $i$ (who we know participated in MAS) had instead not participated in MAS ($T_i =0$), what would their value of high school graduation ($Y$) have been?
 
 
 True causal effect of an intervention:
@@ -556,6 +476,8 @@ Potential outcomes and random assignment
 
 Below table shows table of treated and untreated potential outcomes for 7 people, in the hypothetical case where we know both the treated and untreated potential outcome for each person
 
+- Imagine that we take a random sample of 7 people from the population
+
 
 | $i$ | $Y_i(1)$ <br> Treated  | $Y_i(0)$ <br> Untreated | $\tau_i$ <br> Treatment effect |
 |:---|--:|--:|--:|
@@ -578,7 +500,11 @@ $ATE \equiv \frac{1}{N} \sum_{i=1}^{N} Y_i(1) - \frac{1}{N} \sum_{i=1}^{N} Y_i(0
 
 Now imagine that 3 of the 7 people are randomly assigned to receive the treatment (small class size)
 
-- in the below table, **bolded** cells indicate cells we actually observe
+- we randomly sample 7 people from the population; of those 7 people we randomly assign 3 people to receive the treatment
+
+
+in the below table, **bolded** cells indicate cells we actually observe
+
 - e.g., in the first row for unit $i=1$ we observe the untreated outcome $Y_i(0)=60$ (indicating that $T_i=0$ for unit $i=1$), but we would not observe the treated outcome $Y_i(1)=65$ because unit $i=1$ was not assigned to the treatment
 
 | $i$ | $Y_i(1)$ <br> Treated  | $Y_i(0)$ <br> Untreated | $\tau_i$ <br> Treatment effect |
@@ -597,6 +523,13 @@ Now imagine that 3 of the 7 people are randomly assigned to receive the treatmen
 <br>
 
 Now imagine that start over (re-sample) and randomly assign 3 of the 7 people people to receive the treatment
+
+- we randomly sample 7 people from the population; of those 7 people we randomly assign 3 people to receive the treatment
+- *Note*
+  - compared to previous table, what has changed is which 3 people (of the 7) receives the treatment; but we sample the same 7 people as before
+  - If we re-sampled in real life, we our random sample of 7 people would be a different set of people than the first time we randomly sampled; however, we keep it as the same 7 people because this meakes it easier to explain the concepts
+
+
 
 | $i$ | $Y_i(1)$ <br> Treated  | $Y_i(0)$ <br> Untreated | $\tau_i$ <br> Treatment effect |
 |:---|--:|--:|--:|
@@ -696,14 +629,80 @@ Formula for the "difference in means" estimator of the average treatment effect
 
 - $\hat{ATE} = \hat{\tau} = \bar{Y}_{treat} - \bar{Y}_{control}$
 
+<br>
+Using data from Tenesse STAR experiment (data frame is `df_stark`), our estimate of ATE is the sample mean reading score for treated students (small class size) minus the sample mean reading score for untreated units (big class size)
+
+- sample mean reading score for treated units = `r round(mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE), digits=2)`
+- sample mean reading score for untreated units = `r round(mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE), digits=2)`
+- difference between means estimate = `r round(mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE) - mean(df_stark$read[df_stark$treatment==0], na.rm = TRUE), digits=2)`
+
 ```{r}
-# add data
+# number of observations in treatment and control
+df_stark %>% count(treatment)
+
+# sample mean reading score for treated units
+mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE)
+
+# sample mean reading score for untreated unts
+mean(df_stark$read[df_stark$treatment==0], na.rm = TRUE)
+
+# difference between means estimator
+mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE) - mean(df_stark$read[df_stark$treatment==0], na.rm = TRUE)
+
+# alternative approach to calculating mean value of reading score separately for treated and nontreated
+df_stark %>% group_by(treatment) %>% summarize(
+  mean_read = mean(read, na.rm = TRUE),
+  sd_read = sd(read, na.rm = TRUE)
+)
 ```
 
 
 # Hypothesis testing about two populations
 
-text
+This section explains how to test hypotheses about whether the population mean for one group is different from the population mean for another group
+
+- The approach we introduce is the approach used to estimate causal effects in experiments where there is one treatment group and one control group
+  - The example we will use in this section is whether kindergarten students assigned to small class size (treatment) have higher reading scores than kindergarten students assigned to big class size (control)
+- The approach we introduce is also the approach used to compare population means of two groups in non experimental settings
+  - for example, using a random sample of data from IPEDS (each observation is a university), we could test the null hypothesis $H_0$ that population mean grad-school tuition+fees at private universities is the same as population mean grad-school tuition+fees at public universities
+
+## Steps in hypothesis testing about two populations
+
+The steps in testing hypotheses about whether the population mean of a variable differs between two groups are the exact same as the steps for testing hypothesis about the population mean for a single group
+
+- so don't think of this as learning something new. think of this as applying something you already know, with a few modest variations
+
+<br>
+
+General steps in hypothesis testing:
+
+1. **Hypothesis**
+    - formally state your "null" and "alternative" hypothesis
+    - usually, you would decide on alpha level (rejection region) here
+1. **Assumptions**
+    - state assumptions that are relied upon by the statistical test you are using to test your hypothesis
+1. **Test statistic**
+    - Using some appropriate statistical analysis, calculate the "test statistic" necessary to test your hypothesis
+1. **p-value (means probability value)**
+    - calculate the probability of observing a test statistic as large or larger as the one you calculated
+1. **Alpha level/rejection region and conclusion**
+    - compare the p-value you you observed to the alpha level and make a conclusion about your hypothesis test
+
+## Null and alternative hypothesis
+
+null hypothesis ($H_0$)
+
+- $H_0: \mu_{Y_{{treated}}} = \mu_{Y_{{control}}}$
+- (in words): $H_0:$ the population mean reading score for kindergarten students assigned to the treatment (small class size), $\mu_{Y_{{treated}}}$, is the same as the population mean reading score for kindergarten students assigned to the control (big class size) ($\mu_{Y_{{control}}}$)
+
+Two-sided alternative hypothesis ($H_a$)
+
+- $H_0: \mu_{Y_{{treated}}} \ne \mu_{Y_{{control}}}$
+- (in words): $H_0:$ the population mean reading score for kindergarten students assigned to the treatment (small class size), $\mu_{Y_{{treated}}}$, is different than the population mean reading score for kindergarten students assigned to the control (big class size) ($\mu_{Y_{{control}}}$)
+
+## Test statistic and p-value
+
+## Alpha level and conclusion
 
 
 # References
