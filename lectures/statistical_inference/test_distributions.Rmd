@@ -178,6 +178,7 @@ plot_distribution <- function(data_df, data_var, group_var = NULL, group_cat = N
     stat = rep(c('blue', 'red'), times = if_else(two_pop, 2, 1)),
     val = stats_vec
   )
+  stats_df$pop <- factor(stats_df$pop, levels = c('dotted', 'dotdash'))
   
   # Legend text
   legend_text <- c(paste('Mean:', round(mean(data_vec1), 2),
