@@ -24,6 +24,8 @@ library(patchwork)
 ## Create data for applying functions to
 ## ---------------------------
 
+if (FALSE) {
+
 # IPEDS data
 
   # Load ipeds dataset from course website url
@@ -134,7 +136,8 @@ library(patchwork)
     
     df_ipeds_sample <- df_ipeds_pop %>% sample_n(size = 200) 
 
-    
+}
+
 ##########
 # # Function to get sampling distribution (default: 1000 samples of size 200)
 ##########
