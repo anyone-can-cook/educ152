@@ -15,7 +15,7 @@ output:
     fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
     highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
     theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
-    df_print: tibble #options: default, tibble, paged
+    df_print: default #options: default, tibble, paged
 bibliography: ../../assets/bib/educ152_bib.bib
 csl: ../../assets/bib/apa.csl
 ---
@@ -33,7 +33,7 @@ pre code, pre, code {
 
 
 ```{r, echo=FALSE, include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(comment = "#>", highlight = TRUE, warning = FALSE, message = FALSE)
   #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
 options(scipen=999)
 options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll right for printing of data frames
@@ -139,7 +139,7 @@ df_ipeds_pop <- panel_data %>%
     var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
     var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
 
-df_ipeds_pop %>% glimpse()
+df_ipeds_pop %>% head()
 
 
 ##########
@@ -166,7 +166,7 @@ set.seed(124)
 stdnorm_dist <- rnorm(n = num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
 
 # Create dataframe
-df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist)
+df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist) %>% as.tibble()
 
 # drop individual objects associated with each variable
 rm(norm_dist,rskew_dist,lskew_dist,stdnorm_dist)
@@ -181,7 +181,7 @@ rm(num_obs)
   set.seed(124) # set seed so that everyone ends up with the same random sample
   
   df_generated_sample <- df_generated_pop %>% sample_n(size = 200)
-  df_generated_sample %>% glimpse()
+  df_generated_sample %>% head()
 
 
 # create sample version of our ipeds data
@@ -196,33 +196,7 @@ rm(num_obs)
 
 
 ##########
-# Create function to generate plots of variable distributions
-##########
-
-plot_distribution <- function(data_vec, plot_title = '') {
-  p <- ggplot(as.data.frame(data_vec), aes(x = data_vec)) +
-    ggtitle(plot_title) + xlab('') + ylab('') +
-    geom_histogram(aes(y = ..density..), alpha = 0.4, position = 'identity') +
-    geom_density() +
-    geom_vline(aes(xintercept = mean(data_vec, na.rm = T), color = 'mean'),
-               linetype = 'dotted', size = 0.8, alpha = 0.8) +
-    geom_vline(aes(xintercept = median(data_vec, na.rm = T), color = 'median'),
-               linetype = 'dotted', size = 0.8, alpha = 0.8) +
-    scale_color_manual(name = 'Statistics',
-                       labels = c(paste('Mean:', round(mean(data_vec, na.rm = T), 2),
-                                        '\nStd Dev:', round(sd(data_vec, na.rm = T), 2)),
-                                  paste('Median:', round(median(data_vec, na.rm = T), 2))),
-                       values = c(mean = 'blue', median = 'red')) +
-    theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
-          legend.title = element_text(size = 9, face = 'bold'),
-          legend.text = element_text(size = 8))
-
-  p
-}
-
-
-##########
-# Write function to get the sampling distribution from a variable (defaults equal 500 samples of size 200)
+# Write function to get the sampling distribution from a variable (defaults equal 1000 samples of size 200)
 ##########
 
 get_sampling_distribution <- function(data_vec, num_samples = 1000, sample_size = 200) {
@@ -235,6 +209,121 @@ get_sampling_distribution <- function(data_vec, num_samples = 1000, sample_size 
 
   sample_means
 }
+  
+
+##########
+# Create function to generate plots of variable distributions
+##########
+
+plot_distribution <- function(data_df, data_var, group_var = NULL, group_cat = NULL, show_group_hist = F, sampling_dist = F, plot_title = '') {
+  
+  # Prep dataframe
+  two_pop <- !is.null(group_var)
+  two_dist <- !is.null(group_var) && !sampling_dist
+  
+  data_df[[data_var]] <- unclass(data_df[[data_var]])  # unclass haven_labelled
+  if (two_pop) {
+    data_df[[group_var]] <- unclass(data_df[[group_var]])
+  }
+  
+  data_df <- data_df %>% filter(!is.na(get(data_var)))  # remove NA rows
+  
+  # If group_cat not provided, use 2 values from group_var
+  if (two_pop && is.null(group_cat)) {
+    group_cat <- sort(unique(na.omit(data_df[[group_var]])))[1:2]
+  }
+
+  # Create population vector(s)
+  if (!two_pop) {  # single population
+    data_vec1 <- data_df[[data_var]]
+    
+    if (sampling_dist) {  # sampling distribution
+      data_vec1 <- get_sampling_distribution(data_vec1)
+    }
+  } else {  # two populations
+    data_vec1 <- (data_df %>% filter(get(group_var) == group_cat[[1]]))[[data_var]]
+    data_vec2 <- (data_df %>% filter(get(group_var) == group_cat[[2]]))[[data_var]]
+    
+    if (sampling_dist) {  # sampling distribution
+      data_vec1_samp <- get_sampling_distribution(data_vec1)
+      data_vec2_samp <- get_sampling_distribution(data_vec2)
+      
+      data_vec1 <- data_vec1_samp - data_vec2_samp
+    }
+  }
+  
+  # Create statistics dataframe
+  if (!two_dist) {
+    lines_vec <- c('dotted')
+    stats_vec <- c(mean(data_vec1), median(data_vec1))
+    legend_title <- 'Statistics'
+    
+    if (two_pop && sampling_dist) {
+      legend_title <- paste0('Statistics\n(', group_var, '=', group_cat[[1]], ' - ', group_var, '=', group_cat[[2]], ')')
+    }
+  } else {
+    lines_vec <- c('dotted', 'dotdash')
+    stats_vec <- c(mean(data_vec1), median(data_vec1), mean(data_vec2), median(data_vec2))
+    legend_title <- paste0('Statistics\n(', group_var, '=', group_cat[[1]], ' vs. ', group_var, '=', group_cat[[2]], ')')
+  }
+  
+  stats_df <- data.frame(
+    pop = rep(lines_vec, each = 2),
+    stat = rep(c('blue', 'red'), times = if_else(two_dist, 2, 1)),
+    val = stats_vec
+  )
+  stats_df$pop <- factor(stats_df$pop, levels = c('dotted', 'dotdash'))
+  
+  # Legend text
+  legend_text <- c(paste('Mean:', round(mean(data_vec1), 2),
+                         '\nStd Dev:', round(sd(data_vec1), 2)),
+                   paste('Median:', round(median(data_vec1), 2)))
+  
+  if (two_dist) {
+    legend_text <- c(legend_text, 
+                     paste('Mean:', round(mean(data_vec2), 2),
+                           '\nStd Dev:', round(sd(data_vec2), 2)),
+                     paste('Median:', round(median(data_vec2), 2)))
+  }
+  
+  # Plot distribution(s)
+  p <- ggplot() +
+    ggtitle(plot_title) + xlab('') + ylab('') +
+    geom_density(aes(x = data_vec1), alpha = 0.8)
+  
+  if (!two_dist || show_group_hist) {  # show histogram only if 1 pop or show_group_hist is TRUE
+    p <- p +
+      geom_histogram(aes(x = data_vec1, y = ..density..), alpha = 0.4, position = 'identity')
+  }
+  
+  if (two_dist) {
+    p <- p +
+      geom_density(aes(x = data_vec2), alpha = 0.8)
+    
+    if (show_group_hist) {  # show histogram only if show_group_hist is TRUE
+      p <- p +
+        geom_histogram(aes(x = data_vec2, y = ..density..), alpha = 0.4, position = 'identity', fill = 'wheat4')
+    }
+  }
+  
+  p <- p +
+    geom_vline(data = stats_df,
+               aes(xintercept = val, color = interaction(stat, pop), linetype = interaction(stat, pop)),
+               size = 0.6, alpha = 0.8) +
+    scale_color_manual(name = legend_title,
+                       labels = legend_text,
+                       values = as.character(stats_df$stat)) +
+    scale_linetype_manual(name = legend_title,
+                          labels = legend_text,
+                          values = as.character(stats_df$pop)) +
+    theme(plot.title = element_text(size = 10, face = 'bold', hjust = 0.5),
+          legend.title = element_text(size = 9, face = 'bold'),
+          legend.text = element_text(size = 8)) +
+    guides(col = guide_legend(ncol = if_else(two_dist, 2, 1)))
+  
+  p
+}
+
 
 ##########
 # Write Function to generate sampling distribution (with t-test value) assuming null hypothesis is correct
@@ -242,18 +331,52 @@ get_sampling_distribution <- function(data_vec, num_samples = 1000, sample_size 
 
 
 # Function to generate t-distribution plot
-plot_t_distribution <- function(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = F, stacked = F) {
+plot_t_distribution <- function(data_df, data_var, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F) {
   
-  data_vec <- na.omit(data_vec)
+  # Prep dataframe
+  two_pop <- !is.null(group_var)
+
+  data_df[[data_var]] <- unclass(data_df[[data_var]])  # unclass haven_labelled
+  if (two_pop) {
+    data_df[[group_var]] <- unclass(data_df[[group_var]])
+  }
   
-  # Calculate t-statistics
-  sample_size <- length(data_vec)
-  deg_freedom <- sample_size - 1
-  xbar <- mean(data_vec)
-  s <- sd(data_vec)
+  data_df <- data_df %>% filter(!is.na(get(data_var)))  # remove NA rows
   
-  std_err <- s / sqrt(sample_size)
-  t <- (xbar - mu) / std_err
+  # If group_cat not provided, use 2 values from group_var
+  if (two_pop && is.null(group_cat)) {
+    group_cat <- sort(unique(na.omit(data_df[[group_var]])))[1:2]
+  }
+  
+  # Calculate stats
+  if (!two_pop) {  # single sample
+    data_vec <- data_df[[data_var]]
+    
+    # Calculate t-statistics
+    sample_size <- length(data_vec)
+    deg_freedom <- sample_size - 1
+    xbar <- mean(data_vec)
+    s <- sd(data_vec)
+    
+    std_err <- s / sqrt(sample_size)
+    t <- (xbar - mu) / std_err
+    
+  } else {  # two samples
+    data_vec1 <- (data_df %>% filter(get(group_var) == group_cat[[1]]))[[data_var]]
+    data_vec2 <- (data_df %>% filter(get(group_var) == group_cat[[2]]))[[data_var]]
+    
+    # Calculate t-statistics
+    xbar1 <- mean(data_vec1)
+    xbar2 <- mean(data_vec2)
+    s1 <- sd(data_vec1)
+    s2 <- sd(data_vec2)
+    n1 <- length(data_vec1)
+    n2 <- length(data_vec2)
+    
+    deg_freedom <- (s1**2/n1 + s2**2/n2)**2 / ((s1**2/n1)**2/(n1-1) + (s2**2/n2)**2/(n2-1))
+    std_err <- sqrt(s1**2/n1 + s2**2/n2)
+    t <- (xbar1 - xbar2) / std_err
+  }
   
   # Calculate critical value and p-value
   if (alternative == 'less') {  # left-tailed
@@ -566,24 +689,24 @@ Number of institutions by type
 df_ipeds_pop %>% count()
 
 # Number of institutions by Carnegie type
-df_ipeds_pop %>% count(c15basic) %>% as_factor()
+df_ipeds_pop %>% count(unclass(c15basic)) %>% as_factor()
 
 # Number of institutions by public/private
-df_ipeds_pop %>% count(control) %>% as_factor()
+df_ipeds_pop %>% count(unclass(control)) %>% as_factor()
 
 # number of institutions by public/private and carnegie type
-df_ipeds_pop %>% count(control,c15basic) %>% as_factor()
+df_ipeds_pop %>% count(unclass(control),unclass(c15basic)) %>% as_factor()
 
 # number of institutions by level of urbanization
-df_ipeds_pop %>% count(locale) %>% as_factor()
+df_ipeds_pop %>% count(unclass(locale)) %>% as_factor()
 
 # number of institutions by public/private and level of urbanization
-df_ipeds_pop %>% count(control,locale) %>% as_factor()
+df_ipeds_pop %>% count(unclass(control),unclass(locale)) %>% as_factor() %>% head(10)
 ```
 
 Tuition+fees by public/private and Carnegie type
 ```{r}
-df_ipeds_pop %>% group_by(control,c15basic) %>% 
+df_ipeds_pop %>% group_by(unclass(control),unclass(c15basic)) %>% 
   summarize(
     sample_size = n(),
     n_nonmiss_tuitfee_res = sum(!is.na(tuitfee_grad_res)),
@@ -595,7 +718,7 @@ df_ipeds_pop %>% group_by(control,c15basic) %>%
 
 Cost of attendance by public/private and Carnegie type
 ```{r}
-df_ipeds_pop %>% group_by(control,c15basic) %>% 
+df_ipeds_pop %>% group_by(unclass(control),unclass(c15basic)) %>% 
   summarize(
     sample_size = n(),
     n_nonmiss_coa_res = sum(!is.na(coa_grad_res)),
@@ -625,7 +748,7 @@ We can show frequency distributions (or relative frequency distributions) as a t
 - Frequency distribution of variable `tuit_grad_res` (for first few values)
 
 ```{r}
-df_ipeds_pop %>% count(tuitfee_grad_res)
+df_ipeds_pop %>% count(tuitfee_grad_res) %>% head(10)
 ```
 
 We can also visualize the distribution of the variable `tuitfee_grad_res`. 
@@ -645,7 +768,7 @@ Call the `plot_distribution()` function to plot the variable `tuitfee_grad_res` 
 - draws dotted vertical lines to indicate the value of the mean and the median
 
 ```{r}
-plot_distribution(df_ipeds_pop$tuitfee_grad_res)
+plot_distribution(df_ipeds_pop, 'tuitfee_grad_res')
 ```
 
 
@@ -703,7 +826,7 @@ We can also visualize the variable `df_generated_pop$norm_dist`, as shown below.
 - the mean is (nearly) identical to the median
 
 ```{r}
-plot_distribution(df_generated_pop$norm_dist)
+plot_distribution(df_generated_pop, 'norm_dist')
 ```
 
 **Skewed distribution**
@@ -736,7 +859,7 @@ We generated the right-skewed variable `df_generated_pop$rskew_dist`
 
 
 ```{r}
-plot_distribution(df_generated_pop$rskew_dist)
+plot_distribution(df_generated_pop, 'rskew_dist')
 ```
 
   
@@ -760,15 +883,16 @@ We generated the left-skewed variable `df_generated_pop$rskew_dist`
 
 Create and plot left-skewed variable
 ```{r}
-plot_distribution(df_generated_pop$lskew_dist)
+plot_distribution(df_generated_pop, 'lskew_dist')
 ```
 
 
 Having plotted generated variables that have normal, right skewed, and left skewed distributions, respectively, let's plot the real-life variable `tuitfee_grad_res` from the data frame `df_ipeds_pop` (below). How would you diagnose the distribution of `tuitfee_grad_res`?
 
 ```{r}
-plot_distribution(df_ipeds_pop$tuitfee_grad_res)
+plot_distribution(df_ipeds_pop, 'tuitfee_grad_res')
 ```
+
 How would you diagnose the distribution of `tuitfee_grad_res`?
 
 - right tail longer than the left
@@ -782,7 +906,7 @@ The normal distribution -- symmetric, bell-shaped, mean equal to the median - ha
 - if we can reasonably assume a variable has a normal distribution, then we know a lot about that variable
 
 ```{r}
-plot_distribution(df_generated_pop$norm_dist)
+plot_distribution(df_generated_pop, 'norm_dist')
 ```
 
 ### Normal distribution and "the empirical rule"
@@ -849,7 +973,7 @@ df_generated_pop <- df_generated_pop %>% mutate(
 )
 
 #list a few observations
-df_generated_pop %>% select(norm_dist,z_norm_dist)
+df_generated_pop %>% select(norm_dist,z_norm_dist) %>% head(10)
 
 # mean of z-score variable
 round(mean(df_generated_pop$z_norm_dist, na.rm = TRUE), digits = 4)
@@ -860,7 +984,7 @@ Plot the new z-score variable, which has:
 - mean of about `0`
 - standard deviation of about `1`
 ```{r}
-plot_distribution(df_generated_pop$z_norm_dist)
+plot_distribution(df_generated_pop, 'z_norm_dist')
 ```
 
 Recall empirical rule for normally distributed variables
@@ -896,7 +1020,7 @@ Above, we created a variable `stdnorm_dist` in the data frame `df_generated_pop`
 mean(df_generated_pop$stdnorm_dist, na.rm = TRUE)
 sd(df_generated_pop$stdnorm_dist, na.rm = TRUE)
 
-plot_distribution(df_generated_pop$stdnorm_dist)
+plot_distribution(df_generated_pop, 'stdnorm_dist')
 ```
 
 Commentary about standard normal distribution:
@@ -916,7 +1040,7 @@ Question: If we have a variable with a roughly normal distribution (i.e., symmet
 # create variable that has a standard normal distribution from a variable that has a normal distribution
 df_generated_pop %>% mutate(
   z_norm_dist = (norm_dist - mean(norm_dist, na.rm = TRUE))/sd(norm_dist, na.rm = TRUE)
-)
+) %>% head(10)
 ```
 
 # Sampling distribution
@@ -1007,30 +1131,32 @@ The sampling distribution of any statistic
 
 Plot the variable `norm_dist` from the sample dataset
 ```{r}
-plot_distribution(df_generated_sample$norm_dist)
+plot_distribution(df_generated_sample, 'norm_dist')
 ```
+
 Plot the variable `tuitfee_grad_res` from the sample IPEDS dataset
 ```{r}
-plot_distribution(df_ipeds_sample$tuitfee_grad_res)
+plot_distribution(df_ipeds_sample, 'tuitfee_grad_res')
 ```
 
 
 Plot the sampling distribution of of the sample mean for the normally distributed variable `norm_dist`
 ```{r}
-plot_distribution(get_sampling_distribution(df_generated_pop$norm_dist))
+plot_distribution(df_generated_pop, 'norm_dist', sampling_dist = T)
 ```
 
 Plot the sampling distribution of of the sample mean for the right-skewed variable `rskew_dist`
 ```{r}
-plot_distribution(get_sampling_distribution(df_generated_pop$rskew_dist))
+plot_distribution(df_generated_pop, 'rskew_dist', sampling_dist = T)
 ```
+
 Create visualization that stacks three plots on top of one another: 1= population distribution; 2 = distribution of a single random sample; 3 = sampling distribution
 
 - do this for the normally distributed variable  `norm_dist`
 ```{r}
-plot_distribution(df_generated_pop$norm_dist, plot_title = 'Population distribution') +
-  plot_distribution(df_generated_sample$norm_dist, plot_title = 'Single sample distribution') +
-  plot_distribution(get_sampling_distribution(df_generated_pop$norm_dist),
+plot_distribution(df_generated_pop, 'norm_dist', plot_title = 'Population distribution') +
+  plot_distribution(df_generated_sample, 'norm_dist', plot_title = 'Single sample distribution') +
+  plot_distribution(df_generated_pop, 'norm_dist', sampling_dist = T,
                     plot_title = 'Sampling distribution') +
   plot_layout(ncol = 1)
 ```
@@ -1040,9 +1166,9 @@ Create visualization that stacks three plots on top of one another: 1= populatio
 - do this for the right-skewed variable  `rskew_dist`
 - Notice that even though the underlying population is right skewed and the sample is right-skewed, the sampling distribution has a normal distribution
 ```{r}
-plot_distribution(df_generated_pop$rskew_dist, plot_title = 'Population distribution') +
-  plot_distribution(df_generated_sample$rskew_dist, plot_title = 'Single sample distribution') +
-  plot_distribution(get_sampling_distribution(df_generated_pop$rskew_dist),
+plot_distribution(df_generated_pop, 'rskew_dist', plot_title = 'Population distribution') +
+  plot_distribution(df_generated_sample, 'rskew_dist', plot_title = 'Single sample distribution') +
+  plot_distribution(df_generated_pop, 'rskew_dist', sampling_dist = T,
                     plot_title = 'Sampling distribution') +
   plot_layout(ncol = 1)
 ```
@@ -1052,9 +1178,9 @@ Create visualization that stacks three plots on top of one another: 1= populatio
 - do this for the right-skewed variable  `tuitfee_grad_res` from IPEDS
 - Notice that even though the underlying population is right skewed and the sample is right-skewed, the sampling distribution has a normal distribution
 ```{r}
-plot_distribution(df_ipeds_pop$tuitfee_grad_res, plot_title = 'Population distribution') +
-  plot_distribution(df_ipeds_sample$tuitfee_grad_res, plot_title = 'Single sample distribution') +
-  plot_distribution(get_sampling_distribution(df_ipeds_pop$tuitfee_grad_res),
+plot_distribution(df_ipeds_pop, 'tuitfee_grad_res', plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample, 'tuitfee_grad_res', plot_title = 'Single sample distribution') +
+  plot_distribution(df_ipeds_pop, 'tuitfee_grad_res', sampling_dist = T,
                     plot_title = 'Sampling distribution') +
   plot_layout(ncol = 1)
 ```
@@ -1087,9 +1213,9 @@ Show central limit theorem using a very skewed variable: non-resident, grad scho
 
 ```{r}
 
-plot_distribution(df_ipeds_pop$tuitfee_grad_nres, plot_title = 'Population distribution') +
-  plot_distribution(df_ipeds_sample$tuitfee_grad_nres, plot_title = 'Single sample distribution') +
-  plot_distribution(get_sampling_distribution(df_ipeds_pop$tuitfee_grad_nres),
+plot_distribution(df_ipeds_pop, 'tuitfee_grad_nres', plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample, 'tuitfee_grad_nres', plot_title = 'Single sample distribution') +
+  plot_distribution(df_ipeds_pop, 'tuitfee_grad_nres', sampling_dist = T,
                     plot_title = 'Sampling distribution') +
   plot_layout(ncol = 1)
 ```
@@ -1254,7 +1380,7 @@ In univariate statistical analyses, we make a hypothesis about one population pa
 
 
 ```{r}
-df_ipeds_pop %>% glimpse()
+df_ipeds_pop %>% head()
 
 mean(df_ipeds_pop$coa_grad_res, na.rm = TRUE)
 ```
@@ -1489,9 +1615,10 @@ Here we visually stack the following for the variable `coa_grad_res`:
 - the population distribution; distribution from a single random sample; and sampling distribution of sample mean
 
 ```{r}
-plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
-  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
-  plot_distribution(get_sampling_distribution(df_ipeds_pop$coa_grad_res), plot_title = 'Sampling distribution') +
+plot_distribution(df_ipeds_pop, 'coa_grad_res', plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample, 'coa_grad_res', plot_title = 'Single sample distribution') +
+  plot_distribution(df_ipeds_pop, 'coa_grad_res', sampling_dist = T,
+                    plot_title = 'Sampling distribution') +
   plot_layout(ncol = 1)
 ```
 
@@ -1512,9 +1639,10 @@ Here we visually stack the following for the variable `coa_grad_res`:
 - the population distribution; distribution from a single random sample; and sampling distribution of assuming that $H_0$ is true
 
 ```{r}
-plot_distribution(df_ipeds_pop$coa_grad_res, plot_title = 'Population distribution') +
-  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
-  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000,shade_rejection = F, shade_pval = T, plot_title = 'Sampling distribution, assuming H_0') +
+plot_distribution(df_ipeds_pop, 'coa_grad_res', plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample, 'coa_grad_res', plot_title = 'Single sample distribution') +
+  plot_t_distribution(df_ipeds_sample, 'coa_grad_res', mu = 28000,shade_rejection = F, shade_pval = T, 
+                      plot_title = 'Sampling distribution, assuming H_0', stacked = T) +
   plot_layout(ncol = 1)
 ```
 
@@ -1566,7 +1694,7 @@ $H_0: \mu_Y = \mu_{Y0} = \$29,000$ and $H_a: \mu_Y \ne \$29,000$
 ```{r}
 mean(x = df_ipeds_sample$coa_grad_res)
 t.test(x = df_ipeds_sample$coa_grad_res, mu = 29000)
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000,shade_rejection = F, shade_pval = T)
+plot_t_distribution(df_ipeds_sample, 'coa_grad_res', mu = 29000,shade_rejection = F, shade_pval = T)
 ```
 
 <br>
@@ -1583,7 +1711,7 @@ $H_0: \mu_Y = \mu_{Y0} = \$28,000$ and $H_a: \mu_Y \ne \$28,000$
 ```{r}
 mean(x = df_ipeds_sample$coa_grad_res)
 t.test(x = df_ipeds_sample$coa_grad_res, mu = 28000)
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28000,shade_rejection = F, shade_pval = T)
+plot_t_distribution(df_ipeds_sample, 'coa_grad_res', mu = 28000,shade_rejection = F, shade_pval = T)
 ```
 
 
@@ -1601,7 +1729,7 @@ $H_0: \mu_Y = \mu_{Y0} = \$31,500$ and $H_a: \mu_Y \ne \$31,500$
 ```{r}
 mean(x = df_ipeds_sample$coa_grad_res)
 t.test(x = df_ipeds_sample$coa_grad_res, mu = 31500)
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 31500)
+plot_t_distribution(df_ipeds_sample, 'coa_grad_res', mu = 31500)
 ```
 
 ## Rejection region and conclusion
@@ -1646,7 +1774,7 @@ t.test(x = df_ipeds_sample$coa_grad_res, mu = 28500)
 Note that the user-defined `plot_t_distribution()` includes an optional argument that allows you to specify the alpha-level
 
 - syntax (including default argument values for arguments with defaults)
-  - `plot_t_distribution(data_vec, mu, alpha = 0.05, alternative = 'two.sided', plot_title = '')`
+  - `plot_t_distributionfunction(data_df, data_var, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F)`
   - So we can set the alpha level with the argument `alpha`, which has the default value of `0.05`  
 
 Below, we run `plot_t_distribution()`, manually setting the `alpha` argument to the the default value of `0.05`  
@@ -1662,7 +1790,7 @@ Below, we run `plot_t_distribution()`, manually setting the `alpha` argument to 
 - Since our p-value is greater than our alpha level, we do not reject $H_0$
 
 ```{r}
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28500, alpha = .05)
+plot_t_distribution(df_ipeds_sample, 'coa_grad_res', mu = 28500, alpha = .05)
 ```
 
 How would our conclusion change if we chose an alpha level of .10?
@@ -1677,7 +1805,7 @@ How would our conclusion change if we chose an alpha level of .10?
 
 
 ```{r}
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28500, alpha = .10)
+plot_t_distribution(df_ipeds_sample, 'coa_grad_res', mu = 28500, alpha = .10)
 ```
 
 ### Conclusion
@@ -1707,7 +1835,7 @@ This example:
   - We do not have sufficient evidence to reject the null hypothesis, $H_0$, that population mean full-time resident graduate cost of attendance is equal to `28,500`
 
 ```{r}
-plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 28500, alpha = .05,
+plot_t_distribution(df_ipeds_sample, 'coa_grad_res', mu = 28500, alpha = .05,
                     shade_rejection = TRUE, shade_pval = FALSE)
 ```
 
@@ -1785,7 +1913,7 @@ Calculating t-test p-value using `t.test()`
 
 ```{r}
 t.test(df_ipeds_sample$tuitfee_grad_nres, mu = 17000)
-plot_t_distribution(df_ipeds_sample$tuitfee_grad_nres, mu = 17000, alpha = .05, 
+plot_t_distribution(df_ipeds_sample, 'tuitfee_grad_nres', mu = 17000, alpha = .05, 
   shade_rejection = TRUE, shade_pval = FALSE)
 ```
 
@@ -1802,10 +1930,10 @@ Finally, we usually don't have all data on the population. But since we do for I
 - on top of the sampling distribution  (usually unknown)
 - on top of the sampling distribution assuming $H_0$ is true
 ```{r}
-plot_distribution(df_ipeds_pop$tuitfee_grad_nres, plot_title = 'Population distribution') +
-  plot_distribution(df_ipeds_sample$tuitfee_grad_nres, plot_title = 'Single sample distribution') +
-  plot_distribution(get_sampling_distribution(df_ipeds_pop$tuitfee_grad_nres), plot_title = 'True Sampling distribution') +
-  plot_t_distribution(df_ipeds_sample$tuitfee_grad_nres, mu = 17000, plot_title = 'Sampling distribution, assuming H_0') +
+plot_distribution(df_ipeds_pop, 'tuitfee_grad_nres', plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample, 'tuitfee_grad_nres', plot_title = 'Single sample distribution') +
+  plot_distribution(df_ipeds_pop, 'tuitfee_grad_nres', sampling_dist = T, plot_title = 'True Sampling distribution') +
+  plot_t_distribution(df_ipeds_sample, 'tuitfee_grad_nres', mu = 17000, plot_title = 'Sampling distribution, assuming H_0', stacked = T) +
   plot_layout(ncol = 1)
 ```
 
