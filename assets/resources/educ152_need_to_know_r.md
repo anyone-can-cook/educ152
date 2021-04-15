@@ -119,7 +119,7 @@ p <- "Patricia"
 ```
 
 
-**Vectors** 
+### Vectors 
 
 - A fundamental object in R is a "vector".  
 - There are two types of vectors, atomic vectors and recursive vectors or lists, but for the purpose of this introduction, we will briefly review the most common atomic vectors you will encounter (logical, integer, double, and character) and recursive vectors (lists).   
@@ -161,7 +161,7 @@ int
 #> [1] 1 3 2
 ```
   
-- This is a character vector. Each element of a character vector is a string. Notice how each string is enclosed with a parenthesis. 
+- This is a character vector. Each element of a character vector is a string. Notice how each string is enclosed with quotations. 
 
 ```r
 
@@ -193,7 +193,18 @@ list1
 
 - We can investigate the underlying structure of an R object using the `str()` function. 
 
-**str() function**:
+**Exercise** 
+
+
+- Take a few minutes to practice creating vectors.  
+- Create a character vector of the names of people in your immediate family.  
+- Now create a numeric vector of the ages of people in your immediate family.  
+
+*Credit: [The Very Basics](https://rstudio-education.github.io/hopr/basics.html) Hands-On Programming with R, [Vector basics](https://r4ds.had.co.nz/vectors.html) R for Data Science*  
+
+<br>
+
+### str() function:
 
 
 ```r
@@ -210,7 +221,6 @@ str(object, ...)
   
 
 
-
 ```r
 str(list1)
 #> List of 3
@@ -223,14 +233,131 @@ str(list1)
 - The `str()` function helps us understand the underlying structure of the object `list1` that is a list with 3 elements.  
   - The first element is an integer vector, the second element is a character vector, and the third element is a list of 2 elements, TRUE & FALSE.
 
-**Exercise** 
+**str() using a dataframe**  
+
+- You can use the `str()` function to give us a snapshot of the data and tell us more about it's underlying structure.
 
 
-- Take a few minutes to practice creating vectors.  
-- Create a character vector of the names of people in your immediate family.  
-- Now create a numeric vector of the ages of people in your immediate family.  
 
-*Credit: [The Very Basics](https://rstudio-education.github.io/hopr/basics.html) Hands-On Programming with R, [Vector basics](https://r4ds.had.co.nz/vectors.html) R for Data Science*  
+```r
+str(df_school)
+#> tibble [21,301 × 26] (S3: tbl_df/tbl/data.frame)
+#>  $ state_code        : chr [1:21301] "AK" "AK" "AK" "AK" ...
+#>  $ school_type       : chr [1:21301] "public" "public" "public" "public" ...
+#>  $ ncessch           : chr [1:21301] "020000100208" "020000100211" "020000100212" "020000100213" ...
+#>  $ name              : chr [1:21301] "Bethel Regional High School" "Ayagina'ar Elitnaurvik" "Kwigillingok School" "Nelson Island Area School" ...
+#>  $ address           : chr [1:21301] "1006 Ron Edwards Memorial Dr" "106 Village Road" "108 Village Road" "118 Village Road" ...
+#>  $ city              : chr [1:21301] "Bethel" "Kongiganak" "Kwigillingok" "Toksook Bay" ...
+#>  $ zip_code          : chr [1:21301] "99559" "99559" "99622" "99637" ...
+#>  $ pct_white         : num [1:21301] 11.78 0 0 0 2.52 ...
+#>  $ pct_black         : num [1:21301] 0.599 0 0 0 0 ...
+#>  $ pct_hispanic      : num [1:21301] 1.6 0 0 0 0 ...
+#>  $ pct_asian         : num [1:21301] 0.998 0 0 0 0 ...
+#>  $ pct_amerindian    : num [1:21301] 84.6 99.5 100 100 97.5 ...
+#>  $ pct_other         : num [1:21301] 0.399 0.549 0 0 0 ...
+#>  $ num_fr_lunch      : num [1:21301] 362 182 116 187 238 180 418 185 179 186 ...
+#>  $ total_students    : num [1:21301] 501 182 120 201 238 231 428 262 179 186 ...
+#>  $ num_took_math     : num [1:21301] 146 17 14 30 28 25 62 21 23 19 ...
+#>  $ num_prof_math     : num [1:21301] 24.8 1.7 3.5 3 2.8 ...
+#>  $ num_took_rla      : num [1:21301] 147 17 14 30 28 24 62 22 23 19 ...
+#>  $ num_prof_rla      : num [1:21301] 25 1.7 3.5 3 2.8 ...
+#>  $ avgmedian_inc_2564: num [1:21301] 76160 76160 NA 57656 37552 ...
+#>  $ visits_by_110635  : int [1:21301] 0 0 0 0 0 0 0 0 0 0 ...
+#>  $ visits_by_126614  : int [1:21301] 0 0 0 0 0 0 0 0 0 0 ...
+#>  $ visits_by_100751  : int [1:21301] 0 0 0 0 0 0 0 0 0 0 ...
+#>  $ inst_110635       : chr [1:21301] "CA" "CA" "CA" "CA" ...
+#>  $ inst_126614       : chr [1:21301] "CO" "CO" "CO" "CO" ...
+#>  $ inst_100751       : chr [1:21301] "AL" "AL" "AL" "AL" ...
+```
+
+- The `str()` output let's us know that the `df_school` object is a tibble with 21,301 observations and 26 columns. 
+- It prints out all columns/variables and tells us what type of atomic vector they are (e.g., chr, int, num). 
+- The first few observations of each column is returned as well.
+
+**str() using a vector** 
+
+```r
+str(df_school$state_code)
+#>  chr [1:21301] "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AK" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AL" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AR" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "AZ" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" "CA" ...
+```
+
+- The output is a lot shorter. 
+- We can see that the variable `state_code` is a character vector with 21301 rows or observations. 
+
+**str() using a function**  
+
+- You could also use the `str()` function to investigate a function. 
+
+
+```r
+str(sd)
+#> function (x, na.rm = FALSE)
+```
+
+- The output tells us that the object `sd` is a function. 
+- The `sd()` function takes two arguments, `x` and `na.rm`.
+- Let's do a quick investigation of the `sd()` function.
+
+
+```r
+?sd()
+
+# SYNTAX AND DEFAULT VALUES
+sd(x, na.rm = FALSE)
+```
+
+- Function:
+  - `sd()` This function computes the standard deviation of the values in x. If na.rm is TRUE then missing values are removed before computation proceeds.
+- Arguments:
+  - `x`: a numeric vector or an R object but not a factor coercible to numeric by as.double(x).
+  - `na.rm`: logical. Should missing values be removed?
+
+- The help file tells us that the argument `x` has to be a numeric vector. The `na.rm=FALSE` is the default which means missing values are not removed. If we had a vector/variable with missing values we should set the `na.rm=TRUE` to remove missing values. 
+
+**str() and pipes**
+
+- _Note: We will review pipes in more detail in the Tidyverse and Pipes section below, but for now let's review the utility of using pipes with the `str()` function._
+
+
+
+
+- Say we wanted to subset the dataframe and only include private schools and a few columns/variables.
+
+
+
+```r
+df_school %>% select(name, state_code, school_type) %>% filter(school_type == "private")
+#> # A tibble: 3,822 x 3
+#>    name                                 state_code school_type
+#>    <chr>                                <chr>      <chr>      
+#>  1 CATHOLIC SCHOOLS OF FAIRBANKS        AK         private    
+#>  2 ANCHORAGE CHRISTIAN SCHOOLS          AK         private    
+#>  3 GRACE CHRISTIAN SCHOOL               AK         private    
+#>  4 IMMACULATE CONCEPTION SCHOOL         AK         private    
+#>  5 HOLY ROSARY ACADEMY                  AK         private    
+#>  6 LUMEN CHRISTI HIGH SCHOOL            AK         private    
+#>  7 JOHN CARROLL CATHOLIC HIGH SCHOOL    AL         private    
+#>  8 MOBILE CHRISTIAN SCHOOL              AL         private    
+#>  9 NORTHSIDE METHODIST CHURCH & ACADEMY AL         private    
+#> 10 WESTMINSTER SCHOOL AT OAK MOUNTAIN   AL         private    
+#> # … with 3,812 more rows
+```
+
+- What is returned is a dataframe with three columns/variables (e.g., `name`, `state_code`, `school_type`) and 3,822 observations (the number of private schools). 
+
+- Now let's run the same code but add the `str()` function at the end.
+
+```r
+df_school %>% select(name, state_code, school_type) %>% filter(school_type == "private") %>% str()
+#> tibble [3,822 × 3] (S3: tbl_df/tbl/data.frame)
+#>  $ name       : chr [1:3822] "CATHOLIC SCHOOLS OF FAIRBANKS" "ANCHORAGE CHRISTIAN SCHOOLS" "GRACE CHRISTIAN SCHOOL" "IMMACULATE CONCEPTION SCHOOL" ...
+#>  $ state_code : chr [1:3822] "AK" "AK" "AK" "AK" ...
+#>  $ school_type: chr [1:3822] "private" "private" "private" "private" ...
+```
+
+- We get a compact output that details what is being piped in-- three columns and 3822 observations that represent private high schools.
+
+*Credit: [Okunola Musbaudeen](https://medium.com/geekculture/str-a-simple-yet-powerful-tool-for-exploratory-data-analysis-in-r-ce995e5e2a5d) from Geek Culture *  
 
 <br>  
 

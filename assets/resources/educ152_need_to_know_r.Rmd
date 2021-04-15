@@ -118,7 +118,7 @@ p <- "Patricia"
 ```
 
 
-**Vectors** 
+### Vectors 
 
 - A fundamental object in R is a "vector".  
 - There are two types of vectors, atomic vectors and recursive vectors or lists, but for the purpose of this introduction, we will briefly review the most common atomic vectors you will encounter (logical, integer, double, and character) and recursive vectors (lists).   
@@ -148,7 +148,7 @@ typeof(int)
 int
 ```
   
-- This is a character vector. Each element of a character vector is a string. Notice how each string is enclosed with a parenthesis. 
+- This is a character vector. Each element of a character vector is a string. Notice how each string is enclosed with quotations. 
 ```{r}
 
 char <- c("a", "b", "c") #character vector
@@ -164,7 +164,18 @@ list1
 
 - We can investigate the underlying structure of an R object using the `str()` function. 
 
-**str() function**:
+**Exercise** 
+
+
+- Take a few minutes to practice creating vectors.  
+- Create a character vector of the names of people in your immediate family.  
+- Now create a numeric vector of the ages of people in your immediate family.  
+
+*Credit: [The Very Basics](https://rstudio-education.github.io/hopr/basics.html) Hands-On Programming with R, [Vector basics](https://r4ds.had.co.nz/vectors.html) R for Data Science*  
+
+<br>
+
+### str() function:
 
 ```{r, eval = FALSE}
 ?str()
@@ -179,21 +190,89 @@ str(object, ...)
   - `object`: any `R` object about which you want to have some information..
   
 
-
 ```{r}
 str(list1)
 ```
 - The `str()` function helps us understand the underlying structure of the object `list1` that is a list with 3 elements.  
   - The first element is an integer vector, the second element is a character vector, and the third element is a list of 2 elements, TRUE & FALSE.
 
-**Exercise** 
+**str() using a dataframe**  
+
+- You can use the `str()` function to give us a snapshot of the data and tell us more about it's underlying structure.
+```{r echo=FALSE}
+load(url("https://github.com/ozanj/rclass/raw/master/data/recruiting/recruit_school_somevars.RData"))
+```
+
+```{r}
+str(df_school)
+```
+
+- The `str()` output let's us know that the `df_school` object is a tibble with 21,301 observations and 26 columns. 
+- It prints out all columns/variables and tells us what type of atomic vector they are (e.g., chr, int, num). 
+- The first few observations of each column is returned as well.
+
+**str() using a vector** 
+```{r}
+str(df_school$state_code)
+```
+
+- The output is a lot shorter. 
+- We can see that the variable `state_code` is a character vector with 21301 rows or observations. 
+
+**str() using a function**  
+
+- You could also use the `str()` function to investigate a function. 
+
+```{r}
+str(sd)
+```
+
+- The output tells us that the object `sd` is a function. 
+- The `sd()` function takes two arguments, `x` and `na.rm`.
+- Let's do a quick investigation of the `sd()` function.
+
+```{r, eval = FALSE}
+?sd()
+
+# SYNTAX AND DEFAULT VALUES
+sd(x, na.rm = FALSE)
+```
+
+- Function:
+  - `sd()` This function computes the standard deviation of the values in x. If na.rm is TRUE then missing values are removed before computation proceeds.
+- Arguments:
+  - `x`: a numeric vector or an R object but not a factor coercible to numeric by as.double(x).
+  - `na.rm`: logical. Should missing values be removed?
+
+- The help file tells us that the argument `x` has to be a numeric vector. The `na.rm=FALSE` is the default which means missing values are not removed. If we had a vector/variable with missing values we should set the `na.rm=TRUE` to remove missing values. 
+
+**str() and pipes**
+
+- _Note: We will review pipes in more detail in the Tidyverse and Pipes section below, but for now let's review the utility of using pipes with the `str()` function._
+
+```{r echo=FALSE}
+#install.packages("tidyverse")
+library(tidyverse)
+```
 
 
-- Take a few minutes to practice creating vectors.  
-- Create a character vector of the names of people in your immediate family.  
-- Now create a numeric vector of the ages of people in your immediate family.  
+- Say we wanted to subset the dataframe and only include private schools and a few columns/variables.
 
-*Credit: [The Very Basics](https://rstudio-education.github.io/hopr/basics.html) Hands-On Programming with R, [Vector basics](https://r4ds.had.co.nz/vectors.html) R for Data Science*  
+
+```{r}
+df_school %>% select(name, state_code, school_type) %>% filter(school_type == "private")
+```
+
+- What is returned is a dataframe with three columns/variables (e.g., `name`, `state_code`, `school_type`) and 3,822 observations (the number of private schools). 
+
+- Now let's run the same code but add the `str()` function at the end.
+```{r}
+df_school %>% select(name, state_code, school_type) %>% filter(school_type == "private") %>% str()
+```
+
+- We get a compact output that details what is being piped in-- three columns and 3822 observations that represent private high schools.
+
+*Credit: [Okunola Musbaudeen](https://medium.com/geekculture/str-a-simple-yet-powerful-tool-for-exploratory-data-analysis-in-r-ce995e5e2a5d) from Geek Culture *  
 
 <br>  
 
