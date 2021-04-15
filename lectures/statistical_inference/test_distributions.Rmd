@@ -317,6 +317,9 @@ plot_distribution(pop1, pop2)
 
 # Custom labels
 plot_distribution(pop1, pop2, pop_labels = c('Public', 'Private not-for-profit'))
+
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',
+                  group_cat = c(1, 2), pop_labels = c('Public', 'Private not-for-profit'))
 ```
 
 
@@ -344,7 +347,9 @@ plot_distribution(df_generated_sample$stdnorm_dist)
 plot_distribution(df_ipeds_pop$tuitfee_grad_res, sampling_dist = T)
 
 # IPEDS data: tuitfee_grad_res
-plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = T)
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = T) # sampling_dist = T runs the get_sampling_distribution function and plots the sampling distribution
+
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = F) # sampling_dist = F plots underlying variable
 ```
 
 
@@ -492,7 +497,7 @@ plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, dat
   
   stats_text <- c(str_c('t-statistics: ', round(t, 2)),
                   str_c('SE: ', round(std_err, 2)),
-                  str_c('p-value: ', pval),
+                  str_c('p-val: ', pval),
                   str_c('Critical value: ', cv_legend),
                   str_c('alpha: ', round(alpha, 2)))
   
@@ -572,6 +577,14 @@ sample2 <- (df_ipeds_sample %>% filter(unclass(control) == 2))$tuitfee_grad_res
 
 t.test(sample1, sample2)
 plot_t_distribution(sample1, sample2)
+
+# compare locale = tuitfee_grad_nres between public and private
+plot_t_distribution(data_df = df_ipeds_sample, data_var = 'coa_grad_nres',
+                    group_var = 'control', group_cat = c(1, 2))
+
+# compare locale = city-large (11) to suburb-large (21)
+plot_t_distribution(data_df = df_ipeds_sample, data_var = 'roomboard_off',
+                    group_var = 'locale', group_cat = c(11, 21))
 ```
 
 
