@@ -96,6 +96,12 @@ library(labelled) # load labelled package package
 library(patchwork)
 
 ##########
+########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
+##########
+
+source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
+
+##########
 ########## IPEDS
 ##########
 

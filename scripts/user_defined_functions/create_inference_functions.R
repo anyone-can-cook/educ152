@@ -156,7 +156,7 @@ get_sampling_distribution <- function(data_vec, num_samples = 1000, sample_size 
 # example function calls
 
   #function call on its own (creates a vector of length = sample_size where each element is a sample mean)
-  get_sampling_distribution(data_vec = df_ipeds_pop$tuitfee_grad_res, num_samples = 1000, sample_size = 200) %>% str()
+  #get_sampling_distribution(data_vec = df_ipeds_pop$tuitfee_grad_res, num_samples = 1000, sample_size = 200) %>% str()
     
 ##########
 # Create function to generate plots of variable distributions
