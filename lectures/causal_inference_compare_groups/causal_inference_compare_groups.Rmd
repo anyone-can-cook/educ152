@@ -86,6 +86,9 @@ LINK of script to process STAR data
 
 
 ```{r}
+# uncomment below line to remove all objects
+  #rm(list = ls())
+
 # Libraries
   #install.packages('tidyverse') # if you haven't installed already
   #install.packages('labelled') # if you haven't installed already
@@ -781,9 +784,10 @@ df_stark %>% group_by(treatment) %>% summarize(
 This section explains how to test hypotheses about whether the population mean for one group is different from the population mean for another group
 
 - The approach we introduce is the approach used to estimate causal effects in experiments where there is one treatment group and one control group
-  - The example we will use in this section is whether kindergarten students assigned to small class size (treatment) have higher reading scores than kindergarten students assigned to big class size (control)
+  - Using data from Tennessee STAR, we will test whether kindergarten students assigned to small class size (treatment) have higher reading scores than kindergarten students assigned to big class size (control)
 - The approach we introduce is also the approach used to compare population means of two groups in non experimental settings
-  - for example, using a random sample of data from IPEDS (each observation is a university), we could test the null hypothesis $H_0$ that population mean grad-school tuition+fees at private universities is the same as population mean grad-school tuition+fees at public universities
+  - using a random sample of data from IPEDS (each observation is a university), we will test the null hypothesis that $H_0$ that population mean value of a variable for one group is the same as that of another group (e.g., population mean grad-school tuition+fees at private universities is the same as population mean grad-school tuition+fees at public universities)
+
 
 ## Steps in hypothesis testing about two populations
 
@@ -807,6 +811,63 @@ General steps in hypothesis testing:
 1. **Alpha level/rejection region and conclusion**
     - compare the p-value you you observed to the alpha level and make a conclusion about your hypothesis test
 
+
+## Conceptual understanding [MOST IMPORTANT!]
+
+We will use IPEDS data to provide conceptual understanding of hypothesis tests about comparing two means. 
+
+- Why? because for IPEDS we have data on the entire population, which is useful for explaining concepts
+- Key to conceputal understanding is realizing that hypothesis tests about comparing two means is conceptually the same as hypothesis tests about the value of a single population mean
+
+<br>
+
+### Introduce user defined functions
+
+We'll use our "user defined functions" (loaded above) to visually explain core concepts
+
+- these functions have been updated/modified as of 4/15/2021
+
+
+`plot_distribution()` function plots the distribution of variables
+
+- syntax and default values: 
+  - `plot_distribution(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, pop_labels = NULL, show_group_hist = F, sampling_dist = F, plot_title = '')`
+- We can use this function to plot the distribution of a single variable, or to plot distribution of variable for two different groups (or two different variables)
+
+```{r}
+# PLOTTING A SINGLE DISTRIBUTION
+  plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res')
+
+# PLOTTING TWO DISTRIBUTIONS
+  plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(1, 2), pop_labels = c('Public', 'Private not-for-profit'))
+
+```
+
+`get_sampling_distribution()` function gets the sampling distribution of a variable (defaults = 1000 samples of sample size = 200)
+
+- syntax and default values: 
+  - `get_sampling_distribution(data_vec, num_samples = 1000, sample_size = 200)`
+- following revisions to the `plot_distribution()` function, we usually will not call the `get_sampling_distribution()` function directly; 
+  - rather, a we can specify an optional argument within the `plot_distribution()` to call the `get_sampling_distribution()`
+  - the relevant argument within `plot_distribution()` function is `sampling_dist` which has a default value of `FALSE`
+
+```{r}
+# PLOT SAMPLING DISTRIBUTION, SINGLE POPULATION, 
+  #(set sampling_dist= TRUE) to plot sampling distribution
+  plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = TRUE, plot_title = 'this is a sampling distribution')
+
+  #(set sampling_dist= FALSE) to plot distribution of the variable (not the sampling distribution)
+  plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = FALSE, plot_title = 'this is a variable distribution')
+    
+     the sampling distribution
+    #plot_distribution(df_ipeds_pop$tuitfee_grad_res, sampling_dist = T) # this works too
+
+# PLOT SAMPLING DISTRIBUTION OF TWO POPULATIONS     
+    
+    plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = F) # sampling_dist = F plots underlying variable  
+```
+
+
 ## Null and alternative hypothesis
 
 null hypothesis ($H_0$)
@@ -818,6 +879,7 @@ Two-sided alternative hypothesis ($H_a$)
 
 - $H_0: \mu_{Y_{{treated}}} \ne \mu_{Y_{{control}}}$
 - (in words): $H_0:$ the population mean reading score for kindergarten students assigned to the treatment (small class size), $\mu_{Y_{{treated}}}$, is different than the population mean reading score for kindergarten students assigned to the control (big class size) ($\mu_{Y_{{control}}}$)
+
 
 ## Test statistic and p-value
 
