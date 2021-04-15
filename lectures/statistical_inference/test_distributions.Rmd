@@ -155,64 +155,45 @@ get_sampling_distribution <- function(data_vec, num_samples = 1000, sample_size 
 }
 
 # Function to generate plot
-plot_distribution <- function(data_df, data_var, group_var = NULL, group_cat = NULL, show_group_hist = F, sampling_dist = F, plot_title = '') {
+plot_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, pop_labels = NULL, show_group_hist = F, sampling_dist = F, plot_title = '') {
+  
+  two_pop <- !is.null(group_var) || !is.null(data_vec2)
+  two_dist <- two_pop && !sampling_dist
   
   # Prep dataframe
-  two_pop <- !is.null(group_var)
-  two_dist <- !is.null(group_var) && !sampling_dist
-  
-  data_df[[data_var]] <- unclass(data_df[[data_var]])  # unclass haven_labelled
-  if (two_pop) {
-    data_df[[group_var]] <- unclass(data_df[[group_var]])
-  }
-  
-  data_df <- data_df %>% filter(!is.na(get(data_var)))  # remove NA rows
-  
-  # If group_cat not provided, use 2 values from group_var
-  if (two_pop && is.null(group_cat)) {
-    group_cat <- sort(unique(na.omit(data_df[[group_var]])))[1:2]
+  if (!is.null(data_df)) {
+    data_df[[data_var]] <- unclass(data_df[[data_var]])  # unclass haven_labelled
+    if (two_pop) {
+      data_df[[group_var]] <- unclass(data_df[[group_var]])
+    }
+    
+    data_df <- data_df %>% filter(!is.na(get(data_var)))  # remove NA rows
+    
+    # If group_cat not provided, use 2 values from group_var
+    if (two_pop && is.null(group_cat)) {
+      group_cat <- sort(unique(na.omit(data_df[[group_var]])))[1:2]
+    }
+    
+    # Create population vector(s)
+    if (!two_pop) {  # single population
+      data_vec1 <- data_df[[data_var]]
+    } else {  # two populations
+      data_vec1 <- (data_df %>% filter(get(group_var) == group_cat[[1]]))[[data_var]]
+      data_vec2 <- (data_df %>% filter(get(group_var) == group_cat[[2]]))[[data_var]]
+    }
   }
 
-  # Create population vector(s)
-  if (!two_pop) {  # single population
-    data_vec1 <- data_df[[data_var]]
-    
-    if (sampling_dist) {  # sampling distribution
+  # Get sampling distribution
+  if (sampling_dist) {
+    if (!two_pop) {  # single population
       data_vec1 <- get_sampling_distribution(data_vec1)
-    }
-  } else {  # two populations
-    data_vec1 <- (data_df %>% filter(get(group_var) == group_cat[[1]]))[[data_var]]
-    data_vec2 <- (data_df %>% filter(get(group_var) == group_cat[[2]]))[[data_var]]
-    
-    if (sampling_dist) {  # sampling distribution
+    } else {  # two populations
       data_vec1_samp <- get_sampling_distribution(data_vec1)
       data_vec2_samp <- get_sampling_distribution(data_vec2)
       
       data_vec1 <- data_vec1_samp - data_vec2_samp
     }
   }
-  
-  # Create statistics dataframe
-  if (!two_dist) {
-    lines_vec <- c('dotted')
-    stats_vec <- c(mean(data_vec1), median(data_vec1))
-    legend_title <- 'Statistics'
-    
-    if (two_pop && sampling_dist) {
-      legend_title <- paste0('Statistics\n(', group_var, '=', group_cat[[1]], ' - ', group_var, '=', group_cat[[2]], ')')
-    }
-  } else {
-    lines_vec <- c('dotted', 'dotdash')
-    stats_vec <- c(mean(data_vec1), median(data_vec1), mean(data_vec2), median(data_vec2))
-    legend_title <- paste0('Statistics\n(', group_var, '=', group_cat[[1]], ' vs. ', group_var, '=', group_cat[[2]], ')')
-  }
-  
-  stats_df <- data.frame(
-    pop = rep(lines_vec, each = 2),
-    stat = rep(c('blue', 'red'), times = if_else(two_dist, 2, 1)),
-    val = stats_vec
-  )
-  stats_df$pop <- factor(stats_df$pop, levels = c('dotted', 'dotdash'))
   
   # Legend text
   legend_text <- c(paste('Mean:', round(mean(data_vec1), 2),
@@ -225,6 +206,39 @@ plot_distribution <- function(data_df, data_var, group_var = NULL, group_cat = N
                            '\nStd Dev:', round(sd(data_vec2), 2)),
                      paste('Median:', round(median(data_vec2), 2)))
   }
+  
+  if (!is.null(pop_labels)) {
+    pop1 <- pop_labels[[1]]
+    pop2 <- pop_labels[[2]]
+  } else if (!is.null(group_var)) {
+    pop1 <- str_c(group_var, '=', group_cat[[1]])
+    pop2 <- str_c(group_var, '=', group_cat[[2]])
+  } else {
+    pop1 <- 'Pop1'
+    pop2 <- 'Pop2'
+  }
+  
+  # Create statistics dataframe
+  if (!two_dist) {
+    lines_vec <- c('dotted')
+    stats_vec <- c(mean(data_vec1), median(data_vec1))
+    legend_title <- 'Statistics'
+    
+    if (two_pop && sampling_dist) {
+      legend_title <- str_c('Statistics\n(', pop1, ' - ', pop2, ')')
+    }
+  } else {
+    lines_vec <- c('dotted', 'dotdash')
+    stats_vec <- c(mean(data_vec1), median(data_vec1), mean(data_vec2), median(data_vec2))
+    legend_title <- str_c('Statistics\n(', pop1, ' vs. ', pop2, ')')
+  }
+  
+  stats_df <- data.frame(
+    pop = rep(lines_vec, each = 2),
+    stat = rep(c('blue', 'red'), times = if_else(two_dist, 2, 1)),
+    val = stats_vec
+  )
+  stats_df$pop <- factor(stats_df$pop, levels = c('dotted', 'dotdash'))
   
   # Plot distribution(s)
   p <- ggplot() +
@@ -269,37 +283,40 @@ plot_distribution <- function(data_df, data_var, group_var = NULL, group_cat = N
 ## Single population
 
 ```{r}
-# Randomly generated data: standard normal
-df_generated_pop %>% plot_distribution('stdnorm_dist')
-
-# Randomly generated data: normal
-df_generated_pop %>% plot_distribution('norm_dist')
-
-# Randomly generated data: left-skewed
-df_generated_pop %>% plot_distribution('lskew_dist')
-
-# Randomly generated data: right-skewed
-df_generated_pop %>% plot_distribution('rskew_dist')
+# IPEDS data: tuitfee_grad_res
+plot_distribution(df_ipeds_pop$tuitfee_grad_res)
 
 # IPEDS data: tuitfee_grad_res
-df_ipeds_pop %>% plot_distribution('tuitfee_grad_res')
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res')
 ```
 
 
 ## Two populations
 
 ```{r}
-# IPEDS data: tuitfee_grad_res by control
-df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', 'control')
+# IPEDS data: tuitfee_grad_res by control (default: use first 2 categorical values in group_var)
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control')
 
 # IPEDS data: tuitfee_grad_res by control, shade histogram
-df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', 'control', show_group_hist = T)
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',
+                  show_group_hist = T)
 
 # IPEDS data: tuitfee_grad_res by control, custom order
-df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', 'control', group_cat = c(2, 1))
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',
+                  group_cat = c(2, 1))
 
 # IPEDS data: tuitfee_grad_res by control, custom categories
-df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', 'control', group_cat = c(2, 3))
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',
+                  group_cat = c(2, 3))
+
+# Alternatively, prepare 2 populations first to pass in
+pop1 <- (df_ipeds_pop %>% filter(unclass(control) == 1))$tuitfee_grad_res
+pop2 <- (df_ipeds_pop %>% filter(unclass(control) == 2))$tuitfee_grad_res
+
+plot_distribution(pop1, pop2)
+
+# Custom labels
+plot_distribution(pop1, pop2, pop_labels = c('Public', 'Private not-for-profit'))
 ```
 
 
@@ -314,22 +331,7 @@ set.seed(124)
 df_ipeds_sample <- df_ipeds_pop[sample(nrow(df_ipeds_pop), 200), ]
 
 # Randomly generated data: standard normal
-df_generated_sample %>% plot_distribution('stdnorm_dist')
-
-# Randomly generated data: normal
-df_generated_sample %>% plot_distribution('norm_dist')
-
-# Randomly generated data: left-skewed
-df_generated_sample %>% plot_distribution('lskew_dist')
-
-# Randomly generated data: right-skewed
-df_generated_sample %>% plot_distribution('rskew_dist')
-
-# IPEDS data: tuitfee_grad_res
-df_ipeds_sample %>% plot_distribution('tuitfee_grad_res')
-
-# IPEDS data: tuitfee_grad_res by control
-df_ipeds_sample %>% plot_distribution('tuitfee_grad_res', 'control')
+plot_distribution(df_generated_sample$stdnorm_dist)
 ```
 
 
@@ -338,20 +340,11 @@ df_ipeds_sample %>% plot_distribution('tuitfee_grad_res', 'control')
 ## Single population
 
 ```{r}
-# Randomly generated data: standard normal
-df_generated_pop %>% plot_distribution('stdnorm_dist', sampling_dist = T)
-
-# Randomly generated data: normal
-df_generated_pop %>% plot_distribution('norm_dist', sampling_dist = T)
-
-# Randomly generated data: left-skewed
-df_generated_pop %>% plot_distribution('lskew_dist', sampling_dist = T)
-
-# Randomly generated data: right-skewed
-df_generated_pop %>% plot_distribution('rskew_dist', sampling_dist = T)
+# IPEDS data: tuitfee_grad_res
+plot_distribution(df_ipeds_pop$tuitfee_grad_res, sampling_dist = T)
 
 # IPEDS data: tuitfee_grad_res
-df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', sampling_dist = T)
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = T)
 ```
 
 
@@ -359,10 +352,12 @@ df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', sampling_dist = T)
 
 ```{r}
 # IPEDS data: tuitfee_grad_res by control (control=1 minus control=2)
-df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', 'control', sampling_dist = T)
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',
+                  sampling_dist = T, pop_labels = c('Public', 'Private'))
 
 # IPEDS data: tuitfee_grad_res by control (control=2 minus control=1)
-df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', 'control', group_cat = c(2, 1), sampling_dist = T)
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',
+                  group_cat = c(2, 1), sampling_dist = T, pop_labels = c('Private', 'Public'))
 ```
 
 
@@ -370,39 +365,48 @@ df_ipeds_pop %>% plot_distribution('tuitfee_grad_res', 'control', group_cat = c(
 
 ```{r}
 # Function to generate t-distribution plot
-plot_t_distribution <- function(data_df, data_var, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F) {
+plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F) {
+  
+  two_pop <- !is.null(group_var) || !is.null(data_vec2)
   
   # Prep dataframe
-  two_pop <- !is.null(group_var)
-
-  data_df[[data_var]] <- unclass(data_df[[data_var]])  # unclass haven_labelled
-  if (two_pop) {
-    data_df[[group_var]] <- unclass(data_df[[group_var]])
-  }
-  
-  data_df <- data_df %>% filter(!is.na(get(data_var)))  # remove NA rows
-  
-  # If group_cat not provided, use 2 values from group_var
-  if (two_pop && is.null(group_cat)) {
-    group_cat <- sort(unique(na.omit(data_df[[group_var]])))[1:2]
+  if (!is.null(data_df)) {
+    data_df[[data_var]] <- unclass(data_df[[data_var]])  # unclass haven_labelled
+    if (two_pop) {
+      data_df[[group_var]] <- unclass(data_df[[group_var]])
+    }
+    
+    data_df <- data_df %>% filter(!is.na(get(data_var)))  # remove NA rows
+    
+    # If group_cat not provided, use 2 values from group_var
+    if (two_pop && is.null(group_cat)) {
+      group_cat <- sort(unique(na.omit(data_df[[group_var]])))[1:2]
+    }
+    
+    # Create samples
+    if (!two_pop) {  # single sample
+      data_vec1 <- data_df[[data_var]]
+    } else {  # two samples
+      data_vec1 <- (data_df %>% filter(get(group_var) == group_cat[[1]]))[[data_var]]
+      data_vec2 <- (data_df %>% filter(get(group_var) == group_cat[[2]]))[[data_var]]
+    }
   }
   
   # Calculate stats
   if (!two_pop) {  # single sample
-    data_vec <- data_df[[data_var]]
+    data_vec1 <- na.omit(data_vec1)
     
     # Calculate t-statistics
-    sample_size <- length(data_vec)
+    sample_size <- length(data_vec1)
     deg_freedom <- sample_size - 1
-    xbar <- mean(data_vec)
-    s <- sd(data_vec)
+    xbar <- mean(data_vec1)
+    s <- sd(data_vec1)
     
     std_err <- s / sqrt(sample_size)
     t <- (xbar - mu) / std_err
-    
   } else {  # two samples
-    data_vec1 <- (data_df %>% filter(get(group_var) == group_cat[[1]]))[[data_var]]
-    data_vec2 <- (data_df %>% filter(get(group_var) == group_cat[[2]]))[[data_var]]
+    data_vec1 <- na.omit(data_vec1)
+    data_vec2 <- na.omit(data_vec2)
     
     # Calculate t-statistics
     xbar1 <- mean(data_vec1)
@@ -528,25 +532,25 @@ plot_t_distribution <- function(data_df, data_var, group_var = NULL, group_cat =
 # Ha: population mean of coa_grad_res is NOT $29,000 (two-sided test)
 # Verdict: Fail to reject H0
 t.test(df_ipeds_sample$coa_grad_res, mu = 29000)
-df_ipeds_sample %>% plot_t_distribution('coa_grad_res', mu = 29000)
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000)
 
 # H0: population mean of coa_grad_res is $32,000
 # Ha: population mean of coa_grad_res is NOT $32,000 (two-sided test)
 # Verdict: Reject H0
 t.test(df_ipeds_sample$coa_grad_res, mu = 32000)
-df_ipeds_sample %>% plot_t_distribution('coa_grad_res', mu = 32000)
+plot_t_distribution(data_df = df_ipeds_sample, data_var = 'coa_grad_res', mu = 32000)
 
 # H0: population mean of coa_grad_res is $33,000
 # Ha: population mean of coa_grad_res is LESS THAN $33,000 (left-sided test)
 # Verdict: Reject H0
 t.test(df_ipeds_sample$coa_grad_res, mu = 33000, alternative = 'less')
-df_ipeds_sample %>% plot_t_distribution('coa_grad_res', mu = 33000, alternative = 'less')
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 33000, alternative = 'less')
 
 # H0: population mean of coa_grad_res is $31,000
 # Ha: population mean of coa_grad_res is GREATER THAN $31,000 (right-sided test)
 # Verdict: Fail to reject H0
 t.test(df_ipeds_sample$coa_grad_res, mu = 31000, alternative = 'greater')
-df_ipeds_sample %>% plot_t_distribution('coa_grad_res', mu = 31000, alternative = 'greater')
+plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 31000, alternative = 'greater')
 ```
 
 
@@ -555,11 +559,19 @@ df_ipeds_sample %>% plot_t_distribution('coa_grad_res', mu = 31000, alternative 
 ```{r}
 # H0: population mean of tuitfee_grad_res is equal for control=1 and control=2
 # Ha: population means are NOT equal
-# Verdict: Fail to reject H0
-t.test(formula = tuitfee_grad_res ~ control, mu = 0,
-       data = df_ipeds_sample, subset = unclass(control) %in% c(1, 2))
-# t-statistics line is off the grid
-df_ipeds_sample %>% plot_t_distribution('tuitfee_grad_res', 'control', group_cat = c(1, 2))
+# Verdict: Reject H0
+t.test(formula = tuitfee_grad_res ~ control, data = df_ipeds_sample, 
+       subset = unclass(control) %in% c(1, 2))
+# Here, the t-statistics line is off the grid
+plot_t_distribution(data_df = df_ipeds_sample, data_var = 'tuitfee_grad_res',
+                    group_var = 'control', group_cat = c(1, 2))
+
+# Alternatively, prepare 2 samples first to pass in
+sample1 <- (df_ipeds_sample %>% filter(unclass(control) == 1))$tuitfee_grad_res
+sample2 <- (df_ipeds_sample %>% filter(unclass(control) == 2))$tuitfee_grad_res
+
+t.test(sample1, sample2)
+plot_t_distribution(sample1, sample2)
 ```
 
 
@@ -569,24 +581,25 @@ df_ipeds_sample %>% plot_t_distribution('tuitfee_grad_res', 'control', group_cat
 library(patchwork)
 
 # Use / to place plots 1 per row (stacked)
-plot_distribution(df_generated_pop, 'norm_dist', plot_title = 'Population distribution') /
-  plot_distribution(df_generated_sample, 'norm_dist', plot_title = 'Single sample distribution') /
-  plot_distribution(df_generated_pop, 'norm_dist', sampling_dist = T,
+plot_distribution(df_generated_pop$norm_dist, plot_title = 'Population distribution') /
+  plot_distribution(df_generated_sample$norm_dist, plot_title = 'Single sample distribution') /
+  plot_distribution(df_generated_pop$norm_dist, sampling_dist = T,
                     plot_title = 'Sampling distribution')
 
 # Or use + and plot_layout()
-plot_distribution(df_ipeds_pop, 'tuitfee_grad_res', 'control', group_cat = c(2, 1),
-                  plot_title = 'Population distributions') +
-  plot_distribution(df_ipeds_sample, 'tuitfee_grad_res', 'control', group_cat = c(2, 1),
-                    plot_title = 'Single sample distributions') +
-  plot_distribution(df_ipeds_pop, 'tuitfee_grad_res', 'control', group_cat = c(2, 1),
-                    sampling_dist = T, plot_title = 'Sampling distribution differences') +
+plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',
+                  group_cat = c(2, 1), plot_title = 'Population distributions') +
+  plot_distribution(data_df = df_ipeds_sample, data_var = 'tuitfee_grad_res', group_var = 'control',
+                    group_cat = c(2, 1), plot_title = 'Single sample distributions') +
+  plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',
+                    group_cat = c(2, 1), sampling_dist = T,
+                    plot_title = 'Sampling distribution differences') +
   plot_layout(ncol = 1)
 
-# Example including hypothesis testing - need to specify stacked = T
-plot_distribution(df_ipeds_sample, 'coa_grad_res', plot_title = 'Population distribution') +
-  plot_distribution(df_ipeds_sample, 'coa_grad_res', plot_title = 'Single sample distribution') +
-  plot_t_distribution(df_ipeds_sample, 'coa_grad_res', mu = 29000,
-                      plot_title = 'Sampling distribution under null', stacked = T) +
+# When including t-distribution plot, need to specify stacked = T
+plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Population distribution') +
+  plot_distribution(df_ipeds_sample$coa_grad_res, plot_title = 'Single sample distribution') +
+  plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000, stacked = T,
+                      plot_title = 'Sampling distribution under null') +
   plot_layout(ncol = 1)
 ```
