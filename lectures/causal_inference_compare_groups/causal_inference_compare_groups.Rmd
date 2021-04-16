@@ -859,7 +859,6 @@ We'll use our "user defined functions" (loaded above) to visually explain core c
   #(set sampling_dist= FALSE) to plot distribution of the variable (not the sampling distribution)
   plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = FALSE, plot_title = 'this is a variable distribution')
     
-     the sampling distribution
     #plot_distribution(df_ipeds_pop$tuitfee_grad_res, sampling_dist = T) # this works too
 
 # PLOT SAMPLING DISTRIBUTION OF TWO POPULATIONS     
