@@ -1,6 +1,6 @@
 ---
 title: "EDUC 152. Intro to quantitative research in education: Regression analysis"
-subtitle: "Statistical inference"
+subtitle: "Fundamentals of causal inference and comparing two groups"
 author: 
 date: 
 urlcolor: blue
@@ -778,55 +778,12 @@ df_stark %>% group_by(treatment) %>% summarize(
 )
 ```
 
+# Introduce user defined functions
 
-# Hypothesis testing about two populations
-
-This section explains how to test hypotheses about whether the population mean for one group is different from the population mean for another group
-
-- The approach we introduce is the approach used to estimate causal effects in experiments where there is one treatment group and one control group
-  - Using data from Tennessee STAR, we will test whether kindergarten students assigned to small class size (treatment) have higher reading scores than kindergarten students assigned to big class size (control)
-- The approach we introduce is also the approach used to compare population means of two groups in non experimental settings
-  - using a random sample of data from IPEDS (each observation is a university), we will test the null hypothesis that $H_0$ that population mean value of a variable for one group is the same as that of another group (e.g., population mean grad-school tuition+fees at private universities is the same as population mean grad-school tuition+fees at public universities)
-
-
-## Steps in hypothesis testing about two populations
-
-The steps in testing hypotheses about whether the population mean of a variable differs between two groups are the exact same as the steps for testing hypothesis about the population mean for a single group
-
-- so don't think of this as learning something new. think of this as applying something you already know, with a few modest variations
-
-<br>
-
-General steps in hypothesis testing:
-
-1. **Hypothesis**
-    - formally state your "null" and "alternative" hypothesis
-    - usually, you would decide on alpha level (rejection region) here
-1. **Assumptions**
-    - state assumptions that are relied upon by the statistical test you are using to test your hypothesis
-1. **Test statistic**
-    - Using some appropriate statistical analysis, calculate the "test statistic" necessary to test your hypothesis
-1. **p-value (means probability value)**
-    - calculate the probability of observing a test statistic as large or larger as the one you calculated
-1. **Alpha level/rejection region and conclusion**
-    - compare the p-value you you observed to the alpha level and make a conclusion about your hypothesis test
-
-
-## Conceptual understanding [MOST IMPORTANT!]
-
-We will use IPEDS data to provide conceptual understanding of hypothesis tests about comparing two means. 
-
-- Why? because for IPEDS we have data on the entire population, which is useful for explaining concepts
-- Key to conceputal understanding is realizing that hypothesis tests about comparing two means is conceptually the same as hypothesis tests about the value of a single population mean
-
-<br>
-
-### Introduce user defined functions
-
-We'll use our "user defined functions" (loaded above) to visually explain core concepts
+We'll use our "user defined functions" (loaded above) to visually explain concepts for hypothesis testing about population mean of two groups
 
 - these functions have been updated/modified as of 4/15/2021
-
+- try messing around with these functions on your own (e.g., try running them with a different variable and play around with function argument values)
 
 `plot_distribution()` function plots the distribution of variables
 
@@ -863,11 +820,78 @@ We'll use our "user defined functions" (loaded above) to visually explain core c
 
 # PLOT SAMPLING DISTRIBUTION OF TWO POPULATIONS     
     
-    plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', sampling_dist = F) # sampling_dist = F plots underlying variable  
+    # IPEDS data: tuitfee_grad_res by control (control=1 minus control=2)
+    plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control', group_cat = c(2, 1), sampling_dist = T, pop_labels = c('Public', 'Private'))
+  
+    # IPEDS data: tuitfee_grad_res by control (control=2 minus control=1)
+    plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(2, 1), sampling_dist = T, pop_labels = c('Private', 'Public'))
 ```
+
+`plot_t_distribution()` function generates sampling distribution (with t-test values) assuming null hypothesis is correct
+
+- syntax and default values: 
+  - `plot_t_distribution(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F)`
+
+```{r}
+# SINGLE POPULATION
+  
+  # H0: population mean of coa_grad_res is $29,000
+  # Ha: population mean of coa_grad_res is NOT $29,000 (two-sided test)
+  # Verdict: Fail to reject H0
+  t.test(df_ipeds_sample$coa_grad_res, mu = 29000)
+  plot_t_distribution(data_df = df_ipeds_sample, data_var = 'coa_grad_res', mu = 29000)
+    #plot_t_distribution(df_ipeds_sample$coa_grad_res, mu = 29000) # same as above
+  
+# TWO POPULATIONS  
+  
+  # H0: population mean of tuitfee_grad_res is equal for control=1 and control=2
+  # Ha: population means are NOT equal
+  # Verdict: Reject H0
+  t.test(formula = tuitfee_grad_res ~ control, data = df_ipeds_sample %>% filter(control %in% c(1,2)))
+    #t.test(formula = tuitfee_grad_res ~ control, data = df_ipeds_sample, subset = unclass(control) %in% c(1, 2))
+
+  # Here, the t-statistics line is off the grid
+  plot_t_distribution(data_df = df_ipeds_sample, data_var = 'tuitfee_grad_res',group_var = 'control', group_cat = c(1, 2), shade_pval = F)
+  #plot_t_distribution(data_df = df_ipeds_sample, data_var = 'tuitfee_grad_nres',group_var = 'control', group_cat = c(1, 2), shade_pval = F)
+  
+
+```
+
+# Hypothesis testing about two populations
+
+This section explains how to test hypotheses about whether the population mean for one group is different from the population mean for another group
+
+- The approach we introduce is the approach used to estimate causal effects in experiments where there is one treatment group and one control group
+  - Using data from Tennessee STAR, we will test whether kindergarten students assigned to small class size (treatment) have higher reading scores than kindergarten students assigned to big class size (control)
+- The approach we introduce is also the approach used to compare population means of two groups in non experimental settings
+  - using a random sample of data from IPEDS (each observation is a university), we will test the null hypothesis that $H_0$ that population mean value of a variable for one group is the same as that of another group (e.g., population mean grad-school tuition+fees at private universities is the same as population mean grad-school tuition+fees at public universities)
+
+## Steps in hypothesis testing about two populations
+
+The steps in testing hypotheses about whether the population mean of a variable differs between two groups are the exact same as the steps for testing hypothesis about the population mean for a single group
+
+- so don't think of this as learning something new. think of this as applying something you already know, with a few modest variations
+
+<br>
+
+General steps in hypothesis testing:
+
+1. **Hypothesis**
+    - formally state your "null" and "alternative" hypothesis
+    - usually, you would decide on alpha level (rejection region) here
+1. **Assumptions**
+    - state assumptions that are relied upon by the statistical test you are using to test your hypothesis
+1. **Test statistic**
+    - Using some appropriate statistical analysis, calculate the "test statistic" necessary to test your hypothesis
+1. **p-value (means probability value)**
+    - calculate the probability of observing a test statistic as large or larger as the one you calculated
+1. **Alpha level/rejection region and conclusion**
+    - compare the p-value you you observed to the alpha level and make a conclusion about your hypothesis test
 
 
 ## Null and alternative hypothesis
+
+**Hypothesis about reading score of score of "small" vs. "big" class size**
 
 null hypothesis ($H_0$)
 
@@ -879,10 +903,188 @@ Two-sided alternative hypothesis ($H_a$)
 - $H_0: \mu_{Y_{{treated}}} \ne \mu_{Y_{{control}}}$
 - (in words): $H_0:$ the population mean reading score for kindergarten students assigned to the treatment (small class size), $\mu_{Y_{{treated}}}$, is different than the population mean reading score for kindergarten students assigned to the control (big class size) ($\mu_{Y_{{control}}}$)
 
+<br>
 
-## Test statistic and p-value
+## Conceptual understanding [MOST IMPORTANT!]
 
-## Alpha level and conclusion
+We will use IPEDS data to provide conceptual understanding of hypothesis tests about comparing two means. 
+
+- Why? because for IPEDS we have data on the entire population, which is useful for explaining concepts
+- Key to conceputal understanding is realizing that hypothesis tests about comparing two means is conceptually the same as hypothesis tests about the value of a single population mean
+
+<br>
+
+**Hypothesis about nonresident grad tuition+fees at private vs. public universities**
+
+*note*: for private universities, nonresident price is the same as resident price
+
+null hypothesis ($H_0$)
+
+- $H_0: \mu_{Y_{{priv}}} = \mu_{Y_{{pub}}}$
+- (in words): $H_0:$ the population mean price of nonresident tuition+fees at private universities, $\mu_{Y_{{priv}}}$, is the same as population mean price of nonresident tuition+fees at public universities ($\mu_{Y_{{pub}}}$)
+
+Two-sided alternative hypothesis ($H_a$)
+
+- $H_0: \mu_{Y_{{priv}}} \ne \mu_{Y_{{pub}}}$
+- (in words): $H_0:$ the population mean price of nonresident tuition+fees at private universities, $\mu_{Y_{{priv}}}$, is not equal to the population mean price of nonresident tuition+fees at public universities ($\mu_{Y_{{pub}}}$)
+
+<br>
+
+Since IPEDS has data on the whole population, we can plot the population distributiion, distribution of single sample, and the sampling distribution
+
+- *note*: when testing hypothesis about a single population mean, we were concerned with the sampling distribution of the sample mean, $\bar{Y}$
+- when testing hypothesis about whether two population means are the same/different, we are concerned with the sampling distribution of the difference between sample means, ($\bar{Y}_{group2} - \bar{Y}_{group1}$)
+
+```{r}
+  plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(2, 1), sampling_dist = F, pop_labels = c('Private', 'Public'), plot_title = 'Population distribution') +
+  plot_distribution(data_df = df_ipeds_sample, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(2, 1), sampling_dist = F, pop_labels = c('Private', 'Public'), plot_title = 'Single sample distribution') +   plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(2, 1), sampling_dist = T, pop_labels = c('Private', 'Public'), plot_title = 'Sampling distribution') +
+  plot_layout(ncol = 1)
+```
+
+<br>
+
+Usually we cannot create the true sampling distribution because we do not have data on the entire population. So we test hypotheses about equality of two groups by creating the sampling distribution of the difference between sample means, ($\bar{Y}_{group1} - \bar{Y}_{group1}$) under the assumption that $H_0$ is true
+
+- that is, the sampling distribution under the assumption that $\mu_{Y_{{group2}}} = \mu_{Y_{{group1}}}$ or -- equivalently $\mu_{Y_{{group2}}} - \mu_{Y_{{group1}}}=0$)
+
+```{r}
+  plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(2, 1), sampling_dist = F, pop_labels = c('Private', 'Public'), plot_title = 'Population distribution') +
+  plot_distribution(data_df = df_ipeds_sample, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(2, 1), sampling_dist = F, pop_labels = c('Private', 'Public'), plot_title = 'Single sample distribution') +
+  plot_t_distribution(data_df = df_ipeds_sample, data_var = 'tuitfee_grad_res',group_var = 'control', group_cat = c(2, 1), shade_pval = F, stacked = T) +
+  plot_layout(ncol = 1)
+
+```
+
+Just as in hypothesis testing about a single population mean, the value of the t-statistic shows how many standard errors the observed point estimate is away from the null population parameter (i.e., $\mu_{Y_{{group2}}} - \mu_{Y_{{group1}}}==0$). 
+
+- since the sampling distribution assuming $H_0$ is normally distributed, it follows the "empirical rule" 
+- assuming $H_0$ is true, 95% of point estimates should fall within 2 standard errors (i.e., $-2<t<2$) 99% of point estimates would fell within 3 standard errors ((i.e., $-3<t<3$))
+- above, we got a t-statistic higher than 6. very unlikely to observe this if $H_0$ is true. therefore, we conclude that $H_0$ is not true.
+
+
+## Test statistic
+
+Going back to the Tennessee STAR example, let's restate $H_0$ and $H_a$
+
+null hypothesis ($H_0$)
+
+- $H_0: \mu_{Y_{{treated}}} = \mu_{Y_{{control}}}$
+- (in words): $H_0:$ the population mean reading score for kindergarten students assigned to the treatment (small class size), $\mu_{Y_{{treated}}}$, is the same as the population mean reading score for kindergarten students assigned to the control (big class size) ($\mu_{Y_{{control}}}$)
+
+Two-sided alternative hypothesis ($H_a$)
+
+- $H_0: \mu_{Y_{{treated}}} \ne \mu_{Y_{{control}}}$
+- (in words): $H_0:$ the population mean reading score for kindergarten students assigned to the treatment (small class size), $\mu_{Y_{{treated}}}$, is different than the population mean reading score for kindergarten students assigned to the control (big class size) ($\mu_{Y_{{control}}}$)
+
+<br>
+
+Recall the general formula for (any) test statistic
+
+$$ test\_statistic = \frac{sample\_estimate - value\_associated\_with\_H_0}{sample\_standard\_error}$$
+
+**Formula for test statistic about a single population mean**
+
+- $t = \frac{\bar{Y} - \mu_{Y0}}{\hat{\sigma}_{\bar{Y}}}$
+- where:
+  - $\hat{\sigma}_{Y}$ refers to sample standard deviation of variable $Y$
+  - $n$ refers to sample size
+  - sample standard error of the sample mean $= \hat{\sigma}_{\bar{Y}} = \frac{\hat{\sigma}_{Y}}{\sqrt{n}}$
+
+**Formula for test statistic about two population means**
+
+$t = \frac{(\bar{Y}_2 - \bar{Y}_1)- 0}{\hat{\sigma}_{\bar{Y}_2 - \bar{Y}_1}} = \frac{sample\_estimate - value\_associated\_with\_H_0}{sample\_standard\_error}$
+
+- $\bar{Y}_2$ is sample mean of group 2
+- $\bar{Y}_1$ is sample mean of group 1
+- $\hat{\sigma}_{\bar{Y}_2 - \bar{Y}_1}$ is the sample standard error of $\bar{Y}_2 - \bar{Y}_1$
+- *Note*: doesn't matter which group is group 1 and which is group 2
+
+<br>
+
+- $\hat{\sigma}_{\bar{Y}_2 - \bar{Y}_1}= \sqrt{\frac{\hat{\sigma}_{Y_1}^2}{n_1}+\frac{\hat{\sigma}_{Y_2}^2}{n_2}}$
+  - $n_1$ is the sample size of group 1
+  - $n_2$ is the sample size of group 2
+  - $\hat{\sigma}_{Y_1}^2$ is the sample standard deviation of group 1, squared
+  - $\hat{\sigma}_{Y_2}^2$ is the sample standard deviation of group 2, squared
+  
+<br>
+
+**Calculating t-statistic for Tennessee STAR example, by hand**
+
+```{r}
+df_stark %>% group_by(treatment) %>% 
+  summarize(
+    n = n(),
+    n_nonmiss = sum(!is.na(read)),
+    mean = mean(read, na.rm = TRUE),
+    sd = sd(read, na.rm = TRUE)
+  )
+
+# point estimate - H_0_value
+  (440.5474 - 434.7323) - 0
+  
+# standard error
+  sqrt(30.93590^2/2006 + 32.49738^2/1739)
+  
+# t-statistic = (point estimate - H_0_value)/(standard error)
+  (440.5474 - 434.7323)/sqrt(30.93590^2/2006 + 32.49738^2/1739)
+```
+
+Interpreting values
+
+- point estimate = `5.815`
+  - the sample mean reading score for treated (small class) students is 5.815 larger than the sample mean reading score for untreated (large class) students
+- standard error = `1.041`
+  - on average the point estimate $\bar{Y}_{treated}-\bar{Y}_{control}$ a single random sample is 1.04 away from the mean of point estimates from an infinite number of random samples
+- t-statistic = `5.584`
+  - under the assumption that $H_0$ is true (i.e., $\mu_{Y_{{treated}}} - \mu_{Y_{{control}}}=0$) the observed point estimate is 5.584 standard errors away from the value associated with $H_0$ (i.e., `0`)
+
+<br>
+
+**Calculating t-statistic for Tennessee STAR example using `t.test()` function**
+
+
+`t.test()` function, using the "formula" method
+
+- syntax:
+  - `t.test(formula, data, subset, mu=0, alternative = c("two.sided", "less", "greater"))`
+- selected arguments
+  - `formula`: follows form `formula = y_var ~ x_var`
+    - where `y_var` is the outcome variable and `x_var` is the variable that defines the two groups you are comparing
+  - `data`: data frame that contains variables named in `formula`
+  - `alternative`: whether you want two-sided or one-sided alternative hypothesis (default is `two.sided`)
+  - `subset`: subset of data to test (useful if `x_var` has more than two groups and you want to restrict test to those two groups)
+  - `mu`: value associated with null hypothesis (default is `0`)
+  
+```{r}
+#?t.test
+t.test(formula = read ~ treatment, mu = 0, data = df_stark)
+```
+## p-value and conclusion
+
+
+Definition of p-value (same as for hypothesis test about a single population mean)
+
+- Under the assumption if null hypothesis is true, the **p-value** is the probability of observing a point estimate as far away from the null hypothesis value as the one we observed
+
+Above, we observed a p-value of less than `0.01`, indicating it would be very unlikely to observe the pooint estimate we observed ($\bar{Y}_{treated}-\bar{Y}_{control}=$ `r round(mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE) - mean(df_stark$read[df_stark$treatment==0], na.rm = TRUE), digits = 2)`) under the assumption that $H_0$ is true
+
+<br>
+
+Below, we visually show the sampling distribution assuming $H_0$ is true
+
+- note that the blue dotted line associated with the t-statistic/p-value far exceeds the red dotted line, which is associated with the threshold for rejection of $H_0$
+```{r}
+plot_t_distribution(data_df = df_stark, data_var = 'read',group_var = 'treatment', group_cat = c(1, 0), shade_pval = F)
+```
+
+Let's use an alpha level of `.05` to determine whether to reject $H_0$
+
+Conclusion:
+
+- The p-value of 0.00 is less than the alpha level of `.05`. Therefore, we reject $H_0$ and accept $H_a$
+- In words, the population mean reading score for kindergarten students assigned to the treatment (small class size), $\mu_{Y_{{treated}}}$, is different than the population mean reading score for kindergarten students assigned to the control (big class size) ($\mu_{Y_{{control}}}$)
+- furthermore, we can say that the population mean reading score for students in the treatment is larger than the population mean reading score for students in the control group.
 
 
 # References
