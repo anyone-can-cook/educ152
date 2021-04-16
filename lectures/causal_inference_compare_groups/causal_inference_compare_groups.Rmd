@@ -497,7 +497,7 @@ The <span style="color:red;">Red</span> cells are _counterfactual_ outcomes, whi
 	
 **unit-level causal effect** ("true" causal effect)
 
-Unit causal effect: $\tau_i = Y_i(1) - (Y_0)$
+Unit causal effect: $\tau_i = Y_i(1) - Y_i(0)$
 
 - in words: the causal effect of the treatment for unit $i$ is the treated potential outcome ($Y_i(1)$) -- outcome had they received the treatment -- minus the untreated potential outcome ($Y_i(0)$) -- outcome had they not received the treatment
 - note that the unit causal effect differs for different subject
@@ -561,7 +561,7 @@ Conditional expectations refer to subgroup averages
 Using Tennesee STAR example: $Y_i$=achievement test score; $T_i$=treatment assignment (1="small" class, treated; 0="big" class, untreated); $Z_i$=parental education
 	
 - $E[Y_i|T_i=1]$
-	- Expected value of observed test score, given that student got internship
+	- Expected value of observed test score, given that student is assigned to the treatment ("small" class size)
 - $E[Y_i|Z_i >= baccalaureate\_degree"]$
 	- Expected value of observed test score, given that parents level of education is baccalaureate degree or higher
 - $E[Y_i(1)|T_i=1]$
@@ -688,7 +688,7 @@ Recall from Rubin's causal model:
 In experiments, treatment status is randomly assigned (if $T_i=1$ then treated; $T_i=0$ then untreated)
 
 - treatment assignment $T_i$ does not affect the value of the either the treated potential outcome ($Y_i(1)$) or the untreated potential outcome ($Y_i(0)$)
-- rather, treatment assignment $T_i$ just affects which treated potential outcome we observe
+- rather, treatment assignment $T_i$ just affects which potential outcome we observe
   - If $T_i=1$ then the observed outcome, $Y_i$, is the treated potential outcome, $Y_i(1)$
   - If $T_i=0$ then the observed outcome, $Y_i$, is the untreated potential outcome, $Y_i(0)$
 
@@ -755,7 +755,7 @@ Formula for the "difference in means" estimator of the average treatment effect
 Using data from Tenesse STAR experiment (data frame is `df_stark`), our estimate of ATE is the sample mean reading score for treated students (small class size) minus the sample mean reading score for untreated units (big class size)
 
 - sample mean reading score for treated units = `r round(mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE), digits=2)`
-- sample mean reading score for untreated units = `r round(mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE), digits=2)`
+- sample mean reading score for untreated units = `r round(mean(df_stark$read[df_stark$treatment==0], na.rm = TRUE), digits=2)`
 - difference between means estimate = `r round(mean(df_stark$read[df_stark$treatment==1], na.rm = TRUE) - mean(df_stark$read[df_stark$treatment==0], na.rm = TRUE), digits=2)`
 
 ```{r}
@@ -821,10 +821,10 @@ We'll use our "user defined functions" (loaded above) to visually explain concep
 # PLOT SAMPLING DISTRIBUTION OF TWO POPULATIONS     
     
     # IPEDS data: tuitfee_grad_res by control (control=1 minus control=2)
-    plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control', group_cat = c(2, 1), sampling_dist = T, pop_labels = c('Public', 'Private'))
+    plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control', group_cat = c(2, 1), sampling_dist = T, pop_labels = c('private', 'public'))
   
     # IPEDS data: tuitfee_grad_res by control (control=2 minus control=1)
-    plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(2, 1), sampling_dist = T, pop_labels = c('Private', 'Public'))
+    plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_var = 'control',group_cat = c(2, 1), sampling_dist = T, pop_labels = c('private', 'public'))
 ```
 
 `plot_t_distribution()` function generates sampling distribution (with t-test values) assuming null hypothesis is correct
@@ -914,19 +914,19 @@ We will use IPEDS data to provide conceptual understanding of hypothesis tests a
 
 <br>
 
-**Hypothesis about nonresident grad tuition+fees at private vs. public universities**
+**Hypothesis about resident grad tuition+fees at private vs. public universities**
 
-*note*: for private universities, nonresident price is the same as resident price
+*note*: for private universities, resident price is the same as resident price
 
 null hypothesis ($H_0$)
 
 - $H_0: \mu_{Y_{{priv}}} = \mu_{Y_{{pub}}}$
-- (in words): $H_0:$ the population mean price of nonresident tuition+fees at private universities, $\mu_{Y_{{priv}}}$, is the same as population mean price of nonresident tuition+fees at public universities ($\mu_{Y_{{pub}}}$)
+- (in words): $H_0:$ the population mean price of resident tuition+fees at private universities, $\mu_{Y_{{priv}}}$, is the same as population mean price of resident tuition+fees at public universities ($\mu_{Y_{{pub}}}$)
 
 Two-sided alternative hypothesis ($H_a$)
 
 - $H_0: \mu_{Y_{{priv}}} \ne \mu_{Y_{{pub}}}$
-- (in words): $H_0:$ the population mean price of nonresident tuition+fees at private universities, $\mu_{Y_{{priv}}}$, is not equal to the population mean price of nonresident tuition+fees at public universities ($\mu_{Y_{{pub}}}$)
+- (in words): $H_0:$ the population mean price of resident tuition+fees at private universities, $\mu_{Y_{{priv}}}$, is not equal to the population mean price of resident tuition+fees at public universities ($\mu_{Y_{{pub}}}$)
 
 <br>
 
