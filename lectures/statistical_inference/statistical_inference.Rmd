@@ -1809,13 +1809,4 @@ plot_distribution(df_ipeds_pop$tuitfee_grad_nres, plot_title = 'Population distr
   plot_layout(ncol = 1)
 ```
 
-# Fundamentals of causal inference
-
-text
-
-# Hypothesis testing about two populations
-
-text
-
-
-# References
+# Fuferences
