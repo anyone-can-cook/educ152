@@ -301,7 +301,7 @@ __Skill-based learning goals__
 ```
 Below is an overview of the tentative course schedule, which is subject to change at the discretion of the instructor. Topics may be cut if we need to devote more time to learning the most central topics. It is unlikely that additional topics will be added. The official course schedule, required reading, and optional reading will be posted on the [course website](https://anyone-can-cook.github.io/educ152).
 
-*We are still working out the problem set schedule and will post problem set due dates ASAP.* 
+**Problem set distribution and due dates are tentative and may be subject to change** 
 
 
 __UNIT 1: FUNDAMENTALS OF STATISTICAL INFERENCE__
@@ -333,7 +333,8 @@ __UNIT 1: FUNDAMENTALS OF STATISTICAL INFERENCE__
 
 - Lecture topics  
     - Fundamental concepts in causal inference; Why experiments work; Hypotheses comparing population means of two groups  
-    - *Asynchronous lecture posted **(Friday night on 4/16)***  
+    - *Asynchronous lecture posted **(Friday night on 4/16)***
+- **Problem set 2 distributed 04/23**
 
 __UNIT 2: FUNDAMENTALS OF REGRESSION__  
 
@@ -341,21 +342,24 @@ __UNIT 2: FUNDAMENTALS OF REGRESSION__
 
 - Lecture topics  
     - Introduction to bivariate regression 
-    - *Asynchronous lecture posted **(Friday night on 4/23)***    
+    - *Asynchronous lecture posted **(Friday night on 4/23)***  
+- **Problem set 2 due 04/30**
 
 
 <span style="background-color: #CC76AD"> <b>WEEK 6 (05/07/21) </b></span>
 
 - Lecture topics  
     - Prediction/OLS prediction line; Measures of model fit
-    - *Asynchronous lecture posted **(Friday night on 4/30)***    
+    - *Asynchronous lecture posted **(Friday night on 4/30)*** 
+- **Problem set 3 distributed 05/07**
 
 
 <span style="background-color: #CC76AD"> <b>WEEK 7 (05/14/21) </b></span>
 
 - Lecture topics  
     - Hypothesis testing and confidence intervals about Bhat; (also, interpretation of Bhat)
-    - *Asynchronous lecture posted **(Friday night on 5/7)***   
+    - *Asynchronous lecture posted **(Friday night on 5/7)***
+- **Problem set 3 due 05/14**
 
 
 <span style="background-color: #CC76AD"> <b>WEEK 8 (05/21/21) </b></span>
@@ -369,7 +373,8 @@ __UNIT 2: FUNDAMENTALS OF REGRESSION__
   
 - Lecture topics  
     - Reading and assessing research that uses regression  
-    - *Asynchronous lecture posted **(Friday night on 5/21)***   
+    - *Asynchronous lecture posted **(Friday night on 5/21)*** 
+- **Final Problem set distributed 05/28**
 
 
 <span style="background-color: #CC76AD"> <b>WEEK 10 (06/04/21) </b></span>
