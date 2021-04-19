@@ -44,6 +44,22 @@ options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll rig
 
 ## Libraries, data, functions
 
+messing around w/ ipeds panel data to merge right stuff w/ scorecard data
+
+TO DO NEXT:
+
+- MERGE SCORECARD DATA WITH PANEL DATA TO CREATE ANALYSIS DATASET FOR LECTURE
+- THEN WORK THROUGH LECTURE, REPLACING GSS EXAMPLES WITH YOUR EXAMPLES
+- ADD CODE CHUNKS WHERE RELEVANT (RATHER THAN ONLY AT THE END)
+- LOOK AT KARINA'S R SCRIPT FOR CODE TO USE
+```{r}
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+
+panel_data %>% count(year)
+
+panel_data %>% glimpse()
+```
+
 
 ```{r}
 # uncomment below line to remove all objects
@@ -64,12 +80,72 @@ library(patchwork)
 
 source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
 
+
+##########
+########## SCORECARD DATA ON DEBT AND EARNINGS
+##########
+
+# load scorecard dataset from course website url
+
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel_labelled.RData'))
+
+df_debt_earn_panel_labelled %>% glimpse()
+  
+df_scorecard <- df_debt_earn_panel_labelled %>%
+    # keep most recent year of data
+    filter(field_ay == '2017-18') %>%
+    # keep master's degrees
+    filter(credlev == 5) %>%
+    # carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity
+    filter(c15basic %in% c(15,16,17,18,19,20)) %>%
+    # drop "parent plus" loan variables and other vars we won't use in this lecture
+    select(-contains('_pp'),-contains('_any'),-field_ay,-st_fips,-zip,-longitude,-latitude,-locale2,-highdeg,-accredagency,-relaffil,-hbcu,-annhi,-tribal,-aanapii,-hsi,-nanti,-main,-numbranch) %>%
+    # create variable for broad field of degree (e.g., education, business)
+    mutate(cipdig2 = str_sub(string = cipcode, start = 1, end = 2)) %>%
+    # shorten variable cipdesc to make it more suitable for printing
+    mutate(cipdesc = str_sub(string = cipdesc, start = 1, end = 50)) %>%
+    # re-order variables
+    relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,city,cipdig2)
+
+# "glimpse" data frame
+df_scorecard %>% glimpse()
+
+# For debt and earnings variables, convert from character to numeric variables (which replaces "PrivacySuppressed" values with NA values)
+df_scorecard <- df_scorecard %>%
+  mutate(
+    debt_all_stgp_eval_n = as.numeric(debt_all_stgp_eval_n),
+    debt_all_stgp_eval_mean = as.numeric(debt_all_stgp_eval_mean),
+    debt_all_stgp_eval_mdn = as.numeric(debt_all_stgp_eval_mdn),
+    debt_all_stgp_eval_mdn10yrpay = as.numeric(debt_all_stgp_eval_mdn10yrpay),
+    earn_count_wne_hi_1yr = as.numeric(earn_count_wne_hi_1yr),
+    earn_mdn_hi_1yr = as.numeric(earn_mdn_hi_1yr),
+    earn_count_wne_hi_2yr = as.numeric(earn_count_wne_hi_2yr),
+    earn_mdn_hi_2yr = as.numeric(earn_mdn_hi_2yr)
+  ) 
+
+# add variable label to variable cipdig2
+  attr(df_scorecard[['cipdig2']], which = 'label') <- 'broad degree field code = 2-digit classification of instructional programs (CIP) degree code'
+
+# add variable label attribute back to debt and earnings variables
+  for(v in c('debt_all_stgp_eval_n','debt_all_stgp_eval_mean','debt_all_stgp_eval_mdn','debt_all_stgp_eval_mdn10yrpay','earn_count_wne_hi_1yr','earn_mdn_hi_1yr','earn_count_wne_hi_2yr','earn_mdn_hi_2yr','cipdesc')) {
+    
+    #writeLines(str_c('object v=', v))
+    #writeLines(attr(df_debt_earn_panel_labelled[[v]], which = 'label'))
+    
+    attr(df_scorecard[[v]], which = 'label') <- attr(df_debt_earn_panel_labelled[[v]], which = 'label')
+  }
+
+df_scorecard %>% glimpse()
+
+
 ##########
 ########## IPEDS
 ##########
 
 # Load ipeds dataset from course website url
 load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+
+panel_data %>% count(year)
 
 # Create ipeds data frame with fewer variables/observations
 df_ipeds_pop <- panel_data %>%
