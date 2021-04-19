@@ -373,7 +373,7 @@ Major assumption: After including [time-varying] covariates, there are no omitte
 2. Observational (i.e., non-experimental) "selection on observables" designs
 	- These designs control for variables that affect outcome and treatment. 
 	- Multivariate regression
-	- Matching estimatros (e.g., propensity score matching)
+	- Matching estimators (e.g., propensity score matching)
 3. Observational "natural experiments" designs
 	- These designs utilize experimental variation in X in real world settings (e.g., access to school determined by lottery)
 	- Regression discontinuity
@@ -741,7 +741,7 @@ In a random assignment experiment, we can calculate the population average treat
 
 - $ATE=\tau=E[Y_i(1)-Y_i(0)]=  E[Y_i(1)] - E[Y_i(0)] = E[Y_i(1)|T_i=1]-E[Y_i(0)|T_i=0]= E[Y_i|T_i=1] - E[Y_i|T_i=0]$
 
-However, knowing expected values -- e.g., $E[Y_i|T_i=1]$, the expected value of $Y_i$ amongst treated units -- requires taking an infinute number of samples
+However, knowing expected values -- e.g., $E[Y_i|T_i=1]$, the expected value of $Y_i$ amongst treated units -- requires taking an infinite number of samples
 
 - In real research, we are only able to randomly assign a single sample
 - Using data from that single sample we calculate an estimate of the average treatment effect
@@ -886,7 +886,7 @@ General steps in hypothesis testing:
 1. **p-value (means probability value)**
     - calculate the probability of observing a test statistic as large or larger as the one you calculated
 1. **Alpha level/rejection region and conclusion**
-    - compare the p-value you you observed to the alpha level and make a conclusion about your hypothesis test
+    - compare the p-value you observed to the alpha level and make a conclusion about your hypothesis test
 
 
 ## Null and alternative hypothesis
@@ -916,7 +916,7 @@ We will use IPEDS data to provide conceptual understanding of hypothesis tests a
 
 **Hypothesis about resident grad tuition+fees at private vs. public universities**
 
-*note*: for private universities, resident price is the same as resident price
+*note*: for private universities, resident price is the same as non-resident price
 
 null hypothesis ($H_0$)
 
@@ -943,7 +943,7 @@ Since IPEDS has data on the whole population, we can plot the population distrib
 
 <br>
 
-Usually we cannot create the true sampling distribution because we do not have data on the entire population. So we test hypotheses about equality of two groups by creating the sampling distribution of the difference between sample means, ($\bar{Y}_{group1} - \bar{Y}_{group1}$) under the assumption that $H_0$ is true
+Usually we cannot create the true sampling distribution because we do not have data on the entire population. So we test hypotheses about equality of two groups by creating the sampling distribution of the difference between sample means, ($\bar{Y}_{group2} - \bar{Y}_{group1}$) under the assumption that $H_0$ is true
 
 - that is, the sampling distribution under the assumption that $\mu_{Y_{{group2}}} = \mu_{Y_{{group1}}}$ or -- equivalently $\mu_{Y_{{group2}}} - \mu_{Y_{{group1}}}=0$)
 
