@@ -209,8 +209,56 @@ read_scorecard <- function(file_name) {
   
   
   load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel.RData'))
+
   
+  
+###################################    
+# OZAN'S NOTES TO SELF ON WHICH YEAR OF IPEDS TUITION PRICE DATA TO MERGE TO WHICH YEAR OF SCORECARD DATA
+###################################
+
+  # SCORECARD DATA
+    # df_debt_earn_panel_labelled, field_ay=='2017-18' refers to "FieldOfStudyData1617_1718"
+    # terms scorecard uses to refer to year/time period
+      # Acad yr	Academic Year; differs by institution, but generally the period from September to June (e.g., AcadYr 2013-14 = 9/1/2013 - 5/31/2014)
+      # AY	Award Year (e.g. AY 2013-14 = 7/1/2013-6/30/2014)
+      # CY	Calendar Year (e.g. CY 2014 = 1/1/14-12/31/14)
+      # DCY	IPEDS Data Collection Year (e.g., DCY2013-14 = the 2013-14 IPEDS collection)
+
+    # variables
+      # ipedscount1 = Number of awards to all students in year 1 of the pooled debt cohort
+        # for scorecard "FieldOfStudyData1617_1718" data, this refers to degrees granted in AY 2016-17 reported in IPEDS DCY2017-18
+      # ipedscount2 = number of awards to all students in year 2 of the pooled debt cohort
+        # for scorecard "FieldOfStudyData1617_1718" data, this refers to degrees granted in AY 2017-18 reported in IPEDS DCY2018-19
+
+    # assumptions about relationship between MA degree awards and when students started MA program
+      # Most (full-time) MA programs take one or two academic years to complete
+
+      # Assuming two years for MA degree completion:
+
+        # students awarded MA degrees in AY 2016-17 (e.g., May 2017) initially enrolled in Fall 2015 of 2015-16 academic year (year 1 = 2015-16; year 2 = 2016-17)
+          # first paid tuition in fall 2015
+        # students awarded MA degrees in AY 2017-18 (e.g., May 2018) initially enrolled in Fall 2016 of 2016-17 academic year (year 1 = 2016-17; year 2 = 2017-18)
+          # first paid tuition in fall 2016
+
+  # IPEDS DATA
+
+    # if you are matching IPEDS tuition price to ipedscount1 of "FieldOfStudyData1617_1718" data
+      # choose tuition price from fall 2015 of 2015-16 academic year
+        # file ic2015 provides tuition price for 2015-16 academic year
+        # in df_ipeds_panel data frame, this is associated with year==2015
+    # if you are matching IPEDS tuition price to ipedscount2  of "FieldOfStudyData1617_1718" data
+      # choose tuition price from fall 2016 of 2016-17 academic year
+        # file ic2016 provides tuition price for 2016-17 academic year
+        # in df_ipeds_panel data frame, this is associated with year==2016
+
+  # DECISION
+    # assume we are matching IPEDS tuition price to ipedscount2  of "FieldOfStudyData1617_1718" data
+    # therefore: filter(year==2016)
+
+    
+###################################  
 # investigate analysis dataset
+###################################
   
   # vars that uniquely identify
   df_debt_earn_panel %>% group_by(opeid6,unitid,cipcode,credlev,field_ay) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
@@ -226,6 +274,7 @@ read_scorecard <- function(file_name) {
     %>%
   
   sc_dict('ccbasic')
+    
 # investigate which obs from table x = df_field_panel did not have a matching value from table y = df_inst_somevars
   
   field_no_inst <- df_field_panel %>% filter(main ==1) %>%

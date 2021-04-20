@@ -41,29 +41,66 @@ options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll rig
 
 # Introduction
 
+"Bivariate regression" refers to regression models with two variables, a $Y$ variable ("dependent variable" or "outcome") and a single $X$ variable ("independent variable")
+
+<br>
+
+"Multivariate regression" refers to regression models with a $Y$ variable and two or more $X$ variables
+
+<br>
+
+This lecture -- which we will teach over several weeks -- teaches the fundamental concepts of bivariate regression. All of these concepts will be the same when we move on to multivariate regression in the subsequent lecture
+
+
 
 ## Libraries, data, functions
 
-messing around w/ ipeds panel data to merge right stuff w/ scorecard data
 
-TO DO NEXT:
+<details><summary><b>CLICK HERE FOR OZAN'S NOTES TO SELF ON WHICH YEAR OF IPEDS TUITION PRICE DATA TO MERGE TO WHICH YEAR OF SCORECARD DATA</b></summary>
 
-- MERGE SCORECARD DATA WITH PANEL DATA TO CREATE ANALYSIS DATASET FOR LECTURE
-- THEN WORK THROUGH LECTURE, REPLACING GSS EXAMPLES WITH YOUR EXAMPLES
-- ADD CODE CHUNKS WHERE RELEVANT (RATHER THAN ONLY AT THE END)
-- LOOK AT KARINA'S R SCRIPT FOR CODE TO USE
-```{r}
-load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+ SCORECARD DATA
+ 
+ - df_debt_earn_panel_labelled, field_ay=='2017-18' refers to "FieldOfStudyData1617_1718"
+ - terms scorecard uses to refer to year/time period
+   - Acad yr	Academic Year; differs by institution, but generally the period from September to June (e.g., AcadYr 2013-14 = 9/1/2013 - 5/31/2014)
+   - AY	Award Year (e.g. AY 2013-14 = 7/1/2013-6/30/2014)
+   - CY	Calendar Year (e.g. CY 2014 = 1/1/14-12/31/14)
+   - DCY	IPEDS Data Collection Year (e.g., DCY2013-14 = the 2013-14 IPEDS collection)
+- variables
+  - ipedscount1 = Number of awards to all students in year 1 of the pooled debt cohort
+    - for scorecard "FieldOfStudyData1617_1718" data, this refers to degrees granted in AY 2016-17 reported in IPEDS DCY2017-18
+  - ipedscount2 = number of awards to all students in year 2 of the pooled debt cohort
+    - for scorecard "FieldOfStudyData1617_1718" data, this refers to degrees granted in AY 2017-18 reported in IPEDS DCY2018-19
+- assumptions about relationship between MA degree awards and when students started MA program
+  - Most (full-time) MA programs take one or two academic years to complete
+  - Assuming two years for MA degree completion:
+    - students awarded MA degrees in AY 2016-17 (e.g., May 2017) initially enrolled in Fall 2015 of 2015-16 academic year (year 1 = 2015-16; year 2 = 2016-17)
+      - first paid tuition in fall 2015
+    - students awarded MA degrees in AY 2017-18 (e.g., May 2018) initially enrolled in Fall 2016 of 2016-17 academic year (year 1 = 2016-17; year 2 = 2017-18)
+      - first paid tuition in fall 2016
 
-panel_data %>% count(year)
+IPEDS DATA
 
-panel_data %>% glimpse()
-```
+- if you are matching IPEDS tuition price to ipedscount1 of "FieldOfStudyData1617_1718" data
+  - choose tuition price from fall 2015 of 2015-16 academic year
+    - file ic2015 provides tuition price for 2015-16 academic year
+    - in df_ipeds_panel data frame, this is associated with year==2015
+- if you are matching IPEDS tuition price to ipedscount2  of "FieldOfStudyData1617_1718" data
+  - choose tuition price from fall 2016 of 2016-17 academic year
+    - file ic2016 provides tuition price for 2016-17 academic year
+    - in df_ipeds_panel data frame, this is associated with year==2016
+
+DECISION
+
+- assume we are matching IPEDS tuition price to ipedscount2  of "FieldOfStudyData1617_1718" data
+- therefore: filter(year==2016)
+
+</details> 
 
 
 ```{r}
 # uncomment below line to remove all objects
-  #rm(list = ls())
+  rm(list = ls())
 
 # Libraries
   #install.packages('tidyverse') # if you haven't installed already
@@ -75,11 +112,101 @@ library(labelled) # load labelled package package
 library(patchwork)
 
 ##########
-########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
+########## TENNESSEE STAR DATA
 ##########
 
-source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
+# load star data
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/star/star_panel_data.RData'))
 
+#df_star_panel %>% glimpse()
+
+# create data frame for STAR experiment, keeping only kindergarten
+df_stark <- df_star_panel %>% 
+  # keep only kindergarten year
+  filter(grade ==1) %>% 
+  # keep only observations with non-missing value for reading score
+  filter(!is.na(read)) %>%
+  # keep only observations with non-missing values for treatment assignment
+  filter(!is.na(star)) %>%
+  # drop observations where treatment status is regular+aide
+  filter(star !=3) %>%
+  # keep selected variables
+  select(id,grade,star,read,gender,ethnicity,lunch,school,degree,experience) %>%
+  # create a variable "treatment" that equals 1 if student receives treatment (small class) and equals 0 otherwise
+  mutate(
+    treatment = if_else(star==2,1,0)
+  )
+
+df_stark %>% glimpse()
+
+rm(df_star_panel) # comment this line out if you want to keep data frame df_star_panel
+
+##########
+########## IPEDS
+##########
+
+# Load ipeds dataset from course website url
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+
+# Create ipeds data frame with fewer variables/observations
+df_ipeds_pop <- panel_data %>%
+  # keep IPEDS tuition data from fall of which year (e.g., fall 2016 is price for programs in 2016-17 academic year)
+  filter(year == 2016) %>%
+  # which universities to keep:
+    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities (18,19,20)
+  filter(c15basic %in% c(15,16,17,18,19,20)) %>%
+  # which variables to keep
+  select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
+         tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
+         isprof3,ispfee3,osprof3,ospfee3, # avg tuition and fees for MD, in-state and out-of-state
+         isprof9,ispfee9,osprof9,ospfee9, # avg tuition and fees for Law, in-state and out-of-state
+         chg4ay3,chg7ay3,chg8ay3) %>% # [undergraduate] books+supplies; off-campus (not with family) room and board; off-campus (not with family) other expenses
+  # rename variables; syntax <new_name> = <old_name>
+  rename(region = obereg, # revion
+         tuit_grad_res = tuition6, fee_grad_res = fee6, tuit_grad_nres = tuition7, fee_grad_nres = fee7, # grad
+         tuit_md_res = isprof3, fee_md_res = ispfee3, tuit_md_nres = osprof3, fee_md_nres = ospfee3, # md
+         tuit_law_res = isprof9, fee_law_res = ispfee9, tuit_law_nres = osprof9, fee_law_nres = ospfee9, # law
+         books_supplies = chg4ay3, roomboard_off = chg7ay3, oth_expense_off = chg8ay3) %>% # [undergraduate] expenses
+  # create measures of tuition+fees
+  mutate(
+    tuitfee_grad_res = tuit_grad_res + fee_grad_res, # graduate, state resident
+    tuitfee_grad_nres = tuit_grad_nres + fee_grad_nres, # graduate, non-resident
+    tuitfee_md_res = tuit_md_res + fee_md_res, # MD, state resident
+    tuitfee_md_nres = tuit_md_nres + fee_md_nres, # MD, non-resident
+    tuitfee_law_res = tuit_law_res + fee_law_res, # Law, state resident
+    tuitfee_law_nres = tuit_law_nres + fee_law_nres) %>% # Law, non-resident  
+  # create measures of cost-of-attendance (COA) as the sum of tuition, fees, book, living expenses
+  mutate(
+    coa_grad_res = tuit_grad_res + fee_grad_res + books_supplies + roomboard_off + oth_expense_off, # graduate, state resident
+    coa_grad_nres = tuit_grad_nres + fee_grad_nres + books_supplies + roomboard_off + oth_expense_off, # graduate, non-resident
+    coa_md_res = tuit_md_res + fee_md_res + books_supplies + roomboard_off + oth_expense_off, # MD, state resident
+    coa_md_nres = tuit_md_nres + fee_md_nres + books_supplies + roomboard_off + oth_expense_off, # MD, non-resident
+    coa_law_res = tuit_law_res + fee_law_res + books_supplies + roomboard_off + oth_expense_off, # Law, state resident
+    coa_law_nres = tuit_law_nres + fee_law_nres + books_supplies + roomboard_off + oth_expense_off) # %>% # Law, non-resident    
+  # [COMMENTED THIS OUT] keep only observations that have non-missing values for the variable coa_grad_res
+    # this does cause us to lose some interesting universities, but doing this will eliminate some needless complications with respect to learning core concepts about statistical inference
+  #filter(!is.na(coa_grad_res))
+
+# Add variable labels to the tuit+fees variables and coa variables
+  # tuition + fees variables
+    var_label(df_ipeds_pop[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
+    
+  # COA variables
+    var_label(df_ipeds_pop[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+
+df_ipeds_pop %>% glimpse()
+
+rm(panel_data) # comment this line out if you want to keep data frame panel_data
 
 ##########
 ########## SCORECARD DATA ON DEBT AND EARNINGS
@@ -89,23 +216,22 @@ source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/u
 
 load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel_labelled.RData'))
 
-df_debt_earn_panel_labelled %>% glimpse()
-  
 df_scorecard <- df_debt_earn_panel_labelled %>%
     # keep most recent year of data
     filter(field_ay == '2017-18') %>%
     # keep master's degrees
     filter(credlev == 5) %>%
     # carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity
-    filter(c15basic %in% c(15,16,17,18,19,20)) %>%
+      # note: variable ccbasic from scorecard data is 2015 carnegie classification
+    filter(ccbasic %in% c(15,16,17,18,19,20)) %>%
     # drop "parent plus" loan variables and other vars we won't use in this lecture
-    select(-contains('_pp'),-contains('_any'),-field_ay,-st_fips,-zip,-longitude,-latitude,-locale2,-highdeg,-accredagency,-relaffil,-hbcu,-annhi,-tribal,-aanapii,-hsi,-nanti,-main,-numbranch) %>%
+    select(-contains('_pp'),-contains('_any'),-field_ay,-st_fips,-zip,-longitude,-latitude,-locale2,-highdeg,-accredagency,-relaffil,-hbcu,-annhi,-tribal,-aanapii,-hsi,-nanti,-main,-numbranch,-control) %>%
     # create variable for broad field of degree (e.g., education, business)
     mutate(cipdig2 = str_sub(string = cipcode, start = 1, end = 2)) %>%
     # shorten variable cipdesc to make it more suitable for printing
     mutate(cipdesc = str_sub(string = cipdesc, start = 1, end = 50)) %>%
     # re-order variables
-    relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,city,cipdig2)
+    relocate(opeid6,unitid,instnm,ccbasic,stabbr,city,cipdig2)
 
 # "glimpse" data frame
 df_scorecard %>% glimpse()
@@ -137,173 +263,88 @@ df_scorecard <- df_scorecard %>%
 
 df_scorecard %>% glimpse()
 
-
+rm(df_debt_earn_panel_labelled) # comment this line out if you want to keep data frame df_debt_earn_panel_labelled
+#earn_mdn_hi_2yr
 ##########
-########## IPEDS
+########## LEFT JOIN SCORECARD AND IPEDS DATA
 ##########
 
-# Load ipeds dataset from course website url
-load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+df_scorecard %>% glimpse()
 
-panel_data %>% count(year)
+# investigate data structure
 
-# Create ipeds data frame with fewer variables/observations
-df_ipeds_pop <- panel_data %>%
-  # keep data from fall 2019
-  filter(year == 2019) %>%
-  # which universities to keep:
-    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities (18,19,20)
-  filter(c15basic %in% c(15,16,17,18,19,20)) %>%
-  # which variables to keep
-  select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
-         tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
-         isprof3,ispfee3,osprof3,ospfee3, # avg tuition and fees for MD, in-state and out-of-state
-         isprof9,ispfee9,osprof9,ospfee9, # avg tuition and fees for Law, in-state and out-of-state
-         chg4ay3,chg7ay3,chg8ay3) %>% # [undergraduate] books+supplies; off-campus (not with family) room and board; off-campus (not with family) other expenses
-  # rename variables; syntax <new_name> = <old_name>
-  rename(region = obereg, # revion
-         tuit_grad_res = tuition6, fee_grad_res = fee6, tuit_grad_nres = tuition7, fee_grad_nres = fee7, # grad
-         tuit_md_res = isprof3, fee_md_res = ispfee3, tuit_md_nres = osprof3, fee_md_nres = ospfee3, # md
-         tuit_law_res = isprof9, fee_law_res = ispfee9, tuit_law_nres = osprof9, fee_law_nres = ospfee9, # law
-         books_supplies = chg4ay3, roomboard_off = chg7ay3, oth_expense_off = chg8ay3) %>% # [undergraduate] expenses
-  # create measures of tuition+fees
-  mutate(
-    tuitfee_grad_res = tuit_grad_res + fee_grad_res, # graduate, state resident
-    tuitfee_grad_nres = tuit_grad_nres + fee_grad_nres, # graduate, non-resident
-    tuitfee_md_res = tuit_md_res + fee_md_res, # MD, state resident
-    tuitfee_md_nres = tuit_md_nres + fee_md_nres, # MD, non-resident
-    tuitfee_law_res = tuit_law_res + fee_law_res, # Law, state resident
-    tuitfee_law_nres = tuit_law_nres + fee_law_nres) %>% # Law, non-resident  
-  # create measures of cost-of-attendance (COA) as the sum of tuition, fees, book, living expenses
-  mutate(
-    coa_grad_res = tuit_grad_res + fee_grad_res + books_supplies + roomboard_off + oth_expense_off, # graduate, state resident
-    coa_grad_nres = tuit_grad_nres + fee_grad_nres + books_supplies + roomboard_off + oth_expense_off, # graduate, non-resident
-    coa_md_res = tuit_md_res + fee_md_res + books_supplies + roomboard_off + oth_expense_off, # MD, state resident
-    coa_md_nres = tuit_md_nres + fee_md_nres + books_supplies + roomboard_off + oth_expense_off, # MD, non-resident
-    coa_law_res = tuit_law_res + fee_law_res + books_supplies + roomboard_off + oth_expense_off, # Law, state resident
-    coa_law_nres = tuit_law_nres + fee_law_nres + books_supplies + roomboard_off + oth_expense_off) %>% # Law, non-resident    
-  # keep only observations that have non-missing values for the variable coa_grad_res
-    # this does cause us to lose some interesting universities, but doing this will eliminate some needless complications with respect to learning core concepts about statistical inference
-  filter(!is.na(coa_grad_res))
+  # df_scorecard; these vars uniquely identify observations
+    df_scorecard %>% group_by(opeid6,cipcode) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
 
-# Add variable labels to the tuit+fees variables and coa variables
-  # tuition + fees variables
-    var_label(df_ipeds_pop[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
-    var_label(df_ipeds_pop[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
+  # df_ipeds_pop: these vars uniquely identify observations
+    df_ipeds_pop %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
     
-  # COA variables
-    var_label(df_ipeds_pop[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-    var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
-
-df_ipeds_pop %>% glimpse()
-
-
-##########
-########## Create data frame of generated variables, with each variable meant to represent the entire population
-##########
-
-
-num_obs <- 10000
-
-# Generate normal distribution w/ custom mean and sd
-set.seed(124)
-norm_dist <- rnorm(n = num_obs, mean = 50, sd = 5)
-
-# Generate right-skewed distribution
-set.seed(124)
-rskew_dist <- rbeta(n = num_obs, shape1 = 2, shape2 = 5)
-
-# Generate left-skewed distribution
-set.seed(124)
-lskew_dist <- rbeta(n = num_obs, shape1 = 5, shape2 = 2)
-
-# Generate standard normal distribution (default is mean = 0 and sd = 1)
-set.seed(124)
-stdnorm_dist <- rnorm(n = num_obs, mean = 0, sd = 1)  # equivalent to rnorm(10)
-
-# Create dataframe
-df_generated_pop <- data.frame(norm_dist, rskew_dist, lskew_dist, stdnorm_dist)
-
-# drop individual objects associated with each variable
-rm(norm_dist,rskew_dist,lskew_dist,stdnorm_dist)
-rm(num_obs)
-
-
-##########
-########## Create sample versions of generated population data frame and IPEDS population data frame
-##########
-
-# create sample version of our generated data
-  set.seed(124) # set seed so that everyone ends up with the same random sample
+# join
+  # start with df_ipeds_pop, keep selected variables; then do do a right_join (i.e., keep obs in y table)
+    
+  df_score_ipeds <- df_ipeds_pop %>% 
+    select(-instnm,-opeid6,-opeid,-c15basic,-region,-locale,-city,-stabbr,-zip) %>% mutate(one=1) %>%
+    right_join(y=df_scorecard, by = 'unitid')
+     #df_score_ipeds %>% glimpse()
   
-  df_generated_sample <- df_generated_pop %>% sample_n(size = 200)
-  df_generated_sample %>% glimpse()
-
-
-# create sample version of our ipeds data
-
-  set.seed(124) # set seed so that everyone ends up with the same random sample
+  # 52 unitids from scorecard that don't have a match in ipeds
+    # could be due to differences in year; decision: drop thiese
+    df_score_ipeds %>% filter(is.na(one)) %>% count(unitid) # 52 unitids from scorecard data with missing IPEDS data
+    df_score_ipeds %>% filter(is.na(one)) %>% count(instnm) # 52 unitids from scorecard data with missing IPEDS data
   
-  df_ipeds_sample <- df_ipeds_pop %>% sample_n(size = 200) 
+    
+    
+  df_score_ipeds <- df_score_ipeds %>% 
+    # drop unitids from scorecard that don't merge to ipeds data (on tuition)
+    filter(!is.na(one)) %>% 
+    # drop observations that don't have mean debt data
+    filter(!is.na(debt_all_stgp_eval_mean)) %>% 
+    # drop for-profits
+    filter(control !=3) %>%
+    # drop tuition/coa vars for law and md
+    select(-one,-contains('law'),-contains('md_')) %>%
+    relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,region,city,locale,cipdig2,cipcode,cipdesc,credlev,creddesc,
+      contains('ipeds'),starts_with('debt'),starts_with('earn'))
+    
+  df_score_ipeds %>% glimpse()
 
-##########
-########## STAR DATA
-##########
+rm(df_ipeds_pop) # comment this line out if you want to keep ipeds data frame
+rm(df_scorecard) # comment this line out if you want to keep scorecard data frame
 
-# load star data
-load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/star/star_panel_data.RData'))
-
-#df_star_panel %>% glimpse()
-
-# create data frame for STAR experiment, keeping only kindergarten
-df_stark <- df_star_panel %>% 
-  # keep only kindergarten year
-  filter(grade ==1) %>% 
-  # keep only observations with non-missing value for reading score
-  filter(!is.na(read)) %>%
-  # keep only observations with non-missing values for treatment assignment
-  filter(!is.na(star)) %>%
-  # drop observations where treatment status is regular+aide
-  filter(star !=3) %>%
-  # keep selected variables
-  select(id,grade,star,read,gender,ethnicity,lunch,school,degree,experience) %>%
-  # create a variable "treatment" that equals 1 if student receives treatment (small class) and equals 0 otherwise
-  mutate(
-    treatment = if_else(star==2,1,0)
-  )
-
-
-df_stark %>% glimpse()
+# Investigate analysis data frame `df_score_ipeds`  
+  df_score_ipeds %>% glimpse()
+  
+  # data structure: variables that uniquely identify obs
+    df_score_ipeds %>% group_by(opeid6,cipcode) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+  
+  # number of observations (universities) for each 4-digit cip code (degree code)
+    #df_score_ipeds %>% count(cipcode)
+    df_score_ipeds %>% filter(cipcode=='4407') %>% count(cipcode) # social work
+  
+# create data frame that only contains observations for MAs in social work; filter(cipcode=='4407')
+  df_socialwork <- df_score_ipeds %>% filter(cipcode=='4407')
+  
+  # one observation per opeid6
+  df_socialwork %>% group_by(opeid6) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+  
+  # also, one observation per unitid
+  df_socialwork %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+  
 ```
 
-Investigate STAR data
 
-- basically, we want to know if Kindergarten students randomly assigned to "small" class size (variable `treatment` equals `1`) have higher values of reading test score than students randomly assigned to "large" class size (variable `treatment` equals `0`)
+
+
+
+
 ```{r}
-# frequency count of treatment variable
-  #df_stark %>% count(star)
-  #df_stark %>% count(star) %>% as_factor()
-df_stark %>% count(treatment)
 
-# calculate mean value of reading score separately for treated and nontreated
-df_stark %>% group_by(treatment) %>% summarize(
-  mean_read = mean(read, na.rm = TRUE),
-  sd_read = sd(read, na.rm = TRUE)
-)
+##########
+########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
+##########
 
-# t.test
-#t.test(formula = read ~ treatment, mu = 0, data = df_stark)
+source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
 ```
-
-
 
 
 # Review: scatterplot, covariance, correlation
@@ -312,21 +353,22 @@ __Relationships between two continuous variables__
 
 Postive relationship, negative relationship, and no relationships
 
-\medskip
+<br>
 
 1. Relationship between X and Y is positive
 - when X is "high", Y tend to be "high"
 - when X is "low", Y tends to be "low"
-- e.g., number of hours studying and GPA
+- e.g., number of hours (X) studying and GPA (Y)
+- e.g., cost of attendance (X) and student debt (Y)
 
-\medskip
+<br>
 
 2. Relationship between X and Y is negative
 - when X is "high", Y tend to be "low"
 - when X is "low", Y tends to be "high"
-- e.g., number of school abscences and GPA
+- e.g., number of school absences and GPA
 
-\medskip
+<br>
 
 3. No relationship between X and Y
 - knowing the value of X gives you does not tell you much about the value of Y
@@ -335,22 +377,63 @@ Postive relationship, negative relationship, and no relationships
 
 __Today's Example__
 
-Using the General Social Survey 2018 [sidebar: Data Goals for this Class]:
+we will use the data frame `df_socialwork` (which combines debt/earnings data from College Scorecard and tuition/cost of attendance data from IPEDS) to run regression models of the relationship between measures of tuition/COA (X variable) and debt/earnings (Y variable) for MA programs in social work
 
-- Nationally representative survey of adults in the United States conducted since 1972
-- Collects data on contemporary American society in order to monitor and explain trends in opinions, attitudes and behaviors
-  - Demographic, behavioral, and attitudinal questions
-  - Covers topics like civil liberties, crime and violence, intergroup tolerance, morality, national spending priorities, psychological well-being, social mobility, etc.
-- [GSS Website Link](https://gss.norc.org/)
+- Potential X variables:
+  - `tuitfee_grad_res`
+  - `tuitfee_grad_nres`
+  - `coa_grad_res`
+  - `coa_grad_nres`
+  - *Note*. for private institutions there is no difference between resident and nonresident price
+- Potential Y variable
+  - `debt_all_stgp_eval_mean`
+    - this is average debt at the university for students graduates from that particular program (e.g., MA in social work)
+    - think of it as "typical debt" (because confusing to think that a variable is a mean)
+  - `debt_all_stgp_eval_mdn10yrpay`
+    - typical (median) monthly payment on debt (assuming 10 year payment plan)
+  - `earn_mdn_hi_2yr`
+    - typical (median) earnings two years after graduation
+```{r}
+  df_socialwork %>% glimpse()
 
-\medskip
+  # mean variable values
+  df_socialwork %>% 
+    summarize(
+      n = n(),
+      coa_grad_res_n = sum(!is.na(coa_grad_res)),
+      coa_grad_res_mean = mean(coa_grad_res, na.rm = TRUE),
+      debt_n = sum(!is.na(debt_all_stgp_eval_mean)),
+      debt_mean = mean(debt_all_stgp_eval_mean, na.rm = TRUE),
+      debt_mth_mean = mean(debt_all_stgp_eval_mdn10yrpay, na.rm = TRUE),
+      earn_2yr_n = sum(!is.na(earn_mdn_hi_2yr)),
+      earn_2yr_mean = mean(earn_mdn_hi_2yr, na.rm = TRUE)
+      
+    )
+  
+  # mean variable values by control (public/private)
+  df_socialwork %>% group_by(control) %>%
+    summarize(
+      n = n(),
+      coa_grad_res_n = sum(!is.na(coa_grad_res)),
+      coa_grad_res_mean = mean(coa_grad_res, na.rm = TRUE),
+      debt_n = sum(!is.na(debt_all_stgp_eval_mean)),
+      debt_mean = mean(debt_all_stgp_eval_mean, na.rm = TRUE),
+      debt_mth_mean = mean(debt_all_stgp_eval_mdn10yrpay, na.rm = TRUE),
+      earn_2yr_n = sum(!is.na(earn_mdn_hi_2yr)),
+      earn_2yr_mean = mean(earn_mdn_hi_2yr, na.rm = TRUE)
+    )
+```
 
-We have two variables X and Y:
 
-- X (independent variable) = hours worked per week
-- Y (dependent variable) = income
+<br>
 
-\medskip
+For now, let's work with these two variables (X and Y)
+
+- X (independent variable) = `coa_grad_res` = full-time graduate resident cost of attendance
+- Y (dependent variable) = `debt_all_stgp_eval_mean` = typical (mean) debt from Direct Loans/GradPlus
+
+<br>
+
 Ways to investigate this relationship between X and Y:
 
 - Graphically: scatterplots
@@ -359,51 +442,60 @@ Ways to investigate this relationship between X and Y:
 
 ## Scatterplots
 
-- Scatterplots will plot individual observations on an X and Y axis
+Scatterplots will plot individual observations on an X and Y axis
 
-\medskip
-- Draw scatterplot of X (hours worked) and Y (income) by hand 
-  - Add a prediction line
+<br>
 
-\medskip
+Draw scatterplot of X (`coa_grad_res`) and Y (`debt_all_stgp_eval_mean`)
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point()
+```
+
+<br>
+
+Create scatterplot with "prediction" line
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm')
+```
+
+
 - Residual
   - Difference between actual observed value of Y and predicted value of Y (given X)
+  - predicted value of Y for a given value of X is represented by the "prediction line" above
 
-\medskip
-- Relationship between X and Y is not perfect!
 
-\medskip
-Generate a scatteplot using `ggplot` in R script
 
 ## Covariance
 
 Covariance measures the extent to which two variables move together....
 
-- If income is "high" when hours is worked is "high", then covariance is positive
-- If income is "low" when hours is worked is "high", then covariance is negative
+- If debt is "high" when cost of attendance is "high", then covariance is positive
+  - ("high" means a value that is higher than the mean value for the variable)
+- If debt is "low" when cost of attendance is "high", then covariance is negative
+  - (low" means a value that is lower than the mean value for the variable)
 
-\medskip
-Population covariance, cov(X, Y)
+<br>
+
+Population covariance, denoted $cov(X, Y)$ or $\sigma_{XY}$
 
 - As with all population parameters, we don't know this!
 
-\medskip
-Population covariance, $s_{XY}$ or $\hat{\sigma}_{XY}$
+<br>
+
+Sample covariance, $s_{XY}$ or $\hat{\sigma}_{XY}$
 
 - Estimator of population covariance
 
 - $s_{XY}= \hat{\sigma}_{XY}=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X} \right)  \left( Y_{i}-\bar{Y} \right)}{n-1}$
 
 
-__Sample Covariance__
 
-__Formula__
-$s_{XY}= \hat{\sigma}_{XY}=\frac{\sum_{i=1}^{n}\left(X_{i}-\bar{X} \right)  \left( Y_{i}-\bar{Y} \right)}{n-1}$
+<br>
 
-\medskip
 Example: Imagine we have 20 obs; $\bar{X}=40; \bar{Y}=30$
 
-\medskip
+<br>
+
 Observation 1: $X_1=50; Y_1=60$
 
 - $(X_{i}-\bar{X})( Y_{i}-\bar{Y})=(50-40)(60-30)=10*30=300$
@@ -411,42 +503,58 @@ Observation 1: $X_1=50; Y_1=60$
 
 
 Observation 2: $X_1=45; Y_1=25$
+
 - $(X_{i}-\bar{X})( Y_{i}-\bar{Y})=(45-40)(25-30)=5*-5=-25$
 - $X_i >  \bar{X}$ and $Y_i < \bar{Y}$; so $(X_{i}-\bar{X})( Y_{i}-\bar{Y})$ is positive
 
 
-\medskip
-$s_{XY}$ is the sum of these 20 calculations divided by 19 (n-1)
+<br>
+
+$\hat{\sigma}_{XY}=s_{XY}$ is the sum of these 20 calculations divided by 19 (n-1)
 
 
-$s_{XY}$ is positive when X and Y move in the same direction
+$\hat{\sigma}_{XY}=s_{XY}$ is positive when X and Y move in the same direction
 
 - $X_i >  \bar{X}$ usually coupled with $Y_i > \bar{Y}$
 - $X_i <  \bar{X}$ usually coupled with $Y_i < \bar{Y}$
 
-\medskip
+<br>
 
-$s_{XY}$ is negative when X and Y move in the same direction
+$\hat{\sigma}_{XY}=s_{XY}$ is negative when X and Y move in the same direction
 
 - $X_i >  \bar{X}$ usually coupled with $Y_i < \bar{Y}$
 - $X_i <  \bar{X}$ usually coupled with $Y_i > \bar{Y}$
 
+
+```{r}
+cov(df_socialwork$coa_grad_res, df_socialwork$debt_all_stgp_eval_mean, use = 'complete.obs') # positive covariance
+```
 
 
 ## Correlation
 
 Problem with sample covariance, $s_{XY}$
 
-- Covariance (like variance) dependes on the units of measurement
+- The value of covariance dependes on the units of measurement of the underlying variable
 - We can't compare the covaraince of X and Y vs covariance of X and Z
 
-\medskip
+which covariance is larger?
+
+- covariance between cost of attendance and debt? or covariance between between cost of attendance and earnings
+- not clear!
+```{r}
+cov(df_socialwork$coa_grad_res, df_socialwork$debt_all_stgp_eval_mean, use = 'complete.obs')
+cov(df_socialwork$coa_grad_res, df_socialwork$earn_mdn_hi_2yr, use = 'complete.obs')
+```
+
+<br>
+
 Sample Correlation of Z and Y, $r_{XY}$
 
 - Unitless measure of relationship between X and Y
 - Equals sample covariance, $s_{XY}$, divided by the product of their individual sample standard deviations
 
-\medskip
+<br>
 
 __Sample Correlation Formula__
 $r_{XY}=\frac{s_{XY}}{s_X*s_Y}  = \frac{\hat{\sigma}_{XY}}{\hat{\sigma}_X \hat{\sigma}_Y}$
@@ -456,10 +564,12 @@ __Sample Correlation__
 
 $r_{XY}=\frac{s_{XY}}{s_X*s_Y}  = \frac{\hat{\sigma}_{XY}}{\hat{\sigma}_X \hat{\sigma}_Y}$
 
-\medskip
+<br>
+
 Correlations result in measures between -1 and 1
 
-\medskip
+<br>
+
 "Type" of relationship
 
 - $r_{XY}$ = 0 means there is no relationship between X and Y
@@ -468,28 +578,47 @@ Correlations result in measures between -1 and 1
 - $r_{XY}$ < 0 means a negative correlation
   - in other words, the variables move in opposite directions
   
-\medskip
+<br>
+
 "Strength" of relationship
 
 - $r_{XY}$ = |0.1| to |0.3| = weak relationship
 - $r_{XY}$ = |0.3| to |0.6| = moderate relationship
 - $r_{XY}$ = |0.6| to |1| = strong relationship
 
-\medskip
+<br>
+
 Calculate correlations in R...
+
+- correlation between cost of attendance and debt is stronger than correlation between cost of attendance and earnings
+```{r}
+cor(df_socialwork$coa_grad_res, df_socialwork$debt_all_stgp_eval_mean, use = 'complete.obs')
+cor(df_socialwork$coa_grad_res, df_socialwork$earn_mdn_hi_2yr, use = 'complete.obs')
+```
 
 
 ## Linear vs Non-Linear Relationships
 
 Problem with covariance and correlation:
 
-- Both measure linear relationships; these measures do not detect non-linear relationships
+- Both measure linear relationships, defined as relationships between two variables that are captured by a straight line;
+- These measures do not detect non-linear relationships, defined as relationships between two variables that are not captured by a straight line
 
-\medskip
-See R script:
+<br>
 
-- Run correlation of income and age for respondents that identified as Black
-- Run Scatterplots 
+Below, scatterplot of relationship between cost of attendance (X) and debt (Y) with a linear prediction line fitted
+
+- this is the relationship captureD by covariance and correlation
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm', formula = y ~ x + I(x^2), size = 1)
+```
+Scatterplot of relationship between cost of attendance (X) and debt (Y) with a prediction line that includes X1= cost of attendance and X2 = cost of attendance squared
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=earn_mdn_hi_2yr)) + geom_point() + stat_smooth(method = 'lm', formula = y ~ x + I(x^2), size = 1)
+```
+
+
+
 
 # Population linear regression model
 
@@ -503,7 +632,7 @@ See R script:
   - Interested in "prediction"
   - Example: predict poverty status based on having a cell phone
 
-\medskip
+<br>
 
 - What is the purpose of regression in __econometrics research__ (sometimes called "causal studies")?
 
@@ -512,11 +641,12 @@ See R script:
   - Interested in recreating experimental conditions or what would have happened under a randomized control trial 
   - Example: What is the effect of class size on student learning?
 
-\medskip
+<br>
+
 - Most of my research is descriptive; but I teach this class in a "causal" way... why?
   - One type of research is not better than the other; it's just really important to understand the difference. _Ex: Lack of a cell phone doesn’t cause poverty!_
   - Causal research forces you to be very purposeful about your models!
-  - Policy makers/decision makers don't just care if there is a relationship between class size and student learning; they want to know if we decrease class size by two students what is the expected change in student test scores
+  - Policy makers/decision makers don't just care if there is a relationship between class size and student learning; they want to know if we decrease class size by two students what is the causal effect on student achievement
 
 
 __Regression: Models, Variables, Relationships__
@@ -529,18 +659,18 @@ __Regression: Models, Variables, Relationships__
   - Non-linear regression models (logit, ordinal, probit, poisson, negative binomial)
     - the dependent variable is non-continuous (i.e., categorical, binary, counts)
     - e.g., persistence, likert scales, type of major
-    - __focus of HED 613__ (Spring 2022/Maybe Fall 2021)
-    
-\medskip
+
+<br>
     
 
 - __Bivariate vs Multivariate Regression__
   - Bivariate regression (sometimes also called univariate, simple regression)
     - One dependent variable (Y) and one independent variable of interest ($X_1$)
   - Multivariate regression (for econometrics/causal inference)
+
     - One dependent variable (Y) and one independent variable of interest ($X_1$); __and__ multiple control variables ($X_2$,$X_3$,$X_4$,etc.)
     
-\medskip
+<br>
 
 - __Linear Relationship vs Non-Linear Relationship between X and Y__
   - Draw linear vs non-linear relationship scatterplots; show in R
@@ -552,21 +682,23 @@ __Regression: Models, Variables, Relationships__
 __Slope Measures relationship between X and Y__
 
 - Research Question
-  - What is the effect of hours worked (X) on annual income (Y)
+  - What is the effect of cost of attendance (X) on student debt (Y)
   
-\medskip
+<br>
 
 - What do we want to measure?
-  - The relationship between hours worked (X) and income (Y)
-  - If we increase the number of hours worked per week by one additional hour, how much do we expect annual income to change?
+  - The relationship between cost of attendance (X) and student debt (Y)
+  - If we increase the number of cost of attendance per week by $1,000, how much do we expect student debt to change?
 
-\medskip
+<br>
+
 - We want to measure $\beta$
   - $\beta = \frac{(Y_2 - Y_1)}{(X_2 - X_1)} = \frac{\Delta Y}{\Delta X}$
   - In other words, the slope of the relationship between X and Y 
   - Under the assumption of a linear relationship
   
-\medskip
+<br>
+
 - Draw line showing linear relationship between X and Y
   - $x_1 = 31, x_2 =32, y_1=\$30,000, Y_2=\$35,000$
   - Calculate slope at different points and for different $\Delta X$
@@ -577,16 +709,18 @@ __Population__ Linear Regression Model
 
 - $Y_i = \beta_0 + \beta_1X_i + u_i$
 
-\medskip
+<br>
+
 Where:
 
-- $Y_i$ = income for person i
-- $X_i$ = hours worked per week for person i
-- $\beta_0$ ("population intercept") = average income for someone with X=0 
+- $Y_i$ = typical student debt at university i
+- $X_i$ = cost of attendance at university i
+- $\beta_0$ ("population intercept") = average debt at a university with X=0 (cost of attendance = 0)
 - $\beta_1$ ("population regression coefficient") = average effect of a one-unit increase in X on the value of Y
 - $u_1$ ("error term" or "residual") = all other variables not included in your model that affect the value of Y
 
-\medskip
+<br>
+
 Draw Picture
 
 - Scatterplot of the population
@@ -601,41 +735,45 @@ Draw Picture
 __Population__ Linear Regression Model
 $Y_i = \beta_0 + \beta_1X_i + u_i$
 
-\medskip
+<br>
+
 Contains two population parameters
 
-- $\beta_0$ ("population intercept") = average income for someone with X=0 
+- $\beta_0$ ("population intercept") = average student debt for someone with X=0 
 - $\beta_1$ ("population regression coefficient") = average effect of a one-unit increase in X on the value of Y
 
-\medskip
+<br>
+
 - How do we know these are population parameters? (hint: notation)
 - Do we usually know the value of $\beta_0$ or $\beta_1$? 
 
 ### Population regression coefficient, $\beta_1$
 
-What is the effect of hours worked per week (X) on income (Y)?
+What is the effect of cost of attendance (X) on student debt (Y)?
 
 - Answer: population regression coefficient, $\beta_1$
 - Estimating $\beta_1$ is the fundamental goal of causal inference/this course 
 
-\medskip
+<br>
+
 What is the population regression coefficient, $\beta_1$?
 
 - $\beta_1$ measures the average change in Y for a one-unit increase in X
 
 - Think of $\beta_1$ as measuring the slope of our prediction line!
 
-- $\beta_1 = \frac{\Delta Y}{\Delta X} = \frac{\Delta Income}{\Delta Hours Worked}$
+- $\beta_1 = \frac{\Delta Y}{\Delta X} = \frac{\Delta student\_debt}{\Delta cost\_of\_attendance}$
 
-- Example: $\beta_1$ = $\frac{\$5000 \Delta Income}{1hour \Delta HoursWorked}$ = $5,000 
+- Example: $\beta_1$ = $\frac{\$5000 \Delta student\_debt}{\$1000 \Delta cost\_of\_attendance}$ = $xxxx
 
-\medskip
+<br>
+
 Interpretation (we will use this all semester!)
 
 - General interpretation:
   - On average, a one unit-increase in X is associated with a $\beta_1$ increase (or decrease) in the value of Y
 - Interpretation from example above:
-  - On average, a one-hour increase in hours worked per week (X) is associated with a \$5,000 ($\beta_1$) increase in annual income (Y)
+  - On average, a one-hour increase in cost of attendance (X) is associated with a \$xxx ($\beta_1$) increase in student debt (Y)
 - Interpret if $\beta_1 = \$2,000$; or $\beta_1 = \$4,000$
 
 
@@ -650,17 +788,18 @@ Some important things to remember:
 
 ### Population Intercept, $\beta_0$
 
-What is the effect of hours worked per week (X) on annual income (Y)?
+What is the effect of cost of attendance (X) on student debt (Y)?
 
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
 
-\medskip
+<br>
+
 $\beta_0$ is the "population intercept"
 
 - $\beta_0$ = the average value of Y when X=0
-- Here, $\beta_0$, is the average annual income for someone that works zero hours per week (X=0)
+- Here, $\beta_0$, is the average student debt for university where cost of attendance equals $0 (X=0)
 - Usually, we are not substantively interested in $\beta_0$ 
-- Sometimes $\beta_0$ is non-sensical or there's too few observations at X=0 to calculate a precise estimate (e.g., effect of age on income)
+- Sometimes $\beta_0$ is non-sensical or there's too few observations at X=0 to calculate a precise estimate (e.g., effect of cost of attendance on student debt cuz grad school is never free)
 
 
 ### Population Linear Regression Line
@@ -668,14 +807,14 @@ $\beta_0$ is the "population intercept"
 __Population__ Linear Regression Model
 $Y_i = \beta_0 + \beta_1X_i + u_i$
 
-\medskip 
+<br> 
 
 We sometimes deconstruct the Population Linear Regression Model into two parts:
 
 (1) __Population__ Linear Regression *LINE*/ Regression Function: $Y_i = \beta_0 + \beta_1X_i$
 (2) __Population__ "Error" or "Residual" Term: $u_i$
 
-\medskip 
+<br> 
 
 - Population regression line: just a linear prediction line, like the one in the scatterplot *if* the scatterplot contained all observation in the population
 - Population regression line measures the "average" or "expected" relationship between X and Y, ignoring variables that we excluded from the model (i.e., $u_i$)
@@ -685,41 +824,42 @@ Population regression line and Expected Value, E(Y)
 - Expected value of Y (for a sample mean/ one variable)
   - $E(Y) = \mu_Y$
   
-\medskip
+<br>
 
 - Expected value of Y, given the value of X (relationship between two variables)
   - $E(Y|X) = \beta_0 + \beta_1X_i$
   - the population regression line is expected value of Y for a given value of X
 
-\medskip
+<br>
   
 - Population regression line and prediction
   - If we know value of parameters, $\beta_0$ and $\beta_1$, we can predict value of Y
   - Example: $\beta_0=\$5,000$ and $\beta_1=\$2,000$
-  - (1) Predict the value of Y (annual income) for someone that works 20 hours per week
-  - (2) Predict the value of Y (annual income) for someone that works 45 hours per week
+  - (1) Predict the value of Y (student debt) for university where cost of attendance is $20K
+  - (2) Predict the value of Y (student debt) for university where cost of attendance is $40K
   
   
 ### $u_i$, as "Error Term" or "unobserved variables"
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
-  - Y= income; $X_i$= hours worked
+  - Y= student debt; $X_i$= cost of attendance
 
-\medskip
+<br>
+
 - In causal inference research:
   - Error term $u_i$ represents (consists of) *all other variables besides X that are not included in your model* that affect the dependent variable
   - In other words, the error term consists of all other factors (i.e., variables) responsible for the difference between the $i^{th}$ district's average test score and the value predicted by the regression line
   - This interpretation will become *super* important down the road!
   
-\medskip
+<br>
 
-- Example of Y= income; $X_i$= hours worked; the error term $u_i$ would consist of other factors besides hours worked that have an effect on yearly income! 
-  - Occupation: a hedge fund manager can 20 hours a week and make millions (maybe not last week tho!); an essential worker can 80+ hours and still only $40k
-  - Race: BIPOC face discrimination in labor wages
-  - Gender pay gap!   
+- Example of Y= student debt; $X_i$= cost of attendance; the error term $u_i$ would consist of other factors besides cost of attendance that have an effect on student debt
+  - cost of healthcare; whether students can rely on parents to pay for graduate school; how much grant aid students are awarded
+  
 
-\medskip 
+<br> 
+
 - In other social science based statistics classes
   - Interpret the $u_i$ as the overall error in the prediction of Y due to *random variation*
 
@@ -728,21 +868,21 @@ Population regression line and Expected Value, E(Y)
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
-  - Y= income; $X_i$= hours worked
+  - Y= student debt; $X_i$= cost of attendance
   
-\medskip 
+<br> 
 
 - $u_i$ as the residual
-  - Population regression line represents the predicted value of Y (income) for each value of X (hours worked)
+  - Population regression line represents the predicted value of Y (student debt) for each value of X (cost of attendance)
   - Residual = the predicted value of Y - observed value of Y for any given value of X
 
-\medskip
+<br>
 
 - Easier to conceptually think about $u_i$ in terms of each observation, i
 
-  - $Y_i$ = actual value of income for person i
+  - $Y_i$ = actual value of student debt for person i
   - $Y_i = \beta_0 + \beta_1X_i$ = Population Regression line 
-    -  The predicted value of income for person i with hours worked = $X_i$
+    -  The predicted value of student debt for university i with cost of attendance = $X_i$
   - Residual, $u_i$
     - The difference between actual value, $Y_i$, and predicted value from the population regression line for observation i
     - $u_i = Y_i - (\beta_0 + \beta_1X_i)$
@@ -756,12 +896,12 @@ __General things we do in regression analysis__
 1. __Estimation__ [Today]
   - How do we choose estimates of $\beta_0$ and $\beta_1$ using sample data?
 
-\medskip
+<br>
 
 2. __Prediction__ [Next Week]
   - What is the predicted value of Y for someone with a particular value of X?
   
-\medskip
+<br>
   
 3. __Hypothesis testing__ [focus of the rest of the semester]
   - Hypothesis testing and confidence intervals about $\beta_1$
@@ -775,7 +915,7 @@ Population linear regression model
 
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
 
-\medskip
+<br>
 
 __Goal of estimation is to__:
 
@@ -784,7 +924,7 @@ __Goal of estimation is to__:
   - $\hat{\beta_1}$ is an estimate of $\beta_1$
     - How dow we know these estimates are based on sample data and not population parameters? (hint: notation!)
     
-\medskip
+<br>
 
 __Estimation problem__:
 
@@ -798,7 +938,7 @@ We faced a similar estimation problem in intro to stats!
 - Use sample to calculate the "best" estimate of the population mean, $\mu_Y$
 - We decided sample mean, $\bar{Y}$, was the "best" estimate!
 
-\medskip
+<br>
 
 Criteria we used to determine $\bar{Y}$ was "best" estimate of $\mu_Y$
 
@@ -808,7 +948,7 @@ Criteria we used to determine $\bar{Y}$ was "best" estimate of $\mu_Y$
   - $\bar{Y}$ is the value of $m$ that minimizes sum of squares
   - So $\bar{Y}$ is the "least squares" estimator 
   
-\medskip
+<br>
 
 Draw scatterplot:
 
@@ -823,7 +963,8 @@ Problem in regression:
 - Need to develop method for selecting the "best" estimate of $\hat{\beta_0}$ and $\hat{\beta_1}$
 - Solution: similar to what we do for population mean!
 
-\medskip
+<br>
+
 First some terminology:
 
 - $Y_i$ is the actual observed value of Y for individual i
@@ -840,7 +981,7 @@ Criteria for choosing "best" estimate of $\hat{\beta_0}$ and $\hat{\beta_1}$
 
 - Select values that minimize "sum of squared residuals"
 
-\medskip
+<br>
 
 Sum of squared residuals (or sometimes called "sum of squared errors"):
 
@@ -851,7 +992,7 @@ Sum of squared residuals (or sometimes called "sum of squared errors"):
 - $\sum_{i=1}^{n}$ $(u_i)^2$
 
 
-\medskip
+<br>
 
 __Ordinary Least Squares__ is a linear method for estimating parameters in a linear regression model
 
@@ -866,12 +1007,14 @@ __Population Linear Regression Model__
 
  - $Y_i = \beta_0 + \beta_1X_i + u_i$
  
-\medskip
+<br>
+
 __OLS Prediction Line or "OLS Regression Line" (based on sample data)__
 
  - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$ 
  
-\medskip
+<br>
+
 - Our OLS prediction line chose the best estimates of  $\hat{\beta_0}$ and $\hat{\beta_1}$ as  those that any other alternatives would result in a higher sum of squared residuals
 - Draw this out...
 
@@ -882,7 +1025,7 @@ Let's write run our first regression and write out our models!
 
 <br>
   
-RQ: What is the effect of hours worked per week on annual income? 
+RQ: What is the effect of cost of attendance on student debt? 
 
 - Run regression in R
   - `mod1 <- lm(realrinc ~ hrs1, data=gss)`
@@ -891,9 +1034,9 @@ RQ: What is the effect of hours worked per week on annual income?
 ![](output.png)
 
 
-RQ: What is the effect of hours worked per week on annual income? 
+RQ: What is the effect of cost of attendance on student debt? 
 
-\medskip
+<br>
 Write out and label everything within the following: [we will be doing this all semester!]
 
 1. Population regression model
@@ -907,18 +1050,19 @@ Write out and label everything within the following: [we will be doing this all 
     - Interpret $\hat{\beta_0}$ given the estimate 
     - Interpret $\hat{\beta_1}$ given the estimate 
 
-4. Predict the expected value of $\hat{Y}_i$ for someone that works 60 hours a week.
+4. Predict the expected value of $\hat{Y}_i$ for xxxxxx
 
 
 
 
 ## In-Class Group Exercise 
 
-RQ: What is the effect of age on annual income?? 
+RQ: What is the effect of age on XXXX?? 
 
 - hint! X = `age` and Y =`realrinc`
 
-\medskip
+<br>
+
 Write out and label everything within the following
 
 - Recommendation: Practice how to write out equations in Word; touch-screen devices share your screen via whiteboard
@@ -944,7 +1088,7 @@ Write out and label everything within the following
 
 __In-Class Group Exercise [Solutions]__
 
-RQ: What is the effect of age on annual income?? 
+RQ: What is the effect of age on annual income??  [CHANGE THIS]
 
 
 1. Population regression model
