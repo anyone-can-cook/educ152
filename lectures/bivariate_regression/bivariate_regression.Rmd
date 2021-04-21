@@ -855,7 +855,7 @@ Some important things to remember:
 
 ### Population Intercept, $\beta_0$
 
-What is the effect of cost of attendance (X) on student debt (Y)?
+Population linear regression model
 
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
 
@@ -864,37 +864,55 @@ What is the effect of cost of attendance (X) on student debt (Y)?
 $\beta_0$ is the "population intercept"
 
 - $\beta_0$ = the average value of Y when X=0
-- Here, $\beta_0$, is the average value of of the variable institution-level student debt at a university where cost of attendance equals $0 (X=0)
+- Here, $\beta_0$, is the average value of institution-level student debt at a university where cost of attendance equals $0 (X=0)
 - Usually, we are not substantively interested in $\beta_0$, but we need the intercept to draw a regression line
 - Sometimes $\beta_0$ is non-sensical or there's too few observations at X=0 to calculate a precise estimate 
   - for our research question and data, there are no universities where grad school cost of attendance is zero, so we can't really make any predictions (based on real data) about what institution-level student debt would be if cost of attendance is zero
 
+<br>
+In the below graph, the line represents the "prediction line" and the population intercept $\beta_0$ is where the prediction line would cross the Y-intercept
+
+- note: not to scale
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm')
+```
 
 ### Population Linear Regression Line
 
 __Population__ Linear Regression Model
-$Y_i = \beta_0 + \beta_1X_i + u_i$
+
+- $Y_i = \beta_0 + \beta_1X_i + u_i$
 
 <br> 
 
 We sometimes deconstruct the Population Linear Regression Model into two parts:
 
-(1) __Population__ Linear Regression *LINE*/ Regression Function: $Y_i = \beta_0 + \beta_1X_i$
+(1) __Population__ Linear Regression *LINE*: $Y_i = \beta_0 + \beta_1X_i$
+    - sometimes called population linear regression function
 (2) __Population__ "Error" or "Residual" Term: $u_i$
 
 <br> 
 
 - Population regression line: just a linear prediction line, like the one in the scatterplot *if* the scatterplot contained all observation in the population
+
+<br> 
+
 - Population regression line measures the "average" or "expected" relationship between X and Y, ignoring variables that we excluded from the model (i.e., $u_i$)
 
-Population regression line and Expected Value, E(Y)
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm')
+```
 
-- Expected value of Y (for a sample mean/ one variable)
+
+__Population regression line and Expected Value, E(Y)__
+
+- Expected value of Y (one variable)
   - $E(Y) = \mu_Y$
+  - in words: expected value of variable $Y$ equals the population mean value of variable $Y$
   
 <br>
 
-- Expected value of Y, given the value of X (relationship between two variables)
+- Expected value of Y, given the value of X (conditional expectation; relationship between two variables)
   - $E(Y|X) = \beta_0 + \beta_1X_i$
   - the population regression line is expected value of Y for a given value of X
 
@@ -902,12 +920,16 @@ Population regression line and Expected Value, E(Y)
   
 - Population regression line and prediction
   - If we know value of parameters, $\beta_0$ and $\beta_1$, we can predict value of Y
-  - Example: $\beta_0=\$5,000$ and $\beta_1=\$2,000$
+  - Example: imagine $\beta_0=\$10,000$ and $\beta_1=\$1.5$
   - (1) Predict the value of Y (institution-level student debt) for university where cost of attendance is $20K
+    - $E(Y|X) = \beta_0 + \beta_1X_i= 10,000 + 1.5 \times 20,000= 40,000$
   - (2) Predict the value of Y (institution-level student debt) for university where cost of attendance is $40K
+    - $E(Y|X) = \beta_0 + \beta_1X_i= 10,000 + 1.5 \times 40,000= 40,000 = 70,000$
   
   
-### $u_i$, as "Error Term" or "unobserved variables"
+### $u_i$
+
+__$u_i$ as "Error Term" or "unobserved variables"__
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
@@ -917,7 +939,7 @@ Population regression line and Expected Value, E(Y)
 
 - In causal inference research:
   - Error term $u_i$ represents (consists of) *all other variables besides X that are not included in your model* that affect the dependent variable
-  - In other words, the error term consists of all other factors (i.e., variables) responsible for the difference between the $i^{th}$ district's average test score and the value predicted by the regression line
+  - In other words, the error term consists of all other factors (i.e., variables), aside from $X$= cost of attendance, responsible for the difference between the actual institution-level student debt at university $i$ and the value for university $i$ that is predicted by the regression line
   - This interpretation will become *super* important down the road!
   
 <br>
@@ -928,11 +950,11 @@ Population regression line and Expected Value, E(Y)
 
 <br> 
 
-- In other social science based statistics classes
+- In other social science based statistics classes (outside of the discipline of economics)
   - Interpret the $u_i$ as the overall error in the prediction of Y due to *random variation*
 
 
-### $u_i$ as "Residual"
+**Thinking about $u_i$ as "Residual"**
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
@@ -941,19 +963,20 @@ Population regression line and Expected Value, E(Y)
 <br> 
 
 - $u_i$ as the residual
-  - Population regression line represents the predicted value of Y (institution-level student debt) for each value of X (cost of attendance)
-  - Residual = the predicted value of Y - observed value of Y for any given value of X
+  - Population regression line represents the predicted value $\hat{Y}$ of the outcome (institution-level student debt) for each value of X (cost of attendance)
+  - Residual = the predicted value of Y (for a given value of X) minus the observed value of Y
 
 <br>
 
 - Easier to conceptually think about $u_i$ in terms of each observation, i
 
   - $Y_i$ = actual value of institution-level student debt for person i
-  - $Y_i = \beta_0 + \beta_1X_i$ = Population Regression line 
+  - $\hat{Y}_i = \beta_0 + \beta_1X_i$ = Population Regression line 
     -  The predicted value of institution-level student debt for university i with cost of attendance = $X_i$
   - Residual, $u_i$
     - The difference between actual value, $Y_i$, and predicted value from the population regression line for observation i
-    - $u_i = Y_i - (\beta_0 + \beta_1X_i)$
+    - $u_i = Y_i - (\beta_0 + \beta_1X_i) = Y_i - \hat{Y}_i$
+    - $u_i = Y_i - \hat{Y}_i$
     
 
 # Regression in R 
@@ -1213,46 +1236,74 @@ We faced a similar estimation problem when we were trying to estimate population
 
 <br>
 
-Criteria we used to determine $\bar{Y}$ was "best" estimate of $\mu_Y$
+__How did statisticians decide that $\bar{Y}= \frac{\sum_{i=1}^{n} Y_i}{n}$ was "best" estimate of $\mu_Y$? What criteria to make this decision?:__
 
-- $m$ is all potential estimates for $\mu_Y$
-- Goal: choose the value, $m$ , that minimizes the "sum of squares"
-  - Sum of squares = $\sum_{i=1}^{n}$ $(Y_i-m)^2$
-  - $\bar{Y}$ is the value of $m$ that minimizes sum of squares
-  - So $\bar{Y}$ is the "least squares" estimator 
+imagine that $m$ is all potential estimates for $\mu_Y$
+
+- e.g., $\bar{Y}$ is one potential estimate of $\mu_Y$; the sample median is another potential estimate
   
+Criteria statisticians used to decide which $m$ is the "best" estimate of $\mu_Y$:
+
+- choose the value, $m$ , that minimizes the "sum of squares"
+- Sum of squares = $\sum_{i=1}^{n}(Y_i-m)^2$
+- Sum of squares in words
+  - for each observation: measures how far away an individual observation $Y_i$ is from estimate $m$; and then square this distance (to remove negative values)
+  - then sum this squared distance across all observations, $Y_i$
+- Conceptually, in choosing "minimize sum of squares" as our criteria for selecting the best estimate of $\mu_Y$, we are "how far off" in total (across all observations) if we can only use a single value to be our guess of the value of each individual observation
+
 <br>
 
-Draw scatterplot:
+Below, we graph scatterplot of cost of attendance (X) and institution-level student debt (Y axis), and add a horizontal line for the mean value of institution-level student debt, $\bar{Y}=$ `r round(mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE), digits=0)`
 
-- (1) Horizontal line representing sample mean
-  - Show formula for sum of square errors
-  
+- let's say that $\bar{Y}=$ `r round(mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE), digits=0)` is our "predicted value" for each observation in the scatterplot
+- For each observation $i$, the "residual" $u_i = Y_i - \bar{Y}$ represents how far off our predicted value is from the actual value for that observation
+- $\bar{Y}= \frac{\sum_{i=1}^{n} Y_i}{n}$ is the choice for $m$ that minimizes the sum of squared errors, $\sum_{i=1}^{n}(Y_i-m)^2$
+- in other words, $\bar{Y}$ is the value that minimizes how far off our prediction is in total (across all observations)
+```{r}
+#df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm')
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + 
+  geom_hline(yintercept=mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE), linetype="dashed", color = "red")
+```
+
 ## Estimation (regression)
 
 
-Problem in regression:
+Population linear regression model
+
+  - $Y_i = \beta_0 + \beta_1X_i + u_i$
+  
+  
+The estimation problem in regression
 
 - Need to develop method for selecting the "best" estimate of $\hat{\beta_0}$ and $\hat{\beta_1}$
-- Solution: similar to what we do for population mean!
+- Solution: do the same thing we did for population mean! Choose the estimates $\hat{\beta_0}$ and $\hat{\beta_1}$ that minimize the sum of squares
+
 
 <br>
 
+```{r, eval = FALSE, include = FALSE}
+df_socialwork %>% select(unitid,instnm,coa_grad_res,debt_all_stgp_eval_mean)
+```
+
 First some terminology:
 
-- $Y_i$ is the actual observed value of Y for individual i
+- $Y_i$ is the actual observed value of $Y$ for observation $i$
+- $\hat{\beta_0}$ is an estimate of $\beta_0$, population average value of $Y$ when $X=0$
+- $\hat{\beta_1}$ is an estimate of $\beta_1$, the average change in the value of $Y$ associated with a one-unit increase in $X$
 - $\hat{Y_i}$ is the predicted value of $Y_i$, based on sample data!
   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
-  
+  - Example: $\hat{\beta_0}=10,000$ and $\hat{\beta_1}=.75$, then for a university with cost of attendance = $30,000$
+    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i = 10,000 + .75 \times30,000=32,500$
 - Estimated residual, $\hat{u}_i$ is the difference between actual $Y_i$ and predicted $\hat{Y_i}$
   - $Y_i - \hat{Y_i}$ = $\hat{u_i}$
   - $Y_i - (\hat{\beta_0} + \hat{\beta_1}X_i)$ = $\hat{u_i}$
-  - Residuals are sometimes called "errors"
+  - Residuals are often called "errors"
   
 
 Criteria for choosing "best" estimate of $\hat{\beta_0}$ and $\hat{\beta_1}$
 
 - Select values that minimize "sum of squared residuals"
+- that is, the "best" estimates of  $\hat{\beta_0}$ and $\hat{\beta_1}$ are those that any other alternatives would result in a higher sum of squared residuals
 
 <br>
 
@@ -1267,14 +1318,34 @@ Sum of squared residuals (or sometimes called "sum of squared errors"):
 
 <br>
 
-__Ordinary Least Squares__ is a linear method for estimating parameters in a linear regression model
+Conceptual explanation for use "sum of squared residuals" as the criteria for choosing values for $\hat{\beta_0}$ and $\hat{\beta_1}$
 
-  - Method draws a line through the sample data points that minimizes the sum of squared residuals, or in other words, the differences between the observed values and the corresponding fitted values
-  - Minimization is achieved via calculus (derivatives). R will calculate this for you (phew!)
-  - Best estimates of  $\hat{\beta_0}$ and $\hat{\beta_1}$ are those that any other alternatives would result in a higher sum of squared residuals
-  
+- Having a y-intercept ($\hat{\beta_0}$) and a slope ($\hat{\beta_1}$) allows us to draw a straight line, our "prediction line"
+- by choosing the values of $\hat{\beta_0}$ and $\hat{\beta_1}$ that minimize the sum of squared residuals, we are creating a linear prediction line that minimizes how far away (in total, across all observations) the predicted values are from the actual values 
+
+Scatterplot of cost of attendance (X) and institution-level student debt (Y)
+
+- red dotted horizontal line for mean of institution-level student debt
+- blue line is the OLS prediction line, associated with values of $\hat{\beta_0}$ and $\hat{\beta_1}$ calculated by *R*
+- visually you can see that sum of squared errors would be much larger if we used the mean of institution-level student debt (red line) as the predicted value for every observation
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + 
+  stat_smooth(method = 'lm') +
+  geom_hline(yintercept=mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE), linetype="dashed", color = "red")
+```  
+
+
+__Ordinary Least Squares (OLS) Estimator__ is a linear method for estimating parameters in a linear regression model based on the sum of squared errors criterion
+
+- Method draws a line through the sample data points that minimizes the sum of squared residuals, or in other words, the differences between the observed values and the corresponding fitted values
+- Minimization is achieved via calculus (derivatives). R will calculate this for you (phew!)
+- $\hat{\beta_0}$ and $\hat{\beta_1}$, respectively, are the symbols for the OLS estimates of population parameters $\beta_0$ and $\beta_1$
+
+<br>
 
 ### OLS Prediction Line
+
+RQ: What is the effect of cost of attendance (X) on institution-level student debt (Y)? 
 
 __Population Linear Regression Model__
 
@@ -1288,51 +1359,88 @@ __OLS Prediction Line or "OLS Regression Line" (based on sample data)__
  
 <br>
 
-- Our OLS prediction line chose the best estimates of  $\hat{\beta_0}$ and $\hat{\beta_1}$ as  those that any other alternatives would result in a higher sum of squared residuals
-- Draw this out...
+Let's run regression in R using `lm()` to calculate values for point estimates $\hat{\beta_0}$ and $\hat{\beta_1}$
 
+- $\hat{\beta_0}=$ `r round(summary(mod1)$coefficients[1,1], digits =2)`
+- $\hat{\beta_1}=$ `r round(summary(mod1)$coefficients[2,1], digits =2)`
+```{r}
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
 
-### Estimation in R using `lm()` [KEEP?]
+summary(mod1)
 
-Let's write run our first regression and write out our models!
+summary(mod1)$coefficients %>% class()
+
+# more specifically, it is a 2 X 4 matrix, that is a matrix with 2 rows and 4 columns
+summary(mod1)$coefficients %>% str()
+
+# we can grab an individual cell within the matrix using this syntax: 
+  # summary(mod1)$coefficients[<row_num>,<col_num]
+  summary(mod1)$coefficients[1,1] # row 1, column 1; this is the estimate for Beta_0
+  summary(mod1)$coefficients[2,1] # row 2, column 1; this is the estimate for Beta_1
+```
+<br>
+
+## Writing out models
 
 <br>
+
+When we run a regression model, write out regression models like this (we will be doing this the rest of the quarter):
+
+
+- Write out the population linear regression model
+  - Label symbols; label what the variables $X$ and $Y$ actually represent
+- OLS prediction line 
+  - write out OLS prediction line without estimate values
+  - write out OLS prediction line with estimate values
+- And usually a good idea to:
+  - write out interpretation of$\hat{\beta_0}$ in words
+  - write out interpretation of$\hat{\beta_1}$ in words
+ 
+<br>
+
+- __Population Linear Regression Model__
+  - $Y_i = \beta_0 + \beta_1X_i + u_i$
+  - where:
+    - subscript $i$ refers to universities
+    - $Y_i$ = institution-level student debt at university $i$
+    - $X_i$ = annual cost of attendance for full-time resident graduate students at university $i$
+    - $\beta_0$ = population intercept"), which represents average value of $Y$ (institution-level student debt) at a university with X=0 (cost of attendance = 0)
+  - $\beta_1$ = population regression coefficient, which represents average effect of a one-unit increase in $X$ on the value of $Y$
+- __OLS Prediction Line or "OLS Regression Line" (based on sample data)__
+   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$   
+   - $\hat{Y_i} =$  `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$
+
+<br>
+
+Once you write it out like this, easy to answer questions about your regression model
+
+- Predict the the expected value institution-level student debt at a university where annual cost of attendance is \$20,000? That is, what is $E(\hat{Y_i}|X=20,000)$?
+
+  - $E(\hat{Y_i}|X=20,000) = \hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i=$ `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times 20,000$ = `r round(summary(mod1)$coefficients[1,1] + summary(mod1)$coefficients[2,1]*20000, digits=0)`
+- Predict the the expected value value of institution-level student debt at a university where annual cost of attendance is \$50,000? That is, what is $E(\hat{Y_i}|X=50,000)$?
+  - $E(\hat{Y_i}|X=50,000) = \hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i=$ `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times 50,000$ = `r round(summary(mod1)$coefficients[1,1] + summary(mod1)$coefficients[2,1]*50000, digits=0)`
   
-RQ: What is the effect of cost of attendance on institution-level student debt? 
-
-- Run regression in R
-  - `mod1 <- lm(realrinc ~ hrs1, data=gss)`
-  - `summary(mod1)`
-
-![](output.png)
-
-
-RQ: What is the effect of cost of attendance on institution-level student debt? 
-
 <br>
-Write out and label everything within the following: [we will be doing this all semester!]
 
-1. Population regression model
-    - Label Y; Label X
+Interpreting $\hat{\beta_0}$ and $\hat{\beta_1}$ in words
 
-2. OLS Prediction Line (without estimates)
-    - Define $\hat{\beta_0}$?
-    - Define $\hat{\beta_1}$?
-
-3. OLS Prediction Line (with estimates)
-    - Interpret $\hat{\beta_0}$ given the estimate 
-    - Interpret $\hat{\beta_1}$ given the estimate 
-
-4. Predict the expected value of $\hat{Y}_i$ for xxxxxx
+- $\hat{\beta_0}=$ `r round(summary(mod1)$coefficients[1,1], digits =2)` is the OLS estimate of the population intercept $\beta_0$, which represents average value of $Y$ (institution-level student debt) at a university with X=0 (cost of attendance = 0)
+  - interpretation of $\hat{\beta_0}=$ `r round(summary(mod1)$coefficients[1,1], digits =2)`: the predicted institution-level student debt at a university with annual cost of attendance equals `0` is `r round(summary(mod1)$coefficients[1,1], digits =2)`
+- $\hat{\beta_1}=$ `r round(summary(mod1)$coefficients[2,1], digits =2)` is the OLS estimate of the population intercept $\beta_1$, which represents average effect of a one-unit increase in $X$ on the value of $Y$
+  - interpretation of $\hat{\beta_1}=$ `r round(summary(mod1)$coefficients[2,1], digits =2)`: a one-dollar increase in annual cost of attendance is associated with a `r round(summary(mod1)$coefficients[2,1], digits =2)` dollar increase in institution-level student debt
 
 
-
-
-## In-Class Group Exercise 
+## Exercise [PATRICIA - MODIFY]
 
 RQ: What is the effect of age on XXXX?? 
+PATRICIA - MAYBE MODIFY THIS SO NOW THE DEPENDENT VARIABLE IS EARNINGS TWO YEARS AFTER GRADUATION INSTEAD OF DEBT
 
-- hint! X = `age` and Y =`realrinc`
+```{r}
+mod2 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_socialwork)
+
+summary(mod2)
+```
+
 
 <br>
 
@@ -1387,9 +1495,6 @@ RQ: What is the effect of age on annual income??  [CHANGE THIS]
     - $E(\hat{Y_i}|X=35)$ = $\hat{Y_i} = \$8,620 + \$368*18$
     - $E(\hat{Y_i}|X=35)$ = $\hat{Y_i} = \$8,620 + \$6,624$
     - $E(\hat{Y_i}|X=35)$ = \$15,244
-
-
-
 
 
 # Prediction
