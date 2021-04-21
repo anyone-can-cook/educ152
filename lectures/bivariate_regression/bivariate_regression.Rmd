@@ -37,6 +37,9 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning
   #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
 options(scipen=999)
 options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll right for printing of data frames
+
+# remove scientific notation
+options(scipen=999)
 ```
 
 # Introduction
@@ -100,7 +103,7 @@ DECISION
 
 ```{r}
 # uncomment below line to remove all objects
-  rm(list = ls())
+  #rm(list = ls())
 
 # Libraries
   #install.packages('tidyverse') # if you haven't installed already
@@ -204,7 +207,7 @@ df_ipeds_pop <- panel_data %>%
     var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
     var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
 
-df_ipeds_pop %>% glimpse()
+  #df_ipeds_pop %>% glimpse()
 
 rm(panel_data) # comment this line out if you want to keep data frame panel_data
 
@@ -233,8 +236,7 @@ df_scorecard <- df_debt_earn_panel_labelled %>%
     # re-order variables
     relocate(opeid6,unitid,instnm,ccbasic,stabbr,city,cipdig2)
 
-# "glimpse" data frame
-df_scorecard %>% glimpse()
+  #df_scorecard %>% glimpse()
 
 # For debt and earnings variables, convert from character to numeric variables (which replaces "PrivacySuppressed" values with NA values)
 df_scorecard <- df_scorecard %>%
@@ -261,15 +263,14 @@ df_scorecard <- df_scorecard %>%
     attr(df_scorecard[[v]], which = 'label') <- attr(df_debt_earn_panel_labelled[[v]], which = 'label')
   }
 
-df_scorecard %>% glimpse()
+#df_scorecard %>% glimpse()
 
 rm(df_debt_earn_panel_labelled) # comment this line out if you want to keep data frame df_debt_earn_panel_labelled
 #earn_mdn_hi_2yr
+
 ##########
 ########## LEFT JOIN SCORECARD AND IPEDS DATA
 ##########
-
-df_scorecard %>% glimpse()
 
 # investigate data structure
 
@@ -292,8 +293,7 @@ df_scorecard %>% glimpse()
     df_score_ipeds %>% filter(is.na(one)) %>% count(unitid) # 52 unitids from scorecard data with missing IPEDS data
     df_score_ipeds %>% filter(is.na(one)) %>% count(instnm) # 52 unitids from scorecard data with missing IPEDS data
   
-    
-    
+
   df_score_ipeds <- df_score_ipeds %>% 
     # drop unitids from scorecard that don't merge to ipeds data (on tuition)
     filter(!is.na(one)) %>% 
@@ -312,8 +312,7 @@ rm(df_ipeds_pop) # comment this line out if you want to keep ipeds data frame
 rm(df_scorecard) # comment this line out if you want to keep scorecard data frame
 
 # Investigate analysis data frame `df_score_ipeds`  
-  df_score_ipeds %>% glimpse()
-  
+
   # data structure: variables that uniquely identify obs
     df_score_ipeds %>% group_by(opeid6,cipcode) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
   
@@ -324,27 +323,128 @@ rm(df_scorecard) # comment this line out if you want to keep scorecard data fram
 # create data frame that only contains observations for MAs in social work; filter(cipcode=='4407')
   df_socialwork <- df_score_ipeds %>% filter(cipcode=='4407')
   
-  # one observation per opeid6
-  df_socialwork %>% group_by(opeid6) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+  df_socialwork %>% glimpse()
+
+  # investigate data structure  
+    # one observation per opeid6
+    df_socialwork %>% group_by(opeid6) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+    
+    # also, one observation per unitid
+    df_socialwork %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
   
-  # also, one observation per unitid
-  df_socialwork %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
-  
-```
-
-
-
-
-
-
-```{r}
-
 ##########
 ########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
 ##########
 
-source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
+#source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
+  
+  
 ```
+
+
+## Example research question
+
+### Cost of attendance (X) and student debt (Y), MA in social work
+
+<br>
+
+**Data**
+
+- We will use the data frame `df_socialwork`, which includes debt/earnings data from College Scorecard and tuition/cost of attendance data from IPEDS
+- each observation $i$ represents a postsecondary institution, so this is "institution level" data (or you could say university level data)
+- sample includes public and private non-profit universities that:
+  - (A) offer an MA in social work
+  - (B) we know institution-level (average) student debt accrued from MA programs in social work
+- Population our sample is meant to represent
+  - Our population of interest is all public and private non-profit universities that offer an MA in social work
+  - Pretend our sample is a random sample from this population
+  - (In reality, our sample is not a random sample because our sample consists of universities with social work MA programs with large enough enrollment that College Scorecard did not suppress student debt data because of privacy concerns)
+    
+__Variables of interest__
+
+- $X$ (independent variable) = `coa_grad_res` = annual full-time graduate resident cost of attendance (tuition+fees+books+living expenses)
+  - *note.* at private institutions, tuition price does not differ for state residents vs. nonresidents
+- $Y$ (dependent variable) = `debt_all_stgp_eval_mean` = institution-level student debt from federal Direct Loans and Grad Plus loans
+  - This is the average (mean) student debt from students who completed an MA program in social work at that institution
+  - *note.* In the lecture, I call this variable  "institution-level student debt" rather than "average student debt" or "mean student debt" because the latter two names will be confusing when we calculate the mean of this variable and when apply concepts like sampling distribution to this variable
+
+__Research question (RQ) of interest__
+
+- What is the effect of (annual) cost of attendance for MA in social work programs ($X$) on institution-level student debt ($Y$) for graduates of MA programs in social work?
+  - think of it as, what is the causal effect of an increase in cost of attendance on the amount of student debt typically accrued by students who graduate from MA in social work programs
+  - We are answering this question using institution-level data, but if we had access to student-level data, we would answer this question using student-level data
+  
+
+<br>
+
+Some descriptive statistics about our variables of interest and other interesting variables
+
+- show variable labels for variables
+- show mean values
+```{r}
+# show labels for variables
+  df_socialwork %>% select(tuitfee_grad_res,tuit_grad_nres,coa_grad_res,coa_grad_nres,debt_all_stgp_eval_mean,debt_all_stgp_eval_mdn,debt_all_stgp_eval_mdn10yrpay,earn_mdn_hi_2yr) %>% var_label()
+
+# mean values for interesting variables
+  df_socialwork %>% 
+    summarize(
+      n = n(),
+      tuitfee_grad_res = mean(tuitfee_grad_res, na.rm = TRUE),
+      tuitfee_grad_nres = mean(tuitfee_grad_nres, na.rm = TRUE),
+      coa_grad_res = mean(coa_grad_res, na.rm = TRUE),
+      coa_grad_nres = mean(coa_grad_nres, na.rm = TRUE),
+      debt = mean(debt_all_stgp_eval_mean, na.rm = TRUE),  # institution-level mean debt
+      debt_mdn = mean(debt_all_stgp_eval_mdn, na.rm = TRUE), # institution-level median debt
+      debt_per_mth = mean(debt_all_stgp_eval_mdn10yrpay, na.rm = TRUE),
+      earn_2yr = mean(earn_mdn_hi_2yr, na.rm = TRUE),
+    ) 
+
+# mean values separately by public vs. private
+  df_socialwork %>% group_by(control) %>%
+    summarize(
+      n = n(),
+      tuitfee_grad_res = mean(tuitfee_grad_res, na.rm = TRUE),
+      tuitfee_grad_nres = mean(tuitfee_grad_nres, na.rm = TRUE),
+      coa_grad_res = mean(coa_grad_res, na.rm = TRUE),
+      coa_grad_nres = mean(coa_grad_nres, na.rm = TRUE),
+      debt = mean(debt_all_stgp_eval_mean, na.rm = TRUE),  # institution-level mean debt
+      debt_mdn = mean(debt_all_stgp_eval_mdn, na.rm = TRUE), # institution-level median debt
+      debt_per_mth = mean(debt_all_stgp_eval_mdn10yrpay, na.rm = TRUE),
+      earn_2yr = mean(earn_mdn_hi_2yr, na.rm = TRUE),
+    ) 
+```
+
+- show sample sizes
+```{r}
+# sample sizes for interesting variables
+  df_socialwork %>% 
+    summarize(
+      n = n(),
+      tuitfee_grad_res_n = sum(!is.na(tuitfee_grad_res)),
+      tuitfee_grad_nres_n = sum(!is.na(tuitfee_grad_nres)),
+      coa_grad_res_n = sum(!is.na(coa_grad_res)),
+      coa_grad_nres_n = sum(!is.na(coa_grad_nres)),
+      debt_n = sum(!is.na(debt_all_stgp_eval_mean)),  # institution-level mean debt
+      debt_mdn_n = sum(!is.na(debt_all_stgp_eval_mean)), # institution-level median debt
+      debt_mth_n = sum(!is.na(debt_all_stgp_eval_mdn10yrpay)),
+      earn_2yr_n = sum(!is.na(earn_mdn_hi_2yr)),
+    )  
+
+  # separately bt public vs. private
+  df_socialwork %>% group_by(control) %>%
+    summarize(
+      n = n(),
+      tuitfee_grad_res_n = sum(!is.na(tuitfee_grad_res)),
+      tuitfee_grad_nres_n = sum(!is.na(tuitfee_grad_nres)),
+      coa_grad_res_n = sum(!is.na(coa_grad_res)),
+      coa_grad_nres_n = sum(!is.na(coa_grad_nres)),
+      debt_n = sum(!is.na(debt_all_stgp_eval_mean)),  # institution-level mean debt
+      debt_mdn_n = sum(!is.na(debt_all_stgp_eval_mean)), # institution-level median debt
+      debt_mth_n = sum(!is.na(debt_all_stgp_eval_mdn10yrpay)),
+      earn_2yr_n = sum(!is.na(earn_mdn_hi_2yr)),
+    )
+```
+
 
 
 # Review: scatterplot, covariance, correlation
@@ -355,7 +455,8 @@ Postive relationship, negative relationship, and no relationships
 
 <br>
 
-1. Relationship between X and Y is positive
+Relationship between X and Y is positive
+
 - when X is "high", Y tend to be "high"
 - when X is "low", Y tends to be "low"
 - e.g., number of hours (X) studying and GPA (Y)
@@ -363,74 +464,35 @@ Postive relationship, negative relationship, and no relationships
 
 <br>
 
-2. Relationship between X and Y is negative
+Relationship between X and Y is negative
+
 - when X is "high", Y tend to be "low"
 - when X is "low", Y tends to be "high"
 - e.g., number of school absences and GPA
 
 <br>
 
-3. No relationship between X and Y
+No relationship between X and Y
+
 - knowing the value of X gives you does not tell you much about the value of Y
 - e.g., amount of ice cream consumed and GPA
 
 
-__Today's Example__
 
+
+
+
+  (defined as "research" or "master's" universities by the Carnegie Classification that are 
+  
 we will use the data frame `df_socialwork` (which combines debt/earnings data from College Scorecard and tuition/cost of attendance data from IPEDS) to run regression models of the relationship between measures of tuition/COA (X variable) and debt/earnings (Y variable) for MA programs in social work
 
-- Potential X variables:
-  - `tuitfee_grad_res`
-  - `tuitfee_grad_nres`
-  - `coa_grad_res`
-  - `coa_grad_nres`
-  - *Note*. for private institutions there is no difference between resident and nonresident price
-- Potential Y variable
-  - `debt_all_stgp_eval_mean`
-    - this is average debt at the university for students graduates from that particular program (e.g., MA in social work)
-    - think of it as "typical debt" (because confusing to think that a variable is a mean)
-  - `debt_all_stgp_eval_mdn10yrpay`
-    - typical (median) monthly payment on debt (assuming 10 year payment plan)
-  - `earn_mdn_hi_2yr`
-    - typical (median) earnings two years after graduation
-```{r}
-  df_socialwork %>% glimpse()
 
-  # mean variable values
-  df_socialwork %>% 
-    summarize(
-      n = n(),
-      coa_grad_res_n = sum(!is.na(coa_grad_res)),
-      coa_grad_res_mean = mean(coa_grad_res, na.rm = TRUE),
-      debt_n = sum(!is.na(debt_all_stgp_eval_mean)),
-      debt_mean = mean(debt_all_stgp_eval_mean, na.rm = TRUE),
-      debt_mth_mean = mean(debt_all_stgp_eval_mdn10yrpay, na.rm = TRUE),
-      earn_2yr_n = sum(!is.na(earn_mdn_hi_2yr)),
-      earn_2yr_mean = mean(earn_mdn_hi_2yr, na.rm = TRUE)
-      
-    )
-  
-  # mean variable values by control (public/private)
-  df_socialwork %>% group_by(control) %>%
-    summarize(
-      n = n(),
-      coa_grad_res_n = sum(!is.na(coa_grad_res)),
-      coa_grad_res_mean = mean(coa_grad_res, na.rm = TRUE),
-      debt_n = sum(!is.na(debt_all_stgp_eval_mean)),
-      debt_mean = mean(debt_all_stgp_eval_mean, na.rm = TRUE),
-      debt_mth_mean = mean(debt_all_stgp_eval_mdn10yrpay, na.rm = TRUE),
-      earn_2yr_n = sum(!is.na(earn_mdn_hi_2yr)),
-      earn_2yr_mean = mean(earn_mdn_hi_2yr, na.rm = TRUE)
-    )
-```
+
 
 
 <br>
 
-For now, let's work with these two variables (X and Y)
 
-- X (independent variable) = `coa_grad_res` = full-time graduate resident cost of attendance
-- Y (dependent variable) = `debt_all_stgp_eval_mean` = typical (mean) debt from Direct Loans/GradPlus
 
 <br>
 
@@ -673,37 +735,20 @@ __Regression: Models, Variables, Relationships__
 <br>
 
 - __Linear Relationship vs Non-Linear Relationship between X and Y__
-  - Draw linear vs non-linear relationship scatterplots; show in R
-  - We will focus on modeling linear relationship between X and Y for first half of the course
-  - Then we will cover non-linear relationships
-  
+  - We will focus on modeling linear relationship between X and Y
+  - we will cover non-linear relationships at end of quarter if we have time
 
-
-__Slope Measures relationship between X and Y__
-
-- Research Question
-  - What is the effect of cost of attendance (X) on student debt (Y)
-  
-<br>
-
-- What do we want to measure?
-  - The relationship between cost of attendance (X) and student debt (Y)
-  - If we increase the number of cost of attendance per week by $1,000, how much do we expect student debt to change?
-
-<br>
-
-- We want to measure $\beta$
-  - $\beta = \frac{(Y_2 - Y_1)}{(X_2 - X_1)} = \frac{\Delta Y}{\Delta X}$
-  - In other words, the slope of the relationship between X and Y 
-  - Under the assumption of a linear relationship
-  
-<br>
-
-- Draw line showing linear relationship between X and Y
-  - $x_1 = 31, x_2 =32, y_1=\$30,000, Y_2=\$35,000$
-  - Calculate slope at different points and for different $\Delta X$
 
 ## Population Linear Regression Model
+
+
+
+```{r, eval = FALSE}
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+
+summary(mod1)
+```
+
 
 __Population__ Linear Regression Model
 
@@ -713,46 +758,63 @@ __Population__ Linear Regression Model
 
 Where:
 
-- $Y_i$ = typical student debt at university i
+- subscript $i$ refers to "units"; in our example, each unit $i$ is a university
+- $Y_i$ = institution-level student debt at university i
 - $X_i$ = cost of attendance at university i
-- $\beta_0$ ("population intercept") = average debt at a university with X=0 (cost of attendance = 0)
+- $\beta_0$ ("population intercept") = represents average value of $Y$ (institution-level student debt) at a university with X=0 (cost of attendance = 0)
 - $\beta_1$ ("population regression coefficient") = average effect of a one-unit increase in X on the value of Y
-- $u_1$ ("error term" or "residual") = all other variables not included in your model that affect the value of Y
+- $u_1$ ("error term" or "residual") 
+  - as "residual", difference between predicted value and observed value
+  - as "error term", all other variables not included in your model that affect the value of Y
 
 <br>
 
 Draw Picture
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm')
+```
 
-- Scatterplot of the population
-- Population regression model line
-- Label the following:
-  - $\beta_0$
-  - $\beta_1$
-  - residual (predicted - value of $Y_i$)
-
-## Population Regression Model
 
 __Population__ Linear Regression Model
+
 $Y_i = \beta_0 + \beta_1X_i + u_i$
 
 <br>
+Called the "population" linear regression model because the model uses population parameters (which we usually do not know)
 
-Contains two population parameters
+In particular, above model contains two population parameters
 
-- $\beta_0$ ("population intercept") = average student debt for someone with X=0 
+- $\beta_0$ ("population intercept") = average value of $Y$ when  $X=0$
 - $\beta_1$ ("population regression coefficient") = average effect of a one-unit increase in X on the value of Y
 
 <br>
 
-- How do we know these are population parameters? (hint: notation)
-- Do we usually know the value of $\beta_0$ or $\beta_1$? 
+- How do we know these are population parameters? 
+  - because they use greek letters without a "hat" symbol
+- Do we usually know the value of $\beta_0$ or $\beta_1$?
+  - no. we estimate these population parameters using data from a sample
 
 ### Population regression coefficient, $\beta_1$
 
-What is the effect of cost of attendance (X) on student debt (Y)?
+When using regression to estimate causal relationship between $X$ and $Y$, the primary thing we are interested in estimating is $\beta_1$, which can be thought of the "slope" of the relationship between X and Y
 
-- Answer: population regression coefficient, $\beta_1$
-- Estimating $\beta_1$ is the fundamental goal of causal inference/this course 
+<br>
+__"Slope" Measures relationship between X and Y__
+<br>
+
+- Research Question
+  - What is the effect of cost of attendance (X) on institution-level student debt (Y)
+
+- What do we want to measure?
+  - The relationship between cost of attendance (X) and institution-level student debt (Y)
+  - If we increase the number of cost of attendance per week by $1,000, how much do we expect institution-level student debt to change?
+
+- We want to measure $\beta$
+  - $\beta = \frac{(Y_2 - Y_1)}{(X_2 - X_1)} = \frac{\Delta Y}{\Delta X}$
+  - In other words, the slope of the relationship between X and Y 
+  - Under the assumption of a linear relationship
+  
+
 
 <br>
 
@@ -760,21 +822,26 @@ What is the population regression coefficient, $\beta_1$?
 
 - $\beta_1$ measures the average change in Y for a one-unit increase in X
 
-- Think of $\beta_1$ as measuring the slope of our prediction line!
+- In the below graph, think of $\beta_1$ as measuring the slope of the "prediction line"
 
 - $\beta_1 = \frac{\Delta Y}{\Delta X} = \frac{\Delta student\_debt}{\Delta cost\_of\_attendance}$
 
-- Example: $\beta_1$ = $\frac{\$5000 \Delta student\_debt}{\$1000 \Delta cost\_of\_attendance}$ = $xxxx
+- Hypothetical Example: 
+  - $\beta_1$ = $\frac{\$1,500 \Delta student\_debt}{\$1,000 \Delta cost\_of\_attendance}$ = 1.5
+
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm')
+```
 
 <br>
 
-Interpretation (we will use this all semester!)
+Interpretation of $\beta_1$ (we will use this all semester!)
 
-- General interpretation:
+- General interpretation $\beta_1$:
   - On average, a one unit-increase in X is associated with a $\beta_1$ increase (or decrease) in the value of Y
-- Interpretation from example above:
-  - On average, a one-hour increase in cost of attendance (X) is associated with a \$xxx ($\beta_1$) increase in student debt (Y)
-- Interpret if $\beta_1 = \$2,000$; or $\beta_1 = \$4,000$
+  - (*note*. this works if $X$ is a continuous variable and if $X$ is dichotomous (2-category) variable like treatment vs. control)
+- Interpretation from example above $\beta_1=1.5$:
+  - On average, a \$1 increase in cost of attendance (X) is associated with a \$1.5 increase in institution-level student debt (Y)
 
 
 Some important things to remember:
@@ -797,9 +864,10 @@ What is the effect of cost of attendance (X) on student debt (Y)?
 $\beta_0$ is the "population intercept"
 
 - $\beta_0$ = the average value of Y when X=0
-- Here, $\beta_0$, is the average student debt for university where cost of attendance equals $0 (X=0)
-- Usually, we are not substantively interested in $\beta_0$ 
-- Sometimes $\beta_0$ is non-sensical or there's too few observations at X=0 to calculate a precise estimate (e.g., effect of cost of attendance on student debt cuz grad school is never free)
+- Here, $\beta_0$, is the average value of of the variable institution-level student debt at a university where cost of attendance equals $0 (X=0)
+- Usually, we are not substantively interested in $\beta_0$, but we need the intercept to draw a regression line
+- Sometimes $\beta_0$ is non-sensical or there's too few observations at X=0 to calculate a precise estimate 
+  - for our research question and data, there are no universities where grad school cost of attendance is zero, so we can't really make any predictions (based on real data) about what institution-level student debt would be if cost of attendance is zero
 
 
 ### Population Linear Regression Line
@@ -835,15 +903,15 @@ Population regression line and Expected Value, E(Y)
 - Population regression line and prediction
   - If we know value of parameters, $\beta_0$ and $\beta_1$, we can predict value of Y
   - Example: $\beta_0=\$5,000$ and $\beta_1=\$2,000$
-  - (1) Predict the value of Y (student debt) for university where cost of attendance is $20K
-  - (2) Predict the value of Y (student debt) for university where cost of attendance is $40K
+  - (1) Predict the value of Y (institution-level student debt) for university where cost of attendance is $20K
+  - (2) Predict the value of Y (institution-level student debt) for university where cost of attendance is $40K
   
   
 ### $u_i$, as "Error Term" or "unobserved variables"
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
-  - Y= student debt; $X_i$= cost of attendance
+  - Y= institution-level student debt; $X_i$= cost of attendance
 
 <br>
 
@@ -854,7 +922,7 @@ Population regression line and Expected Value, E(Y)
   
 <br>
 
-- Example of Y= student debt; $X_i$= cost of attendance; the error term $u_i$ would consist of other factors besides cost of attendance that have an effect on student debt
+- Example of Y= institution-level student debt; $X_i$= cost of attendance; the error term $u_i$ would consist of other factors besides cost of attendance that have an effect on institution-level student debt
   - cost of healthcare; whether students can rely on parents to pay for graduate school; how much grant aid students are awarded
   
 
@@ -868,25 +936,215 @@ Population regression line and Expected Value, E(Y)
 
 - Population linear regression model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
-  - Y= student debt; $X_i$= cost of attendance
+  - Y= institution-level student debt; $X_i$= cost of attendance
   
 <br> 
 
 - $u_i$ as the residual
-  - Population regression line represents the predicted value of Y (student debt) for each value of X (cost of attendance)
+  - Population regression line represents the predicted value of Y (institution-level student debt) for each value of X (cost of attendance)
   - Residual = the predicted value of Y - observed value of Y for any given value of X
 
 <br>
 
 - Easier to conceptually think about $u_i$ in terms of each observation, i
 
-  - $Y_i$ = actual value of student debt for person i
+  - $Y_i$ = actual value of institution-level student debt for person i
   - $Y_i = \beta_0 + \beta_1X_i$ = Population Regression line 
-    -  The predicted value of student debt for university i with cost of attendance = $X_i$
+    -  The predicted value of institution-level student debt for university i with cost of attendance = $X_i$
   - Residual, $u_i$
     - The difference between actual value, $Y_i$, and predicted value from the population regression line for observation i
     - $u_i = Y_i - (\beta_0 + \beta_1X_i)$
     
+
+# Regression in R 
+
+Conceptually, the next step in learning about regression is understanding how we choose estimates of $\beta_0$ and $\beta_1$ using sample data? This step is called "estimation"
+
+<br>
+
+Before providing a conceptual explanation of estimation, we will teach you about running regression in *R*. Then, we'll use output from these regression models to aid our conceptual explanation of estimation
+
+## run models using `lm()`
+
+We use the `lm()` function to run linear regression models
+
+<br>
+
+`lm()` function
+
+- Description
+  - "`lm` is used to fit linear models"
+- syntax (including default values)
+  - `lm(formula, data, subset, weights, na.action, method = "qr", model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, contrasts = NULL, offset, ...)`
+- selected arguments
+  - `formula`: "an object of class 'formula'" that provides "a symbolic description of the model to be fitted."
+    - follows form `formula = y_var ~ x_var1 + x_var2+ x_var3`
+    - where `y_var` is the outcome variable and `x_var`s are independent variables
+  - `data`: data frame that contains variables named in `formula`
+  - `subset`: "an optional vector specifying a subset of observations to be used in the fitting process."
+  - `na.action`: "a function which indicates what should happen when the data contain NAs"
+    - by default, an observation will be excluded from the model if itcontains missing values for any variable used in the model
+- Value (object created or "returned" by the `lm()` function)
+  - "lm returns an object of class 'lm'"
+  - "An object of class 'lm' is a list containing at least the following components"
+
+<br>
+
+Run model of the relationship between cost of attendance (X) and institution-level student debt (Y)
+
+- However, the output printed just by running the `lm()` function usually doesn't contain everything we need
+```{r}
+lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+```
+
+<br>
+
+When you run the `lm()` function, *R* creates an object that contains lots of information about the model we run. We can store this object by assigning it a name using `<-`
+
+- let's store the object
+
+```{r}
+# create object
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+
+# simple print of mod1 object
+mod1
+```
+
+<br>
+
+Let's investigate the contents of the `mod1` object using the `str()` function
+
+- Below output looks rather nasty! let me highlight a few points:
+- the underlying data type of `mod1` is a "list"; data frames are also list
+- `mod1` is a list of 13 elements
+  - each of these 13 elements has a "name", so `mod1` is a "named list"
+- we can refer to elements the object `mod1` using the syntax: `object_name$element_name`
+  - this is the same as when we referred to variables in a data frame using the syntax: `dataframe_name$variable_name`!
+- The first element of `mod1` is named "coefficients", so we could refer to this element by typing `mod1$coefficients`:
+  - `r mod1$coefficients`
+
+```{r}
+# investigate contents of mod1 object using str() function
+mod1 %>% str() 
+```
+
+Let's play around with the element named `coefficients` within the object `mod1` using the syntax `object_name$element_name`
+```{r}
+# names of elements in object mod1
+names(mod1)
+
+# mod1$coefficients
+
+  #print element
+    mod1$coefficients
+    
+  #investigate structure of element
+    # a (named) numeric vector
+    mod1$coefficients %>% str()
+    str(mod1$coefficients) # same same
+
+  # names of element  
+    mod1$coefficients %>% names()
+    names(mod1$coefficients) # same same  
+
+  # length of element
+    mod1$coefficients %>% length()
+    length(mod1$coefficients) # same same  
+
+# so the mod1$coefficients is an object itself; it is a numeric vector of length=2
+  
+  # print the first element of mod1$coefficients
+  mod1$coefficients[1]
+  
+  # print the second element of mod1$coefficients
+  mod1$coefficients[2]
+```
+<br>
+
+A key takeaway from above code chunk
+
+- Population linear regression model
+  - $Y_i = \beta_0 + \beta_1X_i + u_i$
+- Our estimate of $\beta_0$ can be found by typing `mod1$coefficients[1]`
+  - `r mod1$coefficients[1]`
+- Our estimate of $\beta_1$ can be found by typing `mod1$coefficients[2]`
+  - `r mod1$coefficients[2]`
+
+
+##  `summary()` function
+
+
+Use the `summary()` after use running `lm()` to produce easier-to-read summary of regression results
+
+
+<br>
+
+`summary()` function
+
+- Description
+  - "summary is a generic function used to produce result summaries of the results of various model fitting functions. The function invokes particular methods which depend on the class of the first argumen"
+- syntax
+  - `summary(object, ...)`
+  - examples (these give the same result)
+    - `summary(object = mod1)`
+    - `summary(mod1)`
+- Value (object created or "returned" by the `summary()` function)
+  - object returned by the summary function is different depending on the kind of model you are summarizing
+  
+
+Run `summary()` function after running regression using `lm()`
+```{r}
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+
+# priting output from summary(mod1)
+  #summary(object = mod1)
+  summary(mod1)
+```
+
+
+<br>
+
+Using `str()` to investigate object created by `summary()` function
+
+- again, the Below output looks rather nasty! let me highlight a few points:
+- the underlying data type of the object created by `summary(mod1)` is a "list"; 
+  - data frames are also list; `mod1` is also a list
+- `summary(mod1)` is a list of 12 elements
+  - each of these 13 elements has a "name", so `summary(mod1)` is a "named list"
+- we can refer to elements the object `summary(mod1)` using the syntax: `object_name$element_name`
+  - e.g., `summary(mod1)$coefficients`
+```{r}
+# investigating object created by summary(mod1)
+summary(mod1) %>% str()
+
+summary(mod1)$coefficients
+
+summary(mod1)$coefficients %>% str()
+```
+
+<br>
+
+Grabbing individual elements from `summary(mod1)$coefficients`
+
+- the element "coefficients" created by summary() is a "matrix"
+- more specifically, it is a 2 X 4 matrix, that is a matrix with 2 rows and 4 columns
+- we can grab an individual cell within the matrix using this syntax: `summary(mod1)$coefficients[<row_num>,<col_num]`
+  - e.g., type `summary(mod1)$coefficients[2,1]` to print estimate of $\beta_1$
+  - like this: `r summary(mod1)$coefficients[2,1]`
+```{r}
+# the element "coefficients" created by summary() is a "matrix"
+summary(mod1)$coefficients %>% class()
+
+# more specifically, it is a 2 X 4 matrix, that is a matrix with 2 rows and 4 columns
+summary(mod1)$coefficients %>% str()
+
+# we can grab an individual cell within the matrix using this syntax: 
+  # summary(mod1)$coefficients[<row_num>,<col_num]
+  summary(mod1)$coefficients[2,1] # this is the estimate for Beta_1
+
+```
+
 
 # Estimation
 
@@ -894,49 +1152,64 @@ Population regression line and Expected Value, E(Y)
 __General things we do in regression analysis__
 
 1. __Estimation__ [Today]
-  - How do we choose estimates of $\beta_0$ and $\beta_1$ using sample data?
+    - How do we choose estimates of $\beta_0$ and $\beta_1$ using sample data?
 
 <br>
 
 2. __Prediction__ [Next Week]
-  - What is the predicted value of Y for someone with a particular value of X?
+    - What is the predicted value of Y for someone with a particular value of X?
   
 <br>
   
 3. __Hypothesis testing__ [focus of the rest of the semester]
-  - Hypothesis testing and confidence intervals about $\beta_1$
+    - Hypothesis testing and confidence intervals about $\beta_1$
   
 
 <br>
 
-Step 1 of regression is to estimate parameters
-
-Population linear regression model
+Step 1 of regression is to estimate parameters of the population linear regression model
 
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
 
 <br>
 
-__Goal of estimation is to__:
+__Goal of estimation: use sample data to estimate population parameters__:
 
-  - Use sample data to estimate the population intercept, $\beta_0$, and the population regression coefficient, $\beta_1$
-  - $\hat{\beta_0}$ is an estimate of $\beta_0$
-  - $\hat{\beta_1}$ is an estimate of $\beta_1$
-    - How dow we know these estimates are based on sample data and not population parameters? (hint: notation!)
-    
+  - Previous lecture: we used sample data on variable $Y$ to estimate population mean, $\mu_Y$
+    - $\bar{Y}$ (sample mean of $Y$) is an estimate of $\mu_Y$
+  - This lecture: use sample data to estimate the population intercept, $\beta_0$, and the population regression coefficient, $\beta_1$
+    - $\hat{\beta_0}$ is an estimate of $\beta_0$
+    - $\hat{\beta_1}$ is an estimate of $\beta_1$
+
+
+
+<br>
+
+__Review of terms__
+
+- *point estimate (also called "estimate")*:
+  - a single value that is our guess of the value of the population parameter
+  - e.g., sample mean institution-level student debt $\bar{Y}=$ `r round(mean(df_socialwork$debt_all_stgp_eval_mean),digits=0)` is our best guess of population mean institution-level student debt $\mu_Y$
+- *estimator*:
+  - a method or formula for calculating an estimate of a population parameter based on sample data
+  - e.g., $\bar{Y} = \frac{\sum_{i=1}^{n} Y_i}{n}$ is estimator (formula) for calculating an estimate of population mean, $\mu_Y$
+- *estimation*:
+  - the process of using an estimator to calculate point estimates of population parameters, based on sample data
+
 <br>
 
 __Estimation problem__:
 
-Need to develop a method for choosing values of $\hat{\beta_0}$ and $\hat{\beta_1}$ 
-
+- we write out the population linear regression model, $Y_i = \beta_0 + \beta_1X_i + u_i$
+- Need to develop a method for choosing values of $\hat{\beta_0}$ and $\hat{\beta_1}$ 
+  - that is we need to develop an estimator that yields the "best" point estimates of $\hat{\beta_0}$ and $\hat{\beta_1}$
 
 ## Estimation (population mean)
 
-We faced a similar estimation problem in intro to stats!
+We faced a similar estimation problem when we were trying to estimate population mean, $\mu_Y$!
 
-- Use sample to calculate the "best" estimate of the population mean, $\mu_Y$
-- We decided sample mean, $\bar{Y}$, was the "best" estimate!
+- Using sample data, we want to calculate the "best" estimate of the population mean, $\mu_Y$
+- We decided sample mean, $\bar{Y}= \frac{\sum_{i=1}^{n} Y_i}{n}$, was the "best" estimate
 
 <br>
 
@@ -1019,13 +1292,13 @@ __OLS Prediction Line or "OLS Regression Line" (based on sample data)__
 - Draw this out...
 
 
-## Regression in R using `lm()`
+### Estimation in R using `lm()` [KEEP?]
 
 Let's write run our first regression and write out our models!
 
 <br>
   
-RQ: What is the effect of cost of attendance on student debt? 
+RQ: What is the effect of cost of attendance on institution-level student debt? 
 
 - Run regression in R
   - `mod1 <- lm(realrinc ~ hrs1, data=gss)`
@@ -1034,7 +1307,7 @@ RQ: What is the effect of cost of attendance on student debt?
 ![](output.png)
 
 
-RQ: What is the effect of cost of attendance on student debt? 
+RQ: What is the effect of cost of attendance on institution-level student debt? 
 
 <br>
 Write out and label everything within the following: [we will be doing this all semester!]
