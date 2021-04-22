@@ -749,7 +749,15 @@ However, knowing expected values -- e.g., $E[Y_i|T_i=1]$, the expected value of 
 
 Formula for the "difference in means" estimator of the average treatment effect
 
-- $\hat{ATE} = \hat{\tau} = \bar{Y}_{treat} - \bar{Y}_{control}$
+- $\hat{ATE} = \hat{\tau} = \bar{Y}_{treatment} - \bar{Y}_{control}$
+
+<br>
+
+- $\hat{ATE} = \frac{\sum_{i=1}^{n_{t=1}} Y_{i,t=1}}{n_{t=1}} - \frac{\sum_{i=1}^{n_{t=0}} Y_{i,t=0}}{n_{t=0}}$, where:
+  - $Y_{i,t=1}$: observed outcome for a unit $i$ who received the treatment
+  - $Y_{i,t=0}$: observed outcome for a unit $i$ who received the control
+  - $n_{t=1}$: number of units that received the treatment 
+  - $n_{t=0}$: number of units that received the control
 
 <br>
 Using data from Tenesse STAR experiment (data frame is `df_stark`), our estimate of ATE is the sample mean reading score for treated students (small class size) minus the sample mean reading score for untreated units (big class size)

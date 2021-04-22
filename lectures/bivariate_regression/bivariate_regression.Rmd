@@ -35,7 +35,7 @@ pre code, pre, code {
 ```{r, echo=FALSE, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning = FALSE, message = FALSE)
   #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
-options(scipen=999)
+#options(scipen=999)
 options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll right for printing of data frames
 
 # remove scientific notation
@@ -838,7 +838,7 @@ df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom
 Interpretation of $\beta_1$ (we will use this all semester!)
 
 - General interpretation $\beta_1$:
-  - On average, a one unit-increase in X is associated with a $\beta_1$ increase (or decrease) in the value of Y
+  - On average, a one-unit increase in X is associated with a $\beta_1$ increase (or decrease) in the value of Y
   - (*note*. this works if $X$ is a continuous variable and if $X$ is dichotomous (2-category) variable like treatment vs. control)
 - Interpretation from example above $\beta_1=1.5$:
   - On average, a \$1 increase in cost of attendance (X) is associated with a \$1.5 increase in institution-level student debt (Y)
