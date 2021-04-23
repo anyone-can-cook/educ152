@@ -638,7 +638,7 @@ in the below table, **bolded** cells indicate cells we actually observe
 | 5  | 50  | **50**  | ?  |
 | 6  | 80  | **70**  | ?  |
 | 7  | **45**  | 45  | ?  |
-| **Avg. observed**  | **45**  | **53.75**  | **-8.75** |
+| **Avg. observed**  | **41.66**  | **53.75**  | **-12.08** |
 | Avg. potential (unobserved)  | 50  | 50  | 0 |
 
 
