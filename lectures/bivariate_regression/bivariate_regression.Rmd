@@ -445,6 +445,14 @@ Some descriptive statistics about our variables of interest and other interestin
     )
 ```
 
+<br> 
+
+List of individual observations (each observation is a university)
+```{r}
+#df_socialwork %>% glimpse()
+df_socialwork %>% select(instnm,control,coa_grad_res,debt_all_stgp_eval_mean,debt_all_stgp_eval_mdn10yrpay,earn_mdn_hi_2yr) %>% var_label()
+df_socialwork %>% select(instnm,control,coa_grad_res,debt_all_stgp_eval_mean,debt_all_stgp_eval_mdn10yrpay,earn_mdn_hi_2yr)
+```
 
 
 # Review: scatterplot, covariance, correlation
@@ -743,12 +751,6 @@ __Regression: Models, Variables, Relationships__
 
 
 
-```{r, eval = FALSE}
-mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
-
-summary(mod1)
-```
-
 
 __Population__ Linear Regression Model
 
@@ -759,8 +761,8 @@ __Population__ Linear Regression Model
 Where:
 
 - subscript $i$ refers to "units"; in our example, each unit $i$ is a university
-- $Y_i$ = institution-level student debt at university i
-- $X_i$ = cost of attendance at university i
+- $Y_i$ = depenent variable of interest for unit $i$; institution-level student debt at university i
+- $X_i$ = independent variable for unit $i$; cost of attendance at university i
 - $\beta_0$ ("population intercept") = represents average value of $Y$ (institution-level student debt) at a university with X=0 (cost of attendance = 0)
 - $\beta_1$ ("population regression coefficient") = average effect of a one-unit increase in X on the value of Y
 - $u_1$ ("error term" or "residual") 
@@ -1427,13 +1429,17 @@ Interpreting $\hat{\beta_0}$ and $\hat{\beta_1}$ in words
 - $\hat{\beta_0}=$ `r round(summary(mod1)$coefficients[1,1], digits =2)` is the OLS estimate of the population intercept $\beta_0$, which represents average value of $Y$ (institution-level student debt) at a university with X=0 (cost of attendance = 0)
   - interpretation of $\hat{\beta_0}=$ `r round(summary(mod1)$coefficients[1,1], digits =2)`: the predicted institution-level student debt at a university with annual cost of attendance equals `0` is `r round(summary(mod1)$coefficients[1,1], digits =2)`
 - $\hat{\beta_1}=$ `r round(summary(mod1)$coefficients[2,1], digits =2)` is the OLS estimate of the population intercept $\beta_1$, which represents average effect of a one-unit increase in $X$ on the value of $Y$
+  - General formula for interpretation of $\hat{\beta_1}$:
+    - "On average, a one-unit increase in $X$ is associated with a $\hat{\beta_1}$ increase (or decrease) in the value of $Y$
+    - when applying this formula replace "one unit increase in $X$" with "one dollar increase in annual cost of attendance"; do the same sort of thing for $Y$
   - interpretation of $\hat{\beta_1}=$ `r round(summary(mod1)$coefficients[2,1], digits =2)`: a one-dollar increase in annual cost of attendance is associated with a `r round(summary(mod1)$coefficients[2,1], digits =2)` dollar increase in institution-level student debt
 
+<!-- 
 
-## Exercise [PATRICIA - MODIFY]
+## Exercise [NEED TO MODIFY; RAN OUT OF TIME!!!]
 
 RQ: What is the effect of age on XXXX?? 
-PATRICIA - MAYBE MODIFY THIS SO NOW THE DEPENDENT VARIABLE IS EARNINGS TWO YEARS AFTER GRADUATION INSTEAD OF DEBT
+ MAYBE MODIFY THIS SO NOW THE DEPENDENT VARIABLE IS EARNINGS TWO YEARS AFTER GRADUATION INSTEAD OF DEBT
 
 ```{r}
 mod2 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_socialwork)
@@ -1496,6 +1502,8 @@ RQ: What is the effect of age on annual income??  [CHANGE THIS]
     - $E(\hat{Y_i}|X=35)$ = $\hat{Y_i} = \$8,620 + \$6,624$
     - $E(\hat{Y_i}|X=35)$ = \$15,244
 
+
+your comment -->
 
 # Prediction
 
