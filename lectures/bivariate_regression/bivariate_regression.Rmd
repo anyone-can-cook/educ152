@@ -40,6 +40,9 @@ options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll rig
 
 # remove scientific notation
 options(scipen=999)
+
+# add commas to big numbers
+#knitr::kable(d, digits = 3, format.args = list(big.mark = ",", scientific = FALSE))
 ```
 
 # Introduction
@@ -321,8 +324,11 @@ rm(df_scorecard) # comment this line out if you want to keep scorecard data fram
     df_score_ipeds %>% filter(cipcode=='4407') %>% count(cipcode) # social work
   
 # create data frame that only contains observations for MAs in social work; filter(cipcode=='4407')
-  df_socialwork <- df_score_ipeds %>% filter(cipcode=='4407')
-  
+  df_socialwork <- df_score_ipeds %>% 
+    filter(cipcode=='4407') %>%
+    # remove observations with missing values of cost of attendance (better for teaching concepts)
+    filter(!is.na(coa_grad_res))
+
   df_socialwork %>% glimpse()
 
   # investigate data structure  
@@ -1404,11 +1410,11 @@ When we run a regression model, write out regression models like this (we will b
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
   - where:
     - subscript $i$ refers to universities
-    - $Y_i$ = institution-level student debt at university $i$
-    - $X_i$ = annual cost of attendance for full-time resident graduate students at university $i$
-    - $\beta_0$ = population intercept"), which represents average value of $Y$ (institution-level student debt) at a university with X=0 (cost of attendance = 0)
-  - $\beta_1$ = population regression coefficient, which represents average effect of a one-unit increase in $X$ on the value of $Y$
-- __OLS Prediction Line or "OLS Regression Line" (based on sample data)__
+    - $Y_i$ = institution-level student debt (in dollars) at university $i$
+    - $X_i$ = annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
+    - $\beta_0$ = (population intercept),average value of $Y$ when $X=0$
+  - $\beta_1$ = (population regression coefficient) average effect of a one-unit increase in $X$ on the value of $Y$
+  - __OLS Prediction Line or "OLS Regression Line" (based on sample data)__
    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$   
    - $\hat{Y_i} =$  `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$
 
@@ -1505,14 +1511,550 @@ RQ: What is the effect of age on annual income??  [CHANGE THIS]
 
 your comment -->
 
-# Prediction
-
-ADD TEXT
-
 # Model Fit
 
-ADD TEXT
 
+## $R^2$
+
+
+Introducing, $R^2$, "the coefficient of determination"
+
+<br>
+
+Reminder of where we left off:
+
+- Research question
+  - What is the relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+- Population Linear Regression Model
+  - $Y_i = \beta_0 + \beta_1X_i + u_i$
+  - where:
+    - subscript $i$ refers to universities
+    - $Y_i$ = institution-level student debt (in dollars) at university $i$
+    - $X_i$ = annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
+    - $\beta_0$ = (population intercept),average value of $Y$ when $X=0$
+  - $\beta_1$ = (population regression coefficient) average effect of a one-unit increase in $X$ on the value of $Y$
+- OLS Prediction Line (based on sample data) $\hat{Y_i}$ is predicted value $Y_i$ for a given value of $X$
+   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
+   - $\hat{Y_i} =$  `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$
+
+<br>
+
+In the summary of the regression output below, notice the following:
+
+- "Multiple R-squared:" `r round(summary(mod1)$r.squared,digits =4)`
+```{r}
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+
+summary(mod1)
+
+#summary(mod1) %>% str() # show structure of object created by summary(mod1)
+
+# print r-squared using syntax object_name$element_name
+summary(mod1)$r.squared
+```
+<br>
+
+__What does $R^2$ measure?__
+
+- $R^2$, "the coefficient of determination", measures the fraction of the variance in Y that is explained by X (and is not already explained by sample mean, $\bar{Y}$)
+  - In other words, how much better is the regression model in predicting values of Y than $\bar{Y}$
+
+<br>
+
+Looking at the below scatterplot of cost of attendance ($X$) and institution-level debt($Y$); with mean value of debt as horizontal dotted line and OLS prediction line as solid blue line
+
+- $R^2$, "the coefficient of determination", measures how much closer the predicted values of $\hat{Y_i}$ are to actual values $Y_i$ when we use OLS prediction line to predict $Y_i$ (i.e., $\hat{Y_i}=\hat{\beta_0} + \hat{\beta_1}X_i$), rather than using sample mean $\bar{Y}$ to predict $Y_i$ (i.e., $\hat{Y_i}=\bar{Y}$)
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + 
+  stat_smooth(method = 'lm') +
+  geom_hline(yintercept=mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE), linetype="dashed", color = "red")
+```  
+
+<br>
+
+__Interpreting $R^2$__
+
+- $R^2$ ranges from 0 to 1
+  - $R^2=0$: "the model does not explain any variation in Y" (that is not already explained by sample mean, $\bar{Y}$)
+  - $R^2=1$: "the model explains 100% of the variation in Y" (that is not already explained by sample mean, $\bar{Y}$)
+  - $R^2=0.135$: "the model explains 13.5% of the variation in Y" (that is not already explained by sample mean, $\bar{Y}$)
+  
+<br>
+<br>
+
+__Formula for $R^2$__
+
+$R^2 = \frac{\text{variance in Y that is explained by X}}{\text{total variance in Y}} = \frac{\text{Explained Sum of Squares}}{\text{Total Sum of Squares}} =  \frac{ESS}{TSS}$
+
+<br>
+
+OR
+<br>
+
+
+$R^2 = 1- \frac{\text{variance in Y that not explained explained by X}}{\text{total variance in Y}} = 1-  \frac{\text{Sum of Squared Residuals}}{\text{Total Sum of Squares}} = 1-  \frac{SSR}{TSS}$
+
+
+### Components of $R^2$
+
+
+
+__Components of $R^2$__
+
+- $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
+  - predicted value of $Y_i$ for a given value of $X$
+
+- $\hat{u_i} = Y_i - \hat{Y_i}$
+  - residual or "error" for observation $i$; equals observed value $Y_i$ minus predicted value $\hat{Y_i}$
+
+<br>
+
+- Total Sum of Squares (TSS) = $\sum_{i=1}^{n} (Y_i-\bar{Y})^2$
+  - A measure of the total variance in Y, relative to $\bar{Y}$
+  
+- Explained Sum of Squares (ESS) = $\sum_{i=1}^{n} (\hat{Y_i}-\bar{Y})^2$
+  - Difference between predicted values $\hat{Y_i}$ and sample mean $\bar{Y}$
+  - Measures amount of variation in Y explained by X
+  
+- Sum of Squared Residuals (SSR) = $\sum_{i=1}^{n} (Y_i- \hat{Y_i})^2$
+  - Difference between actual value observed and predicted value by our regression line
+  - Measures amount of variation in Y not explained by X
+  
+<br>
+
+$TSS = ESS + SSR$
+
+- Total variation in Y (TSS) equals variation explained by the model (ESS) plus variation not explained by model (SSR)
+- Use visual plot explain TSS, ESS, SSR
+
+
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + 
+  stat_smooth(method = 'lm') +
+  geom_hline(yintercept=mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE), linetype="dashed", color = "red")
+```  
+
+<br>
+
+
+### Calculating $R^2$
+
+<br>
+
+#### Calculating $R^2$ by hand
+
+__Calculating $\bar{Y}$, $\hat{Y}_i$, and $\hat{u}_i$__
+
+- Predicted value for each $i$: 
+  - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i=$  `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$
+- Residual (or "error") for each $i$: 
+  - $\hat{u_i} = Y_i - \hat{Y}_i =  Y_i - (\hat{\beta_0} + \hat{\beta_1}X_i) = Y_i -$  (`r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$)
+
+```{r}
+#summary(mod1) %>% str()
+
+# mean value of y for each i
+ybar_i <- mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE)
+
+# predicted values for each y_i
+yhat_i <- summary(mod1)$coefficients[1,1] + summary(mod1)$coefficients[2,1]*df_socialwork$coa_grad_res
+
+# residual for each Y_i
+u_i <- df_socialwork$debt_all_stgp_eval_mean - yhat_i
+```
+
+<br>
+
+__Calculating TSS, ESS, and SSR__
+
+- Total Sum of Squares (TSS) = $\sum_{i=1}^{n} (Y_i-\bar{Y})^2$
+  - A measure of the total variance in Y, relative to $\bar{Y}$
+  - total sum of squares = `r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`
+- Explained Sum of Squares (ESS) = $\sum_{i=1}^{n} (\hat{Y_i}-\bar{Y})^2$
+  - Difference between predicted values $\hat{Y_i}$ and sample mean $\bar{Y}$
+  - Measures amount of variation in Y explained by X
+  - explained sum of squares = `r format(round(sum((yhat_i - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`
+- Sum of Squared Residuals (SSR) = $\sum_{i=1}^{n} (Y_i- \hat{Y_i})^2$
+  - Difference between actual value observed and predicted value by our regression line
+  - Measures amount of variation in Y not explained by X
+  - sum of squared residuals = `r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`
+  - or calculate SSR as $\sum_{i=1}^{n} (\hat{u_i})^2=$ `r format(round(sum((u_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`
+  
+```{r}
+# total sum of squares (TSS)
+tss <- sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE)
+tss
+
+# Explained sum of squares (ESS)
+ess <- sum((yhat_i - ybar_i)^2, na.rm = TRUE)
+ess
+
+# Sum of squared residuals (SSR)
+ssr <- sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)
+ssr
+
+  # or calculate this way, based on u_i
+  sum(u_i^2)
+```
+<br>
+
+__Calculating $R^2$__
+
+$R^2$ as ESS/TSS
+
+- $R^2 = \frac{\text{variance in Y that is explained by X}}{\text{total variance in Y}} =  \frac{ESS}{TSS}=$ (`r format(round(sum((yhat_i - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`)/(`r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`) = `r format(round(sum((yhat_i - ybar_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=4),big.mark = ',')`
+
+
+```{r}
+# calculating R^2 as ESS/TSS
+  #sum((yhat_i - ybar_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE)
+  ess/tss
+
+```
+
+<br>
+
+OR
+
+<br>
+
+$R^2$ as 1 - SSR/TSS
+
+- $R^2 = 1- \frac{\text{variance in Y that not explained explained by X}}{\text{total variance in Y}} =  1-  \frac{SSR}{TSS}=1-$ (`r format(round(sum((u_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`)/(`r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`) = `r format(round(1 - sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=4),big.mark = ',')`
+
+
+```{r}
+# calculating R^2 as (1- SSR/TSS)
+  #1 - sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE)
+  1 - ssr/tss
+
+```
+<br>
+<br>
+
+#### Calculating $R^2$ in *R*
+
+<br>
+
+$R^2 = \frac{\text{variance in Y that is explained by X}}{\text{total variance in Y}} =  \frac{ESS}{TSS}=$
+
+
+- Note that in R:
+
+  - `summary()` will only give you the $R^2$
+  - `anova()` will give you ESS and SSR (but not TSS)
+
+<br>
+<br>
+
+Using `summary()` to calculate $R^2$
+
+- "Multiple R-squared:" `r round(summary(mod1)$r.squared,digits =4)`
+```{r}
+summary(mod1)
+```
+<br>
+<br>
+
+Using `anova()` to calculate $R^2$
+
+- Estimated sum of squares (ESS) = `r format(round(anova(mod1)$"Sum Sq"[1], digits=4),big.mark = ',')`
+- Sum of Squared Residuals (SSR) = `r format(round(anova(mod1)$"Sum Sq"[2], digits=4),big.mark = ',')`
+- Total Sum of Squares (TSS) = ESS + SSR = `r format(round(anova(mod1)$"Sum Sq"[1] +anova(mod1)$"Sum Sq"[2], digits=4),big.mark = ',')`
+- $R^2 = \frac{ESS}{TSS}=$ (`r format(round(anova(mod1)$"Sum Sq"[1], digits=4),big.mark = ',')`)/(`r format(round(anova(mod1)$"Sum Sq"[1] +anova(mod1)$"Sum Sq"[2], digits=4),big.mark = ',')`) = `r format(round(anova(mod1)$"Sum Sq"[1]/(anova(mod1)$"Sum Sq"[1] + anova(mod1)$"Sum Sq"[2]), digits=4),big.mark = ',')`
+
+```{r}
+anova(mod1)
+
+anova(mod1) %>% str()
+
+# this 2-element vector contains ESS and SSR
+anova(mod1)$"Sum Sq"
+
+# ESS
+anova(mod1)$"Sum Sq"[1]
+
+# SSR
+anova(mod1)$"Sum Sq"[2]
+
+# TSS
+anova(mod1)$"Sum Sq"[1] + anova(mod1)$"Sum Sq"[2]
+
+# R squared
+anova(mod1)$"Sum Sq"[1]/(anova(mod1)$"Sum Sq"[1] + anova(mod1)$"Sum Sq"[2])
+```
+### Student exercise about $R^2$ [PATRICIA PLEASE MODIFY]
+
+PATRICIA - MODIFY SO THAT REGRESSION MODEL IS RELATIONSHIP BETWEEN COST OF ATTENDANCE (X) AND EARNINGS (Y); earnings var is `df_socialwork$earn_mdn_hi_2yr`
+
+__Student Exercise #2__
+RQ1: What is the relationship between district-wide math test scores (Y) and district expenditures per student (X)?
+
+- Y= `math_scr`
+- X= `expn_stu_000`
+
+
+1. Run regression in R (did this already in exercise #1; `mod1`)
+2. Using `summary(mod1)`: 
+      - What is $R^2$? Interpret $R^2$.
+3. Using `anova(mod1)`:
+      - Show that $R^2$ = ESS/TSS
+
+<br>
+
+RQ2: What is the relationship between district-wide math test scores (Y) and student-teacher ratio (X)?
+
+- Y= `math_scr`
+- X= `str`
+
+<br>
+
+1. Run regression in R (need to do this as `mod4`)
+2. Using `summary(mod4)`: 
+      - What is $R^2$? Interpret $R^2$.
+3. Using `anova(mod4)`:
+      - Show that $R^2$ = ESS/TSS
+      
+      
+      
+      
+      
+      
+__Student Exercise #2 [SOLUTIONS]__
+RQ1: What is the relationship between district-wide math test scores (Y) and district expenditures per student (X)?
+
+1. Run regression in R (did this already in exercise #1; `mod1`)
+2. Using `summary(mod1)`: 
+      - What is $R^2$? _Measures the fraction of the variance in Y that is explained by X (and is not already explained by sample mean)_
+      - $R^2$ = 0.02402; _District expenditures per student explains 2.4% of the variation in district math test scores_ 
+3. Using `anova(mod1)`:
+      - ESS= 3540
+      - SSR = 143831
+      - TSS = 3540 + 143831 =147371
+      - $R^2$ = 3540/147371 = 0.024
+
+<br>
+
+RQ2: What is the relationship between district-wide math test scores (Y) and student-teacher ratio (X)?
+
+1. Run regression in R (need to do this as `mod4`)
+2. Using `summary(mod4)`: 
+      - Interpret $R^2$ = 0.03824; _District student-teacher ratio explains 3.8% of the variation in district math test scores_
+3. Using `anova(mod4)`:
+      - ESS= 5636
+      - SSR = 141735
+      - TSS = 5636 + 141735 =147371
+      - $R^2$ = 5636/147371 = 0.03824
+      
+      
+__Student Exercise #2__
+
+Based on the $R^2$ of Model 1 vs $R^2$ of Model 4:
+
+ - Does district expenditures per student or student teacher ratio do a better job at predicting math test scores?
+
+## Standard Error of the Regression (SER)
+
+__Sample standard Error of the Regression (SER)__, denoted SER or $\hat{\sigma}_{\hat{u}}$ or $s_{\hat{u}}$
+
+- SER an estimate of the standard deviation of the residuals $\hat{u_i}$
+- Definition
+  - Sample standard error of the regression (SER) is an estimate of how far away, on average, an actual observed value of $Y_i$ is from the predicted value $\hat{Y}_i$ of $Y_i$ for a random observation, $i$
+
+
+<br>
+<br>
+
+__Comparison of sample standard deviation $\hat{\sigma}_{Y}$ and SER__
+
+- Sample standard deviation of $Y$, denoted $\hat{\sigma}_{Y}$ or $s_{Y}$
+  - Average distance between a random observation $Y_i$ an the sample mean $\bar{Y}$
+  - $\hat{\sigma_{Y}} = s_{Y} =  \sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\overline{Y})^2}} {n-1} }$
+  
+<br>
+
+- Standard error of the regression, denoted SER or $\hat{\sigma}_{\hat{u}}$ or $s_{\hat{u}}$
+  - Average distance between a random observation $Y_i$ and the value predicted by the OLS regression, $\hat{Y_i}$
+  - where, $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
+  
+<br>
+
+__Formula for SER__
+
+- $SER = \sqrt{\frac{SSR}{n-2}}= \sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\hat{Y})^2}} {n-2} } = \sqrt{ \frac {\sum_{i=1}^{n} (\hat{u_{i}})^2} {n-2}}$
+- where, SSR = sum of squared residuals
+- Why is denominator (n-2)? 
+  - Because we lose one "degree of freedom" for calculating sample mean $\bar{Y}$ and another for the independent variable $X$
+  
+
+<br>
+__SER is called "Residual Standard Error" in output of `summary()`__
+
+- "Residual Standard Error": `r summary(mod1)$sigma`
+- using the syntax `object_name$element_name`, SER can be referenced by: `summary(mod1)$sigma`
+
+```{r}
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+
+summary(mod1)
+
+# this syntax references SER
+summary(mod1)$sigma
+```
+<br>
+
+__Calculating SER__
+
+$SER = \sqrt{\frac{SSR}{n-2}}= \sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\hat{Y})^2}} {n-2} } = \sqrt{ \frac {\sum_{i=1}^{n} (\hat{u_{i}})^2} {n-2}}$
+
+can calculate SER using output from `anova()` function, which provides SSR
+
+- Sum of Squared Residuals (SSR)
+  - syntax to find SSR in R: `anova(mod1)$"Sum Sq"[2]`
+  - SSR = `r format(round(anova(mod1)$"Sum Sq"[2], digits=4),big.mark = ',')`
+- denominator of SER is $n-2$, which is the "degrees of freedom" of the model
+  - syntax to find degrees of freedom: `anova(mod1)$Df[2]`
+  - degrees of freedom: `r anova(mod1)$Df[2]`
+- $SER = \sqrt{\frac{SSR}{n-2}}=$ `sqrt(` (`r format(round(anova(mod1)$"Sum Sq"[2], digits=4),big.mark = ',')`)/(`r anova(mod1)$Df[2]`) `)` = `r sqrt(anova(mod1)$"Sum Sq"[2]/anova(mod1)$Df[2])`
+```{r}
+anova(mod1)
+
+# Sum of squared residuals
+anova(mod1)$"Sum Sq"[2]
+
+# denominator of SER is DF of sum of squared residuals
+anova(mod1)$Df[2]
+
+# SER
+sqrt(anova(mod1)$"Sum Sq"[2]/anova(mod1)$Df[2])
+
+#format(round(sqrt(anova(mod1)$"Sum Sq"[2]/anova(mod1)$Df[2]), digits=4),big.mark = ',')
+```
+
+__Interpreting SER__
+
+<br>
+
+Recall we have:
+
+- Research question
+  - What is the relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+- Population Linear Regression Model
+  - $Y_i = \beta_0 + \beta_1X_i + u_i$
+  - where:
+    - subscript $i$ refers to universities
+    - $Y_i$ = institution-level student debt (in dollars) at university $i$
+    - $X_i$ = annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
+- OLS Prediction Line (based on sample data) $\hat{Y_i}$ is predicted value $Y_i$ for a given value of $X$
+   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
+   - $\hat{Y_i} =$  `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$
+
+
+$SER = \sqrt{\frac{SSR}{n-2}}=$ `r format(round(summary(mod1)$sigma, digits=0),big.mark = ',')`
+
+- general definition of SER:
+  - Sample standard error of the regression (SER) is an estimate of how far away, on average, an actual observed value of $Y_i$ is from the predicted value $\hat{Y}_i$ of $Y_i$ for a random observation, $i$
+- Interpretation of SER = `r format(round(summary(mod1)$sigma, digits=0),big.mark = ',')`
+  - On average, observed values of $Y_i$ are `r format(round(summary(mod1)$sigma, digits=0),big.mark = ',')` dollars away from predicted values $\hat{Y}_i$
+- in general, higher values of SER mean that our predicted OLS line is off by a lot
+  
+  
+<br>
+
+Comparison of SER to sample standard deviation of $Y$, $\hat{\sigma}_Y$
+
+- sample standard deviation: $\hat{\sigma}_Y=$ `r format(round(sd(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE), digits=0),big.mark = ',')`
+  - On average, observations of $Y_i$ are `r format(round(sd(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE), digits=0),big.mark = ',')` dollars away from the sample mean $\bar{Y}$ of $Y$
+- Sample standard error of the regression: $SER =$ `r format(round(summary(mod1)$sigma, digits=0),big.mark = ',')`
+  - On average, observed values of $Y_i$ are `r format(round(summary(mod1)$sigma, digits=0),big.mark = ',')` dollars away from predicted values $\hat{Y}_i$
+- so it seems like our regression model is doing a substantially better job of predicting values of institution-level student debt than the mean value of institution-level student debt
+```{r}
+# standard deviation of Y
+sd(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE)
+
+# Standard error of the regression
+summary(mod1)$sigma
+```
+
+
+
+__Comments on SER and $R^2$__
+
+$R^2$
+
+- Low $R^2$ tell us that the model does not explain much of the variation in the dependent variable; there are other factors (not included in the model) that explain most of the variation in the dependent variable
+- Low $R^2$ is not necessarily bad and a high $R^2$ is not necessarily good (e.g., predicting provery from having a cell phone has a very high $R^2$)
+
+<br>
+
+$SER$
+
+- High SER tells us  that our predictions will often be wrong by a lot; but that does not necessarily mean our model is bad given some things are hard to predict and we often are interested in "averages"!
+
+<br>
+
+Econometrics Research & Model Fit
+
+- Usually we're most concerned with estimating $\beta_1$, which is the "causal effect" of X on Y
+- Models with high $R^2$ and low SER may still be wrong about $\beta_1$ 
+
+
+### SER student exercise [PATRICIA MODIFY]
+
+PATRICIA - MODIFY SO THAT REGRESSION MODEL IS RELATIONSHIP BETWEEN COST OF ATTENDANCE (X) AND EARNINGS (Y); earnings var is `df_socialwork$earn_mdn_hi_2yr`
+
+__Student Exercise #3__
+
+
+RQ1: What is the relationship between district-wide math test scores (Y) and district expenditures per student (X)?
+
+- Y= `math_scr`
+- X= `expn_stu_000`
+
+
+1. Run regression in R (did this already in exercise #1 & 2; `mod1`)
+2. Using `summary(mod1)`: 
+      - What is SER? Interpret SER.
+3. Using `anova(mod1)`:
+      - Show that SER = $\sqrt{\frac{SSR}{n-2}}$
+
+<br>
+
+RQ2: What is the relationship between district-wide math test scores (Y) and student-teacher ratio (X)?
+
+- Y= `math_scr`
+- X= `str`
+
+<br>
+
+1. Run regression in R (already did this; `mod4`)
+2. Using `summary(mod4)`: 
+      - Interpret SER.
+3. Using `anova(mod4)`:
+      - Show that SER = $\sqrt{\frac{SSR}{n-2}}$
+      
+  
+__Student Exercise #3 [SOLUTIONS]__
+RQ1: What is the relationship between district-wide math test scores (Y) and district expenditures per student (X)?
+
+2. Using `summary(mod1)`: 
+      - What is SER? __SER is on average how far away an actual observed value of Y is from the predicted value of Y for a random observation__
+      - Interpret SER. __18.55; Average distance between math test score of a random district and the math test score predicted by the OLS regression is 18.55__
+3. Using `anova(mod1)`:
+      - Show that SER = $\sqrt{\frac{SSR}{n-2}}$ = $\sqrt{\frac{143831}{418}}$ = $\sqrt{344.0933}$ =18.549
+
+<br>
+
+RQ2: What is the relationship between district-wide math test scores (Y) and student-teacher ratio (X)?
+
+<br>
+
+2. Using `summary(mod4)`: 
+      - Interpret SER __18.41; Average distance between math test score of a random district and the math test score predicted by the OLS regression is 18.41__
+3. Using `anova(mod4)`:
+      - Show that SER = $\sqrt{\frac{SSR}{n-2}}$ = $\sqrt{\frac{141735}{418}}$ = $\sqrt{339.0789}$ = 18.414
+
+# Hypothesis testing about $\beta_1$
 
 
 # References
