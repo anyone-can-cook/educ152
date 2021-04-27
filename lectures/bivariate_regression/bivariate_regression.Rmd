@@ -342,7 +342,7 @@ rm(df_scorecard) # comment this line out if you want to keep scorecard data fram
 ########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
 ##########
 
-#source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
+source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
   
   
 ```
@@ -1410,10 +1410,10 @@ When we run a regression model, write out regression models like this (we will b
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
   - where:
     - subscript $i$ refers to universities
-    - $Y_i$ = institution-level student debt (in dollars) at university $i$
-    - $X_i$ = annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
-    - $\beta_0$ = (population intercept),average value of $Y$ when $X=0$
-  - $\beta_1$ = (population regression coefficient) average effect of a one-unit increase in $X$ on the value of $Y$
+    - $Y_i$: institution-level student debt (in dollars) at university $i$
+    - $X_i$: annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
+    - $\beta_0$: population intercept, average value of $Y$ when $X=0$    
+    - $\beta_1$: population regression coefficient, the average change in the value of $Y$ associated with a one-unit increase in $X$
   - __OLS Prediction Line or "OLS Regression Line" (based on sample data)__
    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$   
    - $\hat{Y_i} =$  `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$
@@ -1529,10 +1529,10 @@ Reminder of where we left off:
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
   - where:
     - subscript $i$ refers to universities
-    - $Y_i$ = institution-level student debt (in dollars) at university $i$
-    - $X_i$ = annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
-    - $\beta_0$ = (population intercept),average value of $Y$ when $X=0$
-  - $\beta_1$ = (population regression coefficient) average effect of a one-unit increase in $X$ on the value of $Y$
+    - $Y_i$: institution-level student debt (in dollars) at university $i$
+    - $X_i$: annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
+    - $\beta_0$: population intercept, average value of $Y$ when $X=0$    
+    - $\beta_1$: population regression coefficient, the average change in the value of $Y$ associated with a one-unit increase in $X$    
 - OLS Prediction Line (based on sample data) $\hat{Y_i}$ is predicted value $Y_i$ for a given value of $X$
    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
    - $\hat{Y_i} =$  `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$
@@ -2056,5 +2056,321 @@ RQ2: What is the relationship between district-wide math test scores (Y) and stu
 
 # Hypothesis testing about $\beta_1$
 
+This section teaches how to test hypotheses about $\beta_1$ using the point estimate $\hat{\beta_1}$, which you calculate from *R*
 
+```{r}
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+
+summary(mod1)
+```
+<br>
+
+Research question and models
+
+- Research question
+  - What is the relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+- Population Linear Regression Model
+  - $Y_i = \beta_0 + \beta_1X_i + u_i$
+  - where:
+    - $Y_i$: institution-level student debt (in dollars) at university $i$
+    - $X_i$: annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
+    - $\beta_1$: population regression coefficient, is the average change in the value of $Y$ associated with a one-unit increase in $X$
+- OLS Prediction Line
+   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
+   - $\hat{Y_i} =$  `r round(summary(mod1)$coefficients[1,1], digits =2)` + `r round(summary(mod1)$coefficients[2,1], digits =2)` $\times X_i$
+
+
+<br>
+Looking above, it seems like the interpretation of $\beta_1$ -- "the average change in the value of $Y$ associated with a one-unit increase in $X$" -- *is* the answer to our primary research question
+
+- that's because it is!
+
+<br>
+- The fundamental goal of causal inference research is to make statements about $\beta_1$
+  - in causal inference research we specify our research question using the form "What is the effect of $X$ on $Y$; 
+  - and $\beta_1$ represents the relationship between (a one-unit change in) $X$ and $Y$
+
+<br>
+But $\beta_1$ is a population parameter. We usually don't know it. For two reasons:
+
+1. We usually have data from a single random sample, not the entire population
+1. If we are trying to estimate causal relationships then $\beta_1$ represents the *causal effect* of a one-unit increase in $X$ on the value of $Y$, not the correlational/associational relationship between $X$ and $Y$
+  - formally, $\beta_1$ is the relationship between $X$ and $Y$ if values of $X$ were randomly assigned (i.e., an experiment)
+  - We usually don't have experimental data, so we use regression (or other methods) as an attempt to "recreate" experimental conditions
+
+<br>
+Let's put aside the causal/experimental concern for now and focus on the first problem: we want to make statements about $\beta_1$ but $\beta_1$ is a population parameter and we only have data from a single random sample. so what do we do?:
+
+- calculate OLS estimate $\hat{\beta_1}$
+- Use $\hat{\beta_1}$ to test hypotheses about $\beta_1$
+
+__We always test the same hypothesis about $\beta_1$__
+
+- $H_0: \beta_1 =0$ 
+  - Means that the slope of the relationship between $X$ and $Y$ is `0`; that is, there is no relationship $X$ and $Y$
+- $H_a: \beta_1 \ne 0$
+  - there is a relationship $X$ and $Y$)
+
+Why this hypothesis? 
+
+- In causal research, the research question is "What is the effect of $X$ on $Y$"
+- If we cannot reject $H_0: \beta_1 =0$, then this answers our research question
+  
+<br>
+
+## Overview
+
+<br>
+Recall that we followed these five steps when testing hypotheses about $\mu_Y$ and when testing hypotheses about whether the population means of two groups are equal to one another (e.g., $\mu_{treatment}=\mu_{control}$):
+
+1. Assumptions
+1. Specify null and alternative hypotheses
+1. Test statistic
+1. P-value
+1. Conclusion
+
+
+<br>
+
+When testing hypotheses about $\beta_1$, we follow these same five steps!
+
+1. Assumptions
+1. Specify null and alternative hypotheses
+    - $H_0: \beta_1 =0$ 
+    - $H_a: \beta_1 \ne 0$
+1. Test statistic
+    - calculate test statistic under the assumption that $H_0: \beta_1 =0$ is true
+    - Draw the sampling distribution of $\hat{\beta}_1$ centered at $\beta_1 =0$
+    - Plot your point estimate $\hat{\beta}_1$ from your single random sample
+    - test statistic $t$ calculates the distance between $H_0: \beta_1 =0$ and $\hat{\beta}_1$ in terms of standard errors, so that we can assign probabilities to this distance
+1. P-value
+    - if the probability (p-value) of observing a $\hat{\beta}_1$ as far away from $H_0: \beta_1 =0$ as the one we observed is small, then we reason it is unlikely that $H_0$ is true, and then we reject $H_0$
+1. Conclusion
+
+## Assumptions
+
+For now, we'll state the following assumptions as necessary to test hypotheses about $\beta_1$:
+
+- Draw random sample
+- sample size is large enough to assume that sampling distribution of $\hat{\beta_1}$ is normally distributed (central limit theorem)
+
+<br>
+Testing hypotheses about $\beta_1$ requires more assumptions; we'll introduce these later
+
+<br>
+Note: in our example, relationship between cost of attendance ($X$) and student debt ($Y$) for MA in social work programs, we our pretending that our sample is a random sample from the population of all MA in social work programs. But we definitely don't have a random sample because systematically drop MA in social programs with modest enrollment
+
+## Specify hypotheses
+
+RQ: What is the relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+
+<br>
+
+- Null hypothesis, $H_0$
+  - $H_0: \beta_1 =0$
+  - in words: there is no relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+- $H_a: \beta_1 \ne 0$
+  - in words: there is a relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+  
+<br>
+Good to set alpha level (rejection region) at the same time we specify null and alternative hypotheses
+
+- let's choose $\alpha$ of `.05`
+
+<br>
+
+Note: We almost always test two-sided hypotheses about regression coefficients
+
+- Why? Because we can be wrong about the direction of $\beta_1$!
+- Some policies can cause more harm than good! In fact, it is quite common to find policies that affect the outcome in the opposite direction than is intended!
+  
+<br>
+
+## Test statistic and p-value
+
+<br>
+
+After calculating the OLS estimate $\hat{\beta}_1$, we can calculate a test statistic, $t$, that will provide evidence necessary to make a decision about rejecting $H_0$ or not
+
+
+<br>
+
+Recall the general formula for (any) test statistic
+
+- $test\_statistic = \frac{(\text{sample estimate}) - (\text{value hypothesized by } H_0)}{(\text{sample standard error})}$
+- When testing hypothesis $H_0: \beta_1 =0$ about a regression coefficient:
+  - "sample estimate" is: $\hat{\beta}_1$
+  - "value hypothesized by $H_0$" is: $\beta_{1,H_0}=0$
+  - "sample standard error" is: $SE(\hat{\beta}_1)$, the sample standard error of the regression coefficient, $\hat{\beta}_1$
+
+<br>
+Test statistic for testing hypothesis about $\beta_1$
+
+- $t = \frac{\hat{\beta}_1 - \beta_{1,H_0}}{SE(\hat{\beta}_1)} = \frac{\hat{\beta}_1 - 0}{SE(\hat{\beta}_1)} =  \frac{\hat{\beta}_1}{SE(\hat{\beta}_1)}$
+
+<br>
+
+Calculating $t$ for our RQ: relationship between cost of attendance ($X$) and institution-level debt ($Y$)
+
+- $t = \frac{\hat{\beta}_1}{SE(\hat{\beta}_1)} = \frac{0.9687}{0.0607} = 15.96$
+
+<br>
+
+Based on output from below regression model
+
+- $\hat{\beta}_1$: `r round(summary(mod1)$coefficients[2,1], digits = 4)`
+- $SE(\hat{\beta}_1)$: `r round(summary(mod1)$coefficients[2,2], digits = 4)`
+- $t$: `r round(summary(mod1)$coefficients[2,3], digits = 4)`
+- p-value associated with $t$: `r round(summary(mod1)$coefficients[2,4], digits = 4)`
+
+```{r}
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+
+summary(mod1)
+
+# printing output from the element named coefficients
+summary(mod1)$coefficients
+```
+
+### Conceptual understanding of test statistic
+
+Conceptually, test statistic for $H_0: \beta_1 =0$ is the same as test statistic about the value of a single population mean, $\mu_Y$, and is as follows:
+
+<br>
+
+We calculate the test statistic under the assumption that $H_0: \beta_1 =0$ is true
+
+<br>
+
+We draw the hypothetical sampling distribution of $\hat{\beta}_1$ centered at $H_0: \beta_1 =0$
+
+- Imagine we take a random sample from the population and calculate $\hat{\beta}_1$; then do that 1,000 times, 10,000 times
+- Each observation in the sampling distribution is an estimate $\hat{\beta}_1$ from a single random sample
+- Drawing from the central limit theorem, the sampling distribution is normally distributed
+- $SE(\hat{\beta}_1)$, the sample standard error of $\hat{\beta}_1$ is an estimate of how far away, on average, the value of $\hat{\beta}_1$ from a single random sample is from the value of the expected value $E(\hat{\beta}_1)$, which  is the mean value of $\hat{\beta}_1$ from an infinite number of random sampples
+  - recall the "standard error" is also called "standard deviation of the sampling distribution"
+
+<br>
+
+We plot our point estimate $\hat{\beta}_1$ from our single random sample on the sampling distribution of $\hat{\beta}_1$ centered at $H_0: \beta_1 =0$
+
+- the test statistic $t$ calculates the distance between $H_0: \beta_1 =0$ and $\hat{\beta}_1$, and converts this distance in terms of standard errors, $SE(\hat{\beta}_1)$
+- Because the sampling distribution is normally distributed, we know that approximately 68% of observations fall within one standard error of the mean, 95% of observations fall within two standard errors of the mean, 99% of observations fall within three standard errors of the mean, etc.
+  - the value of $t$ for our regression was: `r round(summary(mod1)$coefficients[2,3], digits = 4)`!!!
+- if the probability (p-value) of observing a $\hat{\beta}_1$ as far away from $H_0: \beta_1 =0$ as the one we observed is small, then we reason it is unlikely that $H_0$ is true, and then we reject $H_0$
+
+<br>
+Below, we plot the sampling distribution associated with $H_0: \beta_1 =0$
+
+- CRYSTAL - MUST MODIFY FUNCTION AND PLOT BELOW
+```{r}
+# the right regression equation
+mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+
+# this function must be modified to be able to test a hypothesis about an individual regression coefficient
+plot_t_distribution(data_df = df_socialwork, data_var = 'debt_all_stgp_eval_mean',group_var = 'control', group_cat = c(2, 1), shade_pval = F, stacked = T)
+```
+<br>
+<br>
+
+__p-value__
+
+Above, we chose an alpha level of $\alpha= 0.05$; so if our observed p-value is less than .05, then we reject $H_0: \beta_1 = 0$
+
+- from above, our t-statistic of `r round(summary(mod1)$coefficients[2,3], digits = 4)` is associated with a p-value of `r round(summary(mod1)$coefficients[2,4], digits = 4)`
+- Decision:
+  - we reject $H_0: \beta_1 = 0$
+  - we accept $H_a: \beta_1 \ne 0$
+
+<br>
+
+And because two-sided alternative hypotheses are at least as conservative as one-sided alternative hypotheses, we can also conclude that $\beta_1 \gt 0$
+
+- that is, we can conclude there is a positive relationship between cost of attendance ($X$) on institution-level student debt ($Y$)
+
+<br>
+Our estimate $\hat{\beta}_1$ = `r round(summary(mod1)$coefficients[2,1], digits = 2)` can be interpreted as follows:
+
+- we estimate that a one-dollar increase in annual cost of attendance is associated with a `r round(summary(mod1)$coefficients[2,1], digits = 2)` dollar increase in the institution-level student debt of students who graduate with an MA in social work
+
+
+### Understanding $SE(\hat{\beta_1})$
+
+Anytime we talk about hypothesis testing, we are using estimates from one random sample to make statements about population parameters 
+
+- But our estimates differ from population parameters due to random sampling
+
+<br>
+
+Standard error (SE) tells us how far away (on average) an estimate is likely to be from population parameter
+
+- The lower our SE, the closer we are to the population parameter! 
+
+<br>
+
+When is SE($\hat{\beta_1}$) likely to be low?
+
+- When standard error of the regression (SER) is also low (i.e., our predictions are good!)
+- When sample size is big [estimates become more precise as sample size increases]
+- When the variance of X is high
+    
+
+Below, the number of black and blue dots is the same. Using which sample would you get a more accurate regression line?
+
+- Answer: the black dots (which have greater variance), because it would be more obvious how to draw a line of the linear relationship between $X$ and $Y$
+
+![](varianceX.jpg){width=250px}
+
+## Student Exercise [PATRICIA MODIFY]
+
+PATRICIA - MODIFY SO THAT REGRESSION MODEL IS RELATIONSHIP BETWEEN COST OF ATTENDANCE (X) AND EARNINGS (Y); earnings var is `df_socialwork$earn_mdn_hi_2yr`
+
+RQ: What is the effect of district expenditures-per-student (X) on student test scores (Y)?
+
+
+1. Write out the null and alternative hypotheses for $\beta_1$
+
+2. Run regression in R
+    - X = `expn_stu_000`
+    - Y = `testscr` 
+  
+3. Based on regression output in Q2 and t-statistic formula, show why t=3.984 for $\hat{\beta_1}$
+
+4. Draw sampling distribution of $\hat{\beta_1}$ assuming $H_0$ is true. Label the following:
+    - Population regression coefficient associated with $H_0$
+    - $\hat{\beta_1}$ and observed t-value
+    - Shade in regions for Pr(t<-3.984) and Pr(t>3.984)
+    - P-values for regions Pr(t<-3.984) and Pr(t>3.984)
+
+
+### Student Exercise [Solutions]
+
+1. Write out the null and alternative hypotheses for $\beta_1$
+    - $H_0: \beta_1 = 0$
+    - $H_a: \beta_1 \ne 0$
+
+<br>
+
+2. `mod1 <- lm(testscr ~ expn_stu_000, data=caschool)`
+   `summary(mod1)`
+
+<br>
+    
+3. t = $\frac {\hat{\beta_1}- \beta_1,0} {SE(\hat{\beta_1})}$ =$\frac {5.749 - 0} {1.443}$ = 3.984
+
+4.
+
+![](exercise.png)
+
+# Interpretation of $\hat{\beta}$
+
+text
+
+## Continuous $X$
+
+text
+
+## Categorical $X$
+
+text
 # References
