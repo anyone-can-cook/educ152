@@ -352,12 +352,12 @@ plot_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_
 
 # Function to generate t-distribution plot
 # Function to generate t-distribution plot
-plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F) {
+plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F, beta_y = NULL, beta_x = NULL) {
   
   two_pop <- !is.null(group_var) || !is.null(data_vec2)
   
   # Prep dataframe
-  if (!is.null(data_df)) {
+  if (!is.null(data_df) && is.null(beta_y)) {
     data_df[[data_var]] <- unclass(data_df[[data_var]])  # unclass haven_labelled
     if (two_pop) {
       data_df[[group_var]] <- unclass(data_df[[group_var]])
@@ -380,7 +380,13 @@ plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, dat
   }
   
   # Calculate stats
-  if (!two_pop) {  # single sample
+  if (!is.null(beta_y)) {  # beta testing
+    mod <- summary(lm(formula = get(beta_y) ~ get(beta_x), data = data_df))
+    
+    deg_freedom <- mod$df[[2]]
+    std_err <- mod$coefficients[[2, 'Std. Error']]
+    t <- mod$coefficients[[2, 't value']]
+  } else if (!two_pop) {  # single sample
     data_vec1 <- na.omit(data_vec1)
     
     # Calculate t-statistics
@@ -472,9 +478,9 @@ plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, dat
   
   if (stacked) {
     legend_text <- c(str_c('t-statistics: ', round(t, 2),
-                     '\n(p-value: ', str_extract(pval, '[\\d.-]+$'), ')'),
+                           '\n(p-value: ', str_extract(pval, '[\\d.-]+$'), ')'),
                      str_c('Critical value: ', cv_legend,
-                     '\n(alpha: ', round(alpha, 2), ')'))
+                           '\n(alpha: ', round(alpha, 2), ')'))
   }
   
   stats_text <- c(str_c('t-statistics: ', round(t, 2)),
@@ -506,11 +512,16 @@ plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, dat
           legend.text = element_text(size = 8)) +
     coord_cartesian(xlim = c(-4, 4),
                     clip = 'off')
-
+  
   p
 }
 
 ### EXAMPLE FUNCTION CALLS
+
+  # BETA TESTING
+
+    # summary(lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork))
+    # plot_t_distribution(beta_y = 'debt_all_stgp_eval_mean', beta_x = 'coa_grad_res', data_df = df_socialwork)
   
   # SINGLE POPULATION
   
