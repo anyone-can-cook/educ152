@@ -1783,75 +1783,58 @@ anova(mod1)$"Sum Sq"[1] + anova(mod1)$"Sum Sq"[2]
 # R squared
 anova(mod1)$"Sum Sq"[1]/(anova(mod1)$"Sum Sq"[1] + anova(mod1)$"Sum Sq"[2])
 ```
-### Student exercise about $R^2$ [PATRICIA PLEASE MODIFY]
 
-PATRICIA - MODIFY SO THAT REGRESSION MODEL IS RELATIONSHIP BETWEEN COST OF ATTENDANCE (X) AND EARNINGS (Y); earnings var is `df_socialwork$earn_mdn_hi_2yr`
+### Student exercise about $R^2$ 
 
-__Student Exercise #2__
-RQ1: What is the relationship between district-wide math test scores (Y) and district expenditures per student (X)?
+__Student Exercise #1__  
 
-- Y= `math_scr`
-- X= `expn_stu_000`
+RQ1: What is the relationship between cost of attendance (X) and earnings (Y) (2 year after graduation)?
 
 
-1. Run regression in R (did this already in exercise #1; `mod1`)
-2. Using `summary(mod1)`: 
+- X= `coa_grad_res`
+- Y= `earn_mdn_hi_2yr`
+
+
+1. Run the regression in R (assign to object `mod2`)
+2. Using `summary(mod2)`: 
       - What is $R^2$? Interpret $R^2$.
-3. Using `anova(mod1)`:
+3. Using `anova(mod2)`:
       - Show that $R^2$ = ESS/TSS
 
 <br>
 
-RQ2: What is the relationship between district-wide math test scores (Y) and student-teacher ratio (X)?
 
-- Y= `math_scr`
-- X= `str`
+      
+<details><summary><b>Student Exercise #1 [SOLUTIONS]</b></summary>
 
 <br>
 
-1. Run regression in R (need to do this as `mod4`)
-2. Using `summary(mod4)`: 
-      - What is $R^2$? Interpret $R^2$.
-3. Using `anova(mod4)`:
-      - Show that $R^2$ = ESS/TSS
-      
-      
-      
-      
-      
-      
-__Student Exercise #2 [SOLUTIONS]__
-RQ1: What is the relationship between district-wide math test scores (Y) and district expenditures per student (X)?
 
-1. Run regression in R (did this already in exercise #1; `mod1`)
-2. Using `summary(mod1)`: 
+RQ1: What is the relationship between cost of attendance (X) and earnings (Y) (2 year after graduation)?
+
+1. Run regression in R (assign to object `mod2`)
+2. Using `summary(mod2)`: 
       - What is $R^2$? _Measures the fraction of the variance in Y that is explained by X (and is not already explained by sample mean)_
-      - $R^2$ = 0.02402; _District expenditures per student explains 2.4% of the variation in district math test scores_ 
-3. Using `anova(mod1)`:
-      - ESS= 3540
-      - SSR = 143831
-      - TSS = 3540 + 143831 =147371
-      - $R^2$ = 3540/147371 = 0.024
+      - $R^2$ = 0.01851; _Cost of attendance at a university explains 1.8% of the variation in earnings two years after graduation_ 
+3. Using `anova(mod2)`:
+      - ESS= 166755675
+      - SSR = 8840224276
+      - TSS = 166755675 + 8840224276 = 9006979951
+      - $R^2$ = 166755675/9006979951 = 0.01851405
+
+```{r}
+mod2 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_socialwork)
+
+summary(mod2)
+
+anova(mod2)
+
+anova(mod2)$"Sum Sq"[1] / (anova(mod2)$"Sum Sq"[1] + anova(mod2)$"Sum Sq"[2])
+```
 
 <br>
 
-RQ2: What is the relationship between district-wide math test scores (Y) and student-teacher ratio (X)?
-
-1. Run regression in R (need to do this as `mod4`)
-2. Using `summary(mod4)`: 
-      - Interpret $R^2$ = 0.03824; _District student-teacher ratio explains 3.8% of the variation in district math test scores_
-3. Using `anova(mod4)`:
-      - ESS= 5636
-      - SSR = 141735
-      - TSS = 5636 + 141735 =147371
-      - $R^2$ = 5636/147371 = 0.03824
-      
-      
-__Student Exercise #2__
-
-Based on the $R^2$ of Model 1 vs $R^2$ of Model 4:
-
- - Does district expenditures per student or student teacher ratio do a better job at predicting math test scores?
+</details> 
 
 ## Standard Error of the Regression (SER)
 
@@ -1999,60 +1982,55 @@ Econometrics Research & Model Fit
 - Models with high $R^2$ and low SER may still be wrong about $\beta_1$ 
 
 
-### SER student exercise [PATRICIA MODIFY]
-
-PATRICIA - MODIFY SO THAT REGRESSION MODEL IS RELATIONSHIP BETWEEN COST OF ATTENDANCE (X) AND EARNINGS (Y); earnings var is `df_socialwork$earn_mdn_hi_2yr`
-
-__Student Exercise #3__
+### SER student exercise 
 
 
-RQ1: What is the relationship between district-wide math test scores (Y) and district expenditures per student (X)?
+__Student Exercise #2__
 
-- Y= `math_scr`
-- X= `expn_stu_000`
+RQ1: What is the relationship between cost of attendance (X) and earnings (Y) (2 year after graduation)?
 
 
-1. Run regression in R (did this already in exercise #1 & 2; `mod1`)
-2. Using `summary(mod1)`: 
+- X= `coa_grad_res`
+- Y= `earn_mdn_hi_2yr`
+
+
+1. Run regression in R (did this already in exercise #1; `mod2`)
+2. Using `summary(mod2)`: 
       - What is SER? Interpret SER.
-3. Using `anova(mod1)`:
+3. Using `anova(mod2)`:
       - Show that SER = $\sqrt{\frac{SSR}{n-2}}$
 
 <br>
 
-RQ2: What is the relationship between district-wide math test scores (Y) and student-teacher ratio (X)?
-
-- Y= `math_scr`
-- X= `str`
+<details><summary><b>Student Exercise #2 [SOLUTIONS]</b></summary>
 
 <br>
 
-1. Run regression in R (already did this; `mod4`)
-2. Using `summary(mod4)`: 
-      - Interpret SER.
-3. Using `anova(mod4)`:
-      - Show that SER = $\sqrt{\frac{SSR}{n-2}}$
-      
-  
-__Student Exercise #3 [SOLUTIONS]__
-RQ1: What is the relationship between district-wide math test scores (Y) and district expenditures per student (X)?
 
-2. Using `summary(mod1)`: 
+RQ1: What is the relationship between cost of attendance (X) and earnings (Y) (2 year after graduation)?
+
+2. Using `summary(mod2)`: 
       - What is SER? __SER is on average how far away an actual observed value of Y is from the predicted value of Y for a random observation__
-      - Interpret SER. __18.55; Average distance between math test score of a random district and the math test score predicted by the OLS regression is 18.55__
-3. Using `anova(mod1)`:
-      - Show that SER = $\sqrt{\frac{SSR}{n-2}}$ = $\sqrt{\frac{143831}{418}}$ = $\sqrt{344.0933}$ =18.549
+      - Interpret SER. __6186; Average distance between earnings 2 years after graduation for a random university and earnings 2 years after graduation predicted by the OLS regression is 6186__
+3. Using `anova(mod2)`:
+      - Show that SER = $\sqrt{\frac{SSR}{n-2}}$ = $\sqrt{\frac{8840224276}{231}}$ = $\sqrt{38269369}$ =6186.224
 
-<br>
+```{r}
+mod2 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_socialwork)
 
-RQ2: What is the relationship between district-wide math test scores (Y) and student-teacher ratio (X)?
+summary(mod2)
 
-<br>
+anova(mod2)
 
-2. Using `summary(mod4)`: 
-      - Interpret SER __18.41; Average distance between math test score of a random district and the math test score predicted by the OLS regression is 18.41__
-3. Using `anova(mod4)`:
-      - Show that SER = $\sqrt{\frac{SSR}{n-2}}$ = $\sqrt{\frac{141735}{418}}$ = $\sqrt{339.0789}$ = 18.414
+#square root of sum of squared residuals divided by degress of freedom
+sqrt(anova(mod2)$"Sum Sq"[2]/anova(mod2)$Df[2])
+
+#or 
+summary(mod2)$sigma
+```
+
+</details>
+
 
 # Hypothesis testing about $\beta_1$
 
@@ -2247,7 +2225,7 @@ We draw the hypothetical sampling distribution of $\hat{\beta}_1$ centered at $H
 - Imagine we take a random sample from the population and calculate $\hat{\beta}_1$; then do that 1,000 times, 10,000 times
 - Each observation in the sampling distribution is an estimate $\hat{\beta}_1$ from a single random sample
 - Drawing from the central limit theorem, the sampling distribution is normally distributed
-- $SE(\hat{\beta}_1)$, the sample standard error of $\hat{\beta}_1$ is an estimate of how far away, on average, the value of $\hat{\beta}_1$ from a single random sample is from the value of the expected value $E(\hat{\beta}_1)$, which  is the mean value of $\hat{\beta}_1$ from an infinite number of random sampples
+- $SE(\hat{\beta}_1)$, the sample standard error of $\hat{\beta}_1$ is an estimate of how far away, on average, the value of $\hat{\beta}_1$ from a single random sample is from the value of the expected value $E(\hat{\beta}_1)$, which  is the mean value of $\hat{\beta}_1$ from an infinite number of random samples
   - recall the "standard error" is also called "standard deviation of the sampling distribution"
 
 <br>
@@ -2321,29 +2299,29 @@ Below, the number of black and blue dots is the same. Using which sample would y
 
 ![](varianceX.jpg){width=250px}
 
-## Student Exercise [PATRICIA MODIFY]
+### Student Exercise about hypothesis testing with ${\beta_1}$ 
 
-PATRICIA - MODIFY SO THAT REGRESSION MODEL IS RELATIONSHIP BETWEEN COST OF ATTENDANCE (X) AND EARNINGS (Y); earnings var is `df_socialwork$earn_mdn_hi_2yr`
 
-RQ: What is the effect of district expenditures-per-student (X) on student test scores (Y)?
+RQ1: What is the relationship between cost of attendance (X) and earnings (Y) (2 year after graduation)?
 
 
 1. Write out the null and alternative hypotheses for $\beta_1$
 
 2. Run regression in R
-    - X = `expn_stu_000`
-    - Y = `testscr` 
+    - X= `coa_grad_res`
+    - Y= `earn_mdn_hi_2yr`
   
-3. Based on regression output in Q2 and t-statistic formula, show why t=3.984 for $\hat{\beta_1}$
+3. Based on regression output in Q2 and t-statistic formula, show why t=2.087 for $\hat{\beta_1}$
 
 4. Draw sampling distribution of $\hat{\beta_1}$ assuming $H_0$ is true. Label the following:
     - Population regression coefficient associated with $H_0$
     - $\hat{\beta_1}$ and observed t-value
-    - Shade in regions for Pr(t<-3.984) and Pr(t>3.984)
-    - P-values for regions Pr(t<-3.984) and Pr(t>3.984)
+    - Shade in regions for Pr(t<-2.087) and Pr(t>2.087)
+    - P-values for regions Pr(t<-2.087) and Pr(t>2.087)
 
+<details><summary><b>Student Exercise #3 [SOLUTIONS]</b></summary>
 
-### Student Exercise [Solutions]
+<br>
 
 1. Write out the null and alternative hypotheses for $\beta_1$
     - $H_0: \beta_1 = 0$
@@ -2351,16 +2329,23 @@ RQ: What is the effect of district expenditures-per-student (X) on student test 
 
 <br>
 
-2. `mod1 <- lm(testscr ~ expn_stu_000, data=caschool)`
-   `summary(mod1)`
+2. `mod2 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_socialwork)`
+   `summary(mod2)`
+```{r}
+mod2 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_socialwork)
+
+summary(mod2)$coefficients
+```
+   
 
 <br>
     
-3. t = $\frac {\hat{\beta_1}- \beta_1,0} {SE(\hat{\beta_1})}$ =$\frac {5.749 - 0} {1.443}$ = 3.984
+3. t = $\frac {\hat{\beta_1}- \beta_1,0} {SE(\hat{\beta_1})}$ =$\frac {0.08524904 - 0} {0.04083898}$ = 2.087443
 
 4.
 
 ![](exercise.png)
+</details>
 
 # Interpretation of $\hat{\beta}$
 
