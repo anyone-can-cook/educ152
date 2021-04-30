@@ -2047,7 +2047,10 @@ summary(mod1)
 Research question and models
 
 - Research question
-  - What is the relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+  - posed in a correlational way:
+    - What is the relationship between cost of attendance ($X$) and institution-level student debt ($Y$)?
+  - posed in a causal effects way:
+    - What is the effect of cost of attendance ($X$) on institution-level student debt ($Y$)?
 - Population Linear Regression Model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
   - where:
