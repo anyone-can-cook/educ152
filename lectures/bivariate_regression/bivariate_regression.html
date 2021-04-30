@@ -3728,13 +3728,15 @@ your comment -->
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="co">#summary(mod1) %&gt;% str()</span></span>
 <span id="cb29-2"><a href="#cb29-2"></a></span>
 <span id="cb29-3"><a href="#cb29-3"></a><span class="co"># mean value of y for each i</span></span>
-<span id="cb29-4"><a href="#cb29-4"></a>ybar_i &lt;-<span class="st"> </span><span class="kw">mean</span>(df_socialwork<span class="op">$</span>debt_all_stgp_eval_mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb29-5"><a href="#cb29-5"></a></span>
-<span id="cb29-6"><a href="#cb29-6"></a><span class="co"># predicted values for each y_i</span></span>
-<span id="cb29-7"><a href="#cb29-7"></a>yhat_i &lt;-<span class="st"> </span><span class="kw">summary</span>(mod1)<span class="op">$</span>coefficients[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">summary</span>(mod1)<span class="op">$</span>coefficients[<span class="dv">2</span>,<span class="dv">1</span>]<span class="op">*</span>df_socialwork<span class="op">$</span>coa_grad_res</span>
-<span id="cb29-8"><a href="#cb29-8"></a></span>
-<span id="cb29-9"><a href="#cb29-9"></a><span class="co"># residual for each Y_i</span></span>
-<span id="cb29-10"><a href="#cb29-10"></a>u_i &lt;-<span class="st"> </span>df_socialwork<span class="op">$</span>debt_all_stgp_eval_mean <span class="op">-</span><span class="st"> </span>yhat_i</span></code></pre></div>
+<span id="cb29-4"><a href="#cb29-4"></a>ybar &lt;-<span class="st"> </span><span class="kw">mean</span>(df_socialwork<span class="op">$</span>debt_all_stgp_eval_mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb29-5"><a href="#cb29-5"></a>ybar</span>
+<span id="cb29-6"><a href="#cb29-6"></a><span class="co">#&gt; [1] 41084.36</span></span>
+<span id="cb29-7"><a href="#cb29-7"></a></span>
+<span id="cb29-8"><a href="#cb29-8"></a><span class="co"># predicted values for each y_i</span></span>
+<span id="cb29-9"><a href="#cb29-9"></a>yhat_i &lt;-<span class="st"> </span><span class="kw">summary</span>(mod1)<span class="op">$</span>coefficients[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">summary</span>(mod1)<span class="op">$</span>coefficients[<span class="dv">2</span>,<span class="dv">1</span>]<span class="op">*</span>df_socialwork<span class="op">$</span>coa_grad_res</span>
+<span id="cb29-10"><a href="#cb29-10"></a></span>
+<span id="cb29-11"><a href="#cb29-11"></a><span class="co"># residual for each Y_i</span></span>
+<span id="cb29-12"><a href="#cb29-12"></a>u_i &lt;-<span class="st"> </span>df_socialwork<span class="op">$</span>debt_all_stgp_eval_mean <span class="op">-</span><span class="st"> </span>yhat_i</span></code></pre></div>
 <p><br></p>
 <p><strong>Calculating TSS, ESS, and SSR</strong></p>
 <ul>
@@ -3758,12 +3760,12 @@ your comment -->
 </ul></li>
 </ul>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="co"># total sum of squares (TSS)</span></span>
-<span id="cb30-2"><a href="#cb30-2"></a>tss &lt;-<span class="st"> </span><span class="kw">sum</span>((df_socialwork<span class="op">$</span>debt_all_stgp_eval_mean <span class="op">-</span><span class="st"> </span>ybar_i)<span class="op">^</span><span class="dv">2</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb30-2"><a href="#cb30-2"></a>tss &lt;-<span class="st"> </span><span class="kw">sum</span>((df_socialwork<span class="op">$</span>debt_all_stgp_eval_mean <span class="op">-</span><span class="st"> </span>ybar)<span class="op">^</span><span class="dv">2</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb30-3"><a href="#cb30-3"></a>tss</span>
 <span id="cb30-4"><a href="#cb30-4"></a><span class="co">#&gt; [1] 45021707772</span></span>
 <span id="cb30-5"><a href="#cb30-5"></a></span>
 <span id="cb30-6"><a href="#cb30-6"></a><span class="co"># Explained sum of squares (ESS)</span></span>
-<span id="cb30-7"><a href="#cb30-7"></a>ess &lt;-<span class="st"> </span><span class="kw">sum</span>((yhat_i <span class="op">-</span><span class="st"> </span>ybar_i)<span class="op">^</span><span class="dv">2</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb30-7"><a href="#cb30-7"></a>ess &lt;-<span class="st"> </span><span class="kw">sum</span>((yhat_i <span class="op">-</span><span class="st"> </span>ybar)<span class="op">^</span><span class="dv">2</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb30-8"><a href="#cb30-8"></a>ess</span>
 <span id="cb30-9"><a href="#cb30-9"></a><span class="co">#&gt; [1] 22679895162</span></span>
 <span id="cb30-10"><a href="#cb30-10"></a></span>
@@ -3782,7 +3784,7 @@ your comment -->
 <li><span class="math inline">\(R^2 = \frac{\text{variance in Y that is explained by X}}{\text{total variance in Y}} = \frac{ESS}{TSS}=\)</span> (22,679,895,162)/(45,021,707,772) = 0.5038</li>
 </ul>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="co"># calculating R^2 as ESS/TSS</span></span>
-<span id="cb31-2"><a href="#cb31-2"></a>  <span class="co">#sum((yhat_i - ybar_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE)</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a>  <span class="co">#sum((yhat_i - ybar)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE)</span></span>
 <span id="cb31-3"><a href="#cb31-3"></a>  ess<span class="op">/</span>tss</span>
 <span id="cb31-4"><a href="#cb31-4"></a><span class="co">#&gt; [1] 0.5037547</span></span></code></pre></div>
 <p><br></p>
@@ -3793,7 +3795,7 @@ your comment -->
 <li><span class="math inline">\(R^2 = 1- \frac{\text{variance in Y that not explained explained by X}}{\text{total variance in Y}} = 1- \frac{SSR}{TSS}=1-\)</span> (22,341,812,610)/(45,021,707,772) = 0.5038</li>
 </ul>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="co"># calculating R^2 as (1- SSR/TSS)</span></span>
-<span id="cb32-2"><a href="#cb32-2"></a>  <span class="co">#1 - sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE)</span></span>
+<span id="cb32-2"><a href="#cb32-2"></a>  <span class="co">#1 - sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE)</span></span>
 <span id="cb32-3"><a href="#cb32-3"></a>  <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>ssr<span class="op">/</span>tss</span>
 <span id="cb32-4"><a href="#cb32-4"></a><span class="co">#&gt; [1] 0.5037547</span></span></code></pre></div>
 <p><br> <br></p>
@@ -4022,7 +4024,7 @@ your comment -->
 <span id="cb36-25"><a href="#cb36-25"></a><span class="co">#&gt; [1] 9434.575</span></span></code></pre></div>
 <p><br></p>
 <p><strong>Calculating SER</strong></p>
-<p><span class="math inline">\(SER = \sqrt{\frac{SSR}{n-2}}= \sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\hat{Y})^2}} {n-2} } = \sqrt{ \frac {\sum_{i=1}^{n} (\hat{u_{i}})^2} {n-2}}\)</span></p>
+<p><span class="math inline">\(SER = \sqrt{\frac{SSR}{n-2}}= \sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\hat{Y}_i)^2}} {n-2} } = \sqrt{ \frac {\sum_{i=1}^{n} (\hat{u_{i}})^2} {n-2}}\)</span></p>
 <p>can calculate SER using output from <code>anova()</code> function, which provides SSR</p>
 <ul>
 <li>Sum of Squared Residuals (SSR)
@@ -4089,7 +4091,7 @@ your comment -->
 </ul></li>
 <li>Interpretation of SER = 9,435
 <ul>
-<li>On average, observed values of <span class="math inline">\(Y_i\)</span> are 9,435 dollars away from predicted values <span class="math inline">\(\hat{Y}_i\)</span></li>
+<li>On average, observed values of institution-level student debt (<span class="math inline">\(Y_i\)</span>) are 9,435 dollars away from predicted values of institution-level student debt <span class="math inline">\(\hat{Y}_i\)</span></li>
 </ul></li>
 <li>in general, higher values of SER mean that our predicted OLS line is off by a lot</li>
 </ul>
@@ -4257,7 +4259,11 @@ your comment -->
 <ul>
 <li>that’s because it is!</li>
 </ul>
-<p><br> - The fundamental goal of causal inference research is to make statements about <span class="math inline">\(\beta_1\)</span> - in causal inference research we specify our research question using the form &quot;What is the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>; - and <span class="math inline">\(\beta_1\)</span> represents the relationship between (a one-unit change in) <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></p>
+<p><br> The fundamental goal of causal inference research is to make statements about <span class="math inline">\(\beta_1\)</span></p>
+<ul>
+<li>in causal inference research we specify our research question using the form &quot;What is the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>;</li>
+<li>and <span class="math inline">\(\beta_1\)</span> represents the relationship between (a one-unit change in) <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></li>
+</ul>
 <p><br> But <span class="math inline">\(\beta_1\)</span> is a population parameter. We usually don’t know it. For two reasons:</p>
 <ol style="list-style-type: decimal">
 <li>We usually have data from a single random sample, not the entire population</li>

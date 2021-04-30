@@ -1654,7 +1654,8 @@ __Calculating $\bar{Y}$, $\hat{Y}_i$, and $\hat{u}_i$__
 #summary(mod1) %>% str()
 
 # mean value of y for each i
-ybar_i <- mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE)
+ybar <- mean(df_socialwork$debt_all_stgp_eval_mean, na.rm = TRUE)
+ybar
 
 # predicted values for each y_i
 yhat_i <- summary(mod1)$coefficients[1,1] + summary(mod1)$coefficients[2,1]*df_socialwork$coa_grad_res
@@ -1669,11 +1670,11 @@ __Calculating TSS, ESS, and SSR__
 
 - Total Sum of Squares (TSS) = $\sum_{i=1}^{n} (Y_i-\bar{Y})^2$
   - A measure of the total variance in Y, relative to $\bar{Y}$
-  - total sum of squares = `r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`
+  - total sum of squares = `r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE), digits=0),big.mark = ',')`
 - Explained Sum of Squares (ESS) = $\sum_{i=1}^{n} (\hat{Y_i}-\bar{Y})^2$
   - Difference between predicted values $\hat{Y_i}$ and sample mean $\bar{Y}$
   - Measures amount of variation in Y explained by X
-  - explained sum of squares = `r format(round(sum((yhat_i - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`
+  - explained sum of squares = `r format(round(sum((yhat_i - ybar)^2, na.rm = TRUE), digits=0),big.mark = ',')`
 - Sum of Squared Residuals (SSR) = $\sum_{i=1}^{n} (Y_i- \hat{Y_i})^2$
   - Difference between actual value observed and predicted value by our regression line
   - Measures amount of variation in Y not explained by X
@@ -1682,11 +1683,11 @@ __Calculating TSS, ESS, and SSR__
   
 ```{r}
 # total sum of squares (TSS)
-tss <- sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE)
+tss <- sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE)
 tss
 
 # Explained sum of squares (ESS)
-ess <- sum((yhat_i - ybar_i)^2, na.rm = TRUE)
+ess <- sum((yhat_i - ybar)^2, na.rm = TRUE)
 ess
 
 # Sum of squared residuals (SSR)
@@ -1702,12 +1703,12 @@ __Calculating $R^2$__
 
 $R^2$ as ESS/TSS
 
-- $R^2 = \frac{\text{variance in Y that is explained by X}}{\text{total variance in Y}} =  \frac{ESS}{TSS}=$ (`r format(round(sum((yhat_i - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`)/(`r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`) = `r format(round(sum((yhat_i - ybar_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=4),big.mark = ',')`
+- $R^2 = \frac{\text{variance in Y that is explained by X}}{\text{total variance in Y}} =  \frac{ESS}{TSS}=$ (`r format(round(sum((yhat_i - ybar)^2, na.rm = TRUE), digits=0),big.mark = ',')`)/(`r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE), digits=0),big.mark = ',')`) = `r format(round(sum((yhat_i - ybar)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE), digits=4),big.mark = ',')`
 
 
 ```{r}
 # calculating R^2 as ESS/TSS
-  #sum((yhat_i - ybar_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE)
+  #sum((yhat_i - ybar)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE)
   ess/tss
 
 ```
@@ -1720,12 +1721,12 @@ OR
 
 $R^2$ as 1 - SSR/TSS
 
-- $R^2 = 1- \frac{\text{variance in Y that not explained explained by X}}{\text{total variance in Y}} =  1-  \frac{SSR}{TSS}=1-$ (`r format(round(sum((u_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`)/(`r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`) = `r format(round(1 - sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE), digits=4),big.mark = ',')`
+- $R^2 = 1- \frac{\text{variance in Y that not explained explained by X}}{\text{total variance in Y}} =  1-  \frac{SSR}{TSS}=1-$ (`r format(round(sum((u_i)^2, na.rm = TRUE), digits=0),big.mark = ',')`)/(`r format(round(sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE), digits=0),big.mark = ',')`) = `r format(round(1 - sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE), digits=4),big.mark = ',')`
 
 
 ```{r}
 # calculating R^2 as (1- SSR/TSS)
-  #1 - sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar_i)^2, na.rm = TRUE)
+  #1 - sum((df_socialwork$debt_all_stgp_eval_mean - yhat_i)^2, na.rm = TRUE)/sum((df_socialwork$debt_all_stgp_eval_mean - ybar)^2, na.rm = TRUE)
   1 - ssr/tss
 
 ```
@@ -1888,7 +1889,7 @@ summary(mod1)$sigma
 
 __Calculating SER__
 
-$SER = \sqrt{\frac{SSR}{n-2}}= \sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\hat{Y})^2}} {n-2} } = \sqrt{ \frac {\sum_{i=1}^{n} (\hat{u_{i}})^2} {n-2}}$
+$SER = \sqrt{\frac{SSR}{n-2}}= \sqrt{ \frac {\sum_{i=1}^{n} ({Y_{i} -\hat{Y}_i)^2}} {n-2} } = \sqrt{ \frac {\sum_{i=1}^{n} (\hat{u_{i}})^2} {n-2}}$
 
 can calculate SER using output from `anova()` function, which provides SSR
 
@@ -1938,7 +1939,7 @@ $SER = \sqrt{\frac{SSR}{n-2}}=$ `r format(round(summary(mod1)$sigma, digits=0),b
 - general definition of SER:
   - Sample standard error of the regression (SER) is an estimate of how far away, on average, an actual observed value of $Y_i$ is from the predicted value $\hat{Y}_i$ of $Y_i$ for a random observation, $i$
 - Interpretation of SER = `r format(round(summary(mod1)$sigma, digits=0),big.mark = ',')`
-  - On average, observed values of $Y_i$ are `r format(round(summary(mod1)$sigma, digits=0),big.mark = ',')` dollars away from predicted values $\hat{Y}_i$
+  - On average, observed values of institution-level student debt ($Y_i$) are `r format(round(summary(mod1)$sigma, digits=0),big.mark = ',')` dollars away from predicted values of institution-level student debt $\hat{Y}_i$
 - in general, higher values of SER mean that our predicted OLS line is off by a lot
   
   
@@ -2064,9 +2065,10 @@ Looking above, it seems like the interpretation of $\beta_1$ -- "the average cha
 - that's because it is!
 
 <br>
-- The fundamental goal of causal inference research is to make statements about $\beta_1$
-  - in causal inference research we specify our research question using the form "What is the effect of $X$ on $Y$; 
-  - and $\beta_1$ represents the relationship between (a one-unit change in) $X$ and $Y$
+The fundamental goal of causal inference research is to make statements about $\beta_1$
+
+- in causal inference research we specify our research question using the form "What is the effect of $X$ on $Y$; 
+- and $\beta_1$ represents the relationship between (a one-unit change in) $X$ and $Y$
 
 <br>
 But $\beta_1$ is a population parameter. We usually don't know it. For two reasons:
