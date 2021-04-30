@@ -2238,15 +2238,13 @@ We plot our point estimate $\hat{\beta}_1$ from our single random sample on the 
 - if the probability (p-value) of observing a $\hat{\beta}_1$ as far away from $H_0: \beta_1 =0$ as the one we observed is small, then we reason it is unlikely that $H_0$ is true, and then we reject $H_0$
 
 <br>
-Below, we plot the sampling distribution associated with $H_0: \beta_1 =0$
+Below, we plot the sampling distribution associated with $H_0: \beta_1 =0$ using the function we created named `plot_t_distribution()`
 
-- CRYSTAL - MUST MODIFY FUNCTION AND PLOT BELOW
 ```{r}
-# the right regression equation
 mod1 <- lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork)
+summary(mod1)
 
-# this function must be modified to be able to test a hypothesis about an individual regression coefficient
-plot_t_distribution(data_df = df_socialwork, data_var = 'debt_all_stgp_eval_mean',group_var = 'control', group_cat = c(2, 1), shade_pval = F, stacked = T)
+plot_t_distribution(beta_y = 'debt_all_stgp_eval_mean', beta_x = 'coa_grad_res', data_df = df_socialwork)
 ```
 <br>
 <br>
