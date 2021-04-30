@@ -2151,9 +2151,9 @@ RQ: What is the relationship between cost of attendance ($X$) on institution-lev
 
 - Null hypothesis, $H_0$
   - $H_0: \beta_1 =0$
-  - in words: there is no relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+  - in words: there is no relationship between cost of attendance ($X$) and institution-level student debt ($Y$)?
 - $H_a: \beta_1 \ne 0$
-  - in words: there is a relationship between cost of attendance ($X$) on institution-level student debt ($Y$)?
+  - in words: there is a relationship between cost of attendance ($X$) and institution-level student debt ($Y$)?
   
 <br>
 Good to set alpha level (rejection region) at the same time we specify null and alternative hypotheses
@@ -2267,7 +2267,7 @@ Above, we chose an alpha level of $\alpha= 0.05$; so if our observed p-value is 
 
 And because two-sided alternative hypotheses are at least as conservative as one-sided alternative hypotheses, we can also conclude that $\beta_1 \gt 0$
 
-- that is, we can conclude there is a positive relationship between cost of attendance ($X$) on institution-level student debt ($Y$)
+- that is, we can conclude there is a positive relationship between cost of attendance ($X$) and institution-level student debt ($Y$)
 
 <br>
 Our estimate $\hat{\beta}_1$ = `r round(summary(mod1)$coefficients[2,1], digits = 2)` can be interpreted as follows:
