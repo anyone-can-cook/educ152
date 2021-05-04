@@ -251,14 +251,16 @@ df_scorecard <- df_scorecard %>%
     earn_count_wne_hi_1yr = as.numeric(earn_count_wne_hi_1yr),
     earn_mdn_hi_1yr = as.numeric(earn_mdn_hi_1yr),
     earn_count_wne_hi_2yr = as.numeric(earn_count_wne_hi_2yr),
-    earn_mdn_hi_2yr = as.numeric(earn_mdn_hi_2yr)
+    earn_mdn_hi_2yr = as.numeric(earn_mdn_hi_2yr),
+    ipedscount1 = as.numeric(ipedscount1),
+    ipedscount2 = as.numeric(ipedscount2)
   ) 
 
 # add variable label to variable cipdig2
   attr(df_scorecard[['cipdig2']], which = 'label') <- 'broad degree field code = 2-digit classification of instructional programs (CIP) degree code'
 
 # add variable label attribute back to debt and earnings variables
-  for(v in c('debt_all_stgp_eval_n','debt_all_stgp_eval_mean','debt_all_stgp_eval_mdn','debt_all_stgp_eval_mdn10yrpay','earn_count_wne_hi_1yr','earn_mdn_hi_1yr','earn_count_wne_hi_2yr','earn_mdn_hi_2yr','cipdesc')) {
+  for(v in c('debt_all_stgp_eval_n','debt_all_stgp_eval_mean','debt_all_stgp_eval_mdn','debt_all_stgp_eval_mdn10yrpay','earn_count_wne_hi_1yr','earn_mdn_hi_1yr','earn_count_wne_hi_2yr','earn_mdn_hi_2yr','cipdesc','ipedscount1','ipedscount2')) {
     
     #writeLines(str_c('object v=', v))
     #writeLines(attr(df_debt_earn_panel_labelled[[v]], which = 'label'))
@@ -305,10 +307,34 @@ rm(df_debt_earn_panel_labelled) # comment this line out if you want to keep data
     # drop for-profits
     filter(control !=3) %>%
     # drop tuition/coa vars for law and md
-    select(-one,-contains('law'),-contains('md_')) %>%
-    relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,region,city,locale,cipdig2,cipcode,cipdesc,credlev,creddesc,
+    select(-one,-contains('law'),-contains('md_')) %>% 
+    # create measure of urbanization from locale
+    mutate(
+      urban = case_when(
+        locale %in% c(11) ~ 1, # city
+        locale %in% c(12,13) ~ 2, # city
+        locale %in% c(21,22,23) ~ 3, # suburb
+        locale %in% c(31,32,33,41,42,43) ~ 4 # town/rural
+        )
+      ) %>% 
+    # create value labels for level of urbanization
+    set_value_labels(
+      urban = c(
+        'large city (250k+)' = 1,
+        'med/small city' = 2,
+        'suburb' = 3,
+        'town/rural' = 4
+        )
+      ) %>%
+    # change variable order
+    relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,region,city,locale,urban,cipdig2,cipcode,cipdesc,credlev,creddesc,
       contains('ipeds'),starts_with('debt'),starts_with('earn'))
-    
+
+# create variable label 
+var_label(df_score_ipeds[['urban']]) <- 'four-category variable of level of urbanization (large city, small/med city, suburb, town/rural) created from locale'
+# %>% count(urban, locale) # crosscheck
+
+      
   df_score_ipeds %>% glimpse()
 
 rm(df_ipeds_pop) # comment this line out if you want to keep ipeds data frame
@@ -323,7 +349,9 @@ rm(df_scorecard) # comment this line out if you want to keep scorecard data fram
     #df_score_ipeds %>% count(cipcode)
     df_score_ipeds %>% filter(cipcode=='4407') %>% count(cipcode) # social work
   
-# create data frame that only contains observations for MAs in social work; filter(cipcode=='4407')
+##### create data frame that only contains observations for MAs in social work;     
+    #filter(cipcode=='4407')
+    
   df_socialwork <- df_score_ipeds %>% 
     filter(cipcode=='4407') %>%
     # remove observations with missing values of cost of attendance (better for teaching concepts)
@@ -337,7 +365,79 @@ rm(df_scorecard) # comment this line out if you want to keep scorecard data fram
     
     # also, one observation per unitid
     df_socialwork %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+
+    
+##### create data frame that only contains observations for MAs in business
   
+  #particularly the degree "Business Administration, Management and Operations", which is associated with general MBA programs
+    
+#df_score_ipeds %>% filter(cipdig2=="52") %>% count(cipcode)
+#df_score_ipeds %>% filter(cipdig2=="52") %>% count(cipdesc)
+
+  df_mba <- df_score_ipeds %>% 
+    filter(cipcode=='5202') %>%
+    # remove observations with missing values of cost of attendance (better for teaching concepts)
+    filter(!is.na(coa_grad_res))    
+
+df_mba %>% glimpse()
+
+# create version of data frame df_mba that turns class=labelled variables to factor variables
+  df_mba_fac <- as_factor(df_mba, only_labelled = TRUE) %>% glimpse()
+
+```
+
+
+```{r}
+df_score_ipeds %>% count(locale)
+df_score_ipeds %>% count(urban)
+
+attributes(df_score_ipeds$locale)
+attr(x = df_score_ipeds$locale, which = 'labels')
+
+df_score_ipeds %>% count(locale) %>% as_factor()
+
+df_score_ipeds %>% mutate(
+  urban = case_when(
+    locale %in% c(11,12,13) ~ 1, # city
+    locale %in% c(21,22,23) ~ 2, # suburb
+    locale %in% c(31,32,33,41,42,43) ~ 3 # town/rural
+  )
+) 
+
+var_label(df_ipeds_pop[['urban']]) <- 'three-category variable of level of urbanization (city, suburb, town/rural) created from locale'
+# %>% count(urban, locale) # crosscheck
+
+set_value_labels(
+  urban = c(
+    'city' = 1,
+    'suburb' = 2,
+    'town/rural' = 3
+  )
+```
+
+```{r}
+# don't want to change
+
+$ opeid6                        <chr> "001002", "001052", "025034", "001055", "001051...
+$ unitid                        <dbl> 100654, 100663, 100690, 100706, 100751, 100858,...
+$ instnm                        <chr> "Alabama A & M University", "University of Alab...
+
+# already factor
+$ control                       <fct> Public, Public, Private not-for-profit, Public,...
+$ ccbasic                       <fct> Master's Colleges & Universities: Larger Progra...
+$ region                        <fct> "Southeast (AL, AR, FL, GA, KY, LA, MS, NC, SC,...
+$ locale                        <fct> "City: Midsize (population of at least 100,000 ...
+$ credlev                       <fct> Master's Degree, Master's Degree, Master's Degr...
+
+
+$ stabbr                        <chr> "AL", "AL", "AL", "AL", "AL", "AL", "AL", "AL",...
+$ city                          <chr> "Normal", "Birmingham", "Montgomery", "Huntsvil...
+$ cipdig2                       <chr> "52", "52", "52", "52", "52", "52", "52", "52",...
+$ cipcode                       <chr> "5202", "5202", "5202", "5202", "5202", "5202",...
+$ cipdesc                       <chr> "Business Administration, Management and Operat...
+$ creddesc                      <chr> "Master's Degree", "Master's Degree", "Master's...
+
+
 ##########
 ########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
 ##########
@@ -2350,7 +2450,171 @@ summary(mod2)$coefficients
 ![](exercise.png)
 </details>
 
+# Factor variables
+
+This section briefly introduces a class of variables called "factor" variables; When running regression in *R* with a categorical $X$ variable (e.g., marital status), the $X$ variable must be factor variable
+
+- For a more thorough introduction, see the lecture [Attributes and Class](https://anyone-can-cook.github.io/rclass1/lectures/attributes_and_class/attributes_and_class.pdf) from the course [EDUC 260A: Introduction to programming and data management](https://anyone-can-cook.github.io/rclass1/)
+
+<br><br>
+For this section, we will use the dataframes `df_mba` and `df_mba_fac`. These data frmes have tuition, earnings, and debt data associated with master's in business administration (MBA) programs. The two data frames are exactly the same except:
+
+- `df_mba`: categorical variables (e.g., `locale`,`urban`) are stored as `labelled` class
+- `df_mba_factor`: categorical variables (e.g., `locale`,`urban`) are stored as `factor` class
+
+```{r}
+# df_mba
+df_mba %>% glimpse()
+
+# df_mba_fac
+df_mba_fac %>% glimpse()
+```
+
+<br><br>
+
+## Attributes
+
+Consider Variables within data frames (e.g., `df_mba$coa_grad_res`). With respect to their underlying data structure, variables are "atomic vectors"
+
+- I think of atomic vectors as "just the data"
+- we can use the base R function `type` to investigate the underlying data structure of an object
+```{r}
+# variable df_mba$coa_grad_res has "double" type, which refers to a numeric atomic vactor
+typeof(df_mba$coa_grad_res)
+
+# variable df_mba$city has "character" type, which refers to a character atomic vector
+typeof(df_mba$city)
+```
+<br><br>
+
+__Augmented vectors__
+
+- Augmented vectors are atomic vectors with additional __attributes__ attached
+
+<br>
+
+__Attributes__
+
+- Attributes are additional “metadata” that can be attached to any object (e.g., atomic vector, list)
+- examples of attributes include:
+  - variable labels
+  - value labels attached to the value of each variable
+  
+<br><br>
+
+Functions to identify and modify attributes
+
+- `attributes()` function to describe all attributes of an object
+  - syntax: `attributes(x)`
+  - where:
+    - `x`: any R object
+- `attr()` to see individual attribute of an object or set/change an individual attribute of an object
+  - syntax (for getting attributes): `attr(x, which, exact = FALSE)`
+  - syntax (for setting attributes): `attr(x, which) <- value`
+  - where:
+    - `x`: an object whose attributes are to be accessed.
+    - `which`: a non-empty character string specifying which attribute is to be accessed.
+    - `exact`: logical: should which be matched exactly? [Default is `FALSE`]
+    - `value`: an object, the new value of the attribute, or NULL to remove the attribute.  
+
+<br>
+Let's investigate attributes of variables in the data frame `df_mba`
+```{r}
+# attributes of the variable region
+attributes(df_mba$region)
+
+# use attr() to isolate attributes of the variable region
+  # variable label
+  attr(df_mba$region, which = 'label')
+  
+  # value labels
+  attr(df_mba$region, which = 'labels')
+  
+  # variable class
+  attr(df_mba$region, which = 'class')
+```
+
+## Object class
+
+Every object in R has a __class__
+
+- Class is an __attribute__ of an object
+- Object class controls how functions work and defines the rules for how objects can be treated by object oriented programming language
+    - E.g., which functions you can apply to object of a particular class
+    - E.g., what the function does to one object class, what it does to another object class
+    
+
+
+<br>
+Because __class__ is an __attribute__, __class___ is additional "meta data" we put on top of the "just the data" part of an object
+
+- consider the variable `df_mba$region`
+  - this variable is a "double" (i.e., numeric) atomic vector (this is the "just the data" part)
+  - the variable has additional attributes (metadata); "class" is one of these attributes
+  - The "class" of `df_mba$region` is `haven_labelled` (more on this later)
+- You can use the `class()` function to identify object class. 
+- When I encounter a new object I often investigate object by applying `typeof()`, `class()`, and `attributes()` functions    
+
+```{r}
+typeof(df_mba$region)
+
+attributes(df_mba$region)
+
+class(df_mba$region)
+```
+__Why is object class important?__
+
+- Functions care about object __class__, not object __type__
+- Specific functions usually work with only particular __classes__ of objects
+- "Date" functions usually only work on objects with a date class
+- "String" functions usually only work on objects with a character class
+- Functions that do mathematical computation usually work on objects with a numeric class
+
+<br>
+
+### `labelled` object class
+
+__Variable labels__ are labels attached to a specific variable (e.g., marital status)
+__Value labels__ [in Stata] are labels attached to specific values of a variable, e.g.:
+
+- Var value `1` attached to value label "married", `2`="single", `3`="divorced"
+
+<br>
+
+`labelled` is object class for importing vars with __value labels__ from SAS/SPSS/Stata
+
+- `labelled` object class created by `haven` package 
+- Characteristics of variables in R data frame with `class==labelled`:
+    - Data `type` can be numeric(double) or character
+    - To see `value labels` associated with each value:
+        - `attr(df_name$var_name,"labels")`
+        - E.g., `attr(df_mba$region,"labels")`
+        
+
+Investigate the attributes of `df_mba$s3region`
+```{r, results="hide"}
+typeof(df_mba$region)
+
+class(df_mba$region)
+
+#str(df_mba$region)
+
+attributes(df_mba$region)
+```
+
+
+Use `attr(object_name,"attribute_name")` to refer to each attribute
+```{r, results="hide"}
+attr(df_mba$region,"label")
+
+attr(df_mba$region,"class")
+
+attr(df_mba$region,"labels")
+```        
+### `factor` object class
+    
 # Interpretation of $\hat{\beta}$
+
 
 text
 
