@@ -384,59 +384,6 @@ df_mba %>% glimpse()
 # create version of data frame df_mba that turns class=labelled variables to factor variables
   df_mba_fac <- as_factor(df_mba, only_labelled = TRUE) %>% glimpse()
 
-```
-
-
-```{r}
-df_score_ipeds %>% count(locale)
-df_score_ipeds %>% count(urban)
-
-attributes(df_score_ipeds$locale)
-attr(x = df_score_ipeds$locale, which = 'labels')
-
-df_score_ipeds %>% count(locale) %>% as_factor()
-
-df_score_ipeds %>% mutate(
-  urban = case_when(
-    locale %in% c(11,12,13) ~ 1, # city
-    locale %in% c(21,22,23) ~ 2, # suburb
-    locale %in% c(31,32,33,41,42,43) ~ 3 # town/rural
-  )
-) 
-
-var_label(df_ipeds_pop[['urban']]) <- 'three-category variable of level of urbanization (city, suburb, town/rural) created from locale'
-# %>% count(urban, locale) # crosscheck
-
-set_value_labels(
-  urban = c(
-    'city' = 1,
-    'suburb' = 2,
-    'town/rural' = 3
-  )
-```
-
-```{r}
-# don't want to change
-
-$ opeid6                        <chr> "001002", "001052", "025034", "001055", "001051...
-$ unitid                        <dbl> 100654, 100663, 100690, 100706, 100751, 100858,...
-$ instnm                        <chr> "Alabama A & M University", "University of Alab...
-
-# already factor
-$ control                       <fct> Public, Public, Private not-for-profit, Public,...
-$ ccbasic                       <fct> Master's Colleges & Universities: Larger Progra...
-$ region                        <fct> "Southeast (AL, AR, FL, GA, KY, LA, MS, NC, SC,...
-$ locale                        <fct> "City: Midsize (population of at least 100,000 ...
-$ credlev                       <fct> Master's Degree, Master's Degree, Master's Degr...
-
-
-$ stabbr                        <chr> "AL", "AL", "AL", "AL", "AL", "AL", "AL", "AL",...
-$ city                          <chr> "Normal", "Birmingham", "Montgomery", "Huntsvil...
-$ cipdig2                       <chr> "52", "52", "52", "52", "52", "52", "52", "52",...
-$ cipcode                       <chr> "5202", "5202", "5202", "5202", "5202", "5202",...
-$ cipdesc                       <chr> "Business Administration, Management and Operat...
-$ creddesc                      <chr> "Master's Degree", "Master's Degree", "Master's...
-
 
 ##########
 ########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
@@ -2591,27 +2538,80 @@ __Value labels__ [in Stata] are labels attached to specific values of a variable
         - E.g., `attr(df_mba$region,"labels")`
         
 
-Investigate the attributes of `df_mba$s3region`
+Working with `labelled` class variables (e.g., `df_mba$s3region`)
+
+- underlying data type: numeric or character atomic vector
+- name of value label attribute: `labels`
+- refer to values of `labelled` class variable using: variable values (not values of `labels` attribute)
 ```{r, results="hide"}
 typeof(df_mba$region)
-
 class(df_mba$region)
-
-#str(df_mba$region)
-
 attributes(df_mba$region)
+attr(df_mba$region,"label")
+
+
+# frequency count
+df_mba %>% count(region)
+df_mba %>% count(region) %>% as_factor()
+
+# filter based on underlying values of the variable
+  # rocky mountains area
+  df_mba %>% filter(region==7) %>% count(stabbr)
+
 ```
 
 
-Use `attr(object_name,"attribute_name")` to refer to each attribute
-```{r, results="hide"}
-attr(df_mba$region,"label")
-
-attr(df_mba$region,"class")
-
-attr(df_mba$region,"labels")
-```        
 ### `factor` object class
+
+__Factors__ are an object _class_ used to display categorical data (e.g., marital status)
+
+- A factor is an __augmented vector__ built by attaching a __levels__ attribute to an (atomic) integer vectors
+- Usually, we would prefer a categorical variable (e.g., race, school type) to be a factor variable rather than a character variable
+- when running regression in *R*, categorical variables must be factor class variables
+
+<br>
+
+glimpse data frame with factor variables
+```{r}
+df_mba_fac %>% glimpse()
+```
+
+<br>
+Can create factor version of a variable using `as_factor()` function
+
+- we will do this for you; because this isn't a class on programming/data management
+
+
+Working with `factor` class variables (e.g., `df_mba_fac$s3region`)
+
+- underlying data type: integer atomic vector
+- class: `factor`
+- name of value label attribute: `levels`
+- Underlying data are integers, but the values of the __levels__ attribute is what's displayed in *R* output:
+- refer to values of `labelled` class variable: 
+  - using variable values (not values of `labels` attribute)
+  - or by wrapping factor variable in `as.integer()` to refer to underlying variable values
+    
+```{r}
+# printing a few observations
+df_mba_fac$region[1:5]
+
+df_mba_fac$control[1:5]
+
+typeof(df_mba_fac$region)
+class(df_mba_fac$region)
+attributes(df_mba_fac$region)
+attr(df_mba_fac$region,"levels")
+
+
+# frequency count
+df_mba_fac %>% count(region)
+
+# filter based on underlying values of the variable
+  # rocky mountains area
+  df_mba_fac %>% filter(region=="Rocky Mountains (CO, ID, MT, UT, WY)") %>% count(stabbr)
+  df_mba_fac %>% filter(as.integer(region)==8) %>% count(stabbr)
+```
     
 # Interpretation of $\hat{\beta}$
 
