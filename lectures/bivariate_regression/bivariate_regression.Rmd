@@ -2620,9 +2620,220 @@ text
 
 ## Continuous $X$
 
-text
+In order to practice interpretation of $\hat{\beta}_1$ when $X$ is continuous, we'll investigate the relationship between annual cost of attendance ($X$) and institution-level student earnings ($Y$) for graduates of MBA programs using the data frame `df_mba_fac`
+
+- $X$ annual cost of attendance, measured by the variable `coa_grad_res`; variable label: `r df_mba_fac$coa_grad_res %>% var_label()`
+- $Y$ earnings, measured by the variable `earn_mdn_hi_2yr`, which is median earnings two years after graduation of students who graduated from the program
+
+
+<br><br>
+
+Investigate the dataset
+```{r}
+#df_mba_fac %>% glimpse()
+
+# characteristics of universities offering MBA programs in our dataset
+df_mba_fac %>% count(control)
+
+df_mba_fac %>% count(ccbasic) # carnegie classification
+
+df_mba_fac %>% count(urban) # level of urbanization
+
+
+# mean values for interesting variables
+  df_mba_fac %>% 
+    summarize(
+      n = n(),
+      tuitfee_grad_res = mean(tuitfee_grad_res, na.rm = TRUE),
+      tuitfee_grad_nres = mean(tuitfee_grad_nres, na.rm = TRUE),
+      coa_grad_res = mean(coa_grad_res, na.rm = TRUE),
+      coa_grad_nres = mean(coa_grad_nres, na.rm = TRUE),
+      debt = mean(debt_all_stgp_eval_mean, na.rm = TRUE),  # institution-level mean debt
+      earn_2yr = mean(earn_mdn_hi_2yr, na.rm = TRUE),
+    ) 
+
+```
+<br>
+
+Graphically visualize the relationship between annual cost of attendance ($X$) and earnings ($Y$)
+
+- the blue prediction line is just the OLS prediction line
+```{r}
+df_mba_fac %>%  ggplot(aes(x=coa_grad_res, y=earn_mdn_hi_2yr)) + geom_point() + stat_smooth(method = 'lm')
+```
+<br>
+
+Visually, the relationship between annual COA and earnings for MBA programs seems to be much stronger than the relationship between COA and earnings for social work programs (below)
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=earn_mdn_hi_2yr)) + geom_point() + stat_smooth(method = 'lm')
+```
+
+<br><br>
+Run OLS regression model of relationship between annual cost of attendance ($X$) and earnings ($Y$); and summarize model results
+```{r}
+mbdamod1 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_mba_fac)
+
+
+summary(mbdamod1)
+
+
+#square root of sum of squared residuals divided by degress of freedom
+sqrt(anova(mod2)$"Sum Sq"[2]/anova(mod2)$Df[2])
+
+#or 
+summary(mod2)$sigma
+```
+
+<br><br>
+
+__Present research question and models__
+
+- Research question
+  - posed in a correlational way:
+    - What is the relationship between annual cost of attendance ($X$) and institution-level student earnings ($Y$) for graduates of MBA programs?
+  - posed in a causal effects way:
+    - What is the effect of cost of attendance ($X$) on institution-level student earnings ($Y$) for graduates of MBA programs?
+  - truly answering the causal question would require an experiment (randomly assigning MBA students to programs with different levels of cost of attenance), so we'll answer the correlational research question
+- Population Linear Regression Model
+  - $Y_i = \beta_0 + \beta_1X_i + u_i$
+  - where:
+    - $Y_i$: institution-level student earnings (in dollars) at university $i$
+      - measured by the variable `earn_mdn_hi_2yr`, which is median earnings two years after graduation of students who graduated from the program
+    - $X_i$: annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
+      - measured by the variable `coa_grad_res`; variable label: `r df_mba_fac$coa_grad_res %>% var_label()`
+        - note: this variable is based on average graduate tuition price; price of MBA programs may be different (e.g., higher at very fancy MBA programs)
+    - $\beta_1$: population regression coefficient, is the average change in the value of $Y$ associated with a one-unit increase in $X$
+    - $\beta_0$: population intercept; average value of $Y$ when $X=0$ 
+- OLS Prediction Line (without estimates)
+   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
+- OLS Prediction Line (with estimates)   
+   - $\hat{Y_i} =$  `r format(round(summary(mbdamod1)$coefficients[1,1], digits =2),big.mark = ',')` + `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` $\times X_i$
+
+<br><br>
+
+__Interpretation of $\hat{\beta_1}$__
+
+- General interpretation of $\hat{\beta_1}$ [always true!]
+  - (we estimate that) one-unit increase in $X$ is associated with a $\hat{\beta_1}$ unit change (negative = "decrease" or positive = "increase") in $Y$
+- When interpreting value of $\hat{\beta_1}$ obtained after running regression model, modify the general interpretation to include:
+  - the name of the $X$ variable; what unit $X$ is measured in (e.g., dollars); name of the $Y$ variable; what unit $Y$ is measured in; other relevant information (e.g., the sample you are studying)
+- Interpretation of $\hat{\beta_1}=$ `r round(summary(mbdamod1)$coefficients[2,1], digits =2)`
+  - barely passable interpretation: "a one-unit increase in $X$ is associated with a `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` unit increase in $Y$"
+  - better interpretation: "a one-dollar increase in annual cost of attendance is associated with a `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` dollar increase in institution-level student earnings"
+
+<br><br>
+
+### Change $\Delta$ in $Y$ associated with $\Delta$ in $X$
+
+Questions that might arise about $\hat{\beta_1}$
+
+- Does the expected change in $Y$ associated with a one-unit change in $X$ depend on the starting value of $X$?
+- If $X$ changes by more than one unit or by less than one unit, how much would we expect $Y$ to change?
+
+<br><br>
+Recall that our OLS model is estimating the **linear** relationship between $X$ and $Y$
+
+- linear relationship can be seen visually in the below graph of the OLS prediction line
+
+```{r}
+df_mba_fac %>%  ggplot(aes(x=coa_grad_res, y=earn_mdn_hi_2yr)) + geom_point() + stat_smooth(method = 'lm')
+```
+
+<br><br>
+
+__Does the expected change in $Y$ associated with a one-unit change in $X$ depend on the starting value of $X$? ANSWER: NO!__
+
+- Think of $\hat{\beta_1}$ as measuring the slope of our prediction line
+  - $\hat{\beta_1} = \frac{\Delta Y}{\Delta X}$
+  - in a straight (linear) line, slope is constant
+  - that is, the expected $\Delta Y$ associated with a one-unit increase in $X$ does not depend on the starting value of $X$
+- Therefore, a one-unit change in $X$ is associated with a $\hat{\beta_1}$ change in $Y$ no matter the starting value of $X$, for example:
+  - going from $X=20,000$ to $X=20,001$ is associated with a $\hat{\beta_1}=$ `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` increase in $Y$
+  - going from $X=40,000$ to $X=40,001$ is associated with a $\hat{\beta_1}=$ `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` increase in $Y$
+
+<br><br>
+
+__What is the predicted change $\Delta$ in $Y$ associated with a $\Delta$ in $X$ that is not a one-unit increase in $X$? ANSWER: $\hat{\beta_1}*\Delta X$__
+
+
+- let's define $\Delta X$ as the number of units that $X$ changes by, for example:
+  - $\Delta X = 5,000$: this is a $5,000$ unit increase in $X$; or (said different) a $5,000$ dollar increase in cost of attendance
+  - $\Delta X = -200$: this is a $200$ unit decrease in $X$; or (said different) a $200$ dollar decrease in cost of attendance
+- Expected $\Delta$ in $Y$ for a $\Delta X$-unit change in $X$ is a $\hat{\beta_1}*\Delta X$ unit change in $Y$
+- Example:
+  - $\Delta X = 5,000$: a $5,000$ dollar increase in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbdamod1)$coefficients[2,1]*5000, digits =2)` increase in predicted institution-level student earinings
+  - $\Delta X = -200$: a $200$ dollar decrease in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbdamod1)$coefficients[2,1]*-200, digits =2)` decrease in predicted institution-level student earinings
+
 
 ## Categorical $X$
 
+<br>
+Many independent variables of interest are categorical rather than continous. This section focuses on interpreting $\hat{\beta_1}$ associated with a categorical $X$ variable
+
+<br>
+
+How to distinguish between continuous and categorical variables when running regression?
+
+- Continous variables:
+  - Difference between one value and another is quantitative
+  - e.g., SAT score of 900 vs. 1000; income of $40k vs $45k, GPA of 2.0 vs. 2.1
+- Categorical variables: 
+  - Difference between one value and another cannot be measured quantitatively
+  - e.g., race/ethnicity, parent education is B.A. vs M.D., political ideology
+    
+<br>
+
+Many program evaluation questions involve a categorical independent variable of interest
+
+  - What is the effect of receiving a pell grant on on-time college completion? 
+  - What is the effect of participating in Mexican American Studies program on high school graduation?
+  - What is the effect of Head Start pre-k on Kindergarten reading levels? 
+  - What is the effect of class size (small vs large) on student learning? 
+
+<br>
+
+__General Steps for Regression with Categorical $X$__
+
+- Identify categories of $X$ and choose a "reference" group
+  - the “reference group” or “base level” is the group that all other groups will be compared to
+- Create a factor variable that has categories for each group (or create separate 0/1 variables for each group)
+- Write out population model and OLS regression line
+- Run regression in R
+- Interpret estimates
+
+<br>
+
+How we will teach interpretation of $\hat{\beta_1}$ with categorical $X$ variable
+
+- we'll start with a two-category $X$ variable (sometimes called a "dichotomous" variable or a "0/1" variable or a "dummy" variable)
+- then we'll discuss interpretation when the categorical variable has more than two categories
+
+
+### Two-category $X$ variable
+
+__Present research question and models__
+
+- Research question
+  - posed in a correlational way:
+    - What is the relationship between annual cost of attendance ($X$) and institution-level student earnings ($Y$) for graduates of MBA programs?
+  - posed in a causal effects way:
+    - What is the effect of cost of attendance ($X$) on institution-level student earnings ($Y$) for graduates of MBA programs?
+  - truly answering the causal question would require an experiment (randomly assigning MBA students to programs with different levels of cost of attenance), so we'll answer the correlational research question
+- Population Linear Regression Model
+  - $Y_i = \beta_0 + \beta_1X_i + u_i$
+  - where:
+    - $Y_i$: institution-level student earnings (in dollars) at university $i$
+      - measured by the variable `earn_mdn_hi_2yr`, which is median earnings two years after graduation of students who graduated from the program
+    - $X_i$: annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
+      - measured by the variable `coa_grad_res`; variable label: `r df_mba_fac$coa_grad_res %>% var_label()`
+        - note: this variable is based on average graduate tuition price; price of MBA programs may be different (e.g., higher at very fancy MBA programs)
+    - $\beta_1$: population regression coefficient, is the average change in the value of $Y$ associated with a one-unit increase in $X$
+    - $\beta_0$: population intercept; average value of $Y$ when $X=0$ 
+- OLS Prediction Line (without estimates)
+   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
+- OLS Prediction Line (with estimates)   
+   - $\hat{Y_i} =$  `r format(round(summary(mbdamod1)$coefficients[1,1], digits =2),big.mark = ',')` + `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` $\times X_i$
+
 text
+
 # References
