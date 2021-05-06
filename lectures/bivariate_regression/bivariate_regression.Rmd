@@ -2885,7 +2885,7 @@ __Interpretation of $\hat{\beta_1}$ for categorical X__
 __Hypothesis testing about $\hat{\beta_1}$ when $X$ is categorical__
 
 - **EXACTLY** the same as hypothesis testing about $\hat{\beta_1}$ when $X$ is continuous!
-- $H_0: \beta_1 =0; H_0: \beta_1 \ne 0$
+- $H_0: \beta_1 =0; H_a: \beta_1 \ne 0$
 - let's choose an alpha-level of `0.05` (reject $H_0$ if p-value is less than `0.05`)
 - calculate t-statistic
   - $\hat{\beta}_1$: `r round(summary(mbamod2)$coefficients[2,1], digits = 4)`
