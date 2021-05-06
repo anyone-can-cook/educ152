@@ -2671,17 +2671,9 @@ df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=earn_mdn_hi_2yr)) + geom_point()
 <br><br>
 Run OLS regression model of relationship between annual cost of attendance ($X$) and earnings ($Y$); and summarize model results
 ```{r}
-mbdamod1 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_mba_fac)
+mbamod1 <- lm(formula = earn_mdn_hi_2yr ~ coa_grad_res, data = df_mba_fac)
 
-
-summary(mbdamod1)
-
-
-#square root of sum of squared residuals divided by degress of freedom
-sqrt(anova(mod2)$"Sum Sq"[2]/anova(mod2)$Df[2])
-
-#or 
-summary(mod2)$sigma
+summary(mbamod1)
 ```
 
 <br><br>
@@ -2707,7 +2699,7 @@ __Present research question and models__
 - OLS Prediction Line (without estimates)
    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
 - OLS Prediction Line (with estimates)   
-   - $\hat{Y_i} =$  `r format(round(summary(mbdamod1)$coefficients[1,1], digits =2),big.mark = ',')` + `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` $\times X_i$
+   - $\hat{Y_i} =$  `r format(round(summary(mbamod1)$coefficients[1,1], digits =2),big.mark = ',')` + `r round(summary(mbamod1)$coefficients[2,1], digits =2)` $\times X_i$
 
 <br><br>
 
@@ -2717,9 +2709,9 @@ __Interpretation of $\hat{\beta_1}$__
   - (we estimate that) one-unit increase in $X$ is associated with a $\hat{\beta_1}$ unit change (negative = "decrease" or positive = "increase") in $Y$
 - When interpreting value of $\hat{\beta_1}$ obtained after running regression model, modify the general interpretation to include:
   - the name of the $X$ variable; what unit $X$ is measured in (e.g., dollars); name of the $Y$ variable; what unit $Y$ is measured in; other relevant information (e.g., the sample you are studying)
-- Interpretation of $\hat{\beta_1}=$ `r round(summary(mbdamod1)$coefficients[2,1], digits =2)`
-  - barely passable interpretation: "a one-unit increase in $X$ is associated with a `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` unit increase in $Y$"
-  - better interpretation: "a one-dollar increase in annual cost of attendance is associated with a `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` dollar increase in institution-level student earnings"
+- Interpretation of $\hat{\beta_1}=$ `r round(summary(mbamod1)$coefficients[2,1], digits =2)`
+  - barely passable interpretation: "a one-unit increase in $X$ is associated with a `r round(summary(mbamod1)$coefficients[2,1], digits =2)` unit increase in $Y$"
+  - better interpretation: "a one-dollar increase in annual cost of attendance is associated with a `r round(summary(mbamod1)$coefficients[2,1], digits =2)` dollar increase in institution-level student earnings"
 
 <br><br>
 
@@ -2748,8 +2740,8 @@ __Does the expected change in $Y$ associated with a one-unit change in $X$ depen
   - in a straight (linear) line, slope is constant
   - that is, the expected $\Delta Y$ associated with a one-unit increase in $X$ does not depend on the starting value of $X$
 - Therefore, a one-unit change in $X$ is associated with a $\hat{\beta_1}$ change in $Y$ no matter the starting value of $X$, for example:
-  - going from $X=20,000$ to $X=20,001$ is associated with a $\hat{\beta_1}=$ `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` increase in $Y$
-  - going from $X=40,000$ to $X=40,001$ is associated with a $\hat{\beta_1}=$ `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` increase in $Y$
+  - going from $X=20,000$ to $X=20,001$ is associated with a $\hat{\beta_1}=$ `r round(summary(mbamod1)$coefficients[2,1], digits =2)` increase in $Y$
+  - going from $X=40,000$ to $X=40,001$ is associated with a $\hat{\beta_1}=$ `r round(summary(mbamod1)$coefficients[2,1], digits =2)` increase in $Y$
 
 <br><br>
 
@@ -2761,8 +2753,8 @@ __What is the predicted change $\Delta$ in $Y$ associated with a $\Delta$ in $X$
   - $\Delta X = -200$: this is a $200$ unit decrease in $X$; or (said different) a $200$ dollar decrease in cost of attendance
 - Expected $\Delta$ in $Y$ for a $\Delta X$-unit change in $X$ is a $\hat{\beta_1}*\Delta X$ unit change in $Y$
 - Example:
-  - $\Delta X = 5,000$: a $5,000$ dollar increase in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbdamod1)$coefficients[2,1]*5000, digits =2)` increase in predicted institution-level student earinings
-  - $\Delta X = -200$: a $200$ dollar decrease in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbdamod1)$coefficients[2,1]*-200, digits =2)` decrease in predicted institution-level student earinings
+  - $\Delta X = 5,000$: a $5,000$ dollar increase in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbamod1)$coefficients[2,1]*5000, digits =2)` increase in predicted institution-level student earinings
+  - $\Delta X = -200$: a $200$ dollar decrease in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbamod1)$coefficients[2,1]*-200, digits =2)` decrease in predicted institution-level student earinings
 
 
 ## Categorical $X$
@@ -2796,7 +2788,8 @@ __General Steps for Regression with Categorical $X$__
 
 - Identify categories of $X$ and choose a "reference" group
   - the “reference group” or “base level” is the group that all other groups will be compared to
-- Create a factor variable that has categories for each group (or create separate 0/1 variables for each group)
+- Create separate 0/1 variables for each category of $X$
+  - (Instead of doing this, we will just include the factor class independent variable in our regression model, and *R* will create the 0/1 variables for each category "on the fly"
 - Write out population model and OLS regression line
 - Run regression in R
 - Interpret estimates
@@ -2806,34 +2799,404 @@ __General Steps for Regression with Categorical $X$__
 How we will teach interpretation of $\hat{\beta_1}$ with categorical $X$ variable
 
 - we'll start with a two-category $X$ variable (sometimes called a "dichotomous" variable or a "0/1" variable or a "dummy" variable)
+  - all the key ideas we explain when $X$ is a two-category variable will also be true when $X$ has more than two categories
 - then we'll discuss interpretation when the categorical variable has more than two categories
 
 
+
 ### Two-category $X$ variable
+
+In order to practice interpretation of $\hat{\beta}_1$ when $X$ is is a two-category independent variable, we'll investigate the relationship between institutional control ($X$) and institution-level student earnings ($Y$) for graduates of MBA programs using the data frame `df_mba_fac`
+
+- $X_i$: is institutional control (public university; or private non-profit university), measured by the variable `control`
+- $Y$ earnings, measured by the variable `earn_mdn_hi_2yr`, which is median earnings two years after graduation of students who graduated from the program
+
+<br>
+
+Investigate variables in the model
+```{r}
+# these two vars in the model
+df_mba_fac %>% select(control,earn_mdn_hi_2yr) %>% glimpse()
+
+# control is a factor variable
+  # which means its underlying "type" is an integer; and its "class" is factor
+df_mba_fac$control %>% typeof()
+df_mba_fac$control %>% class()
+
+# levels attribute; these are the labels attached to the underlying integer data
+df_mba_fac$control %>% attributes()
+attr(x= df_mba_fac$control, which = 'levels')
+
+# frequency count
+df_mba_fac %>% count(control)
+df_mba_fac %>% count(as.integer(control))
+  # so in the underlying data: 2 refers to public universities, 3 refers to private non profit universities
+
+# average earnings, separately for public vs. private
+df_mba_fac %>% group_by(control) %>% summarize(
+  avg_earn = mean(earn_mdn_hi_2yr, na.rm = TRUE)
+)
+```
+
+
+<br>
+
+Run regression model
+```{r}
+mbamod2 <- lm(formula = earn_mdn_hi_2yr ~ control, data = df_mba_fac)
+
+summary(mbamod2)
+```
+
+
+<br>
 
 __Present research question and models__
 
 - Research question
   - posed in a correlational way:
-    - What is the relationship between annual cost of attendance ($X$) and institution-level student earnings ($Y$) for graduates of MBA programs?
+    - What is the relationship between attending a private university ($X=1$) vs. attending a public university ($X=0$) and institution-level student earnings ($Y$) for graduates of MBA programs?
   - posed in a causal effects way:
-    - What is the effect of cost of attendance ($X$) on institution-level student earnings ($Y$) for graduates of MBA programs?
-  - truly answering the causal question would require an experiment (randomly assigning MBA students to programs with different levels of cost of attenance), so we'll answer the correlational research question
+    - What is the effect of attending a private university ($X=1$) vs. attending a public university ($X=0$) on institution-level student earnings ($Y$) for graduates of MBA programs?
 - Population Linear Regression Model
   - $Y_i = \beta_0 + \beta_1X_i + u_i$
   - where:
-    - $Y_i$: institution-level student earnings (in dollars) at university $i$
-      - measured by the variable `earn_mdn_hi_2yr`, which is median earnings two years after graduation of students who graduated from the program
-    - $X_i$: annual cost of attendance (in dollars) for full-time resident graduate students at university $i$
-      - measured by the variable `coa_grad_res`; variable label: `r df_mba_fac$coa_grad_res %>% var_label()`
-        - note: this variable is based on average graduate tuition price; price of MBA programs may be different (e.g., higher at very fancy MBA programs)
-    - $\beta_1$: population regression coefficient, is the average change in the value of $Y$ associated with a one-unit increase in $X$
+    - $Y_i$: institution-level student earnings (in dollars) at university $i$ (measured by variable `earn_mdn_hi_2yr`)
+    - $X_i$: is institutional control, measured by the factor variable `control`, where:
+      - underlying value `2` is associated with "public"
+      - underlying value `3` is associated with "private not-for profit"
+      - **note**: R will automatically assign the lowest value of X as your "reference" category!
+        - "public" universities are the "reference category"
+        - "private not-for-profit" universities are the "non-reference category"
+    - $\beta_1$: population regression coefficient associated with being the non-reference category as opposed to the reference category
     - $\beta_0$: population intercept; average value of $Y$ when $X=0$ 
+      - this is the average value of $Y$ when $X$ is the reference group category
 - OLS Prediction Line (without estimates)
    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
 - OLS Prediction Line (with estimates)   
-   - $\hat{Y_i} =$  `r format(round(summary(mbdamod1)$coefficients[1,1], digits =2),big.mark = ',')` + `r round(summary(mbdamod1)$coefficients[2,1], digits =2)` $\times X_i$
+   - $\hat{Y_i} =$  `r format(round(summary(mbamod2)$coefficients[1,1], digits =2),big.mark = ',')` + `r format(round(summary(mbamod2)$coefficients[2,1], digits =2),big.mark = ',')` $\times X_i$
 
-text
+<br>
+
+__Interpretation of $\hat{\beta_1}$ for categorical X__
+
+- **Generic interpretation**
+  - being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_1}$ change in $Y$
+- Specific interpretation of $\hat{\beta_1}=$ `r format(round(summary(mbamod2)$coefficients[2,1], digits =2),big.mark = ',')`
+  - "Being a private not-for-profit university as opposed to a public university is, on average, associated with a `r format(round(summary(mbamod2)$coefficients[2,1], digits =2),big.mark = ',')` dollar change in institution-level student earnings for graduates of MBA programs"
+  
+<br><br>
+
+__Hypothesis testing about $\hat{\beta_1}$ when $X$ is categorical__
+
+- **EXACTLY** the same as hypothesis testing about $\hat{\beta_1}$ when $X$ is continuous!
+- $H_0: \beta_1 =0; H_0: \beta_1 \ne 0$
+- let's choose an alpha-level of `0.05` (reject $H_0$ if p-value is less than `0.05`)
+- calculate t-statistic
+  - $\hat{\beta}_1$: `r round(summary(mbamod2)$coefficients[2,1], digits = 4)`
+  - $SE(\hat{\beta}_1)$: `r round(summary(mbamod2)$coefficients[2,2], digits = 4)`
+  - $t = \frac{\hat{\beta}_1}{SE(\hat{\beta}_1)}=$ (`r round(summary(mbamod2)$coefficients[2,1], digits = 4)`)/(`r round(summary(mbamod2)$coefficients[2,2], digits = 4)`) = `r round(summary(mbamod2)$coefficients[2,3], digits = 4)`
+- p-value associated with $t$: `r round(summary(mbamod2)$coefficients[2,4], digits = 4)`
+  - interpretation: Under the assumption that $H_0: \beta_1 =0$ is true, there is a `r round(summary(mbamod2)$coefficients[2,4]*100, digits = 1)` percent chance of obtaining a point estimate $\hat{\beta_1}$ as far away from the hypothesized value ($\beta_1 =0$) as the one we observed
+  - so, if the true value of the population parameter $\beta_1$ equals `0`, we wouldn't be surprised to observe the $\hat{\beta_1}$ we observed from our single random sample
+- conclusion
+  - p-value of `r round(summary(mbamod2)$coefficients[2,4], digits = 4)` is greater than the alpha-level of `0.05`, so we do not reject $H_0$
+  
+  
+<br>
+Note: failure to reject $H_0: \beta_1 =0$ does not change our interpretation of $\hat{\beta_1}=$ `r format(round(summary(mbamod2)$coefficients[2,1], digits =2),big.mark = ',')`; but we just note that the relationship between $X$ and $Y$ is "not statistically significant"
+
+
+<br><br>
+
+#### Comparing interpretation of $\hat{\beta_1}$ when $X$ is continuous vs. categorical
+
+<br>
+
+Categorical variables that take on two categories are often called "0/1 variables"
+
+- Below, we create a variable named `private` that equals `1` if the institution is private and equals `0` if the institution is public
+
+```{r}
+df_mba_fac %>% count(control)
+df_mba_fac %>% count(as.integer(control))
+
+# create new variable named "private" that equals 1 if private, 0 if public; and assign it to existing data frame df_mba_fac
+df_mba_fac <- df_mba_fac %>% mutate(
+  private = as.factor(if_else(as.integer(control)==3,1,0)) # if control == 3, private ==1, otherwise private ==0; wrap it in as.factor() to make it a factor class variable
+) 
+
+# glimpse the output variable and the input variable (variable we used to created it) control
+df_mba_fac %>% select(control,private) %>% glimpse()
+
+# frequency count of private
+df_mba_fac %>% count(private)
+
+
+# cross-check private against input variable 
+df_mba_fac %>% count(control, private)
+```
+
+<br>
+
+Imagine that `private` is now the $X$ variable in our regression
+
+- A "one-unit increase" in $X$ for this variable means going from public ($X=0$) to private ($X=1$)
+- 0/1 variables like `private` can **only** increase by one unit
+
+
+<br>
+Now let's compare `private` to the variable `control` (which we used to create `private`)
+
+- `control` is a factor class variable
+  - factor "levels": level "Public" associated with underlying value `2` and level "Private not-for-profit" associated with underlying value `3`
+  - in our sample, the variable `control` can only have two values; so we can think of `control` as a 0/1 variable though the underlying values are not `0` and `1`
+  - so a "one-unit increase" in `control` means going from the **reference category** (public) to the **non-reference group category** (private)
+    - by default, *R* chooses the reference group category to be the category with the lowest underlying value; but we can manually choose which category to be the reference group using the function `relevel()`, as we will explain below.
+  
+<br>
+
+Comparing the output from regression model where $X$ is `control` to model where $X$ is `private`
+
+- output essentially identical
+```{r}
+# x = control
+summary(lm(formula = earn_mdn_hi_2yr ~ control, data = df_mba_fac))
+
+# x = private
+summary(lm(formula = earn_mdn_hi_2yr ~ private, data = df_mba_fac))
+
+# remove the variable private from data frame df_mba_fac
+df_mba_fac$private <- NULL
+```
+
+<br><br>
+__Comparing interpretation of $\hat{\beta_1}$ when $X$ is continuous vs. categorical__
+
+- Generic interpretation of $\hat{\beta_1}$ when X=continuous
+  - On average, a one-unit increase in $X$ is associated with a $\hat{\beta_1}$ unit change in the value of $Y$
+- Generic interpretation of $\hat{\beta_1}$ when X=categorical
+  - X; 0= reference group; 1= non-reference group
+  - being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_1}$ change in $Y$
+    - In other words: a one-unit increase in X (from X=0 to X=1) is associated with $\hat{\beta_1}$ change in Y
+    
+
+So interpretation of $\hat{\beta_1}$ for categorical X is the same as for continuous X
+
+- In both cases $\hat{\beta_1}$ is the effect of a one unit increase in X
+- But in categorical, X can only increase one unit (from X=0 to X=1)
+
+
+<br>
+
+#### Changing the reference group of categorical $X$
+
+<br>
+In the regressions we have run so far, "public" is the reference group and "private" is the non-reference group. What if we wanted to change the reference group?
+
+- we can do this using the function `relevel()`
+
+<br>
+
+`relevel()` function
+
+- description
+  - "The levels of a factor are re-ordered so that the level specified by ref is first and the others are moved down"
+- syntax
+  - `relevel(x, ref)`
+- arguments
+  - `x`: an factor class object (e.g., a variable with class equals `factor`)
+  - `ref`: "the reference level, typically a string"
+- object returned
+  - a factor class object of the same length as object `x` but reference level becomes argument value you chose for `ref`
+
+<br>
+Create new factor class variable `control_v2` that has "Private not-for-profit" as the reference group
+```{r}
+# first investigate original factor variable
+attributes(df_mba_fac$control)
+
+df_mba_fac %>% count(control) # frequency count, showing factor levels
+df_mba_fac %>% count(as.integer(control)) # frequency count, showing underlying variable values
+  # public has underlying value of 2
+  # private non-profit has underlying value of 3
+
+
+# create new variable control_v2, where "private not-for-profit" becomes the reference group; and assign this variable to existing data frame df_mba_fac
+df_mba_fac <- df_mba_fac %>% mutate(
+  control_v2 = relevel(x=control, ref = "Private not-for-profit")
+)
+
+# investigate new factor variable
+attributes(df_mba_fac$control_v2)
+
+df_mba_fac %>% count(control_v2) # frequency count, showing factor levels
+df_mba_fac %>% count(as.integer(control_v2)) # frequency count, showing underlying variable values
+  # note: private non-profit now has underlying value of 1
+  # public now has underlying value of 3
+
+#Run regression where $X$ is `control_v2` (reference group is "Private not-for-profit")
+  # we will interpret results a bit later
+  mbamod3 <- lm(formula = earn_mdn_hi_2yr ~ control_v2, data = df_mba_fac)
+```
+
+
+<br>
+
+Show output for original regression where $X$ is `control` (reference group is "public") and interpret $\hat{\beta_1}$ 
+
+- generic interpretation of $\hat{\beta_1}$ for categorical $X$
+  - being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_1}$ change in $Y$
+- Interpretation of $\hat{\beta_1}=$ `r format(round(summary(mbamod2)$coefficients[2,1], digits =2),big.mark = ',')`
+  - "Being a private not-for-profit university (non reference group) as opposed to a public university (reference group) is, on average, associated with a `r format(round(summary(mbamod2)$coefficients[2,1], digits =2),big.mark = ',')` dollar change in institution-level student earnings for graduates of MBA programs"
+```{r}
+summary(mbamod2)
+```
+<br>
+
+Show output for regression where $X$ is `control_v2` (reference group is "Private not-for-profit") and interpret $\hat{\beta_1}$ 
+
+- generic interpretation of $\hat{\beta_1}$ for categorical $X$
+  - being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_1}$ change in $Y$
+- Interpretation of $\hat{\beta_1}=$ `r format(round(summary(mbamod3)$coefficients[2,1], digits =2),big.mark = ',')`
+  - "Being a public university (non reference group) as opposed to a private non-profit university (reference group) is, on average, associated with a `r format(round(summary(mbamod3)$coefficients[2,1], digits =2),big.mark = ',')` dollar change in institution-level student earnings for graduates of MBA programs"
+```{r}
+summary(mbamod3)
+```
+```{r}
+#remove the variable control_v2
+df_mba_fac$control_v2 <- NULL
+```
+
+
+### Categorical $X$ with more than two categories
+
+<br>
+
+Everything we explained with a two-category $X$ is true when $X$ has more than two categories. 
+
+<br>
+
+We will examine the relationship between level of urbanization associated with where the university is located ($X$) and institution-level student earnings ($Y$) for MBA program graduates
+
+- Our $X$ variable is `urban`, which has four categories. let's investigate this variable.
+
+
+```{r}
+# urban is a factor variable
+df_mba_fac %>% select(urban) %>% glimpse()
+
+# look at the levels attribute
+attr(x=df_mba_fac$urban, which = 'levels')
+
+# frequency count of variable
+
+  df_mba_fac %>% count(urban) # showing factor levels
+  df_mba_fac %>% count(as.integer(urban)) # showing underlying values associated with factor levels
+```
+
+
+<br>
+
+Key to understanding regression when $X$ has more than two categories:
+
+- Choose one of the categories to be your reference group
+- Write out the population linear regression model
+  - There will be a $\beta$ for each category of $X$ **except** the reference group category
+- Run the regression model in *R*
+  - There will be a $\hat{\beta}$ for each category of $X$ **except** the reference group category
+  - Generic interpretation of $\hat{\beta}$ for a particular non-reference group category:
+    - "being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_1}$ change in $Y$"
+    - *note*. this is the exact same generic interpretation as when $X$ only contained two categories
+
+<br>
+Relationship between number of categories in $X$ and number of $\beta$ associated with this variable in your regression model
+
+- If your $X$ variable has $k$ categories, then this variable will be associated with  $k-1$ $\beta$ in your regression model (i.e., $\beta_1, \beta_2,\beta_3,\ldots,\beta_{k-1}$)
+  - why: there is one $\beta$ for each category of $X$ except for the reference group category (which is the reference group for each non-reference-group category)
+- for example, if $X$ has four categories, population linear regression model is:
+  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \beta_3X_{3i} + u_i$
+  - (four category $X$ associated with three different $\beta$ because one category excluded to become the reference group)
+- If $X$ has two categories, population linear regression model is:
+  - $Y_i = \beta_0 + \beta_1X_{1i} + u_i$
+  - (two category $X$ associated with one $\beta$ because one category excluded to become the reference group)
+  - so think of the two-category $X$ we introduced above is a specific type of the more general $k$ category $X$!
+
+
+<br>
+Run regression model (we'll interpret these results later) with `urban` as our $X$
+
+- note that by default the category "large city (250k+)" will be the reference category in our regression because this category is associated with the lowest underlying value of the variable (underlying value is `1`)
+  - but we could manually change the reference group using `relel()` function if we wanted to
+```{r}
+mbamod4 <- lm(formula = earn_mdn_hi_2yr ~ urban, data = df_mba_fac)
+summary(mbamod4)
+```
+__Write out research question and models__
+
+- Research question (posed in a correlational way)
+  - What is the relationship between university level of urbanization ($X$) and institution-level student earnings ($Y$) for graduates of MBA programs?
+- Population Linear Regression Model
+  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i}+ \beta_3X_{3i} + u_i$, where:
+  - $Y_i$: institution-level student earnings (in dollars) at university $i$ (measured by variable `earn_mdn_hi_2yr`)
+  - $X$: level of urbanization (measured by `urban`), has the following four categories: large city (250k+) [refrence group]; med/small city; suburb; town/rural
+    - $X_{1i}$: 0/1 "med/small city"
+    - $X_{2i}$: 0/1 "suburb"
+    - $X_{3i}$: 0/1 "town/rural"
+  - $\beta_0$: population intercept; average value of $Y$ when $X$ is the reference group category (that is $X_{1i}=0,X_{2i}=0,X_{3i}=0$
+    - this is predicted average earnings for students who graduate from a university located in a "large city (250K+)"
+  - $\beta_1$: population regression coefficient associated with being a "med/small city" rather than reference group
+  - $\beta_2$: population regression coefficient associated with being a "suburb" rather than reference group
+  - $\beta_2$: population regression coefficient associated with being a "town/rural" rather than reference group
+- OLS Prediction Line (without estimates)
+   - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}X_{2i}+ \hat{\beta_3}X_{3i}$
+- OLS Prediction Line (with estimates)   
+   - $\hat{Y_i} =$  `r format(round(summary(mbamod4)$coefficients[1,1], digits =2),big.mark = ',')` + `r format(round(summary(mbamod4)$coefficients[2,1], digits =2),big.mark = ',')` $\times X_{1i}$ + `r format(round(summary(mbamod4)$coefficients[3,1], digits =2),big.mark = ',')` $\times X_{2i}$ + `r format(round(summary(mbamod4)$coefficients[4,1], digits =2),big.mark = ',')` $\times X_{3i}$
+
+<br>
+<br>
+Interpreting $\hat{\beta}$ associated with $X_{1i},X_{2i},X_{3i}$
+
+- Generic interpretation 
+  - "being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_1}$ change in $Y$"
+- Interpretation of $\hat{\beta_1}=$ `r format(round(summary(mbamod4)$coefficients[2,1], digits =2),big.mark = ',')` (med/small city)
+  - "being located in a medium/small city as opposed to large city is, on average, associated with a `r format(round(summary(mbamod4)$coefficients[2,1], digits =2),big.mark = ',')` dollar change in institution-level student earnings for MBA program graduates"
+- Interpretation of $\hat{\beta_2}=$ `r format(round(summary(mbamod4)$coefficients[3,1], digits =2),big.mark = ',')` (suburb)
+  - "being located in a suburb as opposed to large city is, on average, associated with a `r format(round(summary(mbamod4)$coefficients[3,1], digits =2),big.mark = ',')` dollar change in institution-level student earnings for MBA program graduates"
+- Interpretation of $\hat{\beta_3}=$ `r format(round(summary(mbamod4)$coefficients[4,1], digits =2),big.mark = ',')` (town/rural)
+  - "being located in a town/rural area as opposed to large city is, on average, associated with a `r format(round(summary(mbamod4)$coefficients[4,1], digits =2),big.mark = ',')` dollar change in institution-level student earnings for MBA program graduates"
+
+<br>
+<br>
+Interpreting $\hat{\beta}_0$
+
+- $\hat{\beta}_0$ is the predicted value of $Y$ when all independent variables in the model ($X_1,X_2,\ldots X_k$) are equal to `0`
+- in a model with no continuous dependent variables, $\hat{\beta}_0$ is the predicted value of $Y$ when our categorical $X$ variable is equal to the reference group
+- so in our model, $\hat{\beta}_0=$ `r format(round(summary(mbamod4)$coefficients[1,1], digits =2),big.mark = ',')` is the predicted institution-level student earnings for MBA graduates who attended a university located in a large city
+
+<br>
+
+### Choosing reference groups
+
+<br>
+
+Which category of $X$ should you choose as a reference group?
+
+- It doesn't really matter
+- Substantively, results are **exactly** the same regardless of which reference group you choose, although choice of reference group often change how a reader interprets results (especially a reader who does not know statistics)
+- General rule of thumb: choose a reference group that does not have a small number of observations
+- But you don't need to choose reference group as the group with the largest number of observations
+  - For example, if you have student-level data no need to choose "white" as the reference group for a variable `race`
+- Why not choose a reference group that has a very small number of observations
+  - we are trying to make inferences about populations based on sample data
+  - for category of $X$ where we have very few observations, this is like taken a tiny sample from the population
+  - when our sample is tiny our estimates from this sample are very imprecise
+  - if we choose a group with has very few observations as our reference group, our interpretation of each non reference group $\beta_{k}$ is made with reference to a group that we have very imprecise knowledge about due to small sample size
+
+<br>
+
+# Confidence intervals
+
+<br>
 
 # References
