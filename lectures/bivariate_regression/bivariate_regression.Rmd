@@ -384,7 +384,8 @@ df_mba %>% glimpse()
 # create version of data frame df_mba that turns class=labelled variables to factor variables
   df_mba_fac <- as_factor(df_mba, only_labelled = TRUE) %>% glimpse()
 
-
+# save as RDS
+  #save(df_mba_fac, file = "../../data/college_scorecard/output_data/df_debt_earn_mba.Rdata")
 ##########
 ########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
 ##########
