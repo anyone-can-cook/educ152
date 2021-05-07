@@ -351,8 +351,7 @@ plot_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_
 
 
 # Function to generate t-distribution plot
-# Function to generate t-distribution plot
-plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F, beta_y = NULL, beta_x = NULL) {
+plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F, beta_y = NULL, beta_x = NULL, beta_x_cat = 1) {
   
   two_pop <- !is.null(group_var) || !is.null(data_vec2)
   
@@ -383,9 +382,11 @@ plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, dat
   if (!is.null(beta_y)) {  # beta testing
     mod <- summary(lm(formula = get(beta_y) ~ get(beta_x), data = data_df))
     
+    idx <- beta_x_cat + 1
+    
     deg_freedom <- mod$df[[2]]
-    std_err <- mod$coefficients[[2, 'Std. Error']]
-    t <- mod$coefficients[[2, 't value']]
+    std_err <- mod$coefficients[[idx, 'Std. Error']]
+    t <- mod$coefficients[[idx, 't value']]
   } else if (!two_pop) {  # single sample
     data_vec1 <- na.omit(data_vec1)
     

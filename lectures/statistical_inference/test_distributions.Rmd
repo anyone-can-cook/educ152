@@ -259,6 +259,10 @@ df_scorecard <- df_scorecard %>%
     filter(!is.na(coa_grad_res))
 ```
 
+```{r}
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_mba.Rdata'))
+```
+
 
 ```{r}
 df_ipeds_pop %>% head()
@@ -498,7 +502,7 @@ plot_distribution(data_df = df_ipeds_pop, data_var = 'tuitfee_grad_res', group_v
 
 ```{r}
 # Function to generate t-distribution plot
-plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F, beta_y = NULL, beta_x = NULL) {
+plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, data_var = NULL, group_var = NULL, group_cat = NULL, mu = 0, alpha = 0.05, alternative = 'two.sided', plot_title = '', shade_rejection = T, shade_pval = T, stacked = F, beta_y = NULL, beta_x = NULL, beta_x_cat = 1) {
   
   two_pop <- !is.null(group_var) || !is.null(data_vec2)
   
@@ -529,9 +533,11 @@ plot_t_distribution <- function(data_vec1, data_vec2 = NULL, data_df = NULL, dat
   if (!is.null(beta_y)) {  # beta testing
     mod <- summary(lm(formula = get(beta_y) ~ get(beta_x), data = data_df))
     
+    idx <- beta_x_cat + 1
+    
     deg_freedom <- mod$df[[2]]
-    std_err <- mod$coefficients[[2, 'Std. Error']]
-    t <- mod$coefficients[[2, 't value']]
+    std_err <- mod$coefficients[[idx, 'Std. Error']]
+    t <- mod$coefficients[[idx, 't value']]
   } else if (!two_pop) {  # single sample
     data_vec1 <- na.omit(data_vec1)
     
@@ -728,6 +734,30 @@ plot_t_distribution(data_df = df_ipeds_sample, data_var = 'roomboard_off',
 summary(lm(formula = debt_all_stgp_eval_mean ~ coa_grad_res, data = df_socialwork))
 
 plot_t_distribution(beta_y = 'debt_all_stgp_eval_mean', beta_x = 'coa_grad_res', data_df = df_socialwork)
+```
+
+
+## Categorical X
+
+```{r}
+# 2 categories
+summary(lm(formula = earn_mdn_hi_2yr ~ control, data = df_mba_fac))
+
+plot_t_distribution(beta_y = 'earn_mdn_hi_2yr', beta_x = 'control', data_df = df_mba_fac)
+
+
+# More than 2 categories
+summary(lm(formula = earn_mdn_hi_2yr ~ urban, data = df_mba_fac))
+
+# Default would plot first comparison category (med/small city)
+plot_t_distribution(beta_y = 'earn_mdn_hi_2yr', beta_x = 'urban', data_df = df_mba_fac)
+plot_t_distribution(beta_y = 'earn_mdn_hi_2yr', beta_x = 'urban', data_df = df_mba_fac, beta_x_cat = 1)  # equivalent
+
+# Specify second comparison category
+plot_t_distribution(beta_y = 'earn_mdn_hi_2yr', beta_x = 'urban', data_df = df_mba_fac, beta_x_cat = 2)
+
+# Specify third comparison category
+plot_t_distribution(beta_y = 'earn_mdn_hi_2yr', beta_x = 'urban', data_df = df_mba_fac, beta_x_cat = 3)
 ```
 
 
