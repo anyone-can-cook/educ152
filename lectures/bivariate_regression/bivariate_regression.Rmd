@@ -2544,7 +2544,7 @@ Working with `labelled` class variables (e.g., `df_mba$s3region`)
 - underlying data type: numeric or character atomic vector
 - name of value label attribute: `labels`
 - refer to values of `labelled` class variable using: variable values (not values of `labels` attribute)
-```{r, results="hide"}
+```{r}
 typeof(df_mba$region)
 class(df_mba$region)
 attributes(df_mba$region)
@@ -2750,8 +2750,8 @@ __What is the predicted change $\Delta$ in $Y$ associated with a $\Delta$ in $X$
   - $\Delta X = -200$: this is a $200$ unit decrease in $X$; or (said different) a $200$ dollar decrease in cost of attendance
 - Expected $\Delta$ in $Y$ for a $\Delta X$-unit change in $X$ is a $\hat{\beta_1}*\Delta X$ unit change in $Y$
 - Example:
-  - $\Delta X = 5,000$: a $5,000$ dollar increase in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbamod1)$coefficients[2,1]*5000, digits =2)` increase in predicted institution-level student earinings
-  - $\Delta X = -200$: a $200$ dollar decrease in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbamod1)$coefficients[2,1]*-200, digits =2)` decrease in predicted institution-level student earinings
+  - $\Delta X = 5,000$: a $5,000$ dollar increase in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbamod1)$coefficients[2,1], digits =2)` `*5,000 =` `r round(summary(mbamod1)$coefficients[2,1]*5000, digits =2)` increase in predicted institution-level student earinings
+  - $\Delta X = -200$: a $200$ dollar decrease in annual cost of attendance is associated with a $\hat{\beta_1}*\Delta X=$ `r round(summary(mbamod1)$coefficients[2,1], digits =2)` `*(-200) =` `r round(summary(mbamod1)$coefficients[2,1]*-200, digits =2)` decrease in predicted institution-level student earinings
 
 # Interpretation of $\hat{\beta}$, categorical $X$
 
@@ -3143,7 +3143,7 @@ __Write out research question and models__
     - this is predicted average earnings for students who graduate from a university located in a "large city (250K+)"
   - $\beta_1$: population regression coefficient associated with being a "med/small city" rather than reference group
   - $\beta_2$: population regression coefficient associated with being a "suburb" rather than reference group
-  - $\beta_2$: population regression coefficient associated with being a "town/rural" rather than reference group
+  - $\beta_3$: population regression coefficient associated with being a "town/rural" rather than reference group
 - OLS Prediction Line (without estimates)
    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}X_{2i}+ \hat{\beta_3}X_{3i}$
 - OLS Prediction Line (with estimates)   
