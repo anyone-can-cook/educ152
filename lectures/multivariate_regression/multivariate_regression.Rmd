@@ -91,7 +91,7 @@ Tennessee Student Teacher Achievement Ratio (STAR) experiment,
 
 ```{r}
 # uncomment below line to remove all objects
-  #rm(list = ls())
+  rm(list = ls())
 
 # Libraries
 
@@ -142,13 +142,17 @@ rm(df_star_panel) # comment this line out if you want to keep data frame df_star
 
 # RUN SCRIPT THAT CREATES STUDENT-LEVEL DATA FRAME CONTAINING ALL VARIABLES AND CREATES DATA FRAME WITH A SUBSET OF VARIABLES
 
-source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/els/read_els_by_pets.R'))
+  #NOTE: this script will take 30 seconds to a minute to run because loading a dataset w/ about 16,000 observations and 4,000 variables from a website
+
+  source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/els/read_els_by_pets.R'))
+    #source(file = file.path('.','..','..','scripts','els','read_els_by_pets.R'))
+      #list.files(path = file.path('.','..','..','scripts','els'))
 
 ##########
 ########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
 ##########
 
-source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
+# source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
   
   
 ```
