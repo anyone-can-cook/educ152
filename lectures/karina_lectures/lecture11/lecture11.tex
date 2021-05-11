@@ -1,33 +1,37 @@
-\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
 %
-\documentclass[8pt,ignorenonframetext,dvipsnames]{beamer}
+\documentclass[
+  8pt,
+  ignorenonframetext,
+  dvipsnames]{beamer}
 \usepackage{pgfpages}
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
 \setbeamercolor{caption name}{fg=normal text.fg}
 \beamertemplatenavigationsymbolsempty
-% Prevent slide breaks in the middle of a paragraph:
+% Prevent slide breaks in the middle of a paragraph
 \widowpenalties 1 10000
 \raggedbottom
 \setbeamertemplate{part page}{
-\centering
-\begin{beamercolorbox}[sep=16pt,center]{part title}
-  \usebeamerfont{part title}\insertpart\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
 }
 \setbeamertemplate{section page}{
-\centering
-\begin{beamercolorbox}[sep=12pt,center]{part title}
-  \usebeamerfont{section title}\insertsection\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
 }
 \setbeamertemplate{subsection page}{
-\centering
-\begin{beamercolorbox}[sep=8pt,center]{part title}
-  \usebeamerfont{subsection title}\insertsubsection\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
 }
 \AtBeginPart{
   \frame{\partpage}
@@ -44,40 +48,44 @@
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provides euro and other symbols
-\else % if luatex or xelatex
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
   \usepackage{unicode-math}
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
-% use upquote if available, for straight quotes in verbatim environments
+% Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-% use microtype if available
-\IfFileExists{microtype.sty}{%
-\usepackage[]{microtype}
-\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\IfFileExists{parskip.sty}{%
-\usepackage{parskip}
-}{% else
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
 \usepackage{xcolor}
-\usepackage{hyperref}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-            pdftitle={Introduction to Multivariate Regression \& Program Evaluation},
-            pdfauthor={Lecture 11},
-            colorlinks=true,
-            linkcolor=Maroon,
-            filecolor=Maroon,
-            citecolor=Blue,
-            urlcolor=blue,
-            breaklinks=true}
-\urlstyle{same}  % don't use monospace font for urls
+  pdftitle={Introduction to Multivariate Regression \& Econometrics},
+  pdfauthor={Lecture 11},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
 \newif\ifbibliography
 \usepackage{graphicx,grffile}
 \makeatletter
@@ -88,16 +96,14 @@
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-\setlength{\emergencystretch}{3em}  % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{0}
-
-% set default figure placement to htbp
+% Set default figure placement to htbp
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
-
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 
 %packages
 \usepackage{graphicx}
@@ -193,8 +199,7 @@
 
 \end{comment}
 
-\title{Introduction to Multivariate Regression \& Program Evaluation}
-\providecommand{\subtitle}[1]{}
+\title{Introduction to Multivariate Regression \& Econometrics}
 \subtitle{HED 612}
 \author{Lecture 11}
 \date{}
@@ -203,45 +208,95 @@
 \frame{\titlepage}
 
 \begin{frame}
-\tableofcontents[hideallsubsections]
+  \tableofcontents[hideallsubsections]
 \end{frame}
-\begin{frame}{Where are we going\ldots{}.}
+\begin{frame}[fragile]{Prepare for class}
+\protect\hypertarget{prepare-for-class}{}
+
+We'll be using the California Schools Data today; no need to
+re-download!
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Download the Lecture 11 PDF and R files for this week
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Place all files in HED612\_SP21
+    \textgreater\textgreater\textgreater{} lectures
+    \textgreater\textgreater\textgreater{} lecture11
+  \end{itemize}
+\item
+  Open the RProject (should be in your main HED612\_SP21 folder)
+\item
+  Once the RStudio window opens, open the Lecture 11 R script by
+  clicking on:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    file \textgreater\textgreater\textgreater{} open file\ldots{}
+    \textgreater\textgreater\textgreater{} {[}navigate to lecture 11
+    folder{]} \textgreater\textgreater\textgreater{} lecture11.R
+  \end{itemize}
+\item
+  \textbf{Install the ``RCurl'' package in Lecture11.R}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    If R prompts you to install \texttt{RCurl} and ``its dependencies'',
+    go ahead and click install
+  \item
+    If R doesn't prompt you, install via line 9
+    \texttt{install.packages("RCurl")}
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Where are we going\ldots.}
 \protect\hypertarget{where-are-we-going.}{}
 
 \begin{itemize}
 \tightlist
 \item
-  This Lecture
+  Last Two Weeks:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Moved from bivariate to multivariate regression!
+  \item
+    How to avoid violating OLS Assumption 1
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Include variables that would result in omitted variable bias
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  This Week:
 
   \begin{itemize}
   \tightlist
   \item
     Other OLS assumptions
   \item
-    Creating publication quality tables
+    Some more multivariate regression practice
   \item
-    Review:
-
-    \begin{itemize}
-    \tightlist
-    \item
-      Cabrera, N. L., Milem, J. F., Jaquette, O., \& Marx, R. (2014).
-      Missing the (student achievement) forest for all the (political)
-      trees: Empiricism and the Mexican American Studies controversy in
-      Tucson. American Educational Research Journal, 51(6), 1084-1118.
-    \end{itemize}
-  \end{itemize}
-\item
-  Next Lecture
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Introduction to non-linear relationships between X and Y
-  \item
-    Mini lesson on what each section of manuscrupt should accomplish!
-  \item
-    Review:
+    Reading Empirical Work:
 
     \begin{itemize}
     \tightlist
@@ -256,44 +311,59 @@
 
 \end{frame}
 
-\hypertarget{final-projects}{%
-\section{Final Projects}\label{final-projects}}
-
-\begin{frame}{Final Projects are optional}
-\protect\hypertarget{final-projects-are-optional}{}
+\begin{frame}{No Class Next Week: Final Project Meetings}
+\protect\hypertarget{no-class-next-week-final-project-meetings}{}
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Final projects are optional}
-\item
-  You can decide to not move forward with your final project:
+  Next Week 4/7: No Class!
 
   \begin{itemize}
   \tightlist
   \item
-    Don't feel ``guilty'' for not being able to complete this project
+    We're going to use the extra time to get started on final projects!
   \item
-    I already know you are all brilliant scholars, practitioners,
-    educators!
+    Instead of meeting for class: schedule at least a 30 min meeting
+    with me!
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Formulating RQ
+    \item
+      Operationalizing and cleaning variables
+    \end{itemize}
   \item
-    Prioritize your health (physical \& mental), loved ones\ldots{}
+    Link to sign up: \url{https://calendly.com/ksalazar_az/30min}
+  \item
+    Submit PS11 after you have met with me!
   \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
 \item
-  You can decide to move forward with your final project:
+  Following Week 4/14:
 
   \begin{itemize}
   \tightlist
   \item
-    If you have the time/ability to do it and do it for your own
-    professional development!
+    Introduction to data transformations
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Logs and Polynomials
+    \end{itemize}
   \item
-    Send me an email to set up our first Zoom meeting to discuss RQ,
-    topic, and data
+    Introduction to non-linear relationships between X and Y
   \item
-    We will set up a timeline
+    Mini lesson on what each section of final project (Intro, Lit
+    Review, Conceptual Framework, etc.) should accomplish!
   \item
-    I will help you clean the data!
+    Tutorial on automatic publication ready regression tables in R
   \end{itemize}
 \end{itemize}
 
@@ -308,7 +378,7 @@
 \begin{enumerate}
 \tightlist
 \item
-  The conditional assumption of \(u_i\) given \(X_i\) has a mean a zero
+  The conditional assumption of \(u_i\) given \(X_i\) has a mean of zero
 \item
   (\(X_i\), \(Y_i\)), \(i=1, ...n\) are independently and identically
   distributed (i.i.d)
@@ -328,12 +398,14 @@
   \begin{itemize}
   \tightlist
   \item
-    Then our OLS estimators, \(\hat{\beta_0}\) and \(\hat{\beta_1}\)
-    have normal distributions in large samples
+    Then our OLS estimators, \(\hat{\beta_0}\),
+    \(\hat{\beta_1}\)\ldots{}\(\hat{\beta_k}\), have normal
+    distributions in large samples
   \item
     And because they have normal distributions, we can use
-    \(\hat{\beta_0}\) and \(\hat{\beta_1}\) to test hypothesess about
-    the population parameters \(\beta_0\) and \(\beta_1\)
+    \(\hat{\beta_0}\), \(\hat{\beta_1}\)\ldots{}\(\hat{\beta_k}\), to
+    test hypothesess about the population parameters \(\beta_0\),
+    \(\beta_1\)\ldots{}\(\beta_k\)
   \end{itemize}
 \item
   If these assumptions are violated:
@@ -344,143 +416,6 @@
     We produced inefficeint and biased estimates, \(\hat{\beta_0}\) and
     \(\hat{\beta_1}\), of the population parameters \(\beta_0\) and
     \(\beta_1\)
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{First OLS Assumption}
-\protect\hypertarget{first-ols-assumption}{}
-
-\begin{enumerate}
-\tightlist
-\item
-  \textbf{The conditional assumption of \(u_i\) given \(X_i\) has a mean
-  a zero}
-\end{enumerate}
-
-\begin{itemize}
-\tightlist
-\item
-  What does this mean?
-
-  \begin{itemize}
-  \tightlist
-  \item
-    The independent variable \(X_i\) is unrelated to all variables that
-    were not included in the model (i.e., \(u_i\))
-  \item
-    If we violate this assumption, we produce a biased estimate!
-  \item
-    What's a biased estimate? Consistenly overestimating or
-    underestimating population parameter! {[}remember Lec 9?{]}
-  \item
-    If \(u_i\) given \(X_i\) has a mean a zero = our predictions do not
-    systematically over or underestimate, thus balance out to zero = no
-    bias!
-  \end{itemize}
-\item
-  Thus far we have learned ``simple regression'' (i.e., one independent
-  variable of interest) with a major flaw:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    We ignore other ``determinants'' (i.e., control variables) of the
-    dependent variable that correlate with our one independent variable
-    of interest
-  \item
-    Remember that other ``determinants'' or ``other variables that
-    impact the dependent'' variable that are not in our model are
-    collected in the residual term \(u_i\), which we have thus far
-    \emph{assumed} to be unrelated with the independent variable of
-    interest
-  \item
-    If we exclude these other determinants that are related to our
-    independent variable of interest; we introduce estimation bias via
-    an omitted variable!
-  \end{itemize}
-\item
-  \textbf{Omitted Variable Bias}
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Why does omitted variable bias violate OLS Assumption 1?
-  \item
-    What happens when you omit a ``Z'' variable from your model? It is
-    absorbed by the residual term!
-  \item
-    We know that the ``Z'' variable omitted from the model is correlated
-    to our independent variable of interest, which now means that our X
-    is not uncorrelated to the residual = violation of OLS 1!
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{First OLS Assumption cont.}
-\protect\hypertarget{first-ols-assumption-cont.}{}
-
-\begin{itemize}
-\tightlist
-\item
-  Practical Example: What is the effect number of years of schooling on
-  income? \includegraphics{ols1.png}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{First OLS Assumption cont}
-\protect\hypertarget{first-ols-assumption-cont}{}
-
-\begin{itemize}
-\tightlist
-\item
-  Practical Example: What is the effect number of years of schooling on
-  income?
-\item
-  \(Y_i = \beta_0 + \beta_1X_i +u_1\)
-\item
-  There are lots of other factors that would influence income besides
-  years of schooling!
-
-  \begin{itemize}
-  \tightlist
-  \item
-    If we don't include them in the regression as control variables,
-    they are thus relegated to the \(u_1\) and we assume they are not
-    systematically related to years of schooling.
-  \item
-    If this excluded variable meets both conditions of omitted variable
-    bias (Z affects Y and Z is related to X); then there is a systematic
-    relationship and should not be in the residual!
-  \item
-    \textbf{By keeping it in the residual (i.e., excluding it from the
-    model), we violate OLS Assumption 1 and produce a biased estimate!}
-  \end{itemize}
-\end{itemize}
-
-\medskip
-
-In practice, OLS Assumption 1 is the most difficult to prove and the
-most important for program evaluation research!
-
-\begin{itemize}
-\tightlist
-\item
-  We can draw on the conditional independence assumption:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Once we include relevant control variables; there are no omitted
-    variables that affect Y and have a systematic relationship with X
-  \item
-    Meaning, if we satisfy the conditional independent assumption
-    through control variables, then multiple regression is just as good
-    as random assignment experiment (the gold standard of program
-    evaluation!)
   \end{itemize}
 \end{itemize}
 
@@ -516,9 +451,9 @@ most important for program evaluation research!
 \begin{itemize}
 \tightlist
 \item
-  Knowing that observation i takes on particular values for X and Y
-  tells you nothing about the probability of the next observation taking
-  on particular values for X and Y
+  In words: Knowing that observation i takes on particular values for X
+  and Y tells you nothing about the probability of the next observation
+  taking on particular values for X and Y
 \item
   When is assumption of independently distributed violated?
 
@@ -526,14 +461,16 @@ most important for program evaluation research!
   \tightlist
   \item
     Longitudinal data: knowing a data point in one time period tells you
-    something about a data point in another time period
+    something about a data point in another time period.
 
     \begin{itemize}
     \tightlist
     \item
       Ex: Amount of \$ student received via a Federal Pell Grant
       freshman year at UA probably tells you something about how much \$
-      student received via a Federal Pell Grant sophmore year at UA
+      student received via a Federal Pell Grant sophmore year at UA.
+      Why? because Pell status is not likely to dramatically change from
+      one year to another!
     \end{itemize}
   \item
     Hierarchical data:
@@ -545,6 +482,22 @@ most important for program evaluation research!
       test score of one student in a classroom is probably correlated
       with reading test score for another student in the same classroom.
     \end{itemize}
+  \end{itemize}
+\item
+  Our course focuses on cross-sectional data (i.e., at one point in
+  time); using OLS linear regression for cross-sectional data does not
+  violate OLS Assumption \#2
+\item
+  Time Series and Hierarchical regression modeling is just one
+  additional step from regression modeling you have learned in this
+  course!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    May create a survey course next academic year that applies what we
+    have learned in this course to learning some of these more
+    ``complex'' linear models!
   \end{itemize}
 \end{itemize}
 
@@ -560,7 +513,7 @@ most important for program evaluation research!
 \item
   Prior to choosing sample of observations for the population, the
   probability distribution (i.e., the likelihood that \(Y_i\) takes on
-  certain values) is the same for all observation
+  certain values) is the same for all observations
 \item
   This is always true if you take a random sample!
 
@@ -612,6 +565,19 @@ most important for program evaluation research!
 \item
   Outliers will affect your regression coefficients!
 \item
+  Why? Because outliers will shift our OLS regression line!
+\end{itemize}
+
+\includegraphics[width=0.85\textwidth,height=\textheight]{outliers.jpg}
+
+\end{frame}
+
+\begin{frame}{Third OLS Assumption cont.}
+\protect\hypertarget{third-ols-assumption-cont.}{}
+
+\begin{itemize}
+\tightlist
+\item
   Stock and Watson have a very technical, mathematical definition of
   when this likely; but in practice this is about really
   investigating/knowing your data
@@ -632,7 +598,8 @@ most important for program evaluation research!
   \item
     Sometimes outliers can belong in the data!
   \item
-    If they belong; use natural log of the variable
+    If they belong; use natural log of the variable {[}we'll learn more
+    about this next week via data transformations!{]}
 
     \begin{itemize}
     \tightlist
@@ -646,28 +613,31 @@ most important for program evaluation research!
 
 \end{frame}
 
-\begin{frame}{Third OLS Assumption cont.}
-\protect\hypertarget{third-ols-assumption-cont.}{}
+\begin{frame}{Fourth OLS Assumption {[}Not in Stock \& Watson{]}}
+\protect\hypertarget{fourth-ols-assumption-not-in-stock-watson}{}
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Homoskedasticity
+\end{enumerate}
 
 \begin{itemize}
 \tightlist
 \item
-  OLS can be sensitive to an outlier; it will shift our OLS regression
-  line!
-\end{itemize}
+  There is ``generally'' a fourth OLS assumption, but Stock and Watson
+  do not list it in our textbook
 
-\includegraphics{outliers.jpg}
-
-\end{frame}
-
-\begin{frame}{Fourth OLS Assumption}
-\protect\hypertarget{fourth-ols-assumption}{}
-
-\begin{itemize}
-\tightlist
+  \begin{itemize}
+  \tightlist
+  \item
+    I'll tell you why after we understand what it generally
+    assumes\ldots{}
+  \end{itemize}
 \item
-  The distribution of the residuals has constant variance
-  (homoscedasticity)
+  OLS Assumption \#4: The distribution of the residuals has constant
+  variance (homoscedasticity)
 \item
   Homoskedasticity
 
@@ -690,7 +660,7 @@ most important for program evaluation research!
     \(u_i = Y_i - \hat{Y_i}\), is not constant for all observations.
     That is, it does change/differs for different values of X
   \item
-    Homo-skedasticity = ``unequal'' or ``different'' variances
+    Hetero-skedasticity = ``unequal'' or ``different'' variances
   \end{itemize}
 \end{itemize}
 
@@ -702,10 +672,8 @@ most important for program evaluation research!
 \begin{itemize}
 \tightlist
 \item
-  Homoskedasticity and Heteroskedasticity shown graphically\ldots{}.
+  Homoskedasticity and Heteroskedasticity shown graphically
 \end{itemize}
-
-\includegraphics{heteroskedasticity.png}
 
 \end{frame}
 
@@ -729,20 +697,6 @@ most important for program evaluation research!
 \begin{itemize}
 \tightlist
 \item
-  Practical example: What is the effect of years of education on hourly
-  wages? {[}Stock and Watson Example{]}
-\end{itemize}
-
-\includegraphics{heteroskedasticity_wages.png}
-
-\end{frame}
-
-\begin{frame}{Fourth OLS Assumption cont.}
-\protect\hypertarget{fourth-ols-assumption-cont.-3}{}
-
-\begin{itemize}
-\tightlist
-\item
   Why is homoskedasticity/heteroskedasticity important?
 
   \begin{itemize}
@@ -750,19 +704,23 @@ most important for program evaluation research!
   \item
     Because our formula for calculating SE(\(\hat{\beta_1}\)) changes
     based on homoskedastic or heteroskedastic residuals!
+  \item
+    Our standard error measures how far our \(\hat{\beta_1}\) is likely
+    to be from \(\beta_1\). In other words, it is used to calculate our
+    t-value in hypothesis testing to determine statistical significance!
   \end{itemize}
 \item
-  In other statistics classes (non program evaluation/econometrics),
-  homoskedasticity is the fourth core assumption
+  In other statistics classes (non-econometrics), homoskedasticity is
+  the fourth core assumption
 
   \begin{itemize}
   \tightlist
   \item
-    Stock and Watson only discuss the first three assumptions we have
-    discussed as core ``OLS Assumptions''
+    Stock and Watson only discuss the first three assumptions as core
+    ``OLS Assumptions''
   \end{itemize}
 \item
-  Stock and Watson
+  Why? Stock and Watson say:
 
   \begin{itemize}
   \tightlist
@@ -775,334 +733,626 @@ most important for program evaluation research!
     \begin{itemize}
     \tightlist
     \item
-      We calculate heteroskedastic standard errors; or in other words,
-      standard errors that are \textbf{robust} to violations of
-      homoskedasticity
+      We can just calculate heteroskedastic standard errors
+    \item
+      In other words, standard errors that are \textbf{robust} to
+      violations of homoskedasticity
     \end{itemize}
   \end{itemize}
 \item
-  \textbf{SOLUTION}
+  Stock and Watson say:
 
   \begin{itemize}
   \tightlist
   \item
-    Rather than make homoskedasticity a core OLS Assumption and always
-    violate it;
+    Rather than make homoskedasticity a core OLS Assumption and nearly
+    always violate it;
   \item
     ALWAYS CALCULATE ROBUST STANDARD ERRORS AND DO NOT MAKE
     HOMOSKEDASTICITY A CORE OLS ASSUMPTION
+  \item
+    Show in R
   \end{itemize}
 \end{itemize}
 
 \end{frame}
 
-\hypertarget{creating-nearly-publication-quality-regression-tables}{%
-\section{Creating (nearly!) Publication Quality Regression
-Tables}\label{creating-nearly-publication-quality-regression-tables}}
+\hypertarget{multivariate-regression-homework-review}{%
+\section{Multivariate regression (Homework
+Review)}\label{multivariate-regression-homework-review}}
 
-\begin{frame}[fragile]{Stargazer Library}
-\protect\hypertarget{stargazer-library}{}
+\begin{frame}{Multivariate Regression Example}
+\protect\hypertarget{multivariate-regression-example}{}
 
-\begin{itemize}
-\tightlist
-\item
-  Need to install first via \texttt{install.packages("stargazer")}
-\item
-  Package used to create publication ready tables
-\item
-  Some resourses
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \href{https://cran.r-project.org/web/packages/stargazer/stargazer.pdf}{CRAN
-    Package Documentation}
-  \item
-    \href{https://cran.r-project.org/web/packages/stargazer/vignettes/stargazer.pdf}{CRAN
-    Package Vignettes}
-  \item
-    \href{https://www.princeton.edu/~otorres/NiceOutputR.pdf}{Helpful
-    Presentation \& Summary}
-  \item
-    Google! Google! Google!
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
-
-\hypertarget{interpreting-regression-results-in-journals}{%
-\section{Interpreting Regression Results in
-Journals}\label{interpreting-regression-results-in-journals}}
-
-\begin{frame}{Cabrera, Milem, Jaquette, and Marx (2014)}
-\protect\hypertarget{cabrera-milem-jaquette-and-marx-2014}{}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{RQ}: What is the effect, if any, of Mexican American Studies
-  participation in TUSD on student academic achievement?
-\item
-  \textbf{Empirical Strategy Used}
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Evaluate impact via meeting the conditional independent assumption
-  \item
-    Conditional independence assumption: once all relevant control
-    variables are included in the model (all those that meet the two
-    conditions of omitted variable bias), regression can be just as good
-    as random assignment experiment
-  \item
-    They warn us, they don't have all the data they would need to
-    control for, but it's the best effort that has been done!
-  \end{itemize}
-\item
-  \textbf{Data}: TUSD Administrative Data, student-level
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Dependent variable(s): AIMS math, reading, writing, all subjects
-    passing rates; high school graduation
-  \item
-    Independent varibale of interest: MAS participation
-
-    \begin{itemize}
-    \tightlist
-    \item
-      Non-participants = all students attending schools offering MAS
-      classes but never took a course
-    \item
-      Participants: students who enrolled in one or more MAS classes
-      (try to identify ``sweet'' spot of \# of courses)
-    \end{itemize}
-  \end{itemize}
-\item
-  \textbf{Model}: Logistic Regression
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Non-linear model because the dependent variables are not continuous
-  \item
-    We will learn a ``related'' model in the next few weeks where we can
-    run a linear regression on a 0/1 dummy variable: ``linear
-    probability model''
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Cabrera, Milem, Jaquette, and Marx (2014)}
-\protect\hypertarget{cabrera-milem-jaquette-and-marx-2014-1}{}
-
-\begin{itemize}
-\tightlist
-\item
-  Table 3: Marginal Effect of Participating in MAS, pg. 1103
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Example of another ``standard way'' to format regression results
-  \item
-    Common approach when you are showing lots of models!
-  \item
-    Common approach when you only care about \(\hat{\beta_1}\); you
-    don't show coefficients for controls
-  \end{itemize}
-\end{itemize}
+RQ: What is the effect of student-teacher ratio on reading test scores?
 
 \medskip
 
+Population Regression Model:
+
 \begin{itemize}
 \tightlist
 \item
-  How ``to read'' Table 3
+  \(Y_i = \beta_0 + \beta_1X_{1i} + \mu_i\)
 
   \begin{itemize}
   \tightlist
   \item
-    Each ``cell'' is one regression model's \(\hat{\beta_1}\)
-    coefficient
+    Where:
   \item
-    ``Variables'' on the rows are the dependent variable for each
-    regression model: Graduation \& AIMS tests
+    \(Y\) = average district reading scores
   \item
-    Columns are the sample each regression model was run on: all
-    cohorts, 2008-09, 2009-10, etc.
+    \(X_{1}\) = average district student teacher ratio
+  \end{itemize}
+\item
+  Let's add a categorical ELL variable
+
+  \begin{itemize}
+  \tightlist
   \item
-    The coefficients are ``marginal effects'' not ``log odd ratios''
+    OVB: (1) ELL students are likley to score at lower reading levels
+    than native english speakers; (2) \textbf{and} Greater proportion of
+    ELL students require smaller class sizes
+  \item
+    Categories: Low ELL District (0-20\%); Moderate ELL District
+    (21-50\%); High ELL District (51\%+)
+  \end{itemize}
+\item
+  Let's also add continuous expenditures per student
+
+  \begin{itemize}
+  \tightlist
+  \item
+    OVB: (1) Districts with greater expenditures per student likely to
+    have higher test scores (2) \textbf{and} Greater expenditures per
+    student greater spending on teacher salaries and smaller class sizes
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Multivariate Regression Example}
+\protect\hypertarget{multivariate-regression-example-1}{}
+
+RQ: What is the effect of student-teacher ratio on reading test scores?
+
+\medskip
+
+Population Regression Model:
+
+\begin{itemize}
+\tightlist
+\item
+  \(Y_i = \beta_0 + \beta_1X_{1i} + + \beta_2X_{2i} + + \beta_3X_{3i} + \beta_4X_{4i} + \mu_i\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Y\) = average district reading scores
+  \item
+    \(X_{1}\) = average district student teacher ratio
+  \item
+    \(X_{2}\) = 0/1 Moderate ELL District (21-50\%); reference group is
+    Low ELL District (0-20\%)
+  \item
+    \(X_{3}\) = 0/1 High ELL District (51\%+); reference group is Low
+    ELL District (0-20\%)
+  \item
+    \(X_{4}\) = average district expenditures per student (\$000s)
+  \end{itemize}
+\item
+  Create variables and run regression in R!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Multivariate Regression Example}
+\protect\hypertarget{multivariate-regression-example-2}{}
+
+RQ: What is the effect of student-teacher ratio on reading test scores?
+
+\begin{itemize}
+\tightlist
+\item
+  OLS Line without estimates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_{1i} + + \hat{\beta_2}X_{2i} + + \hat{\beta_3}X_{3i} + \hat{\beta_4}X_{4i}\)
+  \item
+    \(\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}STR + \hat{\beta_2}ModerateELL + \hat{\beta_3}HighELL + \hat{\beta_4}Expend000\)
+  \end{itemize}
+\item
+  OLS Line with estimates
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\hat{Y_i} = 649.03 - (0.68*STR) - (22.31*ModerateELL) - (37.57*HighELL) + (4.94*Expend000)\)
+  \end{itemize}
+\item
+  Interpreting Student-Teacher-Ratio as our IV of interest:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    On average, one additional student per teacher (``one unit
+    increase'') in district average student-teacher-ratio is associated
+    with 0.68 point decrease in average district reading scores, holding
+    the values of covariates constant. However, our coefficient is not
+    significant at the 0.05 level.
+  \end{itemize}
+\item
+  Interpreting ELL as our IV of interest:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    On average, being a ``Moderate ELL district'' as opposed to a ``Low
+    ELL district'' is associated with 22.31 point decrease in reading
+    scores (p\textless0.001), holding the values of covariates constant.
+  \item
+    On average, being a ``High ELL district'' as opposed to a ``Low ELL
+    district'' is associated with 37.57 point decrease in reading scores
+    (p\textless0.001), holding the values of covariates constant.
+  \end{itemize}
+\item
+  Interpreting Expenditures Per Student as our IV of interest:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    On average, a \$1000 increase (``one unit increase'') in
+    expenditures per student is associated with 4.95 point increase in
+    average district reading scores (p\textless0.01), holding the values
+    of covariates constant.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{minute-break}{%
+\section{10 Minute Break!}\label{minute-break}}
+
+\hypertarget{learning-to-read-quantitative-empirical-work}{%
+\section{Learning to Read Quantitative Empirical
+Work}\label{learning-to-read-quantitative-empirical-work}}
+
+\begin{frame}{Powers (2004): Overall RQ, Analytical and Writting
+Approach!}
+\protect\hypertarget{powers-2004-overall-rq-analytical-and-writting-approach}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Williams v. State of California}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Class action lawsuit against the State of California in 2000; public
+    school students represented by a coalition of law firms, civil
+    rights organizations
+  \item
+    Argued that if schools and students are judged on the basis of their
+    test scores (high stakes accountability policies), then students and
+    schools should be provided with equal access to school-related
+    resources needed for academic success
+  \item
+    Specifically addressed need for qualified teachers,
+    sufficient/up-to-date textbooks, and adequate/safe facilities
+  \end{itemize}
+\item
+  \textbf{Old legal approach to school financing}: focused on levels and
+  formulas of spending
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Didn't work because the state has minimal oversight of local
+    educational control/``property taxes''; caps were eliminated via
+    voter overrides; and the small proportion of state funding was given
+    ``equally''
+  \end{itemize}
+\item
+  \textbf{New legal approach to school financing}: \emph{Williams v.
+  State of California} reframed the issue of school financing around the
+  \emph{conditions} of education rather than funding formulas!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Worked because the state is responsible for ensuring resources are
+    used to produce desirable outcomes
+  \end{itemize}
+\item
+  State of California argued that there was little empirical support
+  that increased spending on resources identified in the case would
+  increase student achievement
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{RQ}: What is the relationship(s) between school and district
+    characteristics on school's academic performance?
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004): Overall RQ, Analytical and Writting
+Approach!}
+\protect\hypertarget{powers-2004-overall-rq-analytical-and-writting-approach-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Empirical Strategy}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Powers is not trying to establish a causal effect of school/resource
+    characteristics on API score explicitly (impossible given the
+    observational data)
+  \item
+    But she is trying to isolate the Williams Case variables
+    ``relationship'' on schools' academic performance by controlling for
+    other factors that may be driving variation in schools' academic
+    performance!
 
     \begin{itemize}
     \tightlist
     \item
-      Don't need to know this; you will learn this in HED 613 if you
-      take it!
+      See on See pg.766 for rationale in including control variables
     \item
-      ``Marginal effects'' allow us to interpret similar to a linear
-      regression!
+      ``To ensure the findings related to Williams variables are robust,
+      that is, they are not systematically related to student, school,
+      and district characteristics''
+    \end{itemize}
+  \item
+    But still analyzing ``descriptive relationships'', not ``causal
+    relationships''
+  \end{itemize}
+\item
+  \textbf{Literature Review Strategy}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    HOW you format your literature review depends on your RQ and what is
+    substantively important
+  \end{itemize}
+
+  \begin{enumerate}
+  [(1)]
+  \tightlist
+  \item
+    Focus on reviewing scholarship about your X (most econometrics
+    studies do this)
+
+    \begin{itemize}
+    \tightlist
     \item
-      Coefficient interpretation: Being in the non-reference group
-      {[}MAS participant{]} as opposed to the reference group {[}Non-MAS
-      Participant{]} is associated with a \(\hat{\beta_1}\)*100
-      percentage point change in the probability of going from 0 to 1 on
-      the dependent variable (for example, 0=don't graduate high school,
-      1= graduate high school)
+      Ex: What is the effect of receiving a Pell Grant on achievement?;
+      review scholarship on the effect of Pell grants on all student
+      outcomes (GPA, graduation, labor market, etc.)
+    \end{itemize}
+  \item
+    Focus on reviewing scholarship about your Y (many
+    prediction/descriptive studies do this)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      EX: What is the (predicted) probability of a student persisting
+      into their 2nd year of college?; review scholarship on what we
+      know about persistence (more likely to persist if you're involved
+      on campus, live on campus, etc.)
+    \end{itemize}
+  \item
+    Focus on reviewing scholarship that specifically speaks to the
+    \emph{relationship} between X and Y
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Ex: POWERS (2004, p.772): What do we know about the relationship
+      between school resources and academic achievement
+    \end{itemize}
+  \end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Data}: California DOE Data, school-level; Census Data; Federal
+  School Data
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Dependent variable(s): ?
+  \item
+    Independent variable(s) of interest: ?
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Hint there are three groupings and they are related to the
+      Williams Case
+    \end{itemize}
+  \item
+    Control Variables: ?
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Hint there are two groupings!
+    \item
+      Some control variables left out due to ``collinearity''
+    \item
+      \textbf{Collinearity}: When two or more of your independent
+      variables are highly correlated; so correlated that adding just
+      one of them explains both of their ``effect'' on the dependent
+      variable. In other words including BOTH independent variables that
+      are highly correlated is redundant and takes up statistical power
+    \item
+      R will automatically drop variables if there is collinearity!
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Model}: OLS Linear Regression
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Powers doesn't write out the equation for the study!
+  \item
+    Let's write it ourselves! {[}at least for the three groups of
+    variables for Williams Case{]}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Table 2: Nested Regression Models Using 1999 API Index as DV, pg. 781
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The most ``standard way'' to format regression results
+  \item
+    You show the ``progression'' towards your final regression model via
+    multiple models
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Intercept-only model (no independent variables) {[}Powers didnt
+      show this{]}
+    \item
+      Model 1 can have your independent variable of interest (standard
+      for program eval) or some variables (Powers did student
+      characteristics)
+    \item
+      Models 2+\ldots{} shows the addition of control variables
+    \end{itemize}
+  \item
+    Shows beta coefficients, standard errors, and significant levels!
+  \end{itemize}
+\item
+  Does show model fit statistics!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Powers is not writing from a program evaluation standpoint
+  \item
+    Rather she's trying to show how variables from Williams Case explain
+    (predict!) API scores
+  \item
+    In this case, measures of model fit are important
+  \item
+    \(R^2\) increases from Model 1 to Model 2
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Change in \(R^2\) doesn't mean that Williams case IVs add
+      ``little'' explanation; see pg 782!
+    \end{itemize}
+  \item
+    In text, she mentions overall F-test is significant from Model 1 to
+    Model 2
+  \item
+    F-test is related to \(R^2\)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \(H_0\): model with no independent variables (or limited IVs) fits
+      the data just as well as model with full variables
+    \item
+      \(H_a\): model with more variables fits the data better than model
+      with no IVs
     \end{itemize}
   \end{itemize}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Cabrera, Milem, Jaquette, and Marx (2014)}
-\protect\hypertarget{cabrera-milem-jaquette-and-marx-2014-2}{}
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-2}{}
 
 \begin{itemize}
 \tightlist
 \item
-  How to interpret Table 3 for ``schools offering MAS classes'' and
-  column ``All Cohorts''
+  Interpretation for Table 2 for Williams Case Variables
+\item
+  In text, she hardly interprets beta coefficients beyond ``significance
+  and direction''
 
   \begin{itemize}
   \tightlist
   \item
-    Graduation \(\hat{\beta_1}\) Coefficient: 0.095*** Robust SE= 0.008
-
-    \begin{itemize}
-    \tightlist
-    \item
-      Interpretation: ``On average, participating in MAS as opposed to
-      not participating in MAS increased the probability of graduating
-      high school by 9.5\%, holding all covariates constant''
-    \end{itemize}
+    Only sometimes mentions the magnitude of the coefficient
   \item
-    AIMS Reading \(\hat{\beta_1}\) Coefficient: 0.093*** Robust SE=
-    0.017
+    This approach is common in ``descriptive research''
+  \end{itemize}
+\item
+  \textbf{Teacher training} (reference group is fully credentialed
+  teachers)
 
-    \begin{itemize}
-    \tightlist
-    \item
-      Interpretation: ``For students who initially failed the AIMS
-      reading test, on average, participating in MAS as opposed to not
-      participating in MAS increased the probability of subsequently
-      passing the exam by 9.3\%, holding all covariates constant''
-    \end{itemize}
+  \begin{itemize}
+  \tightlist
   \item
-    AIMS Writing \(\hat{\beta_1}\) Coefficient: 0.086*** Robust SE=
-    0.030
+    \textbf{Emergency Credentialed \(\hat{\beta}\) Coefficient: -1.12***
+    SE= 0.09}
 
     \begin{itemize}
     \tightlist
     \item
-      Interpretation: ``For students who initially failed the AIMS
-      writing test, on average, participating in MAS as opposed to not
-      participating in MAS increased the probability of subsequently
-      passing the exam by 8.6\%, holding all covariates constant''
-    \end{itemize}
-  \item
-    AIMS Math \(\hat{\beta_1}\) Coefficient: 0.087*** Robust SE= 0.010
-
-    \begin{itemize}
-    \tightlist
-    \item
-      Interpretation: ``For students who initially failed the AIMS math
-      test, on average, participating in MAS as opposed to not
-      participating in MAS increased the probability of subsequently
-      passing the exam by 8.7\%, holding all covariates constant''
-    \end{itemize}
-  \item
-    AIMS All Tests \(\hat{\beta_1}\) Coefficient: 0.068*** Robust SE=
-    0.011
-
-    \begin{itemize}
-    \tightlist
-    \item
-      Interpretation: ``For students who initially failed one of AIMS
-      tests, on average, participating in MAS as opposed to not
-      participating in MAS increased the probability of subsequently
-      passing all subject exams by 6.8\%, holding all covariates
+      Interpretation: ``On average, one-percentage-point increase in a
+      school teaching staff's proportion of emergency credentialed
+      teachers (as opposed to fully credentialed teachers) is associated
+      with a 1.12 point decrease in API score, holding all covariates
       constant''
     \end{itemize}
   \end{itemize}
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Cabrera, Milem, Jaquette, and Marx (2014)}
-\protect\hypertarget{cabrera-milem-jaquette-and-marx-2014-3}{}
-
-\begin{itemize}
-\tightlist
 \item
-  This is one of my favorite pieces of scholarship! Why?
-\item
-  This could easily be a student paper that is started in one of these
-  statistics class!
+  \textbf{Teacher Experience}
 
   \begin{itemize}
   \tightlist
   \item
-    Simple question: What is the effect of MAS participation on high
-    school graduation?
-  \end{itemize}
-\item
-  It's a topic that was so politically charged that policymakers were
-  missing the ``achievement'' trees for the ``political'' forest!
-
-  \begin{itemize}
-  \tightlist
-  \item
-    But the approach was simple. Does the program help students
-    academically?
-  \end{itemize}
-\item
-  Quantitative work is critiqued for ``not being critical''
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Yes, much is problematic!
+    \textbf{Years teaching \(\hat{\beta}\) Coefficient: .80** SE= 0.26}
 
     \begin{itemize}
     \tightlist
     \item
-      Quantitative approaches to education research can reinforce
-      privileged systems of knowing/learning/teaching
-    \item
-      Can use majoritarian assumptions to make blanket statements about
-      students, uses race without acknowledging racism, attempts to
-      ``control'' these characteristics/experiences
+      Interpretation: ``A one year increase in a school teaching staff's
+      average years of experience, on average, is associated with a 0.80
+      point increase in API score, holding all covariates constant''\\
     \end{itemize}
   \end{itemize}
 \item
-  But quantitative work can also contribute to a more just system of
-  education!
+  \textbf{Teacher Education} (reference group is less than M.A)
 
   \begin{itemize}
   \tightlist
   \item
-    Cabrera, Milem, Jaquette, and Marx (2014) is a great example of
-    this!
+    \textbf{Greater than MA \(\hat{\beta}\) Coefficient: .42*** SE=
+    0.06}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``On average, a one-percentage-point increase in a
+      school teaching staff's proportion of teachers with greater than
+      MA degree (as opposed to lower than MA teachers) is associated
+      with a 0.42 point increase in API score, holding all covariates
+      constant''
+    \end{itemize}
   \end{itemize}
 \item
-  Also great example of public scholarship!
+  \textbf{School Calendar} (reference group is traditional year)
 
   \begin{itemize}
   \tightlist
   \item
-    This is local scholarship! With real implications for our
-    surrounding communities!
-  \item
-    This research played a critical role in a federal judge deciding
-    that the state of Arizona acted with discriminatory intent in
-    banning the TUSD MAS Program
-  \item
-    Banning the program violated student's First and Fourteenth
-    Amendment rights..
+    \textbf{Concept 6 \(\hat{\beta}\) Coefficient: -34.46*** SE= 4.52}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``On average, being a school with a Concept 6
+      Calendar as opposed to a Traditional Calendar is associated with a
+      34.46 point decrease in API score, holding all covariates
+      constant''
+    \end{itemize}
   \end{itemize}
+\item
+  \textbf{Textbooks}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Per-pupil textbook expenditures \(\hat{\beta}\) Coefficient:
+    .11*** SE=0.003}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``A \$1 increase in per-pupil expenditures for
+      textbooks is associated with a 0.1 point increase in API score,
+      holding all covariates constant''\\
+    \item
+      Interpretation: ``A \$10 increase in per-pupil expenditures for
+      textbooks, on average, is associated with a 1 point increase in
+      API score, holding all covariates constant''\\
+    \item
+      Interpretation: ``A \$100 increase in per-pupil expenditures for
+      textbooks, on average, is associated with a 10 point increase in
+      API score, holding all covariates constant''
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-3}{}
+
+Why do I like this piece of scholarship?
+
+\begin{itemize}
+\tightlist
+\item
+  The methods are simple!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Impactful research does not need to have complex methods!
+  \item
+    Study does not use any analyses/methods beyond what we have learned
+    so far in an introductory regression class; yet it is published in
+    the AERA flagship journal
+  \end{itemize}
+\item
+  Example of how to deal with ``metrics'' that I fundamentally disagree
+  with but are part of our educational reality
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Metrics like SAT/ACT scores, standardized K-12 test, are ``firmly
+    entrenched part of the political landscape'' that schools and
+    students must navigate
+  \item
+    In many cases, they are institutionalized within federal, state, and
+    university/school policies
+  \item
+    ``Aim is to make a strong argument for equity by marshaling the very
+    data that dominate the political discourse'' (p.~765)
+  \end{itemize}
+\item
+  Direct response to policies
+\item
+  Cool understanding of legal logic when it comes to education finance!
 \end{itemize}
 
 \end{frame}

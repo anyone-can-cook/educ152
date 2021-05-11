@@ -1,7 +1,7 @@
-### HED 612 Homework 10
+### HED 612 Lecture 10
 
 # LOGISTICS
-# install packages
+# remove scientific notation
 options(scipen=999)
 
 
@@ -39,18 +39,16 @@ caschool<- read_dta("data/ca/caschool-v2.dta")
   
 # INTEPRETING CONTINUOUS & CATEGORICAL X
   
-  #create majority ELL classroom >50% ELL
-  caschool <- caschool %>% mutate(
-    ell = ifelse(el_pct>=50, 1, 0)
-  )
+  #create majority ELL district >50% ELL
+      caschool <- caschool %>% mutate(
+        ell = as.factor(ifelse(el_pct>=50, 1, 0)
+      ))
+      
+      #check variable 
+      caschool %>% filter(el_pct>=50) %>% count() 
+      caschool %>% count(ell)
   
-  
-  #check variable 
-  caschool %>% filter(el_pct>=50) %>% count() 
-  caschool %>% count(ell)
-  
-  caschool$ell <- as.factor(caschool$ell)
-  
+
   #model with STR as main ind var of interest
   mod3 <- lm(read_scr ~ str + ell + avginc, data=caschool)
   summary(mod3)

@@ -1,33 +1,37 @@
-\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
 %
-\documentclass[8pt,ignorenonframetext,dvipsnames]{beamer}
+\documentclass[
+  8pt,
+  ignorenonframetext,
+  dvipsnames]{beamer}
 \usepackage{pgfpages}
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
 \setbeamercolor{caption name}{fg=normal text.fg}
 \beamertemplatenavigationsymbolsempty
-% Prevent slide breaks in the middle of a paragraph:
+% Prevent slide breaks in the middle of a paragraph
 \widowpenalties 1 10000
 \raggedbottom
 \setbeamertemplate{part page}{
-\centering
-\begin{beamercolorbox}[sep=16pt,center]{part title}
-  \usebeamerfont{part title}\insertpart\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
 }
 \setbeamertemplate{section page}{
-\centering
-\begin{beamercolorbox}[sep=12pt,center]{part title}
-  \usebeamerfont{section title}\insertsection\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
 }
 \setbeamertemplate{subsection page}{
-\centering
-\begin{beamercolorbox}[sep=8pt,center]{part title}
-  \usebeamerfont{subsection title}\insertsubsection\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
 }
 \AtBeginPart{
   \frame{\partpage}
@@ -44,51 +48,62 @@
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provides euro and other symbols
-\else % if luatex or xelatex
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
   \usepackage{unicode-math}
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
-% use upquote if available, for straight quotes in verbatim environments
+% Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-% use microtype if available
-\IfFileExists{microtype.sty}{%
-\usepackage[]{microtype}
-\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\IfFileExists{parskip.sty}{%
-\usepackage{parskip}
-}{% else
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
 \usepackage{xcolor}
-\usepackage{hyperref}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-            pdftitle={Introduction to Multivariate Regression \& Program Evaluation},
-            pdfauthor={Lecture 10},
-            colorlinks=true,
-            linkcolor=Maroon,
-            filecolor=Maroon,
-            citecolor=Blue,
-            urlcolor=blue,
-            breaklinks=true}
-\urlstyle{same}  % don't use monospace font for urls
+  pdftitle={Introduction to Multivariate Regression \& Econometrics},
+  pdfauthor={Lecture 10},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
 \newif\ifbibliography
-\setlength{\emergencystretch}{3em}  % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{0}
-
-% set default figure placement to htbp
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
-
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 
 %packages
 \usepackage{graphicx}
@@ -184,8 +199,7 @@
 
 \end{comment}
 
-\title{Introduction to Multivariate Regression \& Program Evaluation}
-\providecommand{\subtitle}[1]{}
+\title{Introduction to Multivariate Regression \& Econometrics}
 \subtitle{HED 612}
 \author{Lecture 10}
 \date{}
@@ -194,9 +208,9 @@
 \frame{\titlepage}
 
 \begin{frame}
-\tableofcontents[hideallsubsections]
+  \tableofcontents[hideallsubsections]
 \end{frame}
-\begin{frame}{Where are we going\ldots{}.}
+\begin{frame}{Where are we going\ldots.}
 \protect\hypertarget{where-are-we-going.}{}
 
 \begin{itemize}
@@ -207,27 +221,29 @@
   \begin{itemize}
   \tightlist
   \item
-    Intro to multivariate regression
+    Introduction to multivariate regression
   \item
-    Intro to interpreting published multivariate regression results
+    Introduction to reading methods/results sections for empirical
+    articles
+  \end{itemize}
+\item
+  Homework and Reading
+
+  \begin{itemize}
+  \tightlist
   \item
-    Reading for next lecture:
+    Problem Set \#10
+  \item
+    Reading for next Lecture:
 
     \begin{itemize}
     \tightlist
     \item
-      Cabrera, N. L., Milem, J. F., Jaquette, O., \& Marx, R. (2014).
-      Missing the (student achievement) forest for all the (political)
-      trees: Empiricism and the Mexican American Studies controversy in
-      Tucson. American Educational Research Journal, 51(6), 1084-1118.
-    \item
       Powers, J. M. (2004). High-Stakes Accountability and Equity: Using
       Evidence From California's Public Schools Accountability Act to
-      Address the Issues in Williams v. State of California. American
-      Educational Research Journal, 41(4), 763--795.
+      Address the Issues in Williams v. State of California.
+      \emph{American Educational Research Journal}, 41(4), 763--795.
     \end{itemize}
-  \item
-    Homework \#10 posted!
   \end{itemize}
 \item
   Next Lecture
@@ -249,7 +265,7 @@
   \item
     Introduction to non-linear relationships between X and Y
   \item
-    Mini lesson on what each section of manuscrupt should accomplish!
+    Mini lesson on what each section of manuscript should accomplish!
   \end{itemize}
 \end{itemize}
 
@@ -265,7 +281,16 @@ Regression}\label{introduction-to-multivariate-regression}}
 \begin{itemize}
 \tightlist
 \item
-  Same as in ``simple'' (univariate) regression!
+  Same as in ``simple'' (bivariate) regression; we just add more
+  regressors (i.e., independent/control variables) into our model!
+\end{itemize}
+
+\medskip
+
+Population Regression Model
+
+\begin{itemize}
+\tightlist
 \item
   \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +\) \ldots{}
   \(\beta_kX_{ki} + u_i\)
@@ -277,33 +302,43 @@ Regression}\label{introduction-to-multivariate-regression}}
   \item
     \(Y_i\) = observation i of dependent variable
   \item
-    \(X_{1i}\) = observation i of the first regressor, \(X_1\)
+    \(X_{1i}\) = observation i of the \textbf{first regressor}, \(X_1\)
   \item
-    \(X_{2i}\) = observation i of the second regressor, \(X_2\)
+    \(X_{2i}\) = observation i of the \textbf{second regressor}, \(X_2\)
   \item
-    \(X_{ki}\) = observation i of the Kth regressor, \(X_k\)
+    \(X_{ki}\) = observation i of the \textbf{Kth regressor}, \(X_k\)
   \item
-    \(\beta_1\) = population average effect of Y for one-unit increase
-    in \(X_1\)
+    \(\beta_1\) = population average effect of Y for ``change'' in
+    \(X_1\)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      if \(X_1\) is continuous: average effect of Y for one-unit
+      increase/decrease in \(X_1\)
+    \item
+      if \(X_1\) is categorical: population average effect of being in
+      the non-reference group as opposed to the reference group
+    \end{itemize}
   \item
-    \(\beta_2\) = population average effect of Y for one-unit increase
-    in \(X_2\)
+    \(\beta_2\) = population average effect of Y for ``change'' in
+    \(X_2\)
   \item
-    \(\beta_k\) = population average effect of Y for one-unit increase
-    in \(X_k\)
+    \(\beta_k\) = population average effect of Y for ``change'' \(X_k\)
   \item
-    \(\beta_0\) = average value of Y when the value of all independent
-    variables (\(X_1, X_2 ...X_k\)) are equal to zero
+    \(\beta_0\) = average value of Y when the value of \emph{all
+    independent variables (\(X_1, X_2 ...X_k\)) are equal to zero}
   \item
-    \(u_i\) = all other variables that affect the valye of \(Y_i\) but
+    \(u_i\) = all other variables that affect the value of \(Y_i\) but
     are not included in the model
   \end{itemize}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Things we do in multiple regression}
-\protect\hypertarget{things-we-do-in-multiple-regression}{}
+\begin{frame}{Things we do in regression; all work the same in
+multivariate!}
+\protect\hypertarget{things-we-do-in-regression-all-work-the-same-in-multivariate}{}
 
 \begin{enumerate}
 \tightlist
@@ -315,7 +350,7 @@ Regression}\label{introduction-to-multivariate-regression}}
 \tightlist
 \item
   Choose estimates for \(\beta_0, \beta_1, \beta_2, ... \beta_k\) by
-  selecting those that minimuze the sum of squared errors (i.e., make
+  selecting those that minimize the sum of squared errors (i.e., make
   the best prediction of Y), yielding an OLS line
 
   \begin{itemize}
@@ -387,32 +422,93 @@ Regression}\label{introduction-to-multivariate-regression}}
 \begin{itemize}
 \tightlist
 \item
-  Same as before but forumals for \(\hat{\beta_1}\) and
+  Same as before but formulas for \(\hat{\beta_1}\) and
   \(SE(\hat{\beta_1})\) change slightly, but R calculates this for us!
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Conditional Independence Assumption}
-\protect\hypertarget{conditional-independence-assumption}{}
+\begin{frame}{OLS Assumption 1: Conditional Independence Assumption}
+\protect\hypertarget{ols-assumption-1-conditional-independence-assumption}{}
 
 \begin{itemize}
 \tightlist
 \item
-  Assume students choose to participate in MAS
+  OLS Assumption 1 (in words)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    the independent variable \(X_i\) is unrelated to the ``other
+    variables'' not included in the model, \(u_i\)
+  \end{itemize}
+\item
+  OLS Assumption 1 (mathematically)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(E(u_i|X_i)=0\); the expected value of \(u_i\), given any value of
+    \(X_i\), equals zero
+  \end{itemize}
+\item
+  Multivariate regression helps us meet the conditional independence
+  assumption
+
+  \begin{itemize}
+  \tightlist
+  \item
+    In other words, we add variables into our model that if left out
+    would violate the conditional independence assumption and bias our
+    \(\hat{\beta_1}\)
+  \end{itemize}
+\item
+  Example: What is the effect of participating in Mexican American
+  Studies program (MAS) on academic achievement?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    We have to account for the fact that students choose to participate
+    in MAS (self-selection bias); they were not randomly assigned to
+    participate versus not participate in MAS!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{OLS Assumption 1: Conditional Independence Assumption}
+\protect\hypertarget{ols-assumption-1-conditional-independence-assumption-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  What is the effect of participation in MAS on high school graduation?
 \item
   \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \beta_3X_{3i} + u_i\)
 \item
-  Where: Y=graduation, X1= 0/1 MAS, X2= previous academic achievement,
-  X3= SES
+  Where:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Y= GPA
+  \item
+    X1 = 0/1 MAS participation {[}non-reference group{]}; Did not
+    participate in MAS {[}reference group{]}
+  \item
+    X2= previous academic achievement
+  \item
+    X3= socioeconomic status
+  \end{itemize}
 \item
   \textbf{Conditional independence assumption}:
 
   \begin{itemize}
   \tightlist
   \item
-    Once we include control variables, there are no omitted variables,
-    Z, that satisfy \emph{both} of these two conditions:
+    Once we include control variables, there are no longer any omitted
+    variables, Z, that satisfy \emph{both} of these two conditions:
 
     \begin{enumerate}
     [(1)]
@@ -424,38 +520,35 @@ Regression}\label{introduction-to-multivariate-regression}}
     \end{enumerate}
   \end{itemize}
 \item
-  If the conditional independent assumption is true:
+  If we satisfy the conditional independence assumption through control
+  variables, then multivariate regression is just as good as randomized
+  assignment experiment!
 
   \begin{itemize}
   \tightlist
   \item
-    Once we include relevant control variables, there are no omitted
-    variables that affect Y and have a relationship with X
-  \item
-    MAIN POINT: if we satisfy the conditional independence assumption
-    through control variables, then multiple regression is just as good
-    as randomized assignment experiment!
+    Warning: But we often don't have every single control variable we
+    need, so we get as close as possible!
   \end{itemize}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Multiavariate regression in Program Evaluation vs Social
-Science}
-\protect\hypertarget{multiavariate-regression-in-program-evaluation-vs-social-science}{}
+\begin{frame}{Multivariate regression in Econometrics vs Social Science}
+\protect\hypertarget{multivariate-regression-in-econometrics-vs-social-science}{}
 
 \begin{itemize}
 \tightlist
 \item
   \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \beta_3X_{3i} + u_i\)
 \item
-  Program evaluation research or ``econometrics''
+  Econometrics
 
   \begin{itemize}
   \tightlist
   \item
     We are only interested in estimating \(\beta_1\) {[}the causal
-    effect of X1 on Y{]}
+    effect of \(X_{1i}\) on Y{]}
   \item
     The only reason we include other variables in the model besides X1
     is to eliminate omitted variable bias
@@ -463,7 +556,7 @@ Science}
     Therefore, we include all control variables that satisfy \emph{both}
     conditions of omitted variable bias
   \item
-    once we include control variables, and no other variables satisfy
+    Once we include control variables, and no other variables satisfy
     both conditions, then we satisfy the conditional independence
     assumption and we can estimate a causal effect!
   \end{itemize}
@@ -476,10 +569,17 @@ Science}
     Purpose of multiple regression is to add new variable to your model
     (e.g., \(X_3\)) to see the effect of \(X_3\) on Y
   \item
-    Can lead to sloppy research if you're not careful!
+    Can lead to sloppy research if we take a ``throw'' everything and
+    the kitchen sink into a model and see what's interesting!
   \item
-    We ``throw'' everything and the kitchen sink into a model and see
-    what's interesting!
+    We'll read some good examples of this type of research including our
+    first empirical article next week:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Powers (2004)
+    \end{itemize}
   \end{itemize}
 \end{itemize}
 
@@ -494,33 +594,67 @@ Science}
   Research question: What is the effect of student teacher ratio on
   student reading test scores?
 \item
-  Simple regression
+  \textbf{Simple/Bivariate regression}
 
   \begin{itemize}
   \tightlist
   \item
     \(Y_i = \beta_0 + \beta_1X_{1i} + u_i\)
   \item
-    Where: Y= reading test scores and \(X_1\) = student teacher ratio
+    Where:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Y= reading test scores
+    \item
+      \(X_1\) = student teacher ratio
+    \end{itemize}
   \item
-    Interpretation of \(\hat{\beta_1}\): The average effect of a
+    General interpretation of \(\hat{\beta_1}\): The average effect of a
     one-unit increase in \(X_1\) is associated with a \(\hat{\beta_1}\)
     change in Y
+
+    \begin{itemize}
+    \tightlist
+    \item
+      The average effect of a one-unit increase in student teacher ratio
+      is associated with a 2.62 decrease in district average reading
+      test scores
+    \end{itemize}
   \end{itemize}
 \item
-  Multivariate regression
+  \textbf{Multivariate regression}
 
   \begin{itemize}
   \tightlist
   \item
     \(Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i\)
   \item
-    Where: Y= student test scores, \(X_1\) = student teacher ratio,
-    \(X_2\) = \% ELL
+    Where:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Y= student test scores
+    \item
+      \(X_1\) = student teacher ratio
+    \item
+      \(X_2\) = \% ELL {[}from last week, established \%ELL meets both
+      conditions of omitted variable bias{]}
+    \end{itemize}
   \item
-    Interpretation of \(\hat{\beta_1}\): The average effect of a
+    General interpretation of \(\hat{\beta_1}\): The average effect of a
     one-unit increase in \(X_1\) is associated with a \(\hat{\beta_1}\)
-    change in Y, holding the value of \(X_2\) constant
+    change in Y, \textbf{holding the value of \(X_2\) constant}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      The average effect of a one-unit increase in student teacher ratio
+      is associated with a 1.29 decrease in district average reading
+      test scores, \textbf{holding the value of \%ELL students constant}
+    \end{itemize}
   \end{itemize}
 \end{itemize}
 
@@ -585,10 +719,10 @@ Science}
   \begin{itemize}
   \tightlist
   \item
-    Means to estimate the relationship betwen \(X_1\) and Y when we
+    Means to estimate the relationship between \(X_1\) and Y when we
     don't allow the value of \(X_2\) to vary
   \item
-    Said differenly: We analyze the relationship between student teacher
+    In other words, we analyze the relationship between student teacher
     ration (\(X_1\)) and reading test scores (Y) for applicants that
     have the same value of percent ELL (\(X_2\)) {[}calculus: partial
     derivatives!{]}
@@ -598,7 +732,7 @@ Science}
 \end{frame}
 
 \begin{frame}{What does ``holding constant'' mean? Another
-example\ldots{}.}
+example\ldots.}
 \protect\hypertarget{what-does-holding-constant-mean-another-example.}{}
 
 \begin{itemize}
@@ -626,7 +760,9 @@ example\ldots{}.}
     (Y), when we don't allow value of ``years of experience'' (X2) to
     change
   \item
-    Maybe people w/ more education have fewer years of experience
+    Compare people with 2 years of college versus 3 years of college
+    that have the same years experience to assess the ``effect'' of an
+    additional year of education on income
   \end{itemize}
 \item
   Said differently: analyze the effect of increasing years of education
@@ -656,28 +792,31 @@ example\ldots{}.}
     \item
       Y= reading test scores
     \item
-      \(X_1\) = average district student teacher ratio, \(X_2\) = 0/1
-      majority ELL district, \(X_3\) = avg district income (\$000s)
+      \(X_1\) = average district student teacher ratio
+    \item
+      \(X_2\) = 0/1 majority ELL district {[}greater than 50\% ELL
+      students= non-reference group; less than 50\% ELL
+      students=reference group{]}
+    \item
+      \(X_3\) = avg district income (\$000s)
     \end{itemize}
-  \item
-    \textbf{IMPORTANT NOTE}: All independent variables should be at the
-    same ``level''; here it is district!
   \end{itemize}
 \item
-  General interpretation of \(\hat{\beta_1}\) for continuous X
+  General interpretation of \(\hat{\beta_1}\) for continuous X {[}all
+  are correct/same{]}
 
   \begin{itemize}
   \tightlist
   \item
-    The avaerage effect of a one unit increase in \(X_1\) is a
+    The average effect of a one unit increase in \(X_1\) is a
     \(\hat{\beta_1}\) unit change in Y, holding the values of \(X_2\)
     and \(X_3\) constant
   \item
-    OR The avaerage effect of a one unit increase in \(X_1\) is a
+    OR The average effect of a one unit increase in \(X_1\) is a
     \(\hat{\beta_1}\) unit change in Y, after controlling for \(X_2\)
     and \(X_3\)
   \item
-    The avaerage effect of a one unit increase in \(X_1\) is a
+    The average effect of a one unit increase in \(X_1\) is a
     \(\hat{\beta_1}\) unit change in Y, holding the values of covariates
     constant
   \end{itemize}
@@ -702,14 +841,14 @@ example\ldots{}.}
 
 \end{frame}
 
-\begin{frame}{Interpreting \(\hat{\beta_1}\) for categorical X}
+\begin{frame}[fragile]{Interpreting \(\hat{\beta_1}\) for categorical X}
 \protect\hypertarget{interpreting-hatbeta_1-for-categorical-x}{}
 
 \begin{itemize}
 \tightlist
 \item
-  RQ: What is the effect of student teacher ratio (X1) on average
-  district reading test scores (X2)?
+  RQ: What is the effect of being a majority ELL district (X1) on
+  average district reading test scores (X2)?
 
   \begin{itemize}
   \tightlist
@@ -723,8 +862,9 @@ example\ldots{}.}
     \item
       Y= reading test scores
     \item
-      \(X_1\) = 0/1 majority ELL, \(X_2\) = avg district student teacher
-      ratio \(X_3\) = avg district income (\$000s)
+      \(X_1\) = 0/1 majority ELL {[}non-reference group{]}, \(X_2\) =
+      avg district student teacher ratio; \(X_3\) = avg district income
+      (\$000s)
     \end{itemize}
   \item
     \textbf{Stylistic Note}: Your main independent variable of interest
@@ -741,8 +881,8 @@ example\ldots{}.}
     values of \(X_2\) and \(X_3\) constant
   \end{itemize}
 \item
-  Run regression in R {[}same coef values as previous model but in diff
-  order{]}
+  Run regression in R {[}note: same coef values as previous model but in
+  diff order!{]}
 
   \begin{itemize}
   \tightlist
@@ -757,14 +897,23 @@ example\ldots{}.}
   \begin{itemize}
   \tightlist
   \item
-    Reference group is the zero value of my dummy ELL var= non-ELL
-    majority district; Non-Reference group is the one value of my dummy
-    ELL var = majority ELL district
+    Reference group vs non Reference group
+
+    \begin{itemize}
+    \tightlist
+    \item
+      0 = non-ELL majority district {[}lowest value is automatically
+      removed from regression as reference group{]}
+    \item
+      1 = majority ELL district {[}non-reference group is kept within
+      regression; this is why the regression output coefficient says
+      \textbf{\texttt{ell1}}{]}
+    \end{itemize}
   \item
     Being a majority ELL district as opposed to a non-majority ELL
-    district is associated with a 23 point decrease in average district
-    reading scores, holding values of average student-teacher ratio and
-    district average income constant
+    district is associated with a 23.5 point decrease in average
+    district reading scores, holding values of average student-teacher
+    ratio and district average income constant
   \end{itemize}
 \end{itemize}
 
@@ -776,8 +925,8 @@ example\ldots{}.}
 \begin{itemize}
 \tightlist
 \item
-  RQ: What is the effect of student teacher ratio (X1) on average
-  district reading test scores (X2)?
+  RQ: What is the effect of being a majority ELL district (X1) on
+  average district reading test scores (X2)?
 
   \begin{itemize}
   \tightlist
@@ -791,13 +940,15 @@ example\ldots{}.}
     \item
       Y= reading test scores
     \item
-      \(X_1\) = 0/1 majority ELL, \(X_2\) = avg district student teacher
-      ratio \(X_3\) = avg district income (\$000s)
+      \(X_1\) = 0/1 majority ELL district
+    \item
+      \(X_2\) = avg district student teacher ratio
+    \item
+      \(X_3\) = avg district income (\$000s)
     \end{itemize}
   \end{itemize}
 \item
-  Run regression in R {[}same coef values as previous model but in diff
-  order{]}
+  Run regression in R
 
   \begin{itemize}
   \tightlist
@@ -821,65 +972,217 @@ example\ldots{}.}
   \item
     \((Y| X_1=0, X_2=25, X_3=22)\) = 663.6
   \end{itemize}
+\item
+  What's the predicted average reading score for a district that is an
+  ELL majority district, has a student teacher ratio of 19, and average
+  district income of \$26,000?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \((Y| X_1=1, X_2=19, X_3=26)\) = 646.2 - (23.5 * 1) - (0.8 * 19) +
+    (1.7 * 26)
+  \item
+    \((Y| X_1=1, X_2=19, X_3=26)\) = 646.2 - (23.5) - (15.2) + (44.2)
+  \item
+    \((Y| X_1=1, X_2=19, X_3=26)\) = 651.7
+  \end{itemize}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{How to read regression results in academic journals}
-\protect\hypertarget{how-to-read-regression-results-in-academic-journals}{}
+\hypertarget{reading-empirical-regression-results}{%
+\section{Reading Empirical Regression
+Results}\label{reading-empirical-regression-results}}
+
+\begin{frame}{Our first example of empirical regression results}
+\protect\hypertarget{our-first-example-of-empirical-regression-results}{}
+
+Powers, J. M. (2004). High-Stakes Accountability and Equity: Using
+Evidence From California's Public Schools Accountability Act to Address
+the Issues in Williams v. State of California. \emph{American
+Educational Research Journal}, 41(4), 763--795.
+
+\medskip
 
 \begin{itemize}
 \tightlist
 \item
-  Cabrera et al (2014)
+  RQ: What is relationship between school resource variables and
+  school-level academic performance index (API)?
+\item
+  Does not frame article as ``causal inference'' but Powers is doing
+  exactly what we have learned in this lecture/class!
 
   \begin{itemize}
   \tightlist
   \item
-    RQ: What is the effect of participating in MAS on high school
-    graduation?
+    Attempts to analyze the effect of school resources (X) on the
+    academic achievement of schools (Y) by controlling for variables
+    that would be ``systematically related'' to the independent
+    variables of interest and have an effect on the dependent variable
   \item
-    Use program evaluation framework; but their model is a logistic
-    regression because their Y= 0/1 graduated and X= 0/1 MAS
-    participation
+    Does not have all possible controls to get to a ``causal effect''
+    equivalent to what we would estimate if the study was designed as an
+    randomized control experiment.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{How to read a methods section\ldots{}}
+\protect\hypertarget{how-to-read-a-methods-section}{}
+
+\begin{itemize}
+\tightlist
+\item
+  The format of quantitative empirical research is pretty
+  ``standardized'', which makes it easy to read as you get more
+  experience\ldots{}
+\item
+  Methods section usually outlines the data used, sample, variables, and
+  the methods used
+\end{itemize}
+
+\medskip
+
+For Powers (2004):
+
+\begin{itemize}
+\tightlist
+\item
+  Data: uses data similar to our \texttt{caschools} (ours is district
+  level; Powers uses school-level!)
+\item
+  Sample: All CA schools that were assigned an API score
+
+  \begin{itemize}
+  \tightlist
+  \item
+    97\% of full population of CA schools
   \end{itemize}
 \item
-  Powers (2004)
+  Variables: provides details on all the variables in the model!
 
   \begin{itemize}
   \tightlist
   \item
-    RQ: what is relationship between school resource variables and
-    school-level academic performance index (API)
+    Pay attention to how variables are constructed!
   \item
-    Don't frame article as ``program evaluation'' but it is! Y= School's
-    academic performance index score X vars= school resource variables
+    Note that sometimes we don't have a variable we need, so we use a
+    ``proxy.'' It's the authors' responsibility to convince readers why
+    the variable used is a good enough proxy for the unavailable
+    variable needed
+  \item
+    Empirical studies use a lot of variables in the model which are
+    difficult to keep track of; so they are often ``grouped'' into
+    categories (e.g., student characteristics, school resources, etc)
   \end{itemize}
 \item
-  Regression results are pretty standardized across all fields and
-  journals!
+  Methodology: This section varies depending on the sophistication of
+  the method.
 
   \begin{itemize}
   \tightlist
   \item
-    Regression tables usually show the coefficient and standard error
-    (usually in parantheses) for each independent variable
+    Sometimes they write out the full population regression model,
+    sometimes they don't
   \item
-    Columns are individual models!
+    Linear regression is considered simple so in most cases they don't
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{How to read results (descriptives)\ldots{}}
+\protect\hypertarget{how-to-read-results-descriptives}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Quantitative research studies \textbf{nearly always} present the
+  descriptive statistics of all variables used in a table
+
+  \begin{itemize}
+  \tightlist
+  \item
+    In most cases the mean and standard deviation is sufficient; if it's
+    substantively important sometimes min and max (or can be covered
+    within text of the variables sub-section of the methods section)
+  \item
+    Sometimes authors dedicate space within text to explaining
+    descriptive stats and sometimes they don't
 
     \begin{itemize}
     \tightlist
     \item
-      Usually you start with a simple regression model that only
-      includes your main independent variable of interest: ``model 1''
+      Usually depends on how substantively important they are\ldots{}
     \item
-      Then you add controls; sometimes done in groupings
-    \item
-      Sometimes models in seperate columns also indicate various
-      samples!
+      Most folks can read the table so authors will avoid spending too
+      much limited space on descriptive statistics
     \end{itemize}
   \end{itemize}
 \end{itemize}
+
+\includegraphics{powers_table1.png}
+
+\end{frame}
+
+\begin{frame}{How to read results (regression models)\ldots{}}
+\protect\hypertarget{how-to-read-results-regression-models}{}
+
+\begin{itemize}
+\tightlist
+\item
+  The way in which regression results are presented is well standardized
+  across all fields and journals! {[}some exceptions{]}
+\item
+  Regression tables usually show the beta coefficient and standard error
+  (usually in parentheses) for each independent variable
+\item
+  Columns are individual models!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Tables usually start with a simple regression model in the first
+    column that only includes the main independent variable(s) of
+    interest: ``model 1''
+  \item
+    Then add control variables incrementally; sometimes done in
+    groupings
+  \item
+    This allows the author to show the ``progression'' in the models as
+    variables are added in (particularly important for descriptive
+    research to see changes in model fit statistics)
+  \item
+    Although, sometimes models in separate columns can also indicate
+    various samples; look at the headings/read the authors description
+    of table!
+  \end{itemize}
+\item
+  Read the table notes!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Provide the key for interpreting the significance levels of p-values
+    as denoted by asterisks ( \(*p\le 0.05\),
+    \(**p\le 0.01\),\(***p\le 0.001\) )
+  \item
+    Will also tell you what the reference category is for categorical
+    variables!
+  \item
+    Other useful information
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{How to read results (regression models)\ldots{}}
+\protect\hypertarget{how-to-read-results-regression-models-1}{}
+
+\includegraphics{POWERS_REGTABLE.png}
 
 \end{frame}
 

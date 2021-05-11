@@ -1,4 +1,4 @@
-### HED 612 HW 10
+### HED 612 Problem Set 10
 
 
 # LOGISTICS
@@ -22,21 +22,20 @@ els<- read_dta("data/els/els-stu-by-f2-select-vars.dta")
 
 #Q2
 
-    #explore variables
-    attributes(els$bytxrstd)
-    attributes(els$byhmwrk)
+    #explore dependent variable
+    els %>% select(bytxrstd) %>% var_label()
+    els %>% select(bytxrstd) %>% val_labels()
 
     #count missing
     els %>% filter(bytxrstd==-8) %>% count()   
-    els %>% count(bytxrstd)
 
-    #create dependent varible with true NA
+    #create dependent variable with true NA
     els <- els %>% 
       mutate(read_testscr  = ifelse(bytxrstd==-8, NA, bytxrstd))
 
     #check new dependent variable   
-    summary(els$read_testscr, na.rm=TRUE)
-
+    els %>% filter(is.na(read_testscr)) %>% count()   
+    
 #Q3
     # explore independent variable 
     els %>% filter(byhmwrk<0) %>% count()
