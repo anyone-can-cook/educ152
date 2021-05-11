@@ -207,6 +207,58 @@ useful to use `lookfor()` to query the dataset `df_els_stu_all` because this dat
 
 # OLS Assumptions
 
+## Bias and efficiency
+
+Efficiency, also called "precision"
+
+- Desirable properties of our point estimates (e.g. $\hat{\beta}$ or $\bar{Y}$)
+  - Efficient
+  - Unbiased
+- __Efficiency__
+  - Definition: how close your point estimate(s) is to the population parameter
+  - Standard Error: on average, how far away is a point estimate from one random sample from the value of the population parameter
+  - _Therefore_, an efficient point estimate is one with a low standard error (in other words, the sampling distribution of $\beta_1$ has low variance or is "tight" around the population parameter)
+  
+![](precision.png)
+
+__Bias__
+
+- __Bias__: consistently overestimates or underestimates population parameter in repeated random samples
+  - There are many different types of bias!
+- _Sampling Bias_:
+  - Estimate of population parameter is biased because you fail to take a random sample
+  - Example: goal is to estimate high school graduation rate; take a random sample of 10th graders and see if they graduate within three years.
+- _Omitted variable bias_:
+  - Bias in estimate of $\beta_1$ due to omitting necessary "control" variables in your regression model
+  
+![](bias.png)
+
+Picture of Bias and Efficiency (or "Precision")
+
+![](bias_efficiency.png)
+
+
+## Assumption 2: i.i.d.
+
+text
+
+## Assumption 3: outliers
+
+text
+
+## Assumption 4: homoskedasticity
+
+text
+
+## Assumption 1: conditional independence assumption
+
+text
+
+# Omitted variable bias
+
+
+# Independent variables for causal effects
+
 text
 
   

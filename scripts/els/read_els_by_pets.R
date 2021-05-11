@@ -84,7 +84,6 @@ library(labelled)
                 'f3tzanydegre','f3tzhighdeg','F3TZCERT1DT','F3TZCRT1CIP2','F3TZASOC1DT','F3TZASC1CIP2','f3tzbach1dt','f3tzbch1cip2',
                 'f3stloanamt','f3stloanevr','f3stloanpay','F3ERN2011')
               # drop these vars cuz suppressed "f3tzps1ctr"   "f3tzps1lvl" ;
-  
 
   keepvars_lower <- tolower(keepvars)
   keepvars_lower
@@ -123,11 +122,9 @@ df_els_stu <- df_els_stu_all %>%
 
 #df_els_stu %>% count(f3ern2011) %>% print(n=99)
 
-mean(df_els_stu$f3ern2011)
+#mean(df_els_stu$f3ern2011)
 
-
-
-df_els_stu %>% var_label()
+#df_els_stu %>% var_label()
 
 
 
@@ -137,7 +134,7 @@ df_els_stu %>% var_label()
                        
 
 # save file to disk
-save(df_els_stu, file = file.path(output_data_dir, 'els_stu.RData'))
+#save(df_els_stu, file = file.path(output_data_dir, 'els_stu.RData'))
 
 #opening data
 
