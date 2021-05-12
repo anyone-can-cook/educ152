@@ -76,7 +76,7 @@ library(labelled)
   keepvars <- c('stu_id','sch_id','strat_id','psu','f3univ','g10cohrt','f1pared','byincome','bystexp','byparasp','bytxstat','bypqstat','bytxmstd',
                 'bytxrstd','bysctrl','byurban','byregion','byfcomp','bysibhom','f1sex','f1race','f1stlang','f1homlng','f1mothed','f1fathed','f1ses1',
                 'f1ses1qu','f1stexp','f1txmstd','f1rgpp2','f1s24cc','f1s24bc','f2everdo','f2dostat','f2c25a','f2c30a',
-                'F3HSSTAT','F3HSCPDR',
+                'F3HSSTAT','F3HSCPDR','f3edstat','f3a01d',
                 'F3EVRATT','F3EDSTAT','F3PS1START','F3PS1LVL','F3PS1CTR','F3PS1SEC','F3PS1SLC','F3PS1OUT','F3PS1RETAIN','F3PSTIMING',
                 'f3tztranresp','f3tzcoverage',
                 'f3tzrectrans','f3tzreqtrans','f3tzschtotal','f3tzps1sec','f3tzps1slc','f3tzps1start','f3tzhs2ps1',
@@ -107,31 +107,18 @@ df_els_stu <- df_els_stu_all %>%
       #df_els_stu %>% filter(f3ps1start<f3hscpdr & f3ps1start !=-9) %>% count(f3hscpdr)
   filter(f3ps1start>=f3hscpdr | f3ps1start ==-9) %>%
   # keep students whose first self-reported postsecondary institution is not a 4yr public or 4yr private non-profit or missing
-  filter(!(f3ps1sec %in% c(-9,1,2))) %>% 
+  #filter(!(f3ps1sec %in% c(-9,1,2))) %>% 
   # keep students whose first postsecondary institution based on transcript data is not a 4yr public or 4yr private non-profit or missing
-  filter(!(f3tzps1sec %in% c(-9,1,2))) %>% 
+  #filter(!(f3tzps1sec %in% c(-9,1,2))) %>% 
   # keep students who reported attending postsecondary education and who are "transcript respondents" [f3tztranresp]
   filter(f3tztranresp==1) %>%
   # keep if f3tzanydegre is not missing []
-  filter(f3tzanydegre!=-9)
-
-#df_els_stu %>% count(f3tzanydegre)
-#df_els_stu %>% count(f3tzhighdeg)
-
-#df_els_stu %>% count(f3tzasc1cip2)
-
-#df_els_stu %>% count(f3ern2011) %>% print(n=99)
-
-#mean(df_els_stu$f3ern2011)
-
-#df_els_stu %>% var_label()
-
-
-
-
-
-
-                       
+  filter(f3tzanydegre!=-9) %>%
+  # create continuous measure of loans
+  mutate(
+    f3totloan = as.numeric(if_else(f3stloanevr==1,f3stloanamt,0))
+    )
+      
 
 # save file to disk
 #save(df_els_stu, file = file.path(output_data_dir, 'els_stu.RData'))

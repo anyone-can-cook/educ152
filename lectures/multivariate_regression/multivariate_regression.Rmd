@@ -68,26 +68,12 @@ This lecture introduces multivariate regression, building on concepts we learned
 ## Libraries, data, functions
 
 
-This lecture will utilize data from two sources: The Educational Longitudinal Study (ELS) of 2002;  Tennessee Student Teacher Achievement Ratio (STAR) experiment
+This lecture will utilize data from two sources: 
 
-<br>
+- Tennessee Student Teacher Achievement Ratio (STAR) experiment, which we have worked with before
+- The Educational Longitudinal Study (ELS) of 2002
 
-The Educational Longitudinal Study (ELS) of 2002, referred to as ELS:2002
 
-- Nationally representative, longitudinal survey of US 10th graders in 2002, followed them from 2002 to 2013
-- Created by the National Center for Education Statistics, a branch of the U.S. Department of Education
-- [LINK](https://nces.ed.gov/surveys/els2002/) to ELS:2002 website
-- [LINK](https://nces.ed.gov/OnlineCodebook) to the NCES "Online Codebook"  website, which contains "public-use" versions of ELS datasets and detailed information about all variables
-  - variables that could potentially be used to identify ELS survey respondents are "suppressed" from public-use datasets
-  - these variables are present in "restricted" versions of ELS datasets
-
-  
-<br>  
-
-Tennessee Student Teacher Achievement Ratio (STAR) experiment, 
-
-- Tennessee STAR experiment sought to analyze the effect of elementary school students being randomly assigned to a a "small" class size ($T_i=1$) vs. "large" class size ($T_i=0$) on academic achievement ($Y$)
-- [LINK](https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/10766) to information and data on the Tennessee STAR project
 
 
 ```{r}
@@ -101,12 +87,15 @@ Tennessee Student Teacher Achievement Ratio (STAR) experiment,
     #install.packages('labelled')
     #install.packages('haven')
     #install.packages('patchwork')
+    #install.packages("RCurl") #we'll use this to calculate robust standard errors
 
   library(tidyverse)
   library(labelled)
   library(haven)
+  library(RCurl)
   #library(patchwork)
 
+    
 ##########
 ########## TENNESSEE STAR DATA
 ##########
@@ -151,18 +140,275 @@ rm(df_star_panel) # comment this line out if you want to keep data frame df_star
 
 # Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables
   df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
-
+  # convert continuous variables we know we want numeric back to numeric
+  for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011')) {
+    df_els_stu_fac[[v]] <- df_els_stu[[v]]  
+  }
+  
 ##########
 ########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
 ##########
 
 # source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
   
+
+  ##########
+########## IPEDS
+##########
+
+# Load ipeds dataset from course website url
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/ipeds/output_data/panel_data.RData'))
+
+# Create ipeds data frame with fewer variables/observations
+df_ipeds_pop <- panel_data %>%
+  # keep IPEDS tuition data from fall of which year (e.g., fall 2016 is price for programs in 2016-17 academic year)
+  filter(year == 2016) %>%
+  # which universities to keep:
+    # 2015 carnegie classification: keep research universities (15,16,17) and master's universities (18,19,20)
+  filter(c15basic %in% c(15,16,17,18,19,20)) %>%
+  # which variables to keep
+  select(instnm,unitid,opeid6,opeid,control,c15basic,stabbr,city,zip,locale,obereg, # basic institutional characteristics
+         tuition6,fee6,tuition7,fee7, # avg tuition and fees for full-time grad, in-state and out-of-state
+         isprof3,ispfee3,osprof3,ospfee3, # avg tuition and fees for MD, in-state and out-of-state
+         isprof9,ispfee9,osprof9,ospfee9, # avg tuition and fees for Law, in-state and out-of-state
+         chg4ay3,chg7ay3,chg8ay3) %>% # [undergraduate] books+supplies; off-campus (not with family) room and board; off-campus (not with family) other expenses
+  # rename variables; syntax <new_name> = <old_name>
+  rename(region = obereg, # revion
+         tuit_grad_res = tuition6, fee_grad_res = fee6, tuit_grad_nres = tuition7, fee_grad_nres = fee7, # grad
+         tuit_md_res = isprof3, fee_md_res = ispfee3, tuit_md_nres = osprof3, fee_md_nres = ospfee3, # md
+         tuit_law_res = isprof9, fee_law_res = ispfee9, tuit_law_nres = osprof9, fee_law_nres = ospfee9, # law
+         books_supplies = chg4ay3, roomboard_off = chg7ay3, oth_expense_off = chg8ay3) %>% # [undergraduate] expenses
+  # create measures of tuition+fees
+  mutate(
+    tuitfee_grad_res = tuit_grad_res + fee_grad_res, # graduate, state resident
+    tuitfee_grad_nres = tuit_grad_nres + fee_grad_nres, # graduate, non-resident
+    tuitfee_md_res = tuit_md_res + fee_md_res, # MD, state resident
+    tuitfee_md_nres = tuit_md_nres + fee_md_nres, # MD, non-resident
+    tuitfee_law_res = tuit_law_res + fee_law_res, # Law, state resident
+    tuitfee_law_nres = tuit_law_nres + fee_law_nres) %>% # Law, non-resident  
+  # create measures of cost-of-attendance (COA) as the sum of tuition, fees, book, living expenses
+  mutate(
+    coa_grad_res = tuit_grad_res + fee_grad_res + books_supplies + roomboard_off + oth_expense_off, # graduate, state resident
+    coa_grad_nres = tuit_grad_nres + fee_grad_nres + books_supplies + roomboard_off + oth_expense_off, # graduate, non-resident
+    coa_md_res = tuit_md_res + fee_md_res + books_supplies + roomboard_off + oth_expense_off, # MD, state resident
+    coa_md_nres = tuit_md_nres + fee_md_nres + books_supplies + roomboard_off + oth_expense_off, # MD, non-resident
+    coa_law_res = tuit_law_res + fee_law_res + books_supplies + roomboard_off + oth_expense_off, # Law, state resident
+    coa_law_nres = tuit_law_nres + fee_law_nres + books_supplies + roomboard_off + oth_expense_off) # %>% # Law, non-resident    
+  # [COMMENTED THIS OUT] keep only observations that have non-missing values for the variable coa_grad_res
+    # this does cause us to lose some interesting universities, but doing this will eliminate some needless complications with respect to learning core concepts about statistical inference
+  #filter(!is.na(coa_grad_res))
+
+# Add variable labels to the tuit+fees variables and coa variables
+  # tuition + fees variables
+    var_label(df_ipeds_pop[['tuitfee_grad_res']]) <- 'graduate, full-time, resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_grad_nres']]) <- 'graduate, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_res']]) <- 'MD, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_md_nres']]) <- 'MD, full-time, non-resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_res']]) <- 'Law, full-time, state resident; avg tuition + required fees'
+    var_label(df_ipeds_pop[['tuitfee_law_nres']]) <- 'Law, full-time, non-resident; avg tuition + required fees'
+    
+  # COA variables
+    var_label(df_ipeds_pop[['coa_grad_res']]) <- 'graduate, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_grad_nres']]) <- 'graduate, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_res']]) <- 'MD, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_md_nres']]) <- 'MD, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_res']]) <- 'Law, full-time, state resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+    var_label(df_ipeds_pop[['coa_law_nres']]) <- 'Law, full-time, non-resident COA; == tuition + fees + (ug) books/supplies + (ug) off-campus room and board + (ug) off-campus other expenses'
+
+  #df_ipeds_pop %>% glimpse()
+
+rm(panel_data) # comment this line out if you want to keep data frame panel_data
+
+##########
+########## SCORECARD DATA ON DEBT AND EARNINGS
+##########
+
+# load scorecard dataset from course website url
+
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel_labelled.RData'))
+
+df_scorecard <- df_debt_earn_panel_labelled %>%
+    # keep most recent year of data
+    filter(field_ay == '2017-18') %>%
+    # keep master's degrees
+    filter(credlev == 5) %>%
+    # carnegie categories to keep: 15 = Doctoral Universities: Very High Research Activity; 16 = Doctoral Universities: High Research Activity
+      # note: variable ccbasic from scorecard data is 2015 carnegie classification
+    filter(ccbasic %in% c(15,16,17,18,19,20)) %>%
+    # drop "parent plus" loan variables and other vars we won't use in this lecture
+    select(-contains('_pp'),-contains('_any'),-field_ay,-st_fips,-zip,-longitude,-latitude,-locale2,-highdeg,-accredagency,-relaffil,-hbcu,-annhi,-tribal,-aanapii,-hsi,-nanti,-main,-numbranch,-control) %>%
+    # create variable for broad field of degree (e.g., education, business)
+    mutate(cipdig2 = str_sub(string = cipcode, start = 1, end = 2)) %>%
+    # shorten variable cipdesc to make it more suitable for printing
+    mutate(cipdesc = str_sub(string = cipdesc, start = 1, end = 50)) %>%
+    # re-order variables
+    relocate(opeid6,unitid,instnm,ccbasic,stabbr,city,cipdig2)
+
+  #df_scorecard %>% glimpse()
+
+# For debt and earnings variables, convert from character to numeric variables (which replaces "PrivacySuppressed" values with NA values)
+df_scorecard <- df_scorecard %>%
+  mutate(
+    debt_all_stgp_eval_n = as.numeric(debt_all_stgp_eval_n),
+    debt_all_stgp_eval_mean = as.numeric(debt_all_stgp_eval_mean),
+    debt_all_stgp_eval_mdn = as.numeric(debt_all_stgp_eval_mdn),
+    debt_all_stgp_eval_mdn10yrpay = as.numeric(debt_all_stgp_eval_mdn10yrpay),
+    earn_count_wne_hi_1yr = as.numeric(earn_count_wne_hi_1yr),
+    earn_mdn_hi_1yr = as.numeric(earn_mdn_hi_1yr),
+    earn_count_wne_hi_2yr = as.numeric(earn_count_wne_hi_2yr),
+    earn_mdn_hi_2yr = as.numeric(earn_mdn_hi_2yr),
+    ipedscount1 = as.numeric(ipedscount1),
+    ipedscount2 = as.numeric(ipedscount2)
+  ) 
+
+# add variable label to variable cipdig2
+  attr(df_scorecard[['cipdig2']], which = 'label') <- 'broad degree field code = 2-digit classification of instructional programs (CIP) degree code'
+
+# add variable label attribute back to debt and earnings variables
+  for(v in c('debt_all_stgp_eval_n','debt_all_stgp_eval_mean','debt_all_stgp_eval_mdn','debt_all_stgp_eval_mdn10yrpay','earn_count_wne_hi_1yr','earn_mdn_hi_1yr','earn_count_wne_hi_2yr','earn_mdn_hi_2yr','cipdesc','ipedscount1','ipedscount2')) {
+    
+    #writeLines(str_c('object v=', v))
+    #writeLines(attr(df_debt_earn_panel_labelled[[v]], which = 'label'))
+    
+    attr(df_scorecard[[v]], which = 'label') <- attr(df_debt_earn_panel_labelled[[v]], which = 'label')
+  }
+
+#df_scorecard %>% glimpse()
+
+rm(df_debt_earn_panel_labelled) # comment this line out if you want to keep data frame df_debt_earn_panel_labelled
+#earn_mdn_hi_2yr
+
+##########
+########## LEFT JOIN SCORECARD AND IPEDS DATA
+##########
+
+# investigate data structure
+
+  # df_scorecard; these vars uniquely identify observations
+    df_scorecard %>% group_by(opeid6,cipcode) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+
+  # df_ipeds_pop: these vars uniquely identify observations
+    df_ipeds_pop %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+    
+# join
+  # start with df_ipeds_pop, keep selected variables; then do do a right_join (i.e., keep obs in y table)
+    
+  df_score_ipeds <- df_ipeds_pop %>% 
+    select(-instnm,-opeid6,-opeid,-c15basic,-region,-locale,-city,-stabbr,-zip) %>% mutate(one=1) %>%
+    right_join(y=df_scorecard, by = 'unitid')
+     #df_score_ipeds %>% glimpse()
   
+  # 52 unitids from scorecard that don't have a match in ipeds
+    # could be due to differences in year; decision: drop thiese
+    df_score_ipeds %>% filter(is.na(one)) %>% count(unitid) # 52 unitids from scorecard data with missing IPEDS data
+    df_score_ipeds %>% filter(is.na(one)) %>% count(instnm) # 52 unitids from scorecard data with missing IPEDS data
+  
+
+  df_score_ipeds <- df_score_ipeds %>% 
+    # drop unitids from scorecard that don't merge to ipeds data (on tuition)
+    filter(!is.na(one)) %>% 
+    # drop observations that don't have mean debt data
+    filter(!is.na(debt_all_stgp_eval_mean)) %>% 
+    # drop for-profits
+    filter(control !=3) %>%
+    # drop tuition/coa vars for law and md
+    select(-one,-contains('law'),-contains('md_')) %>% 
+    # create measure of urbanization from locale
+    mutate(
+      urban = case_when(
+        locale %in% c(11) ~ 1, # city
+        locale %in% c(12,13) ~ 2, # city
+        locale %in% c(21,22,23) ~ 3, # suburb
+        locale %in% c(31,32,33,41,42,43) ~ 4 # town/rural
+        )
+      ) %>% 
+    # create value labels for level of urbanization
+    set_value_labels(
+      urban = c(
+        'large city (250k+)' = 1,
+        'med/small city' = 2,
+        'suburb' = 3,
+        'town/rural' = 4
+        )
+      ) %>%
+    # change variable order
+    relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,region,city,locale,urban,cipdig2,cipcode,cipdesc,credlev,creddesc,
+      contains('ipeds'),starts_with('debt'),starts_with('earn'))
+
+# create variable label 
+var_label(df_score_ipeds[['urban']]) <- 'four-category variable of level of urbanization (large city, small/med city, suburb, town/rural) created from locale'
+# %>% count(urban, locale) # crosscheck
+
+      
+  df_score_ipeds %>% glimpse()
+
+rm(df_ipeds_pop) # comment this line out if you want to keep ipeds data frame
+rm(df_scorecard) # comment this line out if you want to keep scorecard data frame
+
+# Investigate analysis data frame `df_score_ipeds`  
+
+  # data structure: variables that uniquely identify obs
+    df_score_ipeds %>% group_by(opeid6,cipcode) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+  
+  # number of observations (universities) for each 4-digit cip code (degree code)
+    #df_score_ipeds %>% count(cipcode)
+    df_score_ipeds %>% filter(cipcode=='4407') %>% count(cipcode) # social work
+  
+##### create data frame that only contains observations for MAs in social work;     
+    #filter(cipcode=='4407')
+    
+  df_socialwork <- df_score_ipeds %>% 
+    filter(cipcode=='4407') %>%
+    # remove observations with missing values of cost of attendance (better for teaching concepts)
+    filter(!is.na(coa_grad_res))
+
+  df_socialwork %>% glimpse()
+
+  # investigate data structure  
+    # one observation per opeid6
+    df_socialwork %>% group_by(opeid6) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+    
+    # also, one observation per unitid
+    df_socialwork %>% group_by(unitid) %>% summarise(n_per_key=n()) %>% ungroup() %>% count(n_per_key)
+
+    
+##### create data frame that only contains observations for MAs in business
+  
+  #particularly the degree "Business Administration, Management and Operations", which is associated with general MBA programs
+    
+#df_score_ipeds %>% filter(cipdig2=="52") %>% count(cipcode)
+#df_score_ipeds %>% filter(cipdig2=="52") %>% count(cipdesc)
+
+  df_mba <- df_score_ipeds %>% 
+    filter(cipcode=='5202') %>%
+    # remove observations with missing values of cost of attendance (better for teaching concepts)
+    filter(!is.na(coa_grad_res))    
+
+df_mba %>% glimpse()
+
+# create version of data frame df_mba that turns class=labelled variables to factor variables
+  df_mba_fac <- as_factor(df_mba, only_labelled = TRUE)
+
+# save as RDS
+  #save(df_mba_fac, file = "../../data/college_scorecard/output_data/df_debt_earn_mba.Rdata")  
 ```
 
 
 ## ELS:2002 data
+
+<br>
+
+The Educational Longitudinal Study (ELS) of 2002, referred to as ELS:2002
+
+- Nationally representative, longitudinal survey of US 10th graders in 2002, followed them from 2002 to 2013
+- Created by the National Center for Education Statistics, a branch of the U.S. Department of Education
+- [LINK](https://nces.ed.gov/surveys/els2002/) to ELS:2002 website
+- [LINK](https://nces.ed.gov/OnlineCodebook) to the NCES "Online Codebook"  website, which contains "public-use" versions of ELS datasets and detailed information about all variables
+  - variables that could potentially be used to identify ELS survey respondents are "suppressed" from public-use datasets
+  - these variables are present in "restricted" versions of ELS datasets
+
+  
+<br>  
 
 For the ELS:2002 data, we will initially focus on sample of students who enrolled in postsecondary education at some point from 2004 to 2013 but who did not begin at a 4-year public or a 4-year private non-profit university  
 
@@ -205,21 +451,102 @@ useful to use `lookfor()` to query the dataset `df_els_stu_all` because this dat
   lookfor(data=df_els_stu, 'loan',labels = TRUE, ignore.case = TRUE, details = TRUE)
 ```
 
-# OLS Assumptions
+## Example research questions
 
-## Bias and efficiency
+For the multivariate regression lecture, we will focus on using multivariate regression to answer *causal* research questions that follow the form "what is the effect of $X$ on $Y$?"
 
-Efficiency, also called "precision"
+<br>
+
+We will answer one research question that uses experimental data from the Tennessee STAR Experiment and also research questions that use observational data from ELS:2002
+
+1. [experimental design] What is the effect of being in a small class size ($X_i=1$) vs. regular class size ($X_i=0$) on reading achievement score ($Y_i$) for kindergarten students?
+    - Using data from the Tennessee Student Teacher Achievement Ratio (STAR) experiment
+    - Kindergarten students randomly assigned to "small" [treatment] vs. "regular" [control] class size based on flip of a coin
+    - [LINK](https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/10766) to information and data on the Tennessee STAR project
+    - $X$ var is `treatment`; $Y$ var is `read`
+
+```{r}
+df_stark %>% group_by(treatment) %>% summarize(
+  mean_read = mean(read, na.rm = TRUE),
+)
+```
+
+<br><br>
+
+2. [observational design, categorical $X$] What is the effect of field of study ($X$) on earnings ($Y$) for respondents not currently enrolled in postsecondary education?
+    - answer the RQ separately for: certificate degrees; associate's degrees; for bachelor's degrees? 
+    - $Y$ is `f3ern2011`
+    - for certificate degrees: $X$ is `f3tzcrt1cip2`
+    - for associate's degrees: $X$ is `f3tzasc1cip2`
+    - for bachelor's degrees: $X$ is `f3tzbch1cip2 `
+
+```{r}
+# certificate degrees
+df_els_stu_fac %>% filter(!(f3tzcrt1cip2 %in% c('Missing','Item legitimate skip/NA')), f3a01d=='No') %>% 
+  group_by(f3tzcrt1cip2) %>% summarize(
+  mean_earn = mean(f3ern2011, na.rm = TRUE),
+  n_nonmissing = sum(!is.na(f3ern2011))
+)
+
+# associates degreees
+df_els_stu_fac %>% filter(!(f3tzasc1cip2 %in% c('Missing','Item legitimate skip/NA')), f3a01d=='No') %>% 
+  group_by(f3tzasc1cip2) %>% summarize(
+  mean_earn = mean(f3ern2011, na.rm = TRUE),
+  n_nonmissing = sum(!is.na(f3ern2011))
+)
+
+# bachelor's degreees
+df_els_stu_fac %>% filter(!(f3tzbch1cip2 %in% c('Missing','Item legitimate skip/NA')), f3a01d=='No') %>% 
+  group_by(f3tzbch1cip2) %>% summarize(
+  mean_earn = mean(f3ern2011, na.rm = TRUE),
+  n_nonmissing = sum(!is.na(f3ern2011))
+) %>% print(n=30)
+```
+<br><br>
+
+3. [observational design, continuous $X$] What is the effect of amount borrowed in student loans ($X$) on earnings ($Y$) for respondents not currently enrolled in postsecondary education
+    - $X$ var is `f3totloan`; $Y$ var is `f3ern2011`
+    - sample: `f3a01d=='No'`
+
+
+```{r}
+df_els_stu_fac %>% filter(f3a01d=="No") %>%  ggplot(aes(x=f3totloan, y=f3ern2011)) + geom_point() + stat_smooth(method = 'lm')
+
+summary(lm(formula = f3ern2011 ~ f3totloan, data = df_els_stu %>% filter(f3a01d==0)))
+```
+
+<br>
+<br>
+Why are we using test scores and earnings as dependent variables?
+
+- Ordinary Least Squares (OLS) multivariate regression assumes continuous dependent variable; regression models with categorical dependent variables are a bit more difficult to interpret
+- But in later weeks, we may introduce the "linear probability model," which will enable us to model dichotomous (two-category) dependent variables (e.g., 0/1 did student graduate)
+
+
+
+
+
+# Bias and efficiency
+
+Recall that the fundamental goal of inferential statistics is to make statements about **population parameters** by using **estimators** to calculate **point estimates** from sample data
+<br>
+
 
 - Desirable properties of our point estimates (e.g. $\hat{\beta}$ or $\bar{Y}$)
   - Efficient
   - Unbiased
-- __Efficiency__
-  - Definition: how close your point estimate(s) is to the population parameter
-  - Standard Error: on average, how far away is a point estimate from one random sample from the value of the population parameter
-  - _Therefore_, an efficient point estimate is one with a low standard error (in other words, the sampling distribution of $\beta_1$ has low variance or is "tight" around the population parameter)
+  
+  
+__Efficiency__ (also called "precision")
+
+- Definition: how close your point estimate(s) is to the population parameter
+- Standard Error: on average, how far away is a point estimate from one random sample from the value of the population parameter
+- _Therefore_, an efficient point estimate is one with a low standard error (in other words, the sampling distribution of $\beta_1$ has low variance or is "tight" around the population parameter)
+  - often, the easiest way to increase efficiency (decrease standard errors) is to increase sample size
   
 ![](precision.png)
+
+<br><br>
 
 __Bias__
 
@@ -229,37 +556,461 @@ __Bias__
   - Estimate of population parameter is biased because you fail to take a random sample
   - Example: goal is to estimate high school graduation rate; take a random sample of 10th graders and see if they graduate within three years.
 - _Omitted variable bias_:
-  - Bias in estimate of $\beta_1$ due to omitting necessary "control" variables in your regression model
-  
+  - Bias in estimate of $\beta_1$ due to omitting necessary "control" variables in your regression model; we will discuss later in lecture
+
+In the picture below: 
+
+- imagine that vertical red line is the value of the population parameter
+- the blue curve represents the sampling distribution from an unbiased estimator, which is centered at the value of the population parameter
+- the red dotted curve is the sampling distribution from an unbiased estimator (e.g., if you used sample mode as the estimator for population mean)
+
 ![](bias.png)
+
+<br><br>
 
 Picture of Bias and Efficiency (or "Precision")
 
 ![](bias_efficiency.png)
 
 
+# OLS Assumptions
+
+<br><br>
+
+OLS assumptions
+
+1. Conditional independence assumption
+    - (necessary to make this assumption if we are trying to estimate causal effects)
+2. ($X_i$, $Y_i$), $i=1, ...n$ are independently and identically distributed (i.i.d)
+3. Large outliers are unlikely
+4. Homoskedasticity
+
+<br>
+
+- If these assumptions hold:
+  - Then our OLS estimators, $\hat{\beta_0}$, $\hat{\beta_1}$...$\hat{\beta_k}$, have normal distributions in large samples
+  - And because they have normal distributions, we can use $\hat{\beta_0}$, $\hat{\beta_1}$...$\hat{\beta_k}$, to test hypothesess about the population parameters $\beta_0$,  $\beta_1$...$\beta_k$
+- If these assumptions are violated:
+  - We produced inefficeint and biased estimates, $\hat{\beta_0}$ and $\hat{\beta_1}$, of the population parameters $\beta_0$ and $\beta_1$
+  
+<!-- ### First OLS Assumption (Review) -->
+
+<!-- 1. __The conditional assumption of $u_i$ given $X_i$ has a mean a zero__ -->
+<!-- - What does this mean? -->
+<!--   - The independent variable $X_i$ is unrelated to all variables that were not included in the model (i.e., $u_i$) -->
+<!--   - If we violate this assumption, we produce a biased estimate! -->
+<!--   - What's a biased estimate? Consistenly overestimating or underestimating population parameter! [remember Lec 9?] -->
+<!--   - If $u_i$ given $X_i$ has a mean a zero = our predictions do not systematically over- or under-estimate, thus balance out to zero = no bias!  -->
+<!-- - We learned "simple regression" (i.e., one independent variable of interest) has a major flaw: -->
+<!--   - We ignore other "determinants" (i.e., control variables) of the dependent variable that correlate with our one independent variable of interest -->
+<!--   - Remember that  other "determinants" or "other variables that impact the dependent" variable that are not in our model are collected in the residual term $u_i$, which we have thus far *assumed* to be unrelated with the independent variable of interest -->
+<!--   - If we exclude these other determinants that are related to our independent variable of interest; we introduce estimation bias via an omitted variable! -->
+<!-- - For __omitted variable bias__ to occur, the omitted variable “Z” must satisfy two conditions: -->
+<!--     - (1) Z affects value of Y (i.e. Z is part of $u_i$); (2) *and* Z has a relationship with $X$ -->
+<!--     - What happens when you omit a "Z" variable from your model? It is absorbed by the residual term! -->
+<!--     - We know that the "Z" variable omitted from the model is correlated to our independent variable of interest, which now means that our _X is not uncorrelated to the residual = violation of OLS 1!_ -->
+
+<!-- ### First OLS Assumption Graphically. -->
+
+<!-- - Practical Example: What is the effect number of years of schooling on income? -->
+<!-- - Show Graphically on doc camera -->
+
+
+
+<!-- ### First OLS Assumption cont -->
+<!-- - Practical Example: What is the effect number of years of schooling on income? -->
+<!-- - $Y_i = \beta_0 + \beta_1X_i +u_1$ -->
+<!-- - There are lots of other factors that would influence income besides years of schooling! -->
+<!--   -  If we don't include them in the regression as control variables, they are thus relegated to the $u_1$ and we assume they are not systematically related to years of schooling. -->
+<!--   - If this excluded variable meets both conditions of omitted variable bias (Z affects Y and Z is related to X); then there is a systematic relationship and should not be in the residual!  -->
+<!--   - __By keeping it in the residual (i.e., excluding it from the model), we violate OLS Assumption 1 and produce a biased estimate!__ -->
+
+<!-- <br> -->
+<!-- __In practice, OLS Assumption 1 is the most difficult to prove and the most important for econometrics research!__ -->
+
+<!-- - We can draw on the conditional independence assumption: -->
+<!--   - Once we include relevant control variables; there are no omitted variables that affect Y and have a systematic relationship with X -->
+<!--   - Meaning, if we satisfy the conditional independent assumption through control variables, then multiple regression is just as good as random assignment experiment (the gold standard of program evaluation!) -->
+<!--   - But remember this is hard to do "in practice" via observational data; so we get "as close as possible" and acknowledge limitations! -->
+
+
 ## Assumption 2: i.i.d.
 
-text
+2. __($X_i$, $Y_i$), $i=1, ...n$ are independently and identically distributed (i.i.d)__
+
+<br>
+
+ What does this assumption mean?
+ 
+ - This assumption is about sampling
+ - This assumption has two parts:
+   - _($X_i$, $Y_i$), $i=1, ...n$ are independently distributed_
+  - _($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
+- We will explain each part separately  
+    
+
+<br>
+
+_($X_i$, $Y_i$), $i=1, ...n$ are independently distributed_
+
+- In words: Knowing that observation i takes on particular values for X and Y tells you nothing about the probability of the next observation taking on particular values for X and Y
+- When is assumption of independently distributed violated? 
+  - Longitudinal data: knowing a data point in one time period tells you something about a data point in another time period. 
+    - Ex: Amount of \$ student received via a Federal Pell Grant freshman year at UA probably tells you something about how much \$ student received via a Federal Pell Grant sophmore year at UA. Why? because Pell status is not likely to dramatically change from one year to another!
+  - Hierarchical data: 
+    - Ex: Students are nested within classrooms. Knowing the reading test score of one student in a classroom is probably correlated with reading test score for another student in the same classroom.
+- This assumption is violated for both the Tennessee STAR and the ELS:2002 datasets we are working with for this lecture
+  - Tennessee STAR: students are nested in classrooms
+    - if students $i=1$ and $i=2$ are in the same classroom and we know the outcome for student $i=1$, then this information helps us predict outcome for student $i=2$ because scores within classrooms are likely to be positively correlated
+  - ELS:2002 data
+    - the sampling design was to randomly pick high schools, and then randomly sample about `30` students within each high school
+- What happens if this assumption is violated?
+  - Our standard errors are incorrect, likely to be too small (downward biase)
+  - Since hypothesis testing about $\hat{\beta}_1$ is $\text{point_estimate}/SE(\text{point_estimate})$, standard errors that are smaller than they should be will cause us to reject $H_0: \hat{\beta}_1=0$ when we should not
+- For this course, you do not need to worry about this assumption  
+- How to overcome violations of this assumption:
+  - "cluster" your standard errors to account for nested structure of data (e.g., standard errors clustered at the high-school level)
+    - this approach calculates standard errors that are "robust" to violations of the assumption; that is, you can use these standard errors whether the assumption is violated or not
+  - You don't need to take a separate course on "hierarchical linear regression"
+    - this approach tries to model the structure of residuals, rather than calculating standard errors that are robust to violations of the assumption
+    - modeling the structure of residuals makes assumptions about distribution of residuals; avoid making unnecessary assumptions whenever possible
+
+  
+
+<br>
+
+_($X_i$, $Y_i$), $i=1, ...n$ are identically distributed_
+
+- Prior to choosing sample of observations for the population, the probability distribution (i.e., the likelihood that $Y_i$ takes on certain values) is the same for all observations
+- This is always true if you take a random sample!
+  - One randomly selected observation has the same probability of taking on a certain value of $Y_i$ as another randomly selected observation 
+- When is the assumption of identically distributed violated?
+  - Sampling bias:
+    - Ex: You want to investigate probability of being tardy to college lectures and take a sample of students living on campus. Sampling bias: you did not include commuter students. If you were to randomly select a student living on campus, they are not likely to have the same probability of being tardy to lecture than a randomly selected commuter student. 
+- This assumption was badly violated in datasets where modeled the relationship between cost of attendance ($X$) and institution-level student debt ($Y$) or institution-level student earnings ($Y$)
+  - Department of education provided debt data and earnings data only for programs with high enrollment (to protect student anonymity)
+  - So we don't have a random sample of degree programs; we only have degree programs from high-enrollment programs; these programs are likely not representative of the population
+- Why is sampling bias bad?
+  - we our sample is not representative of the population, then point estimates of population parameters calculated from this sample is likely to be systematically wrong (biased)
+- Don't need to worry about violations of this part of the assumption for this class
+
+
 
 ## Assumption 3: outliers
 
-text
+<br>
+
+3. Large outliers are unlikely
+
+- Outliers: observations with values of $X_i$ and $Y_i$ that are outside the "usual" range of the data
+- Outliers will affect your regression coefficients! 
+- Why? Because outliers will shift our OLS regression line!
+- Outliers are more likely to substantively affect results if your sample size is small
+
+<br>
+
+![](outliers.jpg){width=85%}
+<br>
+
+In the below graph of the relationship between cost of attendance ($X$) and institution-level student debt ($Y$) for MA programs in social work, we may be concerned that the high value of debt for the USC observation might affect or results
+```{r}
+df_socialwork %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm')
+```
+
+<br><br>
+
+- Stock and Watson have a very technical, mathematical definition of when this likely; but in practice this is about really investigating/knowing your data
+
+- In practice, if you do find outliers:
+  - Be sure the data is entered correctly and cleaned
+    - Ex: Survey data codes missing data as very unusual values (-99, -99, 99, 98)
+  - Sometimes outliers belong in the data!
+    - I avoid removing observations just because they have a high value; this introduces sampling bias
+  - If they belong; can use natural log of the variable [not covered in this class]
+    - Ex: All money variables are usually converted to their natural log in econometrics or education research (e.g., state appropriations, tuition revenue, household income)
+
+
 
 ## Assumption 4: homoskedasticity
 
-text
 
-## Assumption 1: conditional independence assumption
+There is "generally" a fourth OLS assumption, but Stock and Watson do not list it in our textbook
 
-text
-
-# Omitted variable bias
-
-
-# Independent variables for causal effects
-
-text
-
+- I'll tell you why after we understand what it generally assumes...
   
+  
+OLS Assumption #4: The distribution of the residuals has constant variance (homoscedasticity)
+
+- Homoskedasticity 
+  - The distribution (the variance!) of the residuals, $u_i = Y_i - \hat{Y_i}$, is constant for all observations. That is, it does not change for different values of X
+  - Homo-skedasticity = "equal" or "same" variances
+- Heteroskedasticity
+  - The distribution (the variance!) of the residuals, $u_i = Y_i - \hat{Y_i}$, is not constant for all observations. That is, it does change/differs for different values of X
+  - Hetero-skedasticity = "unequal" or "different" variances
+
+<br>
+
+Homoskedasticity and Heteroskedasticity shown graphically
+
+- Practical example: What is the effect of student-teacher ratio on test scores? [Stock and Watson Example]
+
+![](heteroskedasticity_str.png)
+
+<br>
+
+In the below graph of the relationship between cost of attendance ($X$) and institution-level student debt ($Y$) for MA programs in business (MBA), we may be concerned that the high value of debt for the USC observation might affect or results
+
+- the black dots represent the actual values values of student debt ($Y_i$)
+- Blue line represents predicted value of debt ($\hat{Y}_i$) for an institution with a particular value of cost of attendance ($X_i$)
+- The residual $\hat{u}_i$ ($\hat{u}_i = Y_i - \hat{Y}_i$) represents how far off our prediction is for a particular observation $i$
+- The "distribution" of the residual gets at how far off our predictions tend to be
+- We could calculate this distribution separately for different values of $X$
+- But visually, we can see that predicted value of debt ($\hat{Y}_i$) tend to be closer to actual values of debt $Y_i$ for lower values of cost of attendance
+  - therefore, the distribution of residuals differs across values of $X$
+  - therefore, these residuals are heteroskedastic rather than homoskedastic
+```{r}
+df_mba %>%  ggplot(aes(x=coa_grad_res, y=debt_all_stgp_eval_mean)) + geom_point() + stat_smooth(method = 'lm')
+```
+
+<!-- ### Fourth OLS Assumption cont. -->
+
+<!-- - Practical example: What is the effect of years of education on hourly wages? [Stock and Watson Example] -->
+
+<!-- ![](heteroskedasticity_wages.png) -->
+
+<br>
+
+- Why is homoskedasticity/heteroskedasticity important?
+  - Because our formula for calculating SE($\hat{\beta_1}$) changes based on homoskedastic or heteroskedastic residuals!
+  - Our standard error measures how far our $\hat{\beta_1}$ is likely to be from $\beta_1$. In other words, it is used to calculate our t-value in hypothesis testing to determine statistical significance!
+- In other statistics classes (non-econometrics), homoskedasticity is the fourth core assumption
+  - Stock and Watson only discuss the first three assumptions as core "OLS Assumptions"
+- Why? Stock and Watson say:
+  - It is NEARLY IMPOSSIBLE to assume homoskedasticity; we almost always violate this assumption!
+  - But the solution to overcome this assumption is easy!
+    - We can just calculate heteroskedastic standard errors
+    - In other words, standard errors that are __robust__ to violations of homoskedasticity
+- Stock and Watson say: 
+  - Rather than make homoskedasticity a core OLS Assumption and nearly always violate it;
+  - ALWAYS CALCULATE ROBUST STANDARD ERRORS AND DO NOT MAKE HOMOSKEDASTICITY A CORE OLS ASSUMPTION
+  - Show in R
+
+<br><br>
+ADD TEXT/CODE CHUNK SHOWING HOW TO CALCULATE ROBUST STANDARD ERRORS
+```{r}
+df_els_stu_fac %>% filter(f3a01d=="No") %>%  ggplot(aes(x=f3totloan, y=f3ern2011)) + geom_point() + stat_smooth(method = 'lm')
+
+mod_loan_earn <- lm(formula = f3ern2011 ~ f3totloan, data = df_els_stu %>% filter(f3a01d==0))
+summary(mod_loan_earn)
+
+summary(mod_loan_earn, robust = TRUE)
+```
+
+```{r, eval = FALSE}
+   # import the robust SE function 
+   url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
+   eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
+        envir=.GlobalEnv) 
+```
+
+
+
+# Conditional independence assumption
+
+Prior to assumptions: define causal effect
+
+- Asking causal inference research questions
+  - "What is the effect of X on Y"
+  - Goal: to estimate the "causal effect" of X on Y
+  
+<br>
+
+- What is a "causal effect"?
+  - Stock and Watson define it as "what would happen in a randomized experiment"
+  - Causal effect is the average effect of being in the "treatment" group as opposed to the "control" group on the value of Y if people were randomly assigned to groups
+
+<br>
+
+- How do you know if you are asking a causal inference research question?
+  - As yourself, what is the relevant randomized experiment?
+  - That is, how would your question be designed as a randomized experiment?
+  
+Today's example & defining causal effect
+
+- RQ: What is the effect of federal financial aid on students' access to college (Cellini, 2008)?
+  - Is this a causal inference research question?
+  - What is the relevant experiment?
+  - Are students randomly assigned to receive federal financial aid?
+- Experimental data vs. Observational data
+  - Experimental data: people randomly assigned to “treatment” vs. “control” group
+- Cellini (2008): Multivariate regression can be used to deal with the problem that the "treatment" (in this case receiving federal financial aid) wasn't randomized in order to assess the effect of X on Y (receiving financial aid on college access).
+ - We do our best to recreate experimental conditions for observational data by minimizing omitted variable bias (more on this later)!
+
+## OLS Assumption 1 (mathematically)
+
+- Population linear regression model
+  - $Y_i = \beta_0 + \beta_1 X_i+ u_i$
+  - Y= years of schooling (12+ = attended college), X= 0/1 received financial aid, $u_i$ = all other variables that affect Y but were not included in the model
+- OLS Assumption 1 (in words)
+  - the independent variable $X_i$ is unrelated to the "other variables" not included in the model, $u_i$
+- OLS Assumption 1 (mathematically)
+  - $E(u_i|X_i)=0$; the expected value of $u_i$, given any value of $X_i$, equals zero
+  - In other words:
+    - Pretend that $u_i$ consists of only one variable
+    - OLS assumption 1 states that the mean value of the omitted variable is equal to zero no matter the value of variable $X_i$
+    
+
+OLS Assumption 1: $E(u_i|X_i)=0$
+
+- __Cellini 2008__: Assumption is *always* satisfied in random assignment experiment
+  - Effect of financial aid (X) on college access
+  - X=0 (did not receive financial aid); X=1 (received financial aid)
+  - We randomly assign students to receive versus not receive financial aid
+  - Other factors $u_i$ (e.g., academic achievement, socioeconomic status) are *by construction* unrelated to values of X because we randomly assigned students to X=1 or X=0
+- __Cellini 2008__: in observational studies (like analyzing what is the effect of financial aid on student access to college), this assumption is usually violated!
+  - For example, Receiving financial aid (X) is likely correlated with omitted variables, $u_i$ that have an effect on Y (e.g., academic achievement, socioeconomic status)
+  
+## OLS Assumption 1 in practice
+
+- Population linear regression model
+  - $Y_i = \beta_0 + \beta_1 X_i+ u_i$
+  - Y= years of schooling (12+ = attended college), X= 0/1 received financial aid, $u_i$ = all other variables that affect Y but were not included in the model
+- OLS Assumption 1 (in words)
+  - the independent variable $X_i$ is unrelated to the "other variables" not included in the model, $u_i$
+- In Practice: 
+  - Are there any variables that are not in your model that... 
+  - **(1) Affect Y and (2) have a relationship (e.g. correlated) with X**?
+  - If so, OLS Assumption 1 is violated
+- Can you think of another omitted variable that violates OLS Assumption 1 for this RQ?
+
+<br>
+
+No relationship" vs "No correlation"
+
+  - $E(u_i|X_i)=0$ implies that $u_i$ and $X_i$ have no relationship (includes linear and non-linear)
+  - $Corr(u_i|X_i)=0$ implies that $u_i$ and $X_i$ have no *linear relationship*
+    - e.g., Pearson's R correlation coefficient 
+- So correlation might be zero, but $E(u_i|X_i) \ne 0$ due to the existence of a non-linear relationship
+
+
+<!-- ## Correlation vs Causation -->
+
+<!-- - $Y_i = \beta_0 + \beta_1X_i + u_i$ -->
+<!--   - Y= test score; X= class size -->
+<!-- - Remember that $u_i$ includes all variables that we think have a *causal effect* on Y -->
+<!--   - Variables that do not affect $Y_i$ are not in $u_i$ -->
+<!--   - Variables that are correlated with $X_i$, but do not affect Y do not belong in $u_i$ -->
+<!-- - Correlation does not equal causation -->
+<!--    - Correlation: strength of relationship between two variables  -->
+<!--    - Causation: The effect of X on Y if we randomly assign observations to different values of X -->
+
+# Omitted Variable Bias
+
+
+ Introduction to Omitted Variable Bias
+ 
+- $Y_i = \beta_0 + \beta_1X_i + u_i$; Y=test score; X=class size 
+  - We want to know the *causal effect* of X on Y
+  
+<br>
+
+- Bias (general): when $\hat{\beta_1}$ consistently underestimates $\beta_1$ or overestimates $\beta_1$
+
+<br>
+- __Omitted Variable Bias__: bias in $\hat{\beta_1}$ due to variables being omitted from the model
+
+<br>
+
+
+- __For omitted variable bias to occur, the omitted variable “Z” must satisfy two conditions__:
+     - (1) Z affects value of Y (i.e. Z is part of $u_i$)
+     - (2) *and* Z has a relationship with $X$
+
+<br>     
+
+Omitted Variable Bias Example
+
+- $Y_i = \beta_0 + \beta_1X_i + u_i$
+  - Y= average class reading test score
+  - X= class size
+  - Z= % of ELL students (omitted from model)
+- For omitted variable bias to occur, the omitted variable “Z” must satisfy two conditions:
+  - (1) Z affects value of Y (i.e. Z is part of $u_i$); 
+  - (2) **and** Z has a relationship with $X$ 
+- How does % of ELL students satisfy criteria of omitted variable bias?
+  - (1) % of ELL affects value of average reading test scores (ELL students are likley to score at lower reading levels than native english speakers); 
+  - (2) **and** % of ELL students has a relationship with class size (policy: greater proportion of ELL students require smaller class sizes) 
+- Would omitting Z = "time of test administered" result in omitted variable bias?
+- Would omitting Z = "teacher's years of experience" result in omitted variable bias?
+
+<br>
+
+How to check for omitted variable bias
+
+- Does Z affect Y?
+  - Ask yourself if it is plausible that omitted variable Z affects Y
+- Does Z have a relationship with X?
+  - Ask yourself if it is plausible that omitted variable Z has some relationship with X
+  - Logical argument or diagnostic tests (e.g., `df %>% summarise(cor(X, Z, use = "complete.obs"`)))
+- In practice, diagnostic tests not used as much as logical arguments/literature review
+  - Correlation only picks up linear relationships, omitted variable bias includes non-linear relationships
+  - Relationship between X and Z is about “conditional relationship,” after controlling for other covariates
+- Sometimes you don’t have a good measure of omitted variable Z
+
+
+## Group Exercise
+
+For each research question below, identify two "hypothetical" variables that would result in a violation of OLS Assumption 1 (i.e., they meet the two conditions of Omitted Variable Bias)
+
+- Be ready to explain how each variable meets the two conditions!
+
+<br>
+(1) Group 1: What is the effect of participating in a fraternity/sorority (X) on GPA (Y)?
+
+(2) Group 2: What is the effect of participating in Head Start (X) on long-term academic achievement (Y)?
+
+
+## Independent variables for causal effects
+
+<br>
+
+Research questions that work and don't work
+
+- Fundamental requirements:
+  - Must be feasible for your independent variable to be randomly assigned in a random experiment
+  - Your dependent variable (Y) needs to be continuous or 0/1
+  - Your dependent variable (Y) must be measured at a time after your independent variable (X) occurs
+  
+<br>  
+- Easiest independent variables that meet this requirement: participation in a program/intervention
+  - Federal programs: TRIO, Head Start
+  - Interventions: dropout prevention program, college prep, financial literary programs, using "services" like Think Tank, Cultural Centers, etc.
+  - Others: Student Teacher Ratio, type of sanction  (diversion vs community service)
+  
+<br>
+Avoid:
+
+- Independent variables that can't be randomly assigned or are hard to measure
+  - Attitudes or ideologies
+  - Culture
+  - Leadership Style
+  - Personal demographics 
+
+<br>
+
+Exception to using personal demographics as X
+
+Generally OK to use personal demographics as X when Y variable is determined by someone else
+
+- Effect of racial identity (X) on the probability of receiving a reply to an admissions inquiry (Y)?
+- Effect of racial identity (X) on probability of receiving a call back job interview (Y)?
+- Effect of gender (X) on teacher course evaluations (Y)?
+  
+
+<br>
+But these types of questions require really strong control variables! 
+
+- Will cover this more once we cover omitted variable bias
+
+
 # References
