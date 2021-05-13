@@ -68,14 +68,16 @@ library(labelled)
 
   
 # Look for variables based on variable names and variable labels
-  lookfor(data=df_els_stu_all, 'real',labels = TRUE, ignore.case = TRUE, details = TRUE)
+  #lookfor(data=df_els_stu_all, 'real',labels = TRUE, ignore.case = TRUE, details = TRUE)
   lookfor(data=df_els_stu_all, 'ps1start',labels = TRUE, ignore.case = TRUE, details = TRUE)
   
   
 # create vector of variable names to keep, and create upper case and lower case versions of this vector  
   keepvars <- c('stu_id','sch_id','strat_id','psu','f3univ','g10cohrt','f1pared','byincome','bystexp','byparasp','bytxstat','bypqstat','bytxmstd',
                 'bytxrstd','bysctrl','byurban','byregion','byfcomp','bysibhom','f1sex','f1race','f1stlang','f1homlng','f1mothed','f1fathed','f1ses1',
-                'f1ses1qu','f1stexp','f1txmstd','f1rgpp2','f1s24cc','f1s24bc','f2everdo','f2dostat','f2c25a','f2c30a',
+                'f1ses1qu','f1stexp','f1txmstd','f1rgpp2','f1s24cc','f1s24bc','f2everdo','f2dostat',
+                'F2EVRATT','F2PS1','F2PS1LVL','F2PS1CTR','F2PS1SEC','F2PS1SLC',
+                'f2rtype','f2c01','f2c24_p','f2c25a','f2c25a','f2c29_p','f2c30a',
                 'F3HSSTAT','F3HSCPDR','f3edstat','f3a01d',
                 'F3EVRATT','F3EDSTAT','F3PS1START','F3PS1LVL','F3PS1CTR','F3PS1SEC','F3PS1SLC','F3PS1OUT','F3PS1RETAIN','F3PSTIMING',
                 'f3tztranresp','f3tzcoverage',
@@ -84,6 +86,8 @@ library(labelled)
                 'f3tzanydegre','f3tzhighdeg','F3TZCERT1DT','F3TZCRT1CIP2','F3TZASOC1DT','F3TZASC1CIP2','f3tzbach1dt','f3tzbch1cip2',
                 'f3stloanamt','f3stloanevr','f3stloanpay','F3ERN2011')
               # drop these vars cuz suppressed "f3tzps1ctr"   "f3tzps1lvl" ;
+
+
 
   keepvars_lower <- tolower(keepvars)
   keepvars_lower
@@ -114,10 +118,71 @@ df_els_stu <- df_els_stu_all %>%
   filter(f3tztranresp==1) %>%
   # keep if f3tzanydegre is not missing []
   filter(f3tzanydegre!=-9) %>%
-  # create continuous measure of loans
+  # create new variables
   mutate(
-    f3totloan = as.numeric(if_else(f3stloanevr==1,f3stloanamt,0))
-    )
+    # create continuous measure of loans
+    f3totloan = as.numeric(if_else(f3stloanevr==1,f3stloanamt,0)),
+    # create 0/1 measure of whether student enrolled in postsecondary education in 04-05
+    f2enroll0405 = case_when(
+      f2c24_p %in% c(-3) ~ 0, # note: f2c24_p applies to: Second follow-up respondents who were enrolled at a post-secondary institution during the 04-05 school year.
+      f2c24_p %in% c(0,1,2,3,4) ~ 1
+    ),
+    # create 0/1 measure of whether student enrolled in postsecondary education in 05-06
+    f2enroll0506 = case_when(
+      f2c29_p %in% c(-3) ~ 0, # note: f2c29_p applies to: Second follow-up respondents who were enrolled at a post-secondary institution during the 05-06 school year.
+      f2c29_p %in% c(0,1,2,3,4) ~ 1
+    ),
+    # create 0/1 measure of whether students Held internship or co-op job while enrolled in 2004-2005 school year
+      # non-missing for students enrolled in 2004-05 school year
+      # cross-checks for var
+        #df_els_stu %>% count(f2enroll0405,f2intern0405)
+        #df_els_stu %>% filter(f2enroll0405==1) %>% count(f2c25a,f2intern0405)    
+    f2intern0405 = case_when(
+      f2enroll0405==1 & f2c25a %in% c(-3,0) ~ 0, # enrolled, intern legit skip (so no job) >> 0; enrolled, no internship (so yes job, but no internship) >> 0
+      f2enroll0405==1 & f2c25a %in% c(1) ~ 1 # enrolled, no internship (so yes job, but no internship) >> 1
+    ),
+    # create 0/1 measure of whether students Held internship or co-op job while enrolled in 2005-2006 school year
+      # non-missing for students enrolled in 2005-06 school year
+      # cross-checks for var
+        #df_els_stu %>% count(f2enroll0506,f2intern0506)
+        #df_els_stu %>% filter(f2enroll0506==1) %>% count(f2c30a,f2enroll0506)    
+    f2intern0506 = case_when(
+      f2enroll0506==1 & f2c30a %in% c(-3,0) ~ 0, # enrolled, intern legit skip (so no job) >> 0; enrolled, no internship (so yes job, but no internship) >> 0
+      f2enroll0506==1 & f2c30a %in% c(1) ~ 1 # enrolled, no internship (so yes job, but no internship) >> 1
+    ),
+    # create continuous measure of base year family income
+    parent_income = case_when(
+      byincome ==1 ~ 0, # 1  1 [None]
+      byincome ==2 ~ 500, # 2  2 [$1,000 or less]
+      byincome ==3 ~ 3000, # 3  3 [$1,001-$5,000]
+      byincome ==4 ~ 7500, # 4  4 [$5,001-$10,000]
+      byincome ==5 ~ 12500, # 5  5 [$10,001-$15,000]
+      byincome ==6 ~ 17500, # 6  6 [$15,001-$20,000]
+      byincome ==7 ~ 22500, # 7  7 [$20,001-$25,000]
+      byincome ==8 ~ 30000, # 8  8 [$25,001-$35,000]
+      byincome ==9 ~ 32500, # 9  9 [$35,001-$50,000]
+      byincome ==10 ~ 62500, #10 10 [$50,001-$75,000]
+      byincome ==11 ~ 87500, #11 11 [$75,001-$100,000]
+      byincome ==12 ~ 150000, #12 12 [$100,001-$200,000]
+      byincome ==13 ~ 250000, #13 13 [$200,001 or more]
+    )    
+  ) %>% 
+  # add value labels to categorical variables you created
+    set_value_labels(
+      f2enroll0405 = c('no' = 0,'yes' = 1),
+      f2enroll0506 = c('no' = 0,'yes' = 1),
+      f2intern0405 = c('no' = 0,'yes' = 1),
+      f2intern0506 = c('no' = 0,'yes' = 1)
+      ) 
+    
+# add variable labels
+    var_label(df_els_stu[['f3totloan']]) <- 'total loans taken out to pay for postsecondary education as of f3 (2013)'
+    var_label(df_els_stu[['f2enroll0405']]) <- '0/1 (no/yes) enrolled in 2004-05, based on student survey follow-up 2'
+    var_label(df_els_stu[['f2enroll0506']]) <- '0/1 (no/yes) enrolled in 2005-06, based on student survey follow-up 2'
+    var_label(df_els_stu[['f2intern0405']]) <- '0/1 (no/yes) held an internship or co-op in 2004-05; NA if not enrolled in postsecondary education in 2004-05'
+    var_label(df_els_stu[['f2intern0506']]) <- '0/1 (no/yes) held an internship or co-op in 2005-06; NA if not enrolled in postsecondary education in 2005-06'
+    var_label(df_els_stu[['parent_income']]) <- 'continuous measure of base year parental household income, calculated from categorical variable byincome'
+
       
 
 # save file to disk
@@ -128,27 +193,6 @@ df_els_stu <- df_els_stu_all %>%
 #load(file = file.path(star_dir, 'star_panel_data.RData'))
 
 #load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/star/star_panel_data.RData'))
-
-#############
-#############
-
-# potential outcome vars
-  # earnings
-  # debt
-  # total loans
-
-# potential indepenent vars
-  # internship (sophomore year)
-  # institutional control
-  # highest degree
-  # 
-
-# potential samples
-  # people with an MA
-
-
-
-
 
 ## -----------------------------------------------------------------------------
 ## END SCRIPT

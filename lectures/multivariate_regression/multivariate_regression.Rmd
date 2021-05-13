@@ -78,7 +78,7 @@ This lecture will utilize data from two sources:
 
 ```{r}
 # uncomment below line to remove all objects
-  rm(list = ls())
+  #rm(list = ls())
 
 # Libraries
 
@@ -126,25 +126,7 @@ df_stark %>% glimpse()
 
 rm(df_star_panel) # comment this line out if you want to keep data frame df_star_panel
 
-##########
-########## ELS:2002 data
-##########
 
-# RUN SCRIPT THAT CREATES STUDENT-LEVEL DATA FRAME CONTAINING ALL VARIABLES AND CREATES DATA FRAME WITH A SUBSET OF VARIABLES
-
-  #NOTE: this script will take 30 seconds to a minute to run because loading a dataset w/ about 16,000 observations and 4,000 variables from a website
-
-  #source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/els/read_els_by_pets.R'))
-    source(file = file.path('.','..','..','scripts','els','read_els_by_pets.R'))
-      #list.files(path = file.path('.','..','..','scripts','els'))
-
-# Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables
-  df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
-  # convert continuous variables we know we want numeric back to numeric
-  for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011')) {
-    df_els_stu_fac[[v]] <- df_els_stu[[v]]  
-  }
-  
 ##########
 ########## RUN SCRIPT THAT CREATES USER DEFINED FUNCTIONS
 ##########
@@ -152,7 +134,7 @@ rm(df_star_panel) # comment this line out if you want to keep data frame df_star
 # source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/user_defined_functions/create_inference_functions.R'))
   
 
-  ##########
+##########
 ########## IPEDS
 ##########
 
@@ -391,6 +373,26 @@ df_mba %>% glimpse()
 
 # save as RDS
   #save(df_mba_fac, file = "../../data/college_scorecard/output_data/df_debt_earn_mba.Rdata")  
+  
+##########
+########## ELS:2002 data
+##########
+
+# RUN SCRIPT THAT CREATES STUDENT-LEVEL DATA FRAME CONTAINING ALL VARIABLES AND CREATES DATA FRAME WITH A SUBSET OF VARIABLES
+
+  #NOTE: this script will take 30 seconds to a minute to run because loading a dataset w/ about 16,000 observations and 4,000 variables from a website
+
+  source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/els/read_els_by_pets.R'))
+    #source(file = file.path('.','..','..','scripts','els','read_els_by_pets.R'))
+      #list.files(path = file.path('.','..','..','scripts','els'))
+
+# Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables
+  df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
+  # convert continuous variables we know we want numeric back to numeric
+  for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal')) {
+    df_els_stu_fac[[v]] <- df_els_stu[[v]]  
+  }
+
 ```
 
 
@@ -410,26 +412,42 @@ The Educational Longitudinal Study (ELS) of 2002, referred to as ELS:2002
   
 <br>  
 
-For the ELS:2002 data, we will initially focus on sample of students who enrolled in postsecondary education at some point from 2004 to 2013 but who did not begin at a 4-year public or a 4-year private non-profit university  
-
-- The instructors want your help in choosing variables of interest and sample of interest!
-
 ELS datasets we created
 
 - student-level data frame `df_els_stu_all` has all variables (about 4,000) and all observations (about 16,200 observations); one observation for each student
-- student-level data frame `df_els_stu` has a subset of variables; contains students who started postsecondary education at a 2-yr, less-than-2-yr, or a for-profit institution (and some other criteria)
+- student-level data frame `df_els_stu` has a subset of variables and a subset of observations
+  - sample is respondents who filled completed all waves of the survey; who attended postsecondary education at some point by 2012; and some other minor sample criteria around observations not being missing for certain variables
 - for both `df_els_stu_all` and `df_els_stu`, most categorical variables are `labelled` class variables
 - student-level data frame `df_els_stu_fac` is exact same as `df_els_stu` except categorical variables are `factor` class; categorical variables must be factor class when running regression models
 
 
-Investigate `df_els_stu`
-```{r}
+<br>  
+In the coming weeks, we want your help in identifying variables of interest and populations/samples of interest!
+<br>  
+
+Investigate `df_els_stu` (output not shown)
+```{r, include = FALSE}
 # variable names
 df_els_stu %>% glimpse()
 
 # variable labels
 df_els_stu %>% var_label()
 ```
+
+<br>  
+
+Investigate `df_els_stu_fac` (output not shown)
+```{r, include = FALSE}
+# variable names
+df_els_stu_fac %>% glimpse()
+
+# variable labels
+df_els_stu_fac %>% var_label()
+```
+
+
+<br>  
+
 Can use the `lookfor()` function from the `labelled` package to query which variables and variable labels contain certain words
 
 - syntax (with defaults):
@@ -446,7 +464,7 @@ useful to use `lookfor()` to query the dataset `df_els_stu_all` because this dat
   lookfor(data=df_els_stu_all, 'internship',labels = TRUE, ignore.case = TRUE, details = TRUE)
 
 
-# query data frame df_els_stu_all
+# query data frame df_els_stu
   lookfor(data=df_els_stu, 'debt',labels = TRUE, ignore.case = TRUE, details = TRUE)
   lookfor(data=df_els_stu, 'loan',labels = TRUE, ignore.case = TRUE, details = TRUE)
 ```
@@ -473,7 +491,26 @@ df_stark %>% group_by(treatment) %>% summarize(
 
 <br><br>
 
-2. [observational design, categorical $X$] What is the effect of field of study ($X$) on earnings ($Y$) for respondents not currently enrolled in postsecondary education?
+2. [observational design, categorical $X$] What is the effect of having an internship or co-op job ($X$) (in 2005-06) on 2011 earnings ($Y$)? [for students who were enrolled in postsecondary education in 2005-06]
+    - $Y$ is `f3ern2011`
+    - $X$ is `f2intern0506` (this would be sophomore year for students who graduated HS in spring 2004 and immediately entered postsecondary education)
+      - `f2intern0506==0`: no co-op/internship
+    - sample: `f2enroll0506=='yes'`
+    
+
+```{r}
+df_els_stu_fac %>% filter(f2enroll0506=='yes') %>% 
+  group_by(f2intern0506) %>% summarize(
+  mean_earn = mean(f3ern2011, na.rm = TRUE),
+  n_nonmissing = sum(!is.na(f3ern2011))
+)
+
+```
+    
+
+<br><br>
+
+3. [observational design, categorical $X$] What is the effect of field of study ($X$) on earnings ($Y$)? [for respondents not currently enrolled in postsecondary education]
     - answer the RQ separately for: certificate degrees; associate's degrees; for bachelor's degrees? 
     - $Y$ is `f3ern2011`
     - for certificate degrees: $X$ is `f3tzcrt1cip2`
@@ -504,7 +541,7 @@ df_els_stu_fac %>% filter(!(f3tzbch1cip2 %in% c('Missing','Item legitimate skip/
 ```
 <br><br>
 
-3. [observational design, continuous $X$] What is the effect of amount borrowed in student loans ($X$) on earnings ($Y$) for respondents not currently enrolled in postsecondary education
+4. [observational design, continuous $X$] What is the effect of amount borrowed in student loans ($X$) on earnings ($Y$) for respondents not currently enrolled in postsecondary education
     - $X$ var is `f3totloan`; $Y$ var is `f3ern2011`
     - sample: `f3a01d=='No'`
 
@@ -813,105 +850,143 @@ summary(mod_loan_earn, robust = TRUE)
         envir=.GlobalEnv) 
 ```
 
+# Conditional independence assumption (CIA)
 
+The __conditional independence assumption (CIA)__ is (the most important) assumption we need to satisfy when we are trying to answer *causal* research questions of the type "what is the effect of $X$ on $Y$?"
 
-# Conditional independence assumption
-
-Prior to assumptions: define causal effect
-
-- Asking causal inference research questions
-  - "What is the effect of X on Y"
-  - Goal: to estimate the "causal effect" of X on Y
-  
-<br>
-
-- What is a "causal effect"?
-  - Stock and Watson define it as "what would happen in a randomized experiment"
-  - Causal effect is the average effect of being in the "treatment" group as opposed to the "control" group on the value of Y if people were randomly assigned to groups
+- The conditional independence assumption goes by many other names (e.g., "unconfoundedness", "ignorability", "exogenous selection", etc.)
 
 <br>
 
-- How do you know if you are asking a causal inference research question?
-  - As yourself, what is the relevant randomized experiment?
-  - That is, how would your question be designed as a randomized experiment?
-  
-Today's example & defining causal effect
+To explain the conditional independence assumption, we will go back and forth between the following two research questions (RQ):
 
-- RQ: What is the effect of federal financial aid on students' access to college (Cellini, 2008)?
-  - Is this a causal inference research question?
-  - What is the relevant experiment?
-  - Are students randomly assigned to receive federal financial aid?
-- Experimental data vs. Observational data
-  - Experimental data: people randomly assigned to “treatment” vs. “control” group
-- Cellini (2008): Multivariate regression can be used to deal with the problem that the "treatment" (in this case receiving federal financial aid) wasn't randomized in order to assess the effect of X on Y (receiving financial aid on college access).
- - We do our best to recreate experimental conditions for observational data by minimizing omitted variable bias (more on this later)!
+- What is the effect of being in a having an internship ($X_{1i}=1$) vs. not having an internship e ($X_{1i}=0$) on subsequent earnings ($Y_i$)?
+  -  (we have observational data for this RQ)
+- What is the effect of being in a small class size ($X_{1i}=1$) vs. regular class size ($X_{1i}=0$) on reading achievement score ($Y_i$) for kindergarten students?
+  -  (we have experimental data for this RQ)
 
-## OLS Assumption 1 (mathematically)
+<br><br>
 
-- Population linear regression model
-  - $Y_i = \beta_0 + \beta_1 X_i+ u_i$
-  - Y= years of schooling (12+ = attended college), X= 0/1 received financial aid, $u_i$ = all other variables that affect Y but were not included in the model
-- OLS Assumption 1 (in words)
-  - the independent variable $X_i$ is unrelated to the "other variables" not included in the model, $u_i$
-- OLS Assumption 1 (mathematically)
+Population linear regression model
+
+- $Y_i = \beta_0 + \beta_1 X_{1i}+ u_i$, where:
+- $Y_i$: is earnings for student $i$ in 2011
+- $X_{1i}$: is whether student $i$ had an internship in the 2005-06 academic year
+  - $X_{1i}=0$: student $i$ did not have an internship ("untreated" or "control")
+  - $X_{1i}=1$: student $i$ had an internship ("treated")
+- $u_i$ is all variables that affect $Y_i$ but were not included in our model
+  - these are usually called "omitted variable"
+    - note that by definition an omitted variable is a variable that affects the outcome; doesn't include variables that were excluded from model but do not affect the outcome
+  - let's pretend that $u_i$ consists of just one variable, parental income
+
+
+<br><br>
+
+__Conditional independence assumption (CIA)__
+
+- CIA in words
+  - the independent variable $X_i$ is unrelated to omitted variables, $u_i$, not included in the model
+- CIA mathematically
   - $E(u_i|X_i)=0$; the expected value of $u_i$, given any value of $X_i$, equals zero
-  - In other words:
-    - Pretend that $u_i$ consists of only one variable
-    - OLS assumption 1 states that the mean value of the omitted variable is equal to zero no matter the value of variable $X_i$
+  - intuition:
+    - if we pretend that $u_i$ consists of only one variable, the conditional independence assumption states that expected value of the omitted variable is equal to zero no matter the value of variable $X_i$
     
+<br><br>
 
-OLS Assumption 1: $E(u_i|X_i)=0$
+__Conditional independence assumption (CIA) is *always* satisfied in a random assignment experiment__
 
-- __Cellini 2008__: Assumption is *always* satisfied in random assignment experiment
-  - Effect of financial aid (X) on college access
-  - X=0 (did not receive financial aid); X=1 (received financial aid)
-  - We randomly assign students to receive versus not receive financial aid
-  - Other factors $u_i$ (e.g., academic achievement, socioeconomic status) are *by construction* unrelated to values of X because we randomly assigned students to X=1 or X=0
-- __Cellini 2008__: in observational studies (like analyzing what is the effect of financial aid on student access to college), this assumption is usually violated!
-  - For example, Receiving financial aid (X) is likely correlated with omitted variables, $u_i$ that have an effect on Y (e.g., academic achievement, socioeconomic status)
-  
-## OLS Assumption 1 in practice
+- $Y_i = \beta_0 + \beta_1 X_{1i}+ u_i$
+- In a random assignment experiment, students are randomly assigned to receive an internship ($X_{1i}=1$) or not ($X_{1i}=0$)
+- Because values of $X_{1i}$ are randomly assigned, values of $X_{1i}$ are *by construction* unrelated to other factors $u_i$ (parental income) that affect $Y_i$. so we have:
+  - $E(u_i|X_i)=0$; or "independent variable $X_i$ is unrelated to omitted variables, $u_i$, not included in the model"
+- we know that parental income $u_i$ affects earnings $Y_i$
+  - students with rich parents have higher earnings than students with poor parents, because rich parents use connections to give their child job opportunities
+- But we don't have to be concerned that students with rich parents are more likely to get internships, because in an experiment internships are randomly assigned  
 
-- Population linear regression model
-  - $Y_i = \beta_0 + \beta_1 X_i+ u_i$
-  - Y= years of schooling (12+ = attended college), X= 0/1 received financial aid, $u_i$ = all other variables that affect Y but were not included in the model
-- OLS Assumption 1 (in words)
-  - the independent variable $X_i$ is unrelated to the "other variables" not included in the model, $u_i$
-- In Practice: 
-  - Are there any variables that are not in your model that... 
-  - **(1) Affect Y and (2) have a relationship (e.g. correlated) with X**?
-  - If so, OLS Assumption 1 is violated
-- Can you think of another omitted variable that violates OLS Assumption 1 for this RQ?
+
+<br><br>
+
+__Conditional independence assumption (CIA) is rarely satisfied when the treatment is not randomly assigned (self-selction into treatment__
+
+- $Y_i = \beta_0 + \beta_1 X_{1i}+ u_i$
+- we know that parental income $u_i$ affects earnings $Y_i$
+- why might parental income $u_i$ be related to whether a student receives an internship or not $X_{1i}$?
+  - Some internships are unpaid or pay very little; only students with rich parents can afford to take an unpaid internship
+  - rich parents directly or indirectly help their child obtain an internship
+    - direct: parent asks professional contact to give internship to their child
+    - indirect: e.g., grew up in an affluent community; got an internship from a friend's parent
+
+<br><br>
+
+__Why does violation of Conditional independence assumption cause estimate of causal effects to be biased?__
+
+- Population linear model
+  - $Y_i = \beta_0 + \beta_1 X_{1i}+ u_i$
+  - $\beta_1$ is the "true" causal effect of having an internship ($X$) on earnings ($Y$)
+- OLS prediction line (our point estimates for the population parameters)  
+  - $Y_i = \hat{\beta_0} + \hat{\beta_1} X_{1i}+ u_i$
+  - $\hat{\beta_1}$ is our estimate of the true causal effect of having an internship ($X$) on earnings ($Y$)
+- If parental income $u_i$ (omitted from the model) positively affects $Y$ and is positively related with receiving an internship ($X$) then:
+  - Our estimate $\hat{\beta_1}$ is partly due to the relationship between income $Y$ and internship $X$ and partly due to the relationship between income $Y$ and parental income $u_i$
+  - Therefore, $\hat{\beta_1}$ is a biased point estimate of $\beta_1$ (the "true" causal effect of internship on earnings) because it is picking up the relationship between income $Y$ and parental income $u_i$
+
+
+<br><br>
+In the ELS:2002 dataset `df_els_stu_fac`, students self-select into having an internship or co-op job. 
+
+Let's run a regression model of the relationship between internship ($X$), measured by `f2intern0506`, and 2011 earnings ($Y$), measured by `f3ern2011`
+
+- our sample is the subset of students who were enrolled in 2005-06 (`f2enroll0506=='yes'`) because the variable `f2intern0506` was defined for these students
+
+```{r}
+intern_mod1 <- lm(formula = f3ern2011 ~ f2intern0506, data = df_els_stu_fac %>% filter(f2enroll0506=='yes'))
+
+summary(intern_mod1)
+```
+
+
+<br>
+In above model, $\hat{\beta_1}=$ `r format(round(summary(intern_mod1)$coefficients[2,1], digits =0),big.mark = ',')`
+
+- We estimate that having an internship in 2005-06 as opposed to not having an internship is, on average, associated with a `r format(round(summary(intern_mod1)$coefficients[2,1], digits =0),big.mark = ',')` dollar change in 2011 earnings
 
 <br>
 
-No relationship" vs "No correlation"
+But we may concerned that parental income (measured by `parent_income`) : (a) has a positive relationship with earnings ($Y$) *AND* (b) is positively related with having an internship ($X$)
 
-  - $E(u_i|X_i)=0$ implies that $u_i$ and $X_i$ have no relationship (includes linear and non-linear)
-  - $Corr(u_i|X_i)=0$ implies that $u_i$ and $X_i$ have no *linear relationship*
-    - e.g., Pearson's R correlation coefficient 
-- So correlation might be zero, but $E(u_i|X_i) \ne 0$ due to the existence of a non-linear relationship
+- we'll just assume parental income is positively related to having an internship
+- graphically view relationship between parental income (X axis) and earnings (y axis)
 
+```{r}
+df_els_stu_fac %>% filter(f2enroll0506=='yes') %>%  ggplot(aes(x=parent_income, y=f3ern2011)) + geom_point() + stat_smooth(method = 'lm')
+```
 
-<!-- ## Correlation vs Causation -->
+```{r, include=FALSE, eval = FALSE}
+cor(df_els_stu_fac$parent_income, as.numeric(df_els_stu_fac$f2intern0506), use = 'complete.obs')
+```
 
-<!-- - $Y_i = \beta_0 + \beta_1X_i + u_i$ -->
-<!--   - Y= test score; X= class size -->
-<!-- - Remember that $u_i$ includes all variables that we think have a *causal effect* on Y -->
-<!--   - Variables that do not affect $Y_i$ are not in $u_i$ -->
-<!--   - Variables that are correlated with $X_i$, but do not affect Y do not belong in $u_i$ -->
-<!-- - Correlation does not equal causation -->
-<!--    - Correlation: strength of relationship between two variables  -->
-<!--    - Causation: The effect of X on Y if we randomly assign observations to different values of X -->
+<br><br>
+If we can include a measure of parental income in our model of the relationship between internship ($X$) and earnings ($Y$), then we no longer have to be concerned about whether the relationship between internship and parental income is biasing our results because we have "controlled" for this relationship
+```{r}
+intern_mod2 <- lm(formula = f3ern2011 ~ f2intern0506+ parent_income, data = df_els_stu_fac %>% filter(f2enroll0506=='yes'))
+
+summary(intern_mod2)
+```
 
 # Omitted Variable Bias
 
+Population linear regression model
 
- Introduction to Omitted Variable Bias
- 
-- $Y_i = \beta_0 + \beta_1X_i + u_i$; Y=test score; X=class size 
-  - We want to know the *causal effect* of X on Y
-  
+- $Y_i = \beta_0 + \beta_1 X_{1i}+ u_i$, where:
+- $Y_i$: is earnings for student $i$ in 2011
+- $X_{1i}$: is whether student $i$ had an internship in the 2005-06 academic year
+  - $X_{1i}=0$: student $i$ did not have an internship ("untreated" or "control")
+  - $X_{1i}=1$: student $i$ had an internship ("treated")
+- $u_i$ is all variables that affect $Y_i$ but were not included in our model
+
+
+We want to estimate $\beta_1$, the "true" *causal effect* of X on Y
+
 <br>
 
 - Bias (general): when $\hat{\beta_1}$ consistently underestimates $\beta_1$ or overestimates $\beta_1$
@@ -921,14 +996,81 @@ No relationship" vs "No correlation"
 
 <br>
 
+__For omitted variable bias to occur, the omitted variable “Z” must satisfy two conditions__:
 
-- __For omitted variable bias to occur, the omitted variable “Z” must satisfy two conditions__:
-     - (1) Z affects value of Y (i.e. Z is part of $u_i$)
-     - (2) *and* Z has a relationship with $X$
+- (1) Z affects value of Y (i.e. Z is part of $u_i$)
+- (2) *and* Z has a relationship with $X$
 
-<br>     
+<br>
+__Omitted variable bias is caused by violations of the conditional expectations assumption (CIA)__:
 
-Omitted Variable Bias Example
+- Recall the conditional independence assumption
+  - in words: the independent variable $X_{1i}$ is unrelated to omitted variables, $u_i$, not included in the model
+- Omitted variable bias is caused by omitting a variable from your model that is related (e.g., correlated) to $X_i$ (and that also affects $Y_i$)
+
+<br>
+
+__Omitted variable bias is not a concern in a random assignment experiment__:
+
+- If values of your independent variable of interest $X_{1i}$ are randomly asssigned, then the value of $X$ cannot have a systematic relationship with other variables that affect $Y$ that have been omitted from your model
+
+<br><br>
+
+let's consider Tenessee STAR experiment, where we are interested in the effect of class size ($X$) on reading achievement score ($Y_i$)
+
+- values of class size are randomly assigned: small class size ($X_{1i}=1$) vs. regular class size ($X_{1i}=0$)
+- below shows a regression of `treatment` ($X$) and `read` ($Y$)
+
+```{r}
+
+summary(lm(formula = read ~ as.factor(treatment), data = df_stark))
+```
+- The variable `lunch` (free-reduced lunch), a proxy for household income, also affects reading achievement
+
+```{r}
+summary(lm(formula = read ~ as.factor(lunch), data = df_stark))
+```
+- But we are not concerned about omitted variable bias due to excluding `lunch` from our model, because values of the class size treatment were randomly assigned
+
+
+```{r}
+# model without controlling for lunch
+summary(lm(formula = read ~ as.factor(treatment), data = df_stark))
+
+
+# model with controlling for lunch
+summary(lm(formula = read ~ as.factor(treatment) + as.factor(lunch), data = df_stark))
+```
+
+
+
+
+```{r, eval=FALSE, include=FALSE}
+
+
+
+df_els_stu_fac %>% count(as.integer(f3tzhighdeg))
+
+df_els_stu_fac %>% filter(as.integer(f3tzhighdeg) %in% c(7,8,9))
+
+df_els_stu_fac %>% filter(as.integer(f3tzhighdeg) %in% c(7,8,9)) %>% count(f2intern0506)
+
+df_els_stu_fac %>% filter(f3tzhighdeg %in% c("Bachelor's degree or Post-bachelor's certificate","Master's degree or Post-master's certificate","Doctoral degree")) %>% count(f3tzhighdeg)
+
+summary(lm(formula = f3ern2011 ~ f2intern0506+ parent_income, data = df_els_stu_fac %>% filter(f2enroll0506=='yes', as.integer(f3tzhighdeg) %in% c(7,8,9))))
+
+summary(lm(formula = f3ern2011 ~ f2intern0506, data = df_els_stu_fac %>% filter(f2enroll0506=='yes',f2ps1lvl=="Four or more years")))
+
+summary(lm(formula = f3ern2011 ~ f2intern0506+ parent_income, data = df_els_stu_fac %>% filter(f2enroll0506=='yes',f2ps1lvl=="Four or more years")))
+
+summary(lm(formula = f3ern2011 ~ f1rgpp2, data = df_els_stu_fac %>% filter(f2enroll0506=='yes',f2ps1lvl=="Four or more years")))
+
+```
+
+<br><br>
+
+What if values of "class size" were not randomly assigned?
+
 
 - $Y_i = \beta_0 + \beta_1X_i + u_i$
   - Y= average class reading test score
@@ -958,18 +1100,6 @@ How to check for omitted variable bias
 - Sometimes you don’t have a good measure of omitted variable Z
 
 
-## Group Exercise
-
-For each research question below, identify two "hypothetical" variables that would result in a violation of OLS Assumption 1 (i.e., they meet the two conditions of Omitted Variable Bias)
-
-- Be ready to explain how each variable meets the two conditions!
-
-<br>
-(1) Group 1: What is the effect of participating in a fraternity/sorority (X) on GPA (Y)?
-
-(2) Group 2: What is the effect of participating in Head Start (X) on long-term academic achievement (Y)?
-
-
 ## Independent variables for causal effects
 
 <br>
@@ -982,12 +1112,15 @@ Research questions that work and don't work
   - Your dependent variable (Y) must be measured at a time after your independent variable (X) occurs
   
 <br>  
-- Easiest independent variables that meet this requirement: participation in a program/intervention
-  - Federal programs: TRIO, Head Start
-  - Interventions: dropout prevention program, college prep, financial literary programs, using "services" like Think Tank, Cultural Centers, etc.
-  - Others: Student Teacher Ratio, type of sanction  (diversion vs community service)
+
+Easiest independent variables that meet this requirement: participation in a program/intervention
+
+- Federal programs: TRIO, Head Start
+- Interventions: dropout prevention program, college prep, financial literary programs, using "services" like Think Tank, Cultural Centers, etc.
+- Others: Student Teacher Ratio, type of sanction  (diversion vs community service)
   
 <br>
+
 Avoid:
 
 - Independent variables that can't be randomly assigned or are hard to measure
@@ -1005,12 +1138,10 @@ Generally OK to use personal demographics as X when Y variable is determined by 
 - Effect of racial identity (X) on the probability of receiving a reply to an admissions inquiry (Y)?
 - Effect of racial identity (X) on probability of receiving a call back job interview (Y)?
 - Effect of gender (X) on teacher course evaluations (Y)?
-  
+
 
 <br>
 But these types of questions require really strong control variables! 
-
-- Will cover this more once we cover omitted variable bias
 
 
 # References
