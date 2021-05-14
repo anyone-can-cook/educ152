@@ -919,7 +919,7 @@ __Why does violation of Conditional independence assumption cause estimate of ca
   - $Y_i = \beta_0 + \beta_1 X_{1i}+ u_i$
   - $\beta_1$ is the "true" causal effect of having an internship ($X$) on earnings ($Y$)
 - OLS prediction line (our point estimates for the population parameters)  
-  - $Y_i = \hat{\beta_0} + \hat{\beta_1} X_{1i}+ u_i$
+  - $Y_i = \hat{\beta_0} + \hat{\beta_1} X_{1i}$
   - $\hat{\beta_1}$ is our estimate of the true causal effect of having an internship ($X$) on earnings ($Y$)
 - If parental income $u_i$ (omitted from the model) positively affects $Y$ and is positively related with receiving an internship ($X$) then:
   - Our estimate $\hat{\beta_1}$ is partly due to the relationship between income $Y$ and internship $X$ and partly due to the relationship between income $Y$ and parental income $u_i$
