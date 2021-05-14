@@ -1,5 +1,5 @@
 ---
-title: "In-class exercise: Think of research questions and variables of interest using ELS:202 data"
+title: "In-class exercise: Think of research questions and variables of interest using ELS:2002 data"
 urlcolor: blue
 output: 
   html_document:
