@@ -598,7 +598,7 @@ In the picture below:
 
 - imagine that vertical red line is the value of the population parameter
 - the blue curve represents the sampling distribution from an unbiased estimator, which is centered at the value of the population parameter
-- the red dotted curve is the sampling distribution from an unbiased estimator (e.g., if you used sample mode as the estimator for population mean)
+- the red dotted curve is the sampling distribution from a biased estimator (e.g., if you used sample mode as the estimator for population mean)
 
 ![](bias.png)
 
