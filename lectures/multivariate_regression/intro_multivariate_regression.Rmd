@@ -1,0 +1,830 @@
+---
+title: "EDUC 152. Intro to quantitative research in education: Regression analysis"
+subtitle: "Multivariate regression"
+author: 
+date: 
+urlcolor: blue
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
+      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
+      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
+    number_sections: true
+    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
+    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
+    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
+    df_print: tibble #options: default, tibble, paged
+bibliography: ../../assets/bib/educ152_bib.bib
+csl: ../../assets/bib/apa.csl
+---
+
+
+<!-- Code to enable scroll right for printing of data frames -->
+<style>
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: auto !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+
+
+```{r, echo=FALSE, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE, warning = FALSE, message = FALSE)
+  #comment = "#>" makes it so results from a code chunk start with "#>"; default is "##"
+#options(scipen=999)
+options(tibble.width = Inf, width = 10000) # Code necessary to enable scroll right for printing of data frames
+
+# remove scientific notation
+options(scipen=999)
+
+# add commas to big numbers
+#knitr::kable(d, digits = 3, format.args = list(big.mark = ",", scientific = FALSE))
+```
+
+# Introduction
+
+"Bivariate regression" refers to regression models with two variables, a $Y$ variable ("dependent variable" or "outcome") and a single $X$ variable ("independent variable")
+
+<br>
+
+"Multivariate regression" refers to regression models with a $Y$ variable and two or more $X$ variables
+
+<br>
+
+This lecture introduces multivariate regression, building on concepts we learned from lecture on bivariate regression. In particular, this lecture will focus on:
+
+- Assumptions required to make inferences based on regression analysis
+- Using multivariate regression to estimate causal effects
+- Interpreting results from multivariate regresssion
+  - interpreting regression output from *R*
+  - interpreting results from publications that use regresion
+
+
+
+## Libraries, data, functions
+
+
+This lecture will utilize data from two sources: 
+
+- Tennessee Student Teacher Achievement Ratio (STAR) experiment, which we have worked with before
+- The Educational Longitudinal Study (ELS) of 2002
+
+
+
+
+```{r}
+# uncomment below line to remove all objects
+  #rm(list = ls())
+
+# Libraries
+
+  # install packages if you haven't already
+    #install.packages('tidyverse')
+    #install.packages('labelled')
+    #install.packages('haven')
+    #install.packages('patchwork')
+    #install.packages("RCurl") #we'll use this to calculate robust standard errors
+
+  library(tidyverse)
+  library(labelled)
+  library(haven)
+  #library(RCurl)
+  #library(patchwork)
+
+    
+##########
+########## TENNESSEE STAR DATA
+##########
+
+# load star data
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/star/star_panel_data.RData'))
+
+#df_star_panel %>% glimpse()
+
+# create data frame for STAR experiment, keeping only kindergarten
+df_stark <- df_star_panel %>% 
+  # keep only kindergarten year
+  filter(grade ==1) %>% 
+  # keep only observations with non-missing value for reading score
+  filter(!is.na(read)) %>%
+  # keep only observations with non-missing values for treatment assignment
+  filter(!is.na(star)) %>%
+  # drop observations where treatment status is regular+aide
+  filter(star !=3) %>%
+  # keep selected variables
+  select(id,grade,star,read,gender,ethnicity,lunch,school,degree,experience) %>%
+  # create a variable "treatment" that equals 1 if student receives treatment (small class) and equals 0 otherwise
+  mutate(
+    treatment = if_else(star==2,1,0)
+  )
+
+df_stark %>% glimpse()
+
+rm(df_star_panel) # comment this line out if you want to keep data frame df_star_panel
+
+
+
+##########
+########## ELS:2002 data
+##########
+
+# RUN SCRIPT THAT CREATES STUDENT-LEVEL DATA FRAME CONTAINING ALL VARIABLES AND CREATES DATA FRAME WITH A SUBSET OF VARIABLES
+
+  #NOTE: this script will take 30 seconds to a minute to run because loading a dataset w/ about 16,000 observations and 4,000 variables from a website
+
+  source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/els/read_els_by_pets.R'))
+    #source(file = file.path('.','..','..','scripts','els','read_els_by_pets.R'))
+      #list.files(path = file.path('.','..','..','scripts','els'))
+
+# Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables
+  df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
+  # convert continuous variables we know we want numeric back to numeric
+  for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal')) {
+    df_els_stu_fac[[v]] <- df_els_stu[[v]]  
+  }
+```
+
+
+## ELS:2002 data
+
+<br>
+
+The Educational Longitudinal Study (ELS) of 2002, referred to as ELS:2002
+
+- Nationally representative, longitudinal survey of US 10th graders in 2002, followed them from 2002 to 2013
+- Created by the National Center for Education Statistics, a branch of the U.S. Department of Education
+- [LINK](https://nces.ed.gov/surveys/els2002/) to ELS:2002 website
+- [LINK](https://nces.ed.gov/OnlineCodebook) to the NCES "Online Codebook"  website, which contains "public-use" versions of ELS datasets and detailed information about all variables
+  - variables that could potentially be used to identify ELS survey respondents are "suppressed" from public-use datasets
+  - these variables are present in "restricted" versions of ELS datasets
+
+  
+<br>  
+
+ELS datasets we created
+
+- student-level data frame `df_els_stu_all` has all variables (about 4,000) and all observations (about 16,200 observations); one observation for each student
+- student-level data frame `df_els_stu` has a subset of variables and a subset of observations
+  - sample is respondents who filled completed all waves of the survey; who attended postsecondary education at some point by 2012; and some other minor sample criteria around observations not being missing for certain variables
+- for both `df_els_stu_all` and `df_els_stu`, most categorical variables are `labelled` class variables
+- student-level data frame `df_els_stu_fac` is exact same as `df_els_stu` except categorical variables are `factor` class; categorical variables must be factor class when running regression models
+
+
+<br>  
+In the coming weeks, we want your help in identifying variables of interest and populations/samples of interest!
+<br>  
+
+Investigate `df_els_stu` (output not shown)
+```{r, include = FALSE}
+# variable names
+df_els_stu %>% glimpse()
+
+# variable labels
+df_els_stu %>% var_label()
+```
+
+<br>  
+
+Investigate `df_els_stu_fac` (output not shown)
+```{r, include = FALSE}
+# variable names
+df_els_stu_fac %>% glimpse()
+
+# variable labels
+df_els_stu_fac %>% var_label()
+```
+
+
+<br>  
+
+Can use the `lookfor()` function from the `labelled` package to query which variables and variable labels contain certain words
+
+- syntax (with defaults):
+  - `look_for(data, ..., labels = TRUE, ignore.case = TRUE, details = TRUE)`
+  - where argument `...` contains "strings" (e.g., words) you are looking for, enclosed in quotation marks
+- example syntax, looking for variable names and variable labels that contain the word "internship"
+  - `lookfor(data=df_els_stu_all, 'internship',labels = TRUE, ignore.case = TRUE, details = TRUE)`
+
+
+useful to use `lookfor()` to query the dataset `df_els_stu_all` because this dataset has so many variables (more than 4,000)
+```{r}
+
+# query data frame df_els_stu_all
+  lookfor(data=df_els_stu_all, 'internship',labels = TRUE, ignore.case = TRUE, details = TRUE)
+
+
+# query data frame df_els_stu
+  lookfor(data=df_els_stu, 'debt',labels = TRUE, ignore.case = TRUE, details = TRUE)
+  lookfor(data=df_els_stu, 'loan',labels = TRUE, ignore.case = TRUE, details = TRUE)
+```
+
+## Example research questions
+
+For the multivariate regression lecture, we will focus on using multivariate regression to answer *causal* research questions that follow the form "what is the effect of $X$ on $Y$?"
+
+<br>
+
+We will answer one research question that uses experimental data from the Tennessee STAR Experiment and also research questions that use observational data from ELS:2002
+
+1. [experimental design] What is the effect of being in a small class size ($X_i=1$) vs. regular class size ($X_i=0$) on reading achievement score ($Y_i$) for kindergarten students?
+    - Using data from the Tennessee Student Teacher Achievement Ratio (STAR) experiment
+    - Kindergarten students randomly assigned to "small" [treatment] vs. "regular" [control] class size based on flip of a coin
+    - [LINK](https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/10766) to information and data on the Tennessee STAR project
+    - $X$ var is `treatment`; $Y$ var is `read`
+
+```{r}
+df_stark %>% group_by(treatment) %>% summarize(
+  mean_read = mean(read, na.rm = TRUE),
+)
+```
+
+<br><br>
+
+2. [observational design, categorical $X$] What is the effect of having an internship or co-op job ($X$) (in 2005-06) on 2011 earnings ($Y$)? [for students who were enrolled in postsecondary education in 2005-06]
+    - $Y$ is `f3ern2011`
+    - $X$ is `f2intern0506` (this would be sophomore year for students who graduated HS in spring 2004 and immediately entered postsecondary education)
+      - `f2intern0506==0`: no co-op/internship
+    - sample: `f2enroll0506=='yes'`
+    
+
+```{r}
+df_els_stu_fac %>% filter(f2enroll0506=='yes') %>% 
+  group_by(f2intern0506) %>% summarize(
+  mean_earn = mean(f3ern2011, na.rm = TRUE),
+  n_nonmissing = sum(!is.na(f3ern2011))
+)
+
+```
+    
+
+<br><br>
+
+3. [observational design, categorical $X$] What is the effect of field of study ($X$) on earnings ($Y$)? [for respondents not currently enrolled in postsecondary education]
+    - answer the RQ separately for: certificate degrees; associate's degrees; for bachelor's degrees? 
+    - $Y$ is `f3ern2011`
+    - for certificate degrees: $X$ is `f3tzcrt1cip2`
+    - for associate's degrees: $X$ is `f3tzasc1cip2`
+    - for bachelor's degrees: $X$ is `f3tzbch1cip2 `
+
+```{r}
+# certificate degrees
+df_els_stu_fac %>% filter(!(f3tzcrt1cip2 %in% c('Missing','Item legitimate skip/NA')), f3a01d=='No') %>% 
+  group_by(f3tzcrt1cip2) %>% summarize(
+  mean_earn = mean(f3ern2011, na.rm = TRUE),
+  n_nonmissing = sum(!is.na(f3ern2011))
+)
+
+# associates degreees
+df_els_stu_fac %>% filter(!(f3tzasc1cip2 %in% c('Missing','Item legitimate skip/NA')), f3a01d=='No') %>% 
+  group_by(f3tzasc1cip2) %>% summarize(
+  mean_earn = mean(f3ern2011, na.rm = TRUE),
+  n_nonmissing = sum(!is.na(f3ern2011))
+)
+
+# bachelor's degreees
+df_els_stu_fac %>% filter(!(f3tzbch1cip2 %in% c('Missing','Item legitimate skip/NA')), f3a01d=='No') %>% 
+  group_by(f3tzbch1cip2) %>% summarize(
+  mean_earn = mean(f3ern2011, na.rm = TRUE),
+  n_nonmissing = sum(!is.na(f3ern2011))
+) %>% print(n=30)
+```
+<br><br>
+
+4. [observational design, continuous $X$] What is the effect of amount borrowed in student loans ($X$) on earnings ($Y$) for respondents not currently enrolled in postsecondary education
+    - $X$ var is `f3totloan`; $Y$ var is `f3ern2011`
+    - sample: `f3a01d=='No'`
+
+
+```{r}
+df_els_stu_fac %>% filter(f3a01d=="No") %>%  ggplot(aes(x=f3totloan, y=f3ern2011)) + geom_point() + stat_smooth(method = 'lm')
+
+summary(lm(formula = f3ern2011 ~ f3totloan, data = df_els_stu %>% filter(f3a01d==0)))
+```
+
+<br>
+<br>
+Why are we using test scores and earnings as dependent variables?
+
+- Ordinary Least Squares (OLS) multivariate regression assumes continuous dependent variable; regression models with categorical dependent variables are a bit more difficult to interpret
+- But in later weeks, we may introduce the "linear probability model," which will enable us to model dichotomous (two-category) dependent variables (e.g., 0/1 did student graduate)
+
+
+
+
+
+# Intro multivariate regression
+
+## Multivariate regression model
+
+<br>
+
+__Population Regression Model__
+
+- Same as in "simple" (bivariate) regression; we just add more regressors (i.e., independent/control variables) into our model!
+
+<br>
+Population Regression Model
+
+- $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +$ ... $\beta_kX_{ki} + u_i$
+- Where:
+  - $Y_i$ = observation i of dependent variable
+  - $X_{1i}$ = observation i of the __first regressor__, $X_1$
+  - $X_{2i}$ = observation i of the __second regressor__, $X_2$
+  - $X_{ki}$ = observation i of the __Kth regressor__, $X_k$
+  - $\beta_1$ = population average effect of Y for "change" in $X_1$
+    - if $X_1$ is continuous: average effect of Y for one-unit increase/decrease in $X_1$
+    - if $X_1$ is categorical: population average effect of being in the non-reference group as opposed to the reference group
+  - $\beta_2$ = population average effect of Y for "change" in $X_2$
+  - $\beta_k$ = population average effect of Y for "change" $X_k$
+  - $\beta_0$ = average value of Y when the value of _all independent variables ($X_1, X_2 ...X_k$) are equal to zero_
+  - $u_i$ = all other variables that affect the value of $Y_i$ but are not included in the model 
+
+<br>
+
+Writing out the population linear regression model
+
+- Important to define which specific variable (e.g., "parental income") is associated with which $X_{ki}$ in the model
+  - usually $X_{1i}$ would be your "independent variable of interest" (assuming it is a continuous variable or a two-category categorical variable)
+  - but it doesn't really matter which specific variable is associated with which $X_{ki}$ as long as you make it clear to your reader (and yourself!!!)
+- You don't need to define what $\beta_k$ means because that's just the population regression coefficient associated with a particular variable $X_{ki}$
+
+<br>
+
+__Things we do in regression; all work the same in multivariate!__
+
+1. Estimation 
+    - Choose estimates for $\beta_0, \beta_1, \beta_2, ... \beta_k$ by selecting those that minimize the sum of squared errors (i.e., make the best prediction of Y), yielding an OLS line
+      - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1} X_{1i} + \hat{\beta_2} X_{2i} + ... \hat{\beta_k} X_{ki}$ 
+
+2. Measures of model fit (e.g., $R^2$, SER) 
+    - But formulas change slightly to account for "degrees of freedom"
+    - Once you introduce multiple independent variables, use adjusted R-squared
+    - Adjusted R-squared
+      - Adjusted for the number of predictors in the model
+      - Every independent variable we add to the model will increase our "normal" R-squared; but doesn't necessarily mean it's a better fit
+      - Adjusted R squared increases only if new variable improves the model more than would be expected by chance
+
+3. Prediction 
+    - Once you estimate OLS regression line, we can calculate predicted values for observations with particular values of all independent variables 
+      - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1} X_{1i} + \hat{\beta_2} X_{2i} + ... \hat{\beta_k} X_{ki}$ 
+  
+4. Hypothesis testing and confidence intervals about $\beta_1$
+    - Same as before but formulas for $\hat{\beta_1}$ and $SE(\hat{\beta_1})$ change slightly, but R calculates this for us!
+
+<br>
+
+## Conditional independence assumption (CIA)
+
+__OLS Assumption 1: Conditional Independence Assumption__
+
+- OLS Assumption 1 (in words)
+  - the independent variable $X_i$ is unrelated to the "other variables" not included in the model, $u_i$
+- OLS Assumption 1 (mathematically)
+  - $E(u_i|X_i)=0$; the expected value of $u_i$, given any value of $X_i$, equals zero
+
+__Omitted variable bias__
+
+- Omitted variable bias is bias in $\hat{\beta_1}$ due to variables being omitted from the model
+- For omitted variable bias to occur, the omitted variable “Z” must satisfy two conditions
+  - (1) $Z$ affects value of Y (i.e. Z is part of $u_i$)
+  - (2) *and* $Z$ has a relationship with $X$
+
+<br>
+
+Multivariate regression helps us meet the conditional independence assumption by including variables in our model whose exclusion would result in omitted variable bias
+
+- The modeling goal is that, after including "control variables" in our model (those that meet both conditions of omitted variable bias), "treated units" ($X_{1i}==1$ ) are on average the same as "untreated units" ($X_{1i}==0$ ) except for the value of variable $X_{1i}$
+
+
+<br>
+
+__Conditional Independence Assumption in evaluation of the Mexican American Studies (MAS) Program __
+
+<br>
+
+Cabrera, N. L., Milem, J. F., Jaquette, O., & Marx, R. (2014). Missing the (student achievement) forest for all the (political) trees: Empiricism and the Mexican American Studies controversy in Tucson. *American Educational Research Journal*, 51(6), 1084-1118.
+
+<br>
+
+- Research question
+  - What is the effect of participating in Mexican American Studies program (MAS) on academic achievement (measured as score on high school exit exam)? 
+- $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \beta_3X_{3i} + u_i$, where:
+  - Y= High school exit exam score
+  - X1 = 0/1 MAS participation [non-reference group]; Did not participate in MAS [reference group] 
+    - students can participate in MAS in 11th grade
+  - X2= previous academic achievement
+    - academic achievement prior to 11th grade
+  - X3= socioeconomic status 
+- The causal inference problem:
+  - we want to know the causal effect of MAS on Y
+  - But we have to account for the fact that students choose to participate in MAS (self-selection bias); they were not randomly assigned to participate versus not participate in MAS!
+  - Goal is to recreate "experimental conditions" by adding "control variables" to our model; after including control variables MAS participants are (in theory) the same as non-participants, except for participation in MAS
+- __Conditional independence assumption__:
+  - Once we include control variables, there are no longer any omitted variables, Z, that satisfy *both* of these two conditions:
+    (1) Z affects value of Y *and*
+    (2) Z has a relationship with X
+- so we try to include all "control variables" that satisfy both conditions of omitted variable bias; 
+- If we satisfy the conditional independence assumption through control variables, then multivariate regression is just as good as randomized assignment experiment! 
+  - if we fail to include important control variables (because we don't have access to them), our results suffer from omitted variable bias
+  - Warning: But we often don't have every single control variable we need, so we get as close as possible!
+  
+<br>
+
+__Multivariate regression in Econometrics vs traditional social science statistics__
+
+- $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \beta_3X_{3i} + u_i$
+- Econometrics/causal inference
+  - We are only interested in estimating $\beta_1$ [the causal effect of $X_{1i}$ on Y]
+  - The **primary** reason we include other variables in the model besides X1 is to eliminate omitted variable bias
+  - Therefore, we include all control variables that satisfy *both* conditions of omitted variable bias
+  - Once we include control variables, and no other variables satisfy both conditions, then we satisfy the conditional independence assumption and we can estimate a causal effect!
+- Traditional social science statistics [most of my research!]
+  - Purpose of multiple regression is to add new variable to your model (e.g., $X_3$) to see the effect of $X_3$ on Y
+  - Can lead to sloppy research if we take a "throw" everything and the kitchen sink into a model and see what's interesting!
+  - We'll read example of this kind of research:
+    - Powers (2004)
+
+<br>
+
+"Good" vs. "bad" research
+
+- "Good" research
+  - Goal is to estimate causal effects and you are thoughtful about including control variables to minimize omitted variable bias
+  - Goal is to understand correlational/associational relationship between $X$ variables and $Y$, and when interpretating results, you are careful to talk about "association" rather than "causal effect"
+- "Bad" research
+  - Goal is to estimate causal effects but researcher isn't thoughtful about which control variables should be included in the model
+  - Goal is to understand correlational/associational relationships but the author inteprets regression coefficients as if they represent causal relationships
+
+## Interpretation
+
+
+
+ADD IN A RESEARCH QUESTION THAT WE ARE USING FOR CLASS
+
+2. [observational design, categorical $X$] What is the effect of having an internship or co-op job ($X$) (in 2005-06) on 2011 earnings ($Y$)? [for students who were enrolled in postsecondary education in 2005-06]
+    - $Y$ is `f3ern2011`
+    - $X$ is `f2intern0506` (this would be sophomore year for students who graduated HS in spring 2004 and immediately entered postsecondary education)
+      - `f2intern0506==0`: no co-op/internship
+    - sample: `f2enroll0506=='yes'`
+
+```{r}
+intern_mod1 <- lm(formula = f3ern2011 ~ f2intern0506, data = df_els_stu_fac %>% filter(f2enroll0506=='yes'))
+
+summary(intern_mod1)
+```
+```{r}
+intern_mod2 <- lm(formula = f3ern2011 ~ f2intern0506 + f1pared + f3tzps1slc + bytxrstd + bytxmstd + f1sex + f1race, data = df_els_stu_fac %>% filter(f2enroll0506=='yes'))
+
+summary(intern_mod2)
+```
+
+
+
+```{r}
+df_els_stu_fac %>% glimpse()
+```
+
+RQ [observational design, continuous $X$] What is the effect of amount borrowed in student loans ($X$) on earnings ($Y$) for respondents not currently enrolled in postsecondary education
+    - $X$ var is `f3totloan`; $Y$ var is `f3ern2011`
+    - sample: `f3a01d=='No'`
+
+
+```{r, include = FALSE, eval = FALSE}
+# loans (X) and earnings (Y)
+df_els_stu_fac %>% filter(f3a01d=="No") %>%  ggplot(aes(x=f3totloan, y=f3ern2011)) + geom_point() + stat_smooth(method = 'lm')
+
+summary(lm(formula = f3ern2011 ~ f3totloan + f3tzhighdeg, data = df_els_stu_fac %>% filter(f3a01d=="No")))
+
+summary(lm(formula = f3ern2011 ~ f3totloan + f3ps1ctr, data = df_els_stu_fac %>% filter(f3a01d=="No", f3ps1ctr != 'Missing')))
+
+f3ps1ctr
+df_els_stu_fac %>% count(f3ps1ctr)
+
+summary(lm(formula = f3ern2011 ~ f3totloan + f3ps1ctr + f3tzhighdeg, data = df_els_stu_fac %>% filter(f3a01d=="No", f3ps1ctr != 'Missing')))
+
+summary(lm(formula = f3ern2011 ~ f3totloan + f3tzps1slc + f3tzhighdeg, data = df_els_stu_fac %>% filter(f3a01d=="No", f3ps1ctr != 'Missing')))
+
+
+```
+
+
+
+
+MODIFY FOR YOUR RQ: EFFECT OF INTERNSHIP ON EARNINGS
+
+- ADD ONE CONTINUOUS CONTROL VARIABLE; 
+- THEN GO THROUGH PREDICITONS; INTERPRETATION; ETC.; 
+- ADD LEVEL 2 HEADING ON INTERPRETATION
+- ADD LEVEL 2 HEADING ON PREDICTION
+WHEN IT IS ABOUT INTERPRETATION WITH CATEGORICAL X, ADD A CATEGORICAL X CONTROL WITH MORE THAN 2 CATEGORIES;
+- AT END, RIGHT BEFORE "READING EMPIRICAL RESEARCH", SHOW THEM HOW TO ADD "CONTROL" VARIABLES WITH A FOCUS ON OMITTED VARIABLE BIAS
+- HAVE THEM DO A BRIEF HOMEWORK ASSIGNMENT WHERE THEY:
+  - RUN A REGRESSION [YOU GIVE IT TO THEM]
+  - WRITE OUT POPULATION LINEAR REGRESSION MODEL
+  - WRITE OUT OLS REGRESSION LINE WITHOUT ESTIMATES
+  - WRITE OUT OLS REGRESSION LINE WITH ESTIMATES
+  - INTERPRET BETAS
+  - DO PREDICTIONS
+
+- Research question: What is the effect of student teacher ratio on student reading test scores?
+- __Simple/Bivariate regression__
+  - $Y_i = \beta_0 + \beta_1X_{1i} + u_i$
+  - Where: 
+    - Y= reading test scores
+    - $X_1$ = student teacher ratio
+  - General interpretation of $\hat{\beta_1}$: The average effect of a one-unit
+increase in $X_1$ is associated with a $\hat{\beta_1}$ change in Y
+    - The average effect of a one-unit
+increase in student teacher ratio is associated with a 2.62 decrease in district average reading test scores
+- __Multivariate regression__
+  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i$
+  - Where: 
+    - Y= student test scores
+    - $X_1$ = student teacher ratio
+    - $X_2$ = % ELL [from last week, established %ELL meets both conditions of omitted variable bias]
+  - General interpretation of $\hat{\beta_1}$: The average effect of a one-unit increase in $X_1$ is associated with a $\hat{\beta_1}$ change in Y, __holding the value of $X_2$ constant__
+    - The average effect of a one-unit increase in student teacher ratio is associated with a 1.29 decrease in district average reading test scores, __holding the value of %ELL students constant__
+
+<br>
+
+__What does "holding constant" mean?__
+
+- RQ: What is the effect of student teacher ratio on reading test scores?
+  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i$
+  - Where: Y= student test scores, $X_1$ = student teacher ratio, $X_2$ = % ELL
+- Setup:
+  - We think student test scores go down if there's a greater percentage of ELL students in the classroom
+    - First condition of omitted variable bias ( Z affects Y)
+  - We think there is a negative relationship between percentage of ELL students in the classroom and student-teacher ratio
+    - Second condition of omitted variable bias ( Z has a relationship with X)
+- Problem:
+  - We think student teacher ratio and percentage of ELL move together
+  - We want to know the relationship between reading scores and student teacher ratio when "percent ELL" is not allowed to move!
+- "Holding the value of $X_2$ constant"
+  - Means to estimate the relationship between $X_1$ and Y when we don't allow the value of $X_2$ to vary
+  - In other words, we analyze the relationship between student teacher ration ($X_1$) and reading test scores (Y) for applicants that have the same value of percent ELL ($X_2$) [calculus: partial derivatives!]
+  
+<br>
+
+__What does "holding constant" mean? Another example....__
+
+- RQ: What is the relationship between years of education(X1) on income(Y), after controlling for years of work experience (X2)?
+- General interpretation of $\hat{\beta_1}$:
+  - The average effect of a one-unit increase in X1 is a $\hat{\beta_1}$ unit
+increase in Y, holding the value of X2 constant
+- Interpretation of $\hat{\beta_1}$, applied to example
+  - The effect of having one additional year of education (X1) on income (Y), when we don't allow value of "years of experience" (X2) to change
+  - Compare people with 2 years of college versus 3 years of college that have the same years experience to assess the "effect" of an additional year of education on income
+- Said differently: analyze the effect of increasing years of education
+on income for people who have same years of experience
+
+<br>
+
+__Interpreting $\hat{\beta_1}$ for continuous X__
+
+- RQ: What is the effect of student teacher ratio (X1) on average district reading test scores (X2)?
+  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
+  - Where: 
+    - Y= reading test scores
+    - $X_1$ = average district student teacher ratio
+    - $X_2$ = 0/1 majority ELL district [greater than 50% ELL students= non-reference group; less than 50% ELL students=reference group]
+    - $X_3$ = avg district income ($000s)
+- General interpretation of $\hat{\beta_1}$ for continuous X [all are correct/same]
+  - The average effect of a one unit increase in $X_1$ is a $\hat{\beta_1}$ unit change in Y, holding the values of $X_2$ and $X_3$ constant
+  - OR The average effect of a one unit increase in $X_1$ is a $\hat{\beta_1}$ unit change in Y, after controlling for $X_2$ and $X_3$
+  - The average effect of a one unit increase in $X_1$ is a $\hat{\beta_1}$ unit change in Y, holding the values of covariates constant
+-  Run regression in R!
+  - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1} X_{1i} + \hat{\beta_2} X_{2i} +  \hat{\beta_3} X_{3i}$
+  - $\hat{Y_i} = 646.2 - 0.8 X_{1i} -23.5 X_{2i} + 1.7 X_{3i}$
+- Specific example interpretation [run regression in R]
+  - The average effect of a one-unit increase in average district student teacher ratio (i.e., one additional student per teacher) is a 0.8 point decrease in average district reading score, holding the values of majority ELL and district average income constant
+
+<br>
+
+__Interpreting $\hat{\beta_1}$ for categorical X__
+
+- RQ: What is the effect of being a majority ELL district (X1) on average district reading test scores (X2)?
+  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
+  - Where: 
+    - Y= reading test scores
+    - $X_1$ = 0/1 majority ELL [non-reference group], $X_2$ = avg district student teacher ratio; $X_3$ = avg district income ($000s)
+  - __Stylistic Note__: Your main independent variable of interest should always be $X_1$
+- General interpretation of $\hat{\beta_1}$ for categorical X
+  - Being [non-reference group] as opposed to [reference group] is associated with a $\hat{\beta_1}$ unit change in Y, holding the values of $X_2$ and $X_3$ constant
+- Run regression in R [note: same coef values as previous model but in diff order!]
+  - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1} X_{1i} + \hat{\beta_2} X_{2i} +  \hat{\beta_3} X_{3i}$
+  - $\hat{Y_i} = 646.2 - 23.5 X_{1i} -0.8 X_{2i} + 1.7 X_{3i}$
+- Specific interpretation
+  - Reference group vs non Reference group
+    - 0 = non-ELL majority district [lowest value is automatically removed from regression as reference group]
+    - 1 = majority ELL district [non-reference group is kept within regression; this is why the regression output coefficient says __`ell1`__]
+  - Being a majority ELL district as opposed to a non-majority ELL district is associated with a 23.5 point decrease in average district reading scores, holding values of average student-teacher ratio and district average income constant
+
+<br>
+
+__Prediction still works the same way!__
+
+- RQ: What is the effect of being a majority ELL district (X1) on average district reading test scores (X2)?
+  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
+  - Where: 
+    - Y= reading test scores
+    - $X_1$ = 0/1 majority ELL district
+    - $X_2$ = avg district student teacher ratio 
+    - $X_3$ = avg district income ($000s)
+- Run regression in R 
+  - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1} X_{1i} + \hat{\beta_2} X_{2i} +  \hat{\beta_3} X_{3i}$
+  - $\hat{Y_i} = 646.2 - 23.5 X_{1i} -0.8 X_{2i} + 1.7 X_{3i}$
+- What's the predicted average reading score for a district that is a non-ELL majority district, has a student teacher ratio of 25, and average district income of $22,000? 
+  - $(Y| X_1=0, X_2=25, X_3=22)$ = 646.2 - (23.5 * 0) - (0.8 * 25) + (1.7 * 22)
+  - $(Y| X_1=0, X_2=25, X_3=22)$ = 646.2 - (0) - (20) + (37.4)
+  - $(Y| X_1=0, X_2=25, X_3=22)$ = 663.6
+- What's the predicted average reading score for a district that is an ELL majority district, has a student teacher ratio of 19, and average district income of $26,000? 
+  - $(Y| X_1=1, X_2=19, X_3=26)$ = 646.2 - (23.5 * 1) - (0.8 * 19) + (1.7 * 26)
+  - $(Y| X_1=1, X_2=19, X_3=26)$ = 646.2 - (23.5) - (15.2) + (44.2)
+  - $(Y| X_1=1, X_2=19, X_3=26)$ = 651.7
+ 
+# Reading Empirical Regression Results
+
+<br>
+
+__Our first example of empirical regression results__
+
+Powers, J. M. (2004). High-Stakes Accountability and Equity: Using Evidence From California’s Public Schools Accountability Act to Address the Issues in Williams v. State of California. _American Educational Research Journal_, 41(4), 763–795.
+
+<br>
+
+  - RQ: What is relationship between school resource variables and school-level academic performance index (API)?
+  - Does not frame article as "causal inference" but Powers is doing exactly what we have learned in this lecture/class!
+    - Attempts to analyze the effect of school resources (X) on the academic achievement of schools (Y) by controlling for variables that would be "systematically related" to the independent variables of interest and have an effect on the dependent variable
+    - Does not have all possible controls to get to a "causal effect" equivalent to what we would estimate if the study was designed as an randomized control experiment. 
+
+
+<br>
+
+__How to read a methods section...__
+
+- The format of quantitative empirical research is pretty "standardized", which makes it easy to read as you get more experience...
+- Methods section usually outlines the data used, sample, variables, and the methods used
+
+<br>
+
+For Powers (2004):
+
+- Data: uses data similar to our `caschools` (ours is district level; Powers uses school-level!)
+- Sample: All CA schools that were assigned an API score 
+  - 97% of full population of CA schools
+- Variables: provides details on all the variables in the model!
+  - Pay attention to how variables are constructed! 
+  - Note that sometimes we don't have a variable we need, so we use a "proxy." It's the authors' responsibility to convince readers why the variable used is a good enough proxy for the unavailable variable needed
+  - Empirical studies use a lot of variables in the model which are difficult to keep track of; so they are often "grouped" into categories (e.g., student characteristics, school resources, etc)
+- Methodology: This section varies depending on the sophistication of the method. 
+  - Sometimes they write out the full population regression model, sometimes they don't 
+  - Linear regression is considered simple so in most cases they don't
+  
+<br>
+
+__How to read results (descriptives)...__
+  
+  
+- Quantitative research studies __nearly always__ present the descriptive statistics of all variables used in a table
+  - In most cases the mean and standard deviation is sufficient; if it's substantively important sometimes min and max (or can be covered within text of the variables sub-section of the methods section)
+  - Sometimes authors dedicate space within text to explaining descriptive stats and sometimes they don't
+    - Usually depends on how substantively important they are...
+    - Most folks can read the table so authors will avoid spending too much limited space on descriptive statistics
+    
+![](powers_table1.png)
+
+  
+
+<br>
+
+__How to read results (regression models)...__
+
+- The way in which regression results are presented is well standardized across all fields and journals! [some exceptions]
+-  Regression tables usually show the beta coefficient and standard error (usually in parentheses) for each independent variable
+- Columns are individual models!
+  - Tables usually start with a simple regression model in the first column that only includes the main independent variable(s) of interest: "model 1"
+  - Then add control variables incrementally; sometimes done in groupings
+  - This allows the author to show the "progression" in the models as variables are added in (particularly important for descriptive research to see changes in model fit statistics)
+  - Although, sometimes models in separate columns can also indicate various samples; look at the headings/read the authors description of table!
+- Read the table notes!
+  - Provide the key for interpreting the significance levels of p-values as denoted by asterisks ( $*p\le 0.05$, $**p\le 0.01$,$***p\le 0.001$ )
+  - Will also tell you what the reference category is for categorical variables!
+  - Other useful information
+
+<br>
+
+__How to read results (regression models)...__
+
+![](POWERS_REGTABLE.png)
+
+<br>
+
+__Powers (2004)__
+
+- Table 2:  Nested Regression Models Using 1999 API Index as DV, pg. 781
+  - The most "standard way" to format regression results
+  - You show the "progression" towards your final regression model via multiple models
+    - Intercept-only model (no independent variables) [Powers didnt show this]
+    - Model 1 can have your independent variable of interest (standard for program eval) or some variables (Powers did student characteristics)
+    - Models 2+... shows the addition of control variables 
+  - Shows beta coefficients, standard errors, and significant levels!
+- Does show model fit statistics!
+  - Powers is not writing from a program evaluation standpoint
+  - Rather she's trying to show how variables from Williams Case explain (predict!) API scores
+  - In this case, measures of model fit are important
+  - $R^2$ increases from Model 1 to Model 2
+    - Change in $R^2$ doesn't mean that Williams case IVs add "little" explanation; see pg 782!
+  - In text, she mentions overall F-test is significant from Model 1 to Model 2
+  - F-test is related to $R^2$
+    - $H_0$: model with no independent variables (or limited IVs) fits the data just as well as model with full variables
+    - $H_a$: model with more variables fits the data better than model with no IVs
+
+<br>
+
+__Powers (2004)__
+
+- Interpretation for Table 2 for Williams Case Variables
+- In text, she hardly interprets beta coefficients beyond "significance and direction" 
+  - Only sometimes mentions the magnitude of the coefficient 
+  - This approach is common in "descriptive research" 
+
+- __Teacher training__ (reference group is fully credentialed teachers)
+  - __Emergency Credentialed $\hat{\beta}$ Coefficient: -1.12*** SE= 0.09__
+    - Interpretation: "On average, one-percentage-point increase in a school teaching staff’s proportion of emergency credentialed teachers (as opposed to fully credentialed teachers) is associated with a 1.12 point decrease in API score, holding all covariates constant"
+- __Teacher Experience__ 
+  - __Years teaching $\hat{\beta}$ Coefficient: .80** SE= 0.26__
+    - Interpretation: "A one year increase in a school teaching staff's average years of experience, on average, is associated with a 0.80 point increase in API score, holding all covariates constant"  
+- __Teacher Education__ (reference group is less than M.A)
+  - __Greater than MA $\hat{\beta}$ Coefficient: .42*** SE= 0.06__
+    - Interpretation: "On average, a one-percentage-point increase in a school teaching staff’s proportion of teachers with greater than MA degree (as opposed to lower than MA teachers) is associated with a 0.42 point increase in API score, holding all covariates constant"
+- __School Calendar__ (reference group is traditional year)
+  - __Concept 6 $\hat{\beta}$ Coefficient: -34.46*** SE= 4.52__
+    - Interpretation: "On average, being a school with a Concept 6 Calendar as opposed to a Traditional Calendar is associated with a 34.46 point decrease in API score, holding all covariates constant"
+
+- __Textbooks__
+  - __Per-pupil textbook expenditures $\hat{\beta}$ Coefficient: .11*** SE=0.003__
+    - Interpretation: "A \$1 increase in per-pupil expenditures for textbooks is associated with a 0.1 point increase in API score, holding all covariates constant"  
+    - Interpretation: "A \$10 increase in per-pupil expenditures for textbooks, on average, is associated with a 1 point increase in API score, holding all covariates constant"  
+    - Interpretation: "A \$100 increase in per-pupil expenditures for textbooks, on average, is associated with a 10 point increase in API score, holding all covariates constant"  
+
+
+
+<br>
+
+__Powers (2004): Overall RQ, Analytical and Writting Approach__
+    
+    
+- __Empirical Strategy__
+  - Powers is not trying to establish a causal effect of school/resource characteristics on API score explicitly (impossible given the observational data)
+  - But she is trying to isolate the Williams Case variables "relationship" on schools' academic performance by controlling for other factors that may be driving variation in schools' academic performance!
+    - See on See pg.766 for rationale in including control variables
+    - "To ensure the findings related to Williams variables are robust, that is, they are not systematically related to student, school, and district characteristics"
+  - But still analyzing "descriptive relationships", not "causal relationships"
+- __Literature Review Strategy__
+  - HOW you format your literature review depends on your RQ and what is substantively important
+  (1) Focus on reviewing scholarship about your X (most econometrics studies do this)
+      - Ex: What is the effect of receiving a Pell Grant on achievement?; review scholarship on the effect of Pell grants on all student outcomes (GPA, graduation, labor market, etc.)
+  (2) Focus on reviewing scholarship about your Y (many prediction/descriptive studies do this)
+      - EX: What is the (predicted) probability of a student persisting into their 2nd year of college?; review scholarship on what we know about persistence (more likely to persist if you're involved on campus, live on campus, etc.)
+  (3) Focus on reviewing scholarship that specifically speaks to the _relationship_ between X and Y
+      - Ex: POWERS (2004,  p.772): What do we know about the relationship between school resources and academic achievement 
+  
+<br>
+
+__Powers (2004)__
+  
+- __Data__: California DOE Data, school-level; Census Data; Federal School Data
+  - Dependent variable(s): ? 
+  - Independent variable(s) of interest: ?
+    - Hint there are three groupings and they are related to the Williams Case
+  - Control Variables: ?
+    - Hint there are two groupings!
+    - Some control variables left out due to "collinearity"
+    - __Collinearity__: When two or more of your independent variables are highly correlated; so correlated that adding just one of them explains both of their "effect" on the dependent variable. In other words including BOTH independent variables that are highly correlated is redundant and takes up statistical power
+    - R will automatically drop variables if there is collinearity!
+    
+- __Model__: OLS Linear Regression 
+  - Powers doesn't write out the equation for the study!
+  - Let's write it ourselves! [at least for the three groups of variables for Williams Case]
+  
+<br>
+
+__Why do I like this piece of scholarship?__
+
+- The methods are simple!
+  - Impactful research does not need to have complex methods!
+  - Study does not use any analyses/methods beyond what we have learned so far in an introductory regression class; yet it is published in the AERA flagship journal 
+- Example of how to deal with "metrics" that I fundamentally disagree with but are part of our educational reality
+  -  Metrics like SAT/ACT scores, standardized K-12 test, are "firmly entrenched part of the political landscape" that schools and students must navigate 
+  - In many cases, they are institutionalized within federal, state, and university/school policies
+  - "Aim is to make a strong argument for equity by marshaling the very data that dominate the political discourse" (p. 765)
+- Direct response to policies
+- Cool understanding of legal logic when it comes to education finance!
+
+
+# References
