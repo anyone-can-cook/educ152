@@ -1496,16 +1496,16 @@ Interpretation of $\hat{\beta_k}$ (for categorical variable $X_k$)
 - Generic:
   - "being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_k}$ change in $Y$, holding the of value all other $X$ variables constant"
   - Conceptually, we have two categorical control variables in our model; the first is sex, where the reference group is "male"; the second is race, where the reference group is "white"
-- $X_{3i}$ (identifies as female); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')`
+- $X_{3i}$ (identifies as female); $\hat{\beta_3}=$ `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')`
   - being female as opposed to male is associated with a `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')` change in 2011 earnings, holding the of value all other $X$ variables constant
-- $X_{4i}$ (identifies as Asian or Pacific Islander (API)); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')`
+- $X_{4i}$ (identifies as Asian or Pacific Islander (API)); $\hat{\beta_4}=$ `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')`
   - being API as opposed to white is associated with a `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')` change in 2011 earnings, holding the of value all other $X$ variables constant
-- $X_{5i}$ (identifies as Black); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`
+- $X_{5i}$ (identifies as Black); $\hat{\beta_5}=$ `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`
   - being Black as opposed to wrhite is associated with a `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`, holding the of value all other $X$ variables constant
-- $X_{6i}$ (identifies as Latinx); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')`
+- $X_{6i}$ (identifies as Latinx); $\hat{\beta_6}=$ `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')`
   - You do the rest!
-- $X_{7i}$ (identifies as Native American); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[8,1], digits =0),big.mark = ',')`
-- $X_{8i}$ (identifies as two or more races;  $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[9,1], digits =0),big.mark = ',')`
+- $X_{7i}$ (identifies as Native American); $\hat{\beta_7}=$ `r format(round(summary(intern_mod2)$coefficients[8,1], digits =0),big.mark = ',')`
+- $X_{8i}$ (identifies as two or more races;  $\hat{\beta_8}=$ `r format(round(summary(intern_mod2)$coefficients[9,1], digits =0),big.mark = ',')`
 
 
 
