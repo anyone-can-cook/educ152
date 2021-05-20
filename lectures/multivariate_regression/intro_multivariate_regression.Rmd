@@ -136,8 +136,8 @@ rm(df_star_panel) # comment this line out if you want to keep data frame df_star
 
   #NOTE: this script will take 30 seconds to a minute to run because loading a dataset w/ about 16,000 observations and 4,000 variables from a website
 
-  source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/els/read_els_by_pets.R'))
-    #source(file = file.path('.','..','..','scripts','els','read_els_by_pets.R'))
+  #source(file = url('https://github.com/anyone-can-cook/educ152/raw/main/scripts/els/read_els_by_pets.R'))
+    source(file = file.path('.','..','..','scripts','els','read_els_by_pets.R'))
       #list.files(path = file.path('.','..','..','scripts','els'))
 
 # Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables
@@ -461,192 +461,282 @@ __Multivariate regression in Econometrics vs traditional social science statisti
 
 ## Interpretation
 
+<br>
+
+Research question we will use to practice interpretation of multivariate regression, using data frame `df_els_stu_fac`:
+
+[observational design, categorical $X$] What is the effect of having an internship or co-op job ($X$) (in 2005-06) on subsequent earnings ($Y$) (in 2011)? 
+
+- $X$ is `f3ern2011`
+  - label: `r attr(df_els_stu_fac$f2intern0506, which = 'label')`
+  - *Note*: 2005-06 would be sophomore year for students who graduated HS in spring 2004 and immediately entered postsecondary education
+  - variable `df_els_stu_fac$f2intern0506` is a factor variable with factor levels `'no'` and `'yes'`
+- $Y$ is `f3ern2011`
+  - label: `r attr(df_els_stu_fac$f3ern2011, which = 'label')`
+- sample: students who were enrolled in postsecondary education in 2005-06 (this is when question about internship was asked)
+  - `filter(f2enroll0506=='yes')`
+
+<br>
+_Identify a couple of "control variables" (often referred to "covariates") to add to our model__ 
+
+We want to recreate "experimental conditions" (students randomly assigned to internship)
+
+- Our goal is: after controlling for covariates, students who participate in internships are, on average, the same as students who do not participate in internships with respect to 2011 earnings, exepct for participation in internship
+- We include control variables that we think (based on logical argument, past research, descriptive stats) satisfy both conditions of omitted variable bias:
+  - For omitted variable bias to occur, the omitted variable “Z” must satisfy two conditions
+    - (1) $Z$ affects value of Y (i.e. Z is part of $u_i$)
+    - (2) *and* $Z$ has a relationship with $X$
+    
+We'll add one continuous control variable and two categorical control variable
+
+- [continuous] Let's pretend that `bytxrstd` (standardized reading test score) is a measure of high school student achievement
+  - Does high school student achievement affect subsequent earnings? (omitted variable bias condition 1)
+    - Yes!
+  - Might high school student achievement have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+    - Seems possible. Maybe students with higher achievement are more likely to seek out internships (but it could be the opposite!); maybe employers are more likely to give internship opportunities to students with higher achievement
+- [categorical control] sex (`f1race_v2`; with values "Male" and "Female")
+  - Does sex affect subsequent earnings? (omitted variable bias condition 1)
+    - Yes; well documented sex/gender discrimination in pay
+  - Might sex have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+    - Seems possible that there is sex/gender discrimination in who gets access to internships
+- [categorical control] race (`f1race_v2`)
+  - Does race affect subsequent earnings? (omitted variable bias condition 1)
+    - Yes; well documented racial discrimination in pay
+  - Might race have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+    - Seems very plausible that there is racial discrimination in who gets access to internships
+- Some brief descriptive statistics of these control variables for our analysis sample
+  - note that for categorical "factor" class variables; the category with the lowest underlying integer value is automatically the "reference" group
+
+```{r}
+# reading test score
+df_els_stu_fac %>% filter(f2enroll0506=='yes') %>% summarize(
+  min_read = min(bytxrstd, na.rm = TRUE),
+  mean_read = mean(bytxrstd, na.rm = TRUE),
+  max_read = max(bytxrstd, na.rm = TRUE),
+  sd_read = sd(bytxrstd, na.rm = TRUE)
+)
+
+# sex
+df_els_stu_fac %>% filter(f2enroll0506=='yes') %>% count(f1sex)
+
+# sex, show underlying integer values
+df_els_stu_fac %>% filter(f2enroll0506=='yes') %>% count(as.integer(f1sex))
+
+# race
+df_els_stu_fac %>% filter(f2enroll0506=='yes') %>% count(f1race_v2)
+
+# race, show underlying integer values
+df_els_stu_fac %>% filter(f2enroll0506=='yes') %>% count(as.integer(f1race_v2))
+```
+
+<br>
 
 
-ADD IN A RESEARCH QUESTION THAT WE ARE USING FOR CLASS
+__Review interpretation for Bivariate regression model__
 
-2. [observational design, categorical $X$] What is the effect of having an internship or co-op job ($X$) (in 2005-06) on 2011 earnings ($Y$)? [for students who were enrolled in postsecondary education in 2005-06]
-    - $Y$ is `f3ern2011`
-    - $X$ is `f2intern0506` (this would be sophomore year for students who graduated HS in spring 2004 and immediately entered postsecondary education)
-      - `f2intern0506==0`: no co-op/internship
-    - sample: `f2enroll0506=='yes'`
-
+- run bivariate regression
 ```{r}
 intern_mod1 <- lm(formula = f3ern2011 ~ f2intern0506, data = df_els_stu_fac %>% filter(f2enroll0506=='yes'))
-
 summary(intern_mod1)
 ```
-```{r}
-intern_mod2 <- lm(formula = f3ern2011 ~ f2intern0506 + f1pared + f3tzps1slc + bytxrstd + bytxmstd + f1sex + f1race, data = df_els_stu_fac %>% filter(f2enroll0506=='yes'))
 
+<br>
+
+
+- Population linear regression model (bivariate regression)
+  - $Y_i = \beta_0 + \beta_1 X_{1i}+ u_i$, where:
+    - $Y_i$: is earnings for student $i$ in 2011  
+    - $X_{1i}$: is a dichotomous categorical variable indicating whether student $i$ had an internship in the 2005-06 academic year
+    - $u_i$ is all variables that affect $Y_i$ but were not included in our model
+- OLS prediction line
+  - without estimates
+    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i$
+  - with estimates
+    - $\hat{Y_i} =$  `r format(round(summary(intern_mod1)$coefficients[1,1], digits =0),big.mark = ',')` + `r format(round(summary(intern_mod1)$coefficients[2,1], digits =0),big.mark = ',')` $\times X_i$
+- Interpretation of $\hat{\beta_1}$ for categorical $X_1$
+  - Generic: 
+    - "being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_1}$ change in $Y$"
+  - Specific interpretation of $\hat{\beta_1}=$ `r format(round(summary(intern_mod1)$coefficients[2,1], digits =0),big.mark = ',')`
+    - having an internship as opposed to not having an internship is, on average, associated with a `r format(round(summary(intern_mod1)$coefficients[2,1], digits =0),big.mark = ',')` dollar change in annual earnings
+- Interpretation of $\hat{\beta_0}$
+  - Generic:
+    - $\hat{\beta_0}$ is the estimated average value of the outcome, $\hat{Y_i}$, when all independent variables $X_{1i},X_{2i},\ldots X_{ki}$ equal `0`
+    - *Note*: for categorical independent variables, "equals `0`" means being the category associated with the reference group
+  - Specific interpretation of $\hat{\beta_0}=$ `r format(round(summary(intern_mod1)$coefficients[1,1], digits =0),big.mark = ',')`
+    - The estimated average 2011 earnings for students who did not have an internship is `r format(round(summary(intern_mod1)$coefficients[1,1], digits =0),big.mark = ',')`
+
+
+<br>
+
+
+__Multivariate regression__
+
+run multivariate regression model, adding control variables `bytxrstd` (reading achievement, continuous), `f1sex` (sex, categorical), and `f1race_v2` (race, categorical) to the model
+
+- syntax for `lm` function: `lm(formula = yvar ~ xvar1 + xvar2 + xvar3, data = data_frame_name)`
+
+```{r}
+intern_mod2 <- lm(formula = f3ern2011 ~ f2intern0506 + bytxrstd  + f1sex + f1race_v2, data = df_els_stu_fac %>% filter(f2enroll0506=='yes'))
 summary(intern_mod2)
 ```
+<br>
 
+- Population linear regression model (multivariate regression)
+  - $Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i$, where:
+    - $Y_i$: is earnings for student $i$ in 2011    
+    - $X_{1i}$: is a dichotomous categorical variable indicating whether student $i$ had an internship in 2005-06
+    - $X_{2i}$: (continuous) high school reading test score
+    - $X_{3i}$: (dichotomous) student $i$ identifies as female
+    - $X_{4i}$: (dichotomous) student $i$ identifies as Asian or Pacific Islander (API)
+    - $X_{5i}$: (dichotomous) student $i$ identifies as Black 
+    - $X_{6i}$: (dichotomous) student $i$ identifies as Latinx
+    - $X_{7i}$: (dichotomous) student $i$ identifies as Native American
+    - $X_{8i}$: (dichotomous) student $i$ identifies as two or more races 
+    - $u_i$ is all variables that affect $Y_i$ but were not included in our model
+- OLS prediction line
+  - without estimates
+    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i + \hat{\beta_2} X_{2i}+ \hat{\beta_3} X_{3i}+ \hat{\beta_4} X_{4i}+ \hat{\beta_5} X_{5i}+ \hat{\beta_6} X_{6i}+ \hat{\beta_7} X_{7i}+ \hat{\beta_8} X_{8i}$
+  - with estimates
+    - $\hat{Y_i} =$  `r format(round(summary(intern_mod2)$coefficients[1,1], digits =0),big.mark = ',')` + `r format(round(summary(intern_mod2)$coefficients[2,1], digits =0),big.mark = ',')` $\times X_{1i}$ + `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')` $\times X_{2i}$ + `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')` $\times X_{3i}$ +  `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')` $\times X_{4i}$ + `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`  $\times X_{5i}$ +  `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')` $\times X_{6i}$ + `r format(round(summary(intern_mod2)$coefficients[8,1], digits =0),big.mark = ',')`  $\times X_{7i}$ +  `r format(round(summary(intern_mod2)$coefficients[9,1], digits =0),big.mark = ',')` $\times X_{8i}$
+    
+<br>
 
+__Interpretation $\hat{\beta_k}$ __
 
-```{r}
-df_els_stu_fac %>% glimpse()
-```
+<br>
 
-RQ [observational design, continuous $X$] What is the effect of amount borrowed in student loans ($X$) on earnings ($Y$) for respondents not currently enrolled in postsecondary education
-    - $X$ var is `f3totloan`; $Y$ var is `f3ern2011`
-    - sample: `f3a01d=='No'`
+Interpretation of $\hat{\beta_k}$ from multivariate regression is almost exactly the same as interpretation from bivariate regression
 
+Interpretation of $\hat{\beta_k}$ (for continuous variable $X_k$)
 
-```{r, include = FALSE, eval = FALSE}
-# loans (X) and earnings (Y)
-df_els_stu_fac %>% filter(f3a01d=="No") %>%  ggplot(aes(x=f3totloan, y=f3ern2011)) + geom_point() + stat_smooth(method = 'lm')
+- Generic: 
+  - "a one-unit increase in $X_k$ is associated with a $\hat{\beta_k}$ change in Y, __holding the value of all other $X$ variables constant__"
+- For high school reading test score $X_{2i}$, $\hat{\beta_2}=$ `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')`
+  - a one-point increase in high school reading test score is associated with a `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')` change in 2011 earnings, holding the value of all other $X$ variables constant
+  
 
-summary(lm(formula = f3ern2011 ~ f3totloan + f3tzhighdeg, data = df_els_stu_fac %>% filter(f3a01d=="No")))
+Interpretation of $\hat{\beta_k}$ (for categorical variable $X_k$)
 
-summary(lm(formula = f3ern2011 ~ f3totloan + f3ps1ctr, data = df_els_stu_fac %>% filter(f3a01d=="No", f3ps1ctr != 'Missing')))
+- Generic:
+  - "being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_k}$ change in $Y$,  __holding the of value all other $X$ variables constant__"
+- For participation in internship $X_{1i}$, $\hat{\beta_1}=$ `r format(round(summary(intern_mod2)$coefficients[2,1], digits =0),big.mark = ',')`
+  - having an internship as opposed to not having an internship is, on average, associated with a `r format(round(summary(intern_mod2)$coefficients[2,1], digits =0),big.mark = ',')` dollar change in annual earnings, holding the value of all other $X$ variables constant
 
-f3ps1ctr
-df_els_stu_fac %>% count(f3ps1ctr)
-
-summary(lm(formula = f3ern2011 ~ f3totloan + f3ps1ctr + f3tzhighdeg, data = df_els_stu_fac %>% filter(f3a01d=="No", f3ps1ctr != 'Missing')))
-
-summary(lm(formula = f3ern2011 ~ f3totloan + f3tzps1slc + f3tzhighdeg, data = df_els_stu_fac %>% filter(f3a01d=="No", f3ps1ctr != 'Missing')))
-
-
-```
-
-
-
-
-MODIFY FOR YOUR RQ: EFFECT OF INTERNSHIP ON EARNINGS
-
-- ADD ONE CONTINUOUS CONTROL VARIABLE; 
-- THEN GO THROUGH PREDICITONS; INTERPRETATION; ETC.; 
-- ADD LEVEL 2 HEADING ON INTERPRETATION
-- ADD LEVEL 2 HEADING ON PREDICTION
-WHEN IT IS ABOUT INTERPRETATION WITH CATEGORICAL X, ADD A CATEGORICAL X CONTROL WITH MORE THAN 2 CATEGORIES;
-- AT END, RIGHT BEFORE "READING EMPIRICAL RESEARCH", SHOW THEM HOW TO ADD "CONTROL" VARIABLES WITH A FOCUS ON OMITTED VARIABLE BIAS
-- HAVE THEM DO A BRIEF HOMEWORK ASSIGNMENT WHERE THEY:
-  - RUN A REGRESSION [YOU GIVE IT TO THEM]
-  - WRITE OUT POPULATION LINEAR REGRESSION MODEL
-  - WRITE OUT OLS REGRESSION LINE WITHOUT ESTIMATES
-  - WRITE OUT OLS REGRESSION LINE WITH ESTIMATES
-  - INTERPRET BETAS
-  - DO PREDICTIONS
-
-- Research question: What is the effect of student teacher ratio on student reading test scores?
-- __Simple/Bivariate regression__
-  - $Y_i = \beta_0 + \beta_1X_{1i} + u_i$
-  - Where: 
-    - Y= reading test scores
-    - $X_1$ = student teacher ratio
-  - General interpretation of $\hat{\beta_1}$: The average effect of a one-unit
-increase in $X_1$ is associated with a $\hat{\beta_1}$ change in Y
-    - The average effect of a one-unit
-increase in student teacher ratio is associated with a 2.62 decrease in district average reading test scores
-- __Multivariate regression__
-  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i$
-  - Where: 
-    - Y= student test scores
-    - $X_1$ = student teacher ratio
-    - $X_2$ = % ELL [from last week, established %ELL meets both conditions of omitted variable bias]
-  - General interpretation of $\hat{\beta_1}$: The average effect of a one-unit increase in $X_1$ is associated with a $\hat{\beta_1}$ change in Y, __holding the value of $X_2$ constant__
-    - The average effect of a one-unit increase in student teacher ratio is associated with a 1.29 decrease in district average reading test scores, __holding the value of %ELL students constant__
 
 <br>
 
 __What does "holding constant" mean?__
 
-- RQ: What is the effect of student teacher ratio on reading test scores?
-  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i$
-  - Where: Y= student test scores, $X_1$ = student teacher ratio, $X_2$ = % ELL
-- Setup:
-  - We think student test scores go down if there's a greater percentage of ELL students in the classroom
-    - First condition of omitted variable bias ( Z affects Y)
-  - We think there is a negative relationship between percentage of ELL students in the classroom and student-teacher ratio
-    - Second condition of omitted variable bias ( Z has a relationship with X)
-- Problem:
-  - We think student teacher ratio and percentage of ELL move together
-  - We want to know the relationship between reading scores and student teacher ratio when "percent ELL" is not allowed to move!
-- "Holding the value of $X_2$ constant"
+- "Holding the value of all other $X$ variables constant" means to estimate the relationship between $X_1$ (internship) and $Y$ when we we don't allow the values of $X_2$ (high school reading test score) to vary (and we don't allow any other $X$ variables to vary)
+- In other words, we analyze the relationship between having an internship $X_1$ and earnings ($Y$) for students who have the same value for high school reading test score ($X_2$), the same value for sex ($X_3$), the same value for "identify as API" ($X_4$), etc.
+- Mathematically, "holding constant" is achieved through calculus (partial derivatives)
+
+<br>
+
+__Relationship between "holding constant" and attempting to recreate experimental conditions__
+
+- We use multivariate regression to try to recreate experimental conditions (students randomly assigned to participate in internships)
+- In a true experiment, both students randomly assigned to an internship and students randomly assigned to not have an internship would, on average, have the same values for other variables that affect earnings $Y$ (e.g,. gender, race, parental income)
+- In multivariate regression, we add "control variables" (variables that satisfy both conditions of omitted variable bias) so that we can examine the relationship between having an internship ($X_1$) and earnings ($Y$) for students who have the same value for other variables thought to affect earnings
+
   - Means to estimate the relationship between $X_1$ and Y when we don't allow the value of $X_2$ to vary
   - In other words, we analyze the relationship between student teacher ration ($X_1$) and reading test scores (Y) for applicants that have the same value of percent ELL ($X_2$) [calculus: partial derivatives!]
   
 <br>
 
-__What does "holding constant" mean? Another example....__
+__More practice interpreting $\hat{\beta_k}$ (for categorical $X$)__
 
-- RQ: What is the relationship between years of education(X1) on income(Y), after controlling for years of work experience (X2)?
-- General interpretation of $\hat{\beta_1}$:
-  - The average effect of a one-unit increase in X1 is a $\hat{\beta_1}$ unit
-increase in Y, holding the value of X2 constant
-- Interpretation of $\hat{\beta_1}$, applied to example
-  - The effect of having one additional year of education (X1) on income (Y), when we don't allow value of "years of experience" (X2) to change
-  - Compare people with 2 years of college versus 3 years of college that have the same years experience to assess the "effect" of an additional year of education on income
-- Said differently: analyze the effect of increasing years of education
-on income for people who have same years of experience
 
-<br>
+- Population linear regression model (multivariate regression)
+  - $Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i$, where:
+    - $Y_i$: is earnings for student $i$ in 2011    
+    - $X_{1i}$: is a dichotomous categorical variable indicating whether student $i$ had an internship in 2005-06
+    - $X_{2i}$: (continuous) high school reading test score
+    - $X_{3i}$: (dichotomous) student $i$ identifies as female
+    - $X_{4i}$: (dichotomous) student $i$ identifies as Asian or Pacific Islander (API)
+    - $X_{5i}$: (dichotomous) student $i$ identifies as Black 
+    - $X_{6i}$: (dichotomous) student $i$ identifies as Latinx
+    - $X_{7i}$: (dichotomous) student $i$ identifies as Native American
+    - $X_{8i}$: (dichotomous) student $i$ identifies as two or more races 
+    - $u_i$ is all variables that affect $Y_i$ but were not included in our model
+- OLS prediction line
+  - without estimates
+    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i + \hat{\beta_2} X_{2i}+ \hat{\beta_3} X_{3i}+ \hat{\beta_4} X_{4i}+ \hat{\beta_5} X_{5i}+ \hat{\beta_6} X_{6i}+ \hat{\beta_7} X_{7i}+ \hat{\beta_8} X_{8i}$
+  - with estimates
+    - $\hat{Y_i} =$  `r format(round(summary(intern_mod2)$coefficients[1,1], digits =0),big.mark = ',')` + `r format(round(summary(intern_mod2)$coefficients[2,1], digits =0),big.mark = ',')` $\times X_{1i}$ + `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')` $\times X_{2i}$ + `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')` $\times X_{3i}$ +  `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')` $\times X_{4i}$ + `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`  $\times X_{5i}$ +  `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')` $\times X_{6i}$ + `r format(round(summary(intern_mod2)$coefficients[8,1], digits =0),big.mark = ',')`  $\times X_{7i}$ +  `r format(round(summary(intern_mod2)$coefficients[9,1], digits =0),big.mark = ',')` $\times X_{8i}$
 
-__Interpreting $\hat{\beta_1}$ for continuous X__
-
-- RQ: What is the effect of student teacher ratio (X1) on average district reading test scores (X2)?
-  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
-  - Where: 
-    - Y= reading test scores
-    - $X_1$ = average district student teacher ratio
-    - $X_2$ = 0/1 majority ELL district [greater than 50% ELL students= non-reference group; less than 50% ELL students=reference group]
-    - $X_3$ = avg district income ($000s)
-- General interpretation of $\hat{\beta_1}$ for continuous X [all are correct/same]
-  - The average effect of a one unit increase in $X_1$ is a $\hat{\beta_1}$ unit change in Y, holding the values of $X_2$ and $X_3$ constant
-  - OR The average effect of a one unit increase in $X_1$ is a $\hat{\beta_1}$ unit change in Y, after controlling for $X_2$ and $X_3$
-  - The average effect of a one unit increase in $X_1$ is a $\hat{\beta_1}$ unit change in Y, holding the values of covariates constant
--  Run regression in R!
-  - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1} X_{1i} + \hat{\beta_2} X_{2i} +  \hat{\beta_3} X_{3i}$
-  - $\hat{Y_i} = 646.2 - 0.8 X_{1i} -23.5 X_{2i} + 1.7 X_{3i}$
-- Specific example interpretation [run regression in R]
-  - The average effect of a one-unit increase in average district student teacher ratio (i.e., one additional student per teacher) is a 0.8 point decrease in average district reading score, holding the values of majority ELL and district average income constant
 
 <br>
 
-__Interpreting $\hat{\beta_1}$ for categorical X__
+Interpretation of $\hat{\beta_k}$ (for categorical variable $X_k$)
 
-- RQ: What is the effect of being a majority ELL district (X1) on average district reading test scores (X2)?
-  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
-  - Where: 
-    - Y= reading test scores
-    - $X_1$ = 0/1 majority ELL [non-reference group], $X_2$ = avg district student teacher ratio; $X_3$ = avg district income ($000s)
-  - __Stylistic Note__: Your main independent variable of interest should always be $X_1$
-- General interpretation of $\hat{\beta_1}$ for categorical X
-  - Being [non-reference group] as opposed to [reference group] is associated with a $\hat{\beta_1}$ unit change in Y, holding the values of $X_2$ and $X_3$ constant
-- Run regression in R [note: same coef values as previous model but in diff order!]
-  - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1} X_{1i} + \hat{\beta_2} X_{2i} +  \hat{\beta_3} X_{3i}$
-  - $\hat{Y_i} = 646.2 - 23.5 X_{1i} -0.8 X_{2i} + 1.7 X_{3i}$
-- Specific interpretation
-  - Reference group vs non Reference group
-    - 0 = non-ELL majority district [lowest value is automatically removed from regression as reference group]
-    - 1 = majority ELL district [non-reference group is kept within regression; this is why the regression output coefficient says __`ell1`__]
-  - Being a majority ELL district as opposed to a non-majority ELL district is associated with a 23.5 point decrease in average district reading scores, holding values of average student-teacher ratio and district average income constant
+- Generic:
+  - "being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_k}$ change in $Y$, holding the of value all other $X$ variables constant"
+  - Conceptually, we have two categorical control variables in our model; the first is sex, where the reference group is "male"; the second is race, where the reference group is "white"
+- $X_{3i}$ (identifies as female); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')`
+  - being female as opposed to male is associated with a `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')` change in 2011 earnings, holding the of value all other $X$ variables constant
+- $X_{4i}$ (identifies as Asian or Pacific Islander (API)); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')`
+  - being API as opposed to white is associated with a `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')` change in 2011 earnings, holding the of value all other $X$ variables constant
+- $X_{5i}$ (identifies as Black); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`
+  - being Black as opposed to wrhite is associated with a `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`, holding the of value all other $X$ variables constant
+- $X_{6i}$ (identifies as Latinx); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')`
+  - You do the rest!
+- $X_{7i}$ (identifies as Native American); $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[8,1], digits =0),big.mark = ',')`
+- $X_{8i}$ (identifies as two or more races;  $\hat{\beta_k}=$ `r format(round(summary(intern_mod2)$coefficients[9,1], digits =0),big.mark = ',')`
+
+
+
 
 <br>
 
-__Prediction still works the same way!__
+__Interpretation of $\hat{\beta_0}$ in multivariate regression__
 
-- RQ: What is the effect of being a majority ELL district (X1) on average district reading test scores (X2)?
-  - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} +  \beta_3X_{3i} + u_i$
-  - Where: 
-    - Y= reading test scores
-    - $X_1$ = 0/1 majority ELL district
-    - $X_2$ = avg district student teacher ratio 
-    - $X_3$ = avg district income ($000s)
-- Run regression in R 
-  - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1} X_{1i} + \hat{\beta_2} X_{2i} +  \hat{\beta_3} X_{3i}$
-  - $\hat{Y_i} = 646.2 - 23.5 X_{1i} -0.8 X_{2i} + 1.7 X_{3i}$
-- What's the predicted average reading score for a district that is a non-ELL majority district, has a student teacher ratio of 25, and average district income of $22,000? 
-  - $(Y| X_1=0, X_2=25, X_3=22)$ = 646.2 - (23.5 * 0) - (0.8 * 25) + (1.7 * 22)
-  - $(Y| X_1=0, X_2=25, X_3=22)$ = 646.2 - (0) - (20) + (37.4)
-  - $(Y| X_1=0, X_2=25, X_3=22)$ = 663.6
-- What's the predicted average reading score for a district that is an ELL majority district, has a student teacher ratio of 19, and average district income of $26,000? 
-  - $(Y| X_1=1, X_2=19, X_3=26)$ = 646.2 - (23.5 * 1) - (0.8 * 19) + (1.7 * 26)
-  - $(Y| X_1=1, X_2=19, X_3=26)$ = 646.2 - (23.5) - (15.2) + (44.2)
-  - $(Y| X_1=1, X_2=19, X_3=26)$ = 651.7
- 
+- Conceptually, the same as interpretation for bivariate regression
+- $\hat{\beta_0}$ is the estimated average value of the outcome, $\hat{Y_i}$, when all independent variables $X_{1i},X_{2i},\ldots X_{ki}$ equal `0`
+  - *Note*: for categorical independent variables, "equals `0`" means being the category associated with the reference group
+- Specific interpretation of $\hat{\beta_0}=$ `r format(round(summary(intern_mod2)$coefficients[1,1], digits =0),big.mark = ',')`
+  - The estimated average 2011 earnings for white, male students who did not have an internship and who got a score of `0` on the high school reading test is `r format(round(summary(intern_mod2)$coefficients[1,1], digits =0),big.mark = ',')`
+
+
+<br>
+
+__Prediction (still works the same way!)__
+
+
+- Population linear regression model (multivariate regression)
+  - $Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i$, where:
+    - $Y_i$: is earnings for student $i$ in 2011    
+    - $X_{1i}$: is a dichotomous categorical variable indicating whether student $i$ had an internship in 2005-06
+    - $X_{2i}$: (continuous) high school reading test score
+    - $X_{3i}$: (dichotomous) student $i$ identifies as female
+    - $X_{4i}$: (dichotomous) student $i$ identifies as Asian or Pacific Islander (API)
+    - $X_{5i}$: (dichotomous) student $i$ identifies as Black 
+    - $X_{6i}$: (dichotomous) student $i$ identifies as Latinx
+    - $X_{7i}$: (dichotomous) student $i$ identifies as Native American
+    - $X_{8i}$: (dichotomous) student $i$ identifies as two or more races 
+    - $u_i$ is all variables that affect $Y_i$ but were not included in our model
+- OLS prediction line
+  - without estimates
+    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i + \hat{\beta_2} X_{2i}+ \hat{\beta_3} X_{3i}+ \hat{\beta_4} X_{4i}+ \hat{\beta_5} X_{5i}+ \hat{\beta_6} X_{6i}+ \hat{\beta_7} X_{7i}+ \hat{\beta_8} X_{8i}$
+  - with estimates
+    - $\hat{Y_i} =$  `r format(round(summary(intern_mod2)$coefficients[1,1], digits =0),big.mark = ',')` + `r format(round(summary(intern_mod2)$coefficients[2,1], digits =0),big.mark = ',')` $\times X_{1i}$ + `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')` $\times X_{2i}$ + `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')` $\times X_{3i}$ +  `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')` $\times X_{4i}$ + `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`  $\times X_{5i}$ +  `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')` $\times X_{6i}$ + `r format(round(summary(intern_mod2)$coefficients[8,1], digits =0),big.mark = ',')`  $\times X_{7i}$ +  `r format(round(summary(intern_mod2)$coefficients[9,1], digits =0),big.mark = ',')` $\times X_{8i}$
+
+<br>
+What is the predicted 2011 earnings for a student who participated in an internship ($X_{1i}=1$), who scored 65 on the high school reading test ($X_{2i}=65$), who identifies as female ($X_{3i}=1$), and who identifies as Latinx ($X_{6i=1}$)?
+
+- $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}\times 1 + \hat{\beta_2} \times 65 + \hat{\beta_3} \times 1 + \hat{\beta_4} \times 0+ \hat{\beta_5} \times 0+ \hat{\beta_6} \times 1 + \hat{\beta_7} \times 0 + \hat{\beta_8} \times 0$
+- $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}\times 1 + \hat{\beta_2} \times 65 + \hat{\beta_3} \times 1 + \hat{\beta_6} \times 1$
+- $\hat{Y_i} =$ `r format(round(summary(intern_mod2)$coefficients[1,1], digits =0),big.mark = ',')` + `r format(round(summary(intern_mod2)$coefficients[2,1], digits =0),big.mark = ',')`$\times 1$ + `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')`$\times 65$ + `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')`$\times 1$ + `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')`$\times 1 = $ `r format(round(summary(intern_mod2)$coefficients[1,1] + summary(intern_mod2)$coefficients[2,1] + summary(intern_mod2)$coefficients[3,1]*65 + summary(intern_mod2)$coefficients[4,1] + summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')`
+
+
+<br>
+What is the predicted 2011 earnings for a student who participated in an internship ($X_{1i}=1$), who scored 45 on the high school reading test ($X_{2i}=65$) and who identifies as white, who identifies as male?
+
+- $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}\times 1 + \hat{\beta_2} \times 45 + \hat{\beta_3} \times 0 + \hat{\beta_4} \times 0+ \hat{\beta_5} \times 0+ \hat{\beta_6} \times 0 + \hat{\beta_7} \times 0 + \hat{\beta_8} \times 0$
+- $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}\times 1 + \hat{\beta_2} \times 45$
+- $\hat{Y_i} =$ `r format(round(summary(intern_mod2)$coefficients[1,1], digits =0),big.mark = ',')` + `r format(round(summary(intern_mod2)$coefficients[2,1], digits =0),big.mark = ',')` $\times 1 +$ `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')` $\times 45 =$ `r format(round(summary(intern_mod2)$coefficients[1,1] + summary(intern_mod2)$coefficients[2,1] + summary(intern_mod2)$coefficients[3,1]*45, digits =0),big.mark = ',')`
+
+
 # Reading Empirical Regression Results
 
 <br>
@@ -706,26 +796,15 @@ __How to read results (regression models)...__
 
 - The way in which regression results are presented is well standardized across all fields and journals! [some exceptions]
 -  Regression tables usually show the beta coefficient and standard error (usually in parentheses) for each independent variable
-- Columns are individual models!
+- Columns are individual models
   - Tables usually start with a simple regression model in the first column that only includes the main independent variable(s) of interest: "model 1"
   - Then add control variables incrementally; sometimes done in groupings
   - This allows the author to show the "progression" in the models as variables are added in (particularly important for descriptive research to see changes in model fit statistics)
-  - Although, sometimes models in separate columns can also indicate various samples; look at the headings/read the authors description of table!
-- Read the table notes!
+  - Although, sometimes models in separate columns can also indicate various samples; look at the headings/read the authors description of table
+- Read the table notes
   - Provide the key for interpreting the significance levels of p-values as denoted by asterisks ( $*p\le 0.05$, $**p\le 0.01$,$***p\le 0.001$ )
   - Will also tell you what the reference category is for categorical variables!
   - Other useful information
-
-<br>
-
-__How to read results (regression models)...__
-
-![](POWERS_REGTABLE.png)
-
-<br>
-
-__Powers (2004)__
-
 - Table 2:  Nested Regression Models Using 1999 API Index as DV, pg. 781
   - The most "standard way" to format regression results
   - You show the "progression" towards your final regression model via multiple models
@@ -733,26 +812,20 @@ __Powers (2004)__
     - Model 1 can have your independent variable of interest (standard for program eval) or some variables (Powers did student characteristics)
     - Models 2+... shows the addition of control variables 
   - Shows beta coefficients, standard errors, and significant levels!
-- Does show model fit statistics!
-  - Powers is not writing from a program evaluation standpoint
-  - Rather she's trying to show how variables from Williams Case explain (predict!) API scores
-  - In this case, measures of model fit are important
-  - $R^2$ increases from Model 1 to Model 2
-    - Change in $R^2$ doesn't mean that Williams case IVs add "little" explanation; see pg 782!
-  - In text, she mentions overall F-test is significant from Model 1 to Model 2
-  - F-test is related to $R^2$
-    - $H_0$: model with no independent variables (or limited IVs) fits the data just as well as model with full variables
-    - $H_a$: model with more variables fits the data better than model with no IVs
+  
+<br>
+
+![](POWERS_REGTABLE.png)
 
 <br>
 
-__Powers (2004)__
+Interpretation for Table 2 for Williams Case Variables
 
-- Interpretation for Table 2 for Williams Case Variables
 - In text, she hardly interprets beta coefficients beyond "significance and direction" 
   - Only sometimes mentions the magnitude of the coefficient 
   - This approach is common in "descriptive research" 
-
+- Dependent variable, $Y_i$ is "Academic performance index" for school $i$
+  - "dependent variable for all analyses is the state constructed API index. This summary score for each school was constructed by weighting student scores in each content area of the SAT-9 test by their national percentile ranking (NPR), and then weighting each content area to create an overall score (California Department of Education Office of Policy and Evaluation, 2000)..."
 - __Teacher training__ (reference group is fully credentialed teachers)
   - __Emergency Credentialed $\hat{\beta}$ Coefficient: -1.12*** SE= 0.09__
     - Interpretation: "On average, one-percentage-point increase in a school teaching staff’s proportion of emergency credentialed teachers (as opposed to fully credentialed teachers) is associated with a 1.12 point decrease in API score, holding all covariates constant"
@@ -772,59 +845,19 @@ __Powers (2004)__
     - Interpretation: "A \$10 increase in per-pupil expenditures for textbooks, on average, is associated with a 1 point increase in API score, holding all covariates constant"  
     - Interpretation: "A \$100 increase in per-pupil expenditures for textbooks, on average, is associated with a 10 point increase in API score, holding all covariates constant"  
 
+- Table 2 shows model fit statistics!
+  - Powers is not writing from a program evaluation standpoint
+  - Rather she's trying to show how variables from Williams Case explain (predict!) API scores
+  - In this case, measures of model fit are important
+  - $R^2$ increases from Model 1 to Model 2
+    - Change in $R^2$ doesn't mean that Williams case IVs add "little" explanation; see pg 782!
+  - In text, she mentions overall F-test is significant from Model 1 to Model 2
+  - F-test is related to $R^2$
+    - $H_0$: model with no independent variables (or limited IVs) fits the data just as well as model with full variables
+    - $H_a$: model with more variables fits the data better than model with no IVs
 
 
 <br>
-
-__Powers (2004): Overall RQ, Analytical and Writting Approach__
-    
-    
-- __Empirical Strategy__
-  - Powers is not trying to establish a causal effect of school/resource characteristics on API score explicitly (impossible given the observational data)
-  - But she is trying to isolate the Williams Case variables "relationship" on schools' academic performance by controlling for other factors that may be driving variation in schools' academic performance!
-    - See on See pg.766 for rationale in including control variables
-    - "To ensure the findings related to Williams variables are robust, that is, they are not systematically related to student, school, and district characteristics"
-  - But still analyzing "descriptive relationships", not "causal relationships"
-- __Literature Review Strategy__
-  - HOW you format your literature review depends on your RQ and what is substantively important
-  (1) Focus on reviewing scholarship about your X (most econometrics studies do this)
-      - Ex: What is the effect of receiving a Pell Grant on achievement?; review scholarship on the effect of Pell grants on all student outcomes (GPA, graduation, labor market, etc.)
-  (2) Focus on reviewing scholarship about your Y (many prediction/descriptive studies do this)
-      - EX: What is the (predicted) probability of a student persisting into their 2nd year of college?; review scholarship on what we know about persistence (more likely to persist if you're involved on campus, live on campus, etc.)
-  (3) Focus on reviewing scholarship that specifically speaks to the _relationship_ between X and Y
-      - Ex: POWERS (2004,  p.772): What do we know about the relationship between school resources and academic achievement 
-  
-<br>
-
-__Powers (2004)__
-  
-- __Data__: California DOE Data, school-level; Census Data; Federal School Data
-  - Dependent variable(s): ? 
-  - Independent variable(s) of interest: ?
-    - Hint there are three groupings and they are related to the Williams Case
-  - Control Variables: ?
-    - Hint there are two groupings!
-    - Some control variables left out due to "collinearity"
-    - __Collinearity__: When two or more of your independent variables are highly correlated; so correlated that adding just one of them explains both of their "effect" on the dependent variable. In other words including BOTH independent variables that are highly correlated is redundant and takes up statistical power
-    - R will automatically drop variables if there is collinearity!
-    
-- __Model__: OLS Linear Regression 
-  - Powers doesn't write out the equation for the study!
-  - Let's write it ourselves! [at least for the three groups of variables for Williams Case]
-  
-<br>
-
-__Why do I like this piece of scholarship?__
-
-- The methods are simple!
-  - Impactful research does not need to have complex methods!
-  - Study does not use any analyses/methods beyond what we have learned so far in an introductory regression class; yet it is published in the AERA flagship journal 
-- Example of how to deal with "metrics" that I fundamentally disagree with but are part of our educational reality
-  -  Metrics like SAT/ACT scores, standardized K-12 test, are "firmly entrenched part of the political landscape" that schools and students must navigate 
-  - In many cases, they are institutionalized within federal, state, and university/school policies
-  - "Aim is to make a strong argument for equity by marshaling the very data that dominate the political discourse" (p. 765)
-- Direct response to policies
-- Cool understanding of legal logic when it comes to education finance!
 
 
 # References

@@ -165,16 +165,27 @@ df_els_stu <- df_els_stu_all %>%
       byincome ==11 ~ 87500, #11 11 [$75,001-$100,000]
       byincome ==12 ~ 150000, #12 12 [$100,001-$200,000]
       byincome ==13 ~ 250000, #13 13 [$200,001 or more]
-    )    
+    ),
+    # create revised categorical measure of race
+      f1race_v2 = case_when(
+        f1race == 7 ~ 1, # white
+        f1race == 2 ~ 2, # API
+        f1race == 3 ~ 3, # Black
+        f1race %in% c(4,5) ~ 4, # Hispanic
+        f1race == 1 ~ 5, # Amer. Indian/Alaska Native, non-Hispanic
+        f1race == 6 ~ 6 # multi
+      )
   ) %>% 
   # add value labels to categorical variables you created
     set_value_labels(
       f2enroll0405 = c('no' = 0,'yes' = 1),
       f2enroll0506 = c('no' = 0,'yes' = 1),
       f2intern0405 = c('no' = 0,'yes' = 1),
-      f2intern0506 = c('no' = 0,'yes' = 1)
+      f2intern0506 = c('no' = 0,'yes' = 1),
+      f1race_v2 = c('white'=1, 'api'=2, 'black'=3, 'latinx'=4, 'native'=5, 'multi'=6)
       ) 
-    
+  
+  
 # add variable labels
     var_label(df_els_stu[['f3totloan']]) <- 'total loans taken out to pay for postsecondary education as of f3 (2013)'
     var_label(df_els_stu[['f2enroll0405']]) <- '0/1 (no/yes) enrolled in 2004-05, based on student survey follow-up 2'
@@ -182,6 +193,7 @@ df_els_stu <- df_els_stu_all %>%
     var_label(df_els_stu[['f2intern0405']]) <- '0/1 (no/yes) held an internship or co-op in 2004-05; NA if not enrolled in postsecondary education in 2004-05'
     var_label(df_els_stu[['f2intern0506']]) <- '0/1 (no/yes) held an internship or co-op in 2005-06; NA if not enrolled in postsecondary education in 2005-06'
     var_label(df_els_stu[['parent_income']]) <- 'continuous measure of base year parental household income, calculated from categorical variable byincome'
+    var_label(df_els_stu[['f1race_v2']]) <- 'categorical measure of race based on variable f1race'
 
       
 
