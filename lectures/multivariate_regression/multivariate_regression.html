@@ -3315,7 +3315,7 @@ In the coming weeks, we want your help in identifying variables of interest and 
 <p>Research question we will use to practice interpretation of multivariate regression, using data frame <code>df_els_stu_fac</code>:</p>
 <p>[observational design, categorical <span class="math inline">\(X\)</span>] What is the effect of having an internship or co-op job (<span class="math inline">\(X\)</span>) (in 2005-06) on subsequent earnings (<span class="math inline">\(Y\)</span>) (in 2011)?</p>
 <ul>
-<li><span class="math inline">\(X\)</span> is <code>f3ern2011</code>
+<li><span class="math inline">\(X\)</span> is <code>f2intern0506</code>
 <ul>
 <li>label: 0/1 (no/yes) held an internship or co-op in 2005-06; NA if not enrolled in postsecondary education in 2005-06</li>
 <li><em>Note</em>: 2005-06 would be sophomore year for students who graduated HS in spring 2004 and immediately entered postsecondary education</li>
@@ -3355,18 +3355,18 @@ In the coming weeks, we want your help in identifying variables of interest and 
 <ul>
 <li>Yes!</li>
 </ul></li>
-<li>Might high school student achievement have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+<li>Might high school student achievement have a relationship with whether a student has an internship in college? (omitted variable bias condition 2)
 <ul>
 <li>Seems possible. Maybe students with higher achievement are more likely to seek out internships (but it could be the opposite!); maybe employers are more likely to give internship opportunities to students with higher achievement</li>
 </ul></li>
 </ul></li>
-<li>[categorical control] sex (<code>f1race_v2</code>; with values “Male” and “Female”)
+<li>[categorical control] sex (<code>f1sex</code>; with values “Male” and “Female”)
 <ul>
 <li>Does sex affect subsequent earnings? (omitted variable bias condition 1)
 <ul>
 <li>Yes; well documented sex/gender discrimination in pay</li>
 </ul></li>
-<li>Might sex have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+<li>Might sex have a relationship with whether a student has an internship in college? (omitted variable bias condition 2)
 <ul>
 <li>Seems possible that there is sex/gender discrimination in who gets access to internships</li>
 </ul></li>
@@ -3377,7 +3377,7 @@ In the coming weeks, we want your help in identifying variables of interest and 
 <ul>
 <li>Yes; well documented racial discrimination in pay</li>
 </ul></li>
-<li>Might race have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+<li>Might race have a relationship with whether a student has an internship in college? (omitted variable bias condition 2)
 <ul>
 <li>Seems very plausible that there is racial discrimination in who gets access to internships</li>
 </ul></li>
@@ -3553,7 +3553,7 @@ In the coming weeks, we want your help in identifying variables of interest and 
 <ul>
 <li><span class="math inline">\(Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i\)</span>, where:
 <ul>
-<li><span class="math inline">\(Y_i\)</span>: is earnings for student <span class="math inline">\(i\)</span> in 2011<br />
+<li><span class="math inline">\(Y_i\)</span>: is earnings for student <span class="math inline">\(i\)</span> in 2011 (in dollars)<br />
 </li>
 <li><span class="math inline">\(X_{1i}\)</span>: is a dichotomous categorical variable indicating whether student <span class="math inline">\(i\)</span> had an internship in 2005-06</li>
 <li><span class="math inline">\(X_{2i}\)</span>: (continuous) high school reading test score</li>
@@ -3590,7 +3590,7 @@ In the coming weeks, we want your help in identifying variables of interest and 
 </ul></li>
 <li>For high school reading test score <span class="math inline">\(X_{2i}\)</span>, <span class="math inline">\(\hat{\beta_2}=\)</span> 200
 <ul>
-<li>a one-point increase in high school reading test score is associated with a 200 change in 2011 earnings, holding the value of all other <span class="math inline">\(X\)</span> variables constant</li>
+<li>a one-point increase in high school reading test score is associated with a 200 dollar change in 2011 earnings, holding the value of all other <span class="math inline">\(X\)</span> variables constant</li>
 </ul></li>
 </ul>
 <p>Interpretation of <span class="math inline">\(\hat{\beta_k}\)</span> (for categorical variable <span class="math inline">\(X_k\)</span>)</p>
@@ -3619,7 +3619,6 @@ In the coming weeks, we want your help in identifying variables of interest and 
 <li><p>In multivariate regression, we add “control variables” (variables that satisfy both conditions of omitted variable bias) so that we can examine the relationship between having an internship (<span class="math inline">\(X_1\)</span>) and earnings (<span class="math inline">\(Y\)</span>) for students who have the same value for other variables thought to affect earnings</p>
 <ul>
 <li>Means to estimate the relationship between <span class="math inline">\(X_1\)</span> and Y when we don’t allow the value of <span class="math inline">\(X_2\)</span> to vary</li>
-<li>In other words, we analyze the relationship between student teacher ration (<span class="math inline">\(X_1\)</span>) and reading test scores (Y) for applicants that have the same value of percent ELL (<span class="math inline">\(X_2\)</span>) [calculus: partial derivatives!]</li>
 </ul></li>
 </ul>
 <p><br></p>
@@ -3629,8 +3628,7 @@ In the coming weeks, we want your help in identifying variables of interest and 
 <ul>
 <li><span class="math inline">\(Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i\)</span>, where:
 <ul>
-<li><span class="math inline">\(Y_i\)</span>: is earnings for student <span class="math inline">\(i\)</span> in 2011<br />
-</li>
+<li><span class="math inline">\(Y_i\)</span>: is earnings for student <span class="math inline">\(i\)</span> in 2011 (in dollars)</li>
 <li><span class="math inline">\(X_{1i}\)</span>: is a dichotomous categorical variable indicating whether student <span class="math inline">\(i\)</span> had an internship in 2005-06</li>
 <li><span class="math inline">\(X_{2i}\)</span>: (continuous) high school reading test score</li>
 <li><span class="math inline">\(X_{3i}\)</span>: (dichotomous) student <span class="math inline">\(i\)</span> identifies as female</li>
@@ -3664,15 +3662,15 @@ In the coming weeks, we want your help in identifying variables of interest and 
 </ul></li>
 <li><span class="math inline">\(X_{3i}\)</span> (identifies as female); <span class="math inline">\(\hat{\beta_3}=\)</span> -5,926
 <ul>
-<li>being female as opposed to male is associated with a -5,926 change in 2011 earnings, holding the of value all other <span class="math inline">\(X\)</span> variables constant</li>
+<li>being female as opposed to male is associated with a -5,926 dollar change in 2011 earnings, holding the of value all other <span class="math inline">\(X\)</span> variables constant</li>
 </ul></li>
 <li><span class="math inline">\(X_{4i}\)</span> (identifies as Asian or Pacific Islander (API)); <span class="math inline">\(\hat{\beta_4}=\)</span> -1,372
 <ul>
-<li>being API as opposed to white is associated with a -1,372 change in 2011 earnings, holding the of value all other <span class="math inline">\(X\)</span> variables constant</li>
+<li>being API as opposed to white is associated with a -1,372 dollar change in 2011 earnings, holding the of value all other <span class="math inline">\(X\)</span> variables constant</li>
 </ul></li>
 <li><span class="math inline">\(X_{5i}\)</span> (identifies as Black); <span class="math inline">\(\hat{\beta_5}=\)</span> -4,886
 <ul>
-<li>being Black as opposed to wrhite is associated with a -4,886, holding the of value all other <span class="math inline">\(X\)</span> variables constant</li>
+<li>being Black as opposed to wrhite is associated with a -4,886 dollar change in 2011 earnings, holding the of value all other <span class="math inline">\(X\)</span> variables constant</li>
 </ul></li>
 <li><span class="math inline">\(X_{6i}\)</span> (identifies as Latinx); <span class="math inline">\(\hat{\beta_6}=\)</span> -4,214
 <ul>
@@ -3701,8 +3699,7 @@ In the coming weeks, we want your help in identifying variables of interest and 
 <ul>
 <li><span class="math inline">\(Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i\)</span>, where:
 <ul>
-<li><span class="math inline">\(Y_i\)</span>: is earnings for student <span class="math inline">\(i\)</span> in 2011<br />
-</li>
+<li><span class="math inline">\(Y_i\)</span>: is earnings for student <span class="math inline">\(i\)</span> in 2011 (in dollars)</li>
 <li><span class="math inline">\(X_{1i}\)</span>: is a dichotomous categorical variable indicating whether student <span class="math inline">\(i\)</span> had an internship in 2005-06</li>
 <li><span class="math inline">\(X_{2i}\)</span>: (continuous) high school reading test score</li>
 <li><span class="math inline">\(X_{3i}\)</span>: (dichotomous) student <span class="math inline">\(i\)</span> identifies as female</li>

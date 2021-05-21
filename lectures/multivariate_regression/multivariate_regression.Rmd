@@ -1290,7 +1290,7 @@ Research question we will use to practice interpretation of multivariate regress
 
 [observational design, categorical $X$] What is the effect of having an internship or co-op job ($X$) (in 2005-06) on subsequent earnings ($Y$) (in 2011)? 
 
-- $X$ is `f3ern2011`
+- $X$ is `f2intern0506`
   - label: `r attr(df_els_stu_fac$f2intern0506, which = 'label')`
   - *Note*: 2005-06 would be sophomore year for students who graduated HS in spring 2004 and immediately entered postsecondary education
   - variable `df_els_stu_fac$f2intern0506` is a factor variable with factor levels `'no'` and `'yes'`
@@ -1315,17 +1315,17 @@ We'll add one continuous control variable and two categorical control variable
 - [continuous] Let's pretend that `bytxrstd` (standardized reading test score) is a measure of high school student achievement
   - Does high school student achievement affect subsequent earnings? (omitted variable bias condition 1)
     - Yes!
-  - Might high school student achievement have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+  - Might high school student achievement have a relationship with whether a student has an internship in college? (omitted variable bias condition 2)
     - Seems possible. Maybe students with higher achievement are more likely to seek out internships (but it could be the opposite!); maybe employers are more likely to give internship opportunities to students with higher achievement
-- [categorical control] sex (`f1race_v2`; with values "Male" and "Female")
+- [categorical control] sex (`f1sex`; with values "Male" and "Female")
   - Does sex affect subsequent earnings? (omitted variable bias condition 1)
     - Yes; well documented sex/gender discrimination in pay
-  - Might sex have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+  - Might sex have a relationship with whether a student has an internship in college? (omitted variable bias condition 2)
     - Seems possible that there is sex/gender discrimination in who gets access to internships
 - [categorical control] race (`f1race_v2`)
   - Does race affect subsequent earnings? (omitted variable bias condition 1)
     - Yes; well documented racial discrimination in pay
-  - Might race have a relationship with whether a student has an internship in college? (omitted variable bias condition 1)
+  - Might race have a relationship with whether a student has an internship in college? (omitted variable bias condition 2)
     - Seems very plausible that there is racial discrimination in who gets access to internships
 - Some brief descriptive statistics of these control variables for our analysis sample
   - note that for categorical "factor" class variables; the category with the lowest underlying integer value is automatically the "reference" group
@@ -1406,7 +1406,7 @@ summary(intern_mod2)
 
 - Population linear regression model (multivariate regression)
   - $Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i$, where:
-    - $Y_i$: is earnings for student $i$ in 2011    
+    - $Y_i$: is earnings for student $i$ in 2011 (in dollars)    
     - $X_{1i}$: is a dichotomous categorical variable indicating whether student $i$ had an internship in 2005-06
     - $X_{2i}$: (continuous) high school reading test score
     - $X_{3i}$: (dichotomous) student $i$ identifies as female
@@ -1435,7 +1435,7 @@ Interpretation of $\hat{\beta_k}$ (for continuous variable $X_k$)
 - Generic: 
   - "a one-unit increase in $X_k$ is associated with a $\hat{\beta_k}$ change in Y, __holding the value of all other $X$ variables constant__"
 - For high school reading test score $X_{2i}$, $\hat{\beta_2}=$ `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')`
-  - a one-point increase in high school reading test score is associated with a `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')` change in 2011 earnings, holding the value of all other $X$ variables constant
+  - a one-point increase in high school reading test score is associated with a `r format(round(summary(intern_mod2)$coefficients[3,1], digits =0),big.mark = ',')` dollar change in 2011 earnings, holding the value of all other $X$ variables constant
   
 
 Interpretation of $\hat{\beta_k}$ (for categorical variable $X_k$)
@@ -1463,7 +1463,7 @@ __Relationship between "holding constant" and attempting to recreate experimenta
 - In multivariate regression, we add "control variables" (variables that satisfy both conditions of omitted variable bias) so that we can examine the relationship between having an internship ($X_1$) and earnings ($Y$) for students who have the same value for other variables thought to affect earnings
 
   - Means to estimate the relationship between $X_1$ and Y when we don't allow the value of $X_2$ to vary
-  - In other words, we analyze the relationship between student teacher ration ($X_1$) and reading test scores (Y) for applicants that have the same value of percent ELL ($X_2$) [calculus: partial derivatives!]
+
   
 <br>
 
@@ -1472,7 +1472,7 @@ __More practice interpreting $\hat{\beta_k}$ (for categorical $X$)__
 
 - Population linear regression model (multivariate regression)
   - $Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i$, where:
-    - $Y_i$: is earnings for student $i$ in 2011    
+    - $Y_i$: is earnings for student $i$ in 2011  (in dollars)
     - $X_{1i}$: is a dichotomous categorical variable indicating whether student $i$ had an internship in 2005-06
     - $X_{2i}$: (continuous) high school reading test score
     - $X_{3i}$: (dichotomous) student $i$ identifies as female
@@ -1497,11 +1497,11 @@ Interpretation of $\hat{\beta_k}$ (for categorical variable $X_k$)
   - "being [specific non-reference category] as opposed to [reference category] is, on average, associated with a $\hat{\beta_k}$ change in $Y$, holding the of value all other $X$ variables constant"
   - Conceptually, we have two categorical control variables in our model; the first is sex, where the reference group is "male"; the second is race, where the reference group is "white"
 - $X_{3i}$ (identifies as female); $\hat{\beta_3}=$ `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')`
-  - being female as opposed to male is associated with a `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')` change in 2011 earnings, holding the of value all other $X$ variables constant
+  - being female as opposed to male is associated with a `r format(round(summary(intern_mod2)$coefficients[4,1], digits =0),big.mark = ',')` dollar change in 2011 earnings, holding the of value all other $X$ variables constant
 - $X_{4i}$ (identifies as Asian or Pacific Islander (API)); $\hat{\beta_4}=$ `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')`
-  - being API as opposed to white is associated with a `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')` change in 2011 earnings, holding the of value all other $X$ variables constant
+  - being API as opposed to white is associated with a `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')` dollar change in 2011 earnings, holding the of value all other $X$ variables constant
 - $X_{5i}$ (identifies as Black); $\hat{\beta_5}=$ `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`
-  - being Black as opposed to wrhite is associated with a `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`, holding the of value all other $X$ variables constant
+  - being Black as opposed to wrhite is associated with a `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')` dollar change in 2011 earnings, holding the of value all other $X$ variables constant
 - $X_{6i}$ (identifies as Latinx); $\hat{\beta_6}=$ `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')`
   - You do the rest!
 - $X_{7i}$ (identifies as Native American); $\hat{\beta_7}=$ `r format(round(summary(intern_mod2)$coefficients[8,1], digits =0),big.mark = ',')`
@@ -1528,7 +1528,7 @@ __Prediction (still works the same way!)__
 
 - Population linear regression model (multivariate regression)
   - $Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i$, where:
-    - $Y_i$: is earnings for student $i$ in 2011    
+    - $Y_i$: is earnings for student $i$ in 2011  (in dollars)
     - $X_{1i}$: is a dichotomous categorical variable indicating whether student $i$ had an internship in 2005-06
     - $X_{2i}$: (continuous) high school reading test score
     - $X_{3i}$: (dichotomous) student $i$ identifies as female
