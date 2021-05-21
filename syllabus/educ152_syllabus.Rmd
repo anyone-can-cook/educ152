@@ -195,13 +195,14 @@ Course grade will be based on the following components:
 - Problem set 1, 15%
 - Problem set 2, 15%
 - Problem set 3, 15%
-- Problem set 4, 30%
+- Short exercise, 5%
+- Problem set 4, 25%
 - In-class group activities, 15%
 - Attendance and participation, 10%
 
-## Problem sets (75 percent of total grade)
+## Problem sets & short exercise (75 percent of total grade)
 
-The primary course assessments are four problem sets. The first three problem sets are each worth 15% of the course grade and students will work in groups. The final, capstone problem set is worth 30% and students will work alone. 
+The primary course assessments are four problem sets and a short exercise. The first three problem sets are each worth 15% of the course grade and students will work in groups. Additionally, there is a short exercise worth 5% of the course grade. The final, capstone problem set is worth 30% and students will work alone. 
 
 Each problem set will require students to apply knowledge of statistical concepts, conduct substantive statistical analyses, and present and interpret results. Other questions will introduce students to some of the thorny data challenges that inevitably arise in real research projects. The capstone problem set will require students to conduct the major components of an empirical regression analysis, from research question and variable collection to modeling, presentation, and interpretation. Additionally, the capstone problem set will require students to critically evaluate an empirical journal article that utilized the same data sources to answer the same research question.
 
@@ -367,13 +368,14 @@ __UNIT 2: FUNDAMENTALS OF REGRESSION__
 - Lecture topics  
     - Categorical X variables; Introduction to multivariate regression
     - *Asynchronous lecture posted **(Friday night on 5/14)***  
-
+- **Short exercise distributed 05/14**
 
 <span style="background-color: #CC76AD"> <b>WEEK 9 (05/28/21) </b></span>
   
 - Lecture topics  
     - Reading and assessing research that uses regression  
-    - *Asynchronous lecture posted **(Friday night on 5/21)*** 
+    - *Asynchronous lecture posted **(Friday night on 5/21)***
+- **Short exercise due 05/28**
 - **Final Problem set distributed 05/28**
 
 
