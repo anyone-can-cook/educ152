@@ -1,33 +1,37 @@
-\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
 %
-\documentclass[8pt,ignorenonframetext,dvipsnames]{beamer}
+\documentclass[
+  8pt,
+  ignorenonframetext,
+  dvipsnames]{beamer}
 \usepackage{pgfpages}
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
 \setbeamercolor{caption name}{fg=normal text.fg}
 \beamertemplatenavigationsymbolsempty
-% Prevent slide breaks in the middle of a paragraph:
+% Prevent slide breaks in the middle of a paragraph
 \widowpenalties 1 10000
 \raggedbottom
 \setbeamertemplate{part page}{
-\centering
-\begin{beamercolorbox}[sep=16pt,center]{part title}
-  \usebeamerfont{part title}\insertpart\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
 }
 \setbeamertemplate{section page}{
-\centering
-\begin{beamercolorbox}[sep=12pt,center]{part title}
-  \usebeamerfont{section title}\insertsection\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
 }
 \setbeamertemplate{subsection page}{
-\centering
-\begin{beamercolorbox}[sep=8pt,center]{part title}
-  \usebeamerfont{subsection title}\insertsubsection\par
-\end{beamercolorbox}
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
 }
 \AtBeginPart{
   \frame{\partpage}
@@ -44,40 +48,44 @@
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provides euro and other symbols
-\else % if luatex or xelatex
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
   \usepackage{unicode-math}
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
-% use upquote if available, for straight quotes in verbatim environments
+% Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-% use microtype if available
-\IfFileExists{microtype.sty}{%
-\usepackage[]{microtype}
-\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\IfFileExists{parskip.sty}{%
-\usepackage{parskip}
-}{% else
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
 \usepackage{xcolor}
-\usepackage{hyperref}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-            pdftitle={Introduction to Multivariate Regression \& Program Evaluation},
-            pdfauthor={Lecture 12},
-            colorlinks=true,
-            linkcolor=Maroon,
-            filecolor=Maroon,
-            citecolor=Blue,
-            urlcolor=blue,
-            breaklinks=true}
-\urlstyle{same}  % don't use monospace font for urls
+  pdftitle={Introduction to Multivariate Regression \& Program Evaluation},
+  pdfauthor={Lecture 12},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
 \newif\ifbibliography
 \usepackage{graphicx,grffile}
 \makeatletter
@@ -88,16 +96,14 @@
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-\setlength{\emergencystretch}{3em}  % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{0}
-
-% set default figure placement to htbp
+% Set default figure placement to htbp
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
-
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 
 %packages
 \usepackage{graphicx}
@@ -194,7 +200,6 @@
 \end{comment}
 
 \title{Introduction to Multivariate Regression \& Program Evaluation}
-\providecommand{\subtitle}[1]{}
 \subtitle{HED 612}
 \author{Lecture 12}
 \date{}
@@ -203,7 +208,7 @@
 \frame{\titlepage}
 
 \begin{frame}
-\tableofcontents[hideallsubsections]
+  \tableofcontents[hideallsubsections]
 \end{frame}
 \begin{frame}{Classes for Fall 2020}
 \protect\hypertarget{classes-for-fall-2020}{}
@@ -230,7 +235,7 @@
 
 \end{frame}
 
-\begin{frame}{Where are we going\ldots{}.}
+\begin{frame}{Where are we going\ldots.}
 \protect\hypertarget{where-are-we-going.}{}
 
 \begin{itemize}
@@ -659,13 +664,13 @@ change in \$10k to \$11k income}
     OLS Prediction Line:
     \(\hat{Y_i} = 607.30 + 3.85X_{1i} - 0.04{X_1i}^2\)
   \item
-    (\(\Delta{Y}\)\textbar{}X=10 to 11):
+    (\(\Delta{Y}\)\textbar X=10 to 11):
     (\(607.30 + 3.85*11 - 0.04*11^2\)) -
     (\(607.30 + 3.85*10 - 0.04*10^2\))
   \item
-    (\(\Delta{Y}\)\textbar{}X=10 to 11): (644.5432) - (641.5807)
+    (\(\Delta{Y}\)\textbar X=10 to 11): (644.5432) - (641.5807)
   \item
-    (\(\Delta{Y}\)\textbar{}X=10 to 11 = 2.9625
+    (\(\Delta{Y}\)\textbar X=10 to 11 = 2.9625
   \end{itemize}
 \item
   A change from \$10k to \$11k in average district income per capita is
@@ -687,13 +692,13 @@ change in \$40k to \$41k income}
     OLS Prediction Line:
     \(\hat{Y_i} = 607.30 + 3.85X_{1i} - 0.04{X_1i}^2\)
   \item
-    (\(\Delta{Y}\)\textbar{}X=40 to 41):
+    (\(\Delta{Y}\)\textbar X=40 to 41):
     (\(607.30 + 3.85*41 - 0.04*41^2\)) -
     (\(607.30 + 3.85*40 - 0.04*40^2\))
   \item
-    (\(\Delta{Y}\)\textbar{}X=40 to 41): (694.0696) - (693.6457)
+    (\(\Delta{Y}\)\textbar X=40 to 41): (694.0696) - (693.6457)
   \item
-    (\(\Delta{Y}\)\textbar{}X=40 to 41) = 0.4239
+    (\(\Delta{Y}\)\textbar X=40 to 41) = 0.4239
   \end{itemize}
 \item
   A change from \$40k to \$41k in average district income per capita is

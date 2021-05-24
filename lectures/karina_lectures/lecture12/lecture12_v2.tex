@@ -1,0 +1,1457 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+  8pt,
+  ignorenonframetext,
+  dvipsnames]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Introduction to Multivariate Regression \& Econometrics},
+  pdfauthor={Lecture 12},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+%packages
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{hyperref}
+
+\usepackage{tikz} % used for text highlighting, amongst others
+\usepackage{comment}
+
+%title slide stuff
+%\institute{Department of Education}
+%\title{Managing and Manipulating Data Using R}
+
+%
+\setbeamertemplate{navigation symbols}{} % get rid of navigation icons:
+\setbeamertemplate{footline}[page number]
+
+%\setbeamertemplate{frametitle}{\thesection \hspace{0.2cm} \insertframetitle}
+\setbeamertemplate{section in toc}[sections numbered]
+%\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=3.2em\color{gray}\rlap{\hskip-2em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par
+}
+
+%define colors
+%\definecolor{uva_orange}{RGB}{216,141,42} % UVa orange (Rotunda orange)
+\definecolor{mygray}{rgb}{0.95, 0.95, 0.95} % for highlighted text
+	% grey is equal parts red, green, blue. higher values >> lighter grey
+	%\definecolor{lightgraybo}{rgb}{0.83, 0.83, 0.83}
+
+% new commands
+
+%highlight text with very light grey
+\newcommand*{\hlg}[1]{%
+	\tikz[baseline=(X.base)] \node[rectangle, fill=mygray] (X) {#1};%
+}
+%, inner sep=0.3mm
+%highlight text with very light grey and use font associated with code
+\newcommand*{\hlgc}[1]{\texttt{\hlg{#1}}}
+
+%modifying back ticks to add grey background
+\let\OldTexttt\texttt
+\renewcommand{\texttt}[1]{\OldTexttt{\hlg{#1}}}
+
+
+\begin{comment}
+
+% Font
+\usepackage[defaultfam,light,tabular,lining]{montserrat}
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\fontfamily{Montserrat-TOsF}\selectfont #1}}
+
+% Change color of boldface text to darkgray
+\renewcommand{\textbf}[1]{{\color{darkgray}\bfseries\fontfamily{Montserrat-TOsF}#1}}
+
+% Bullet points
+\setbeamertemplate{itemize item}{\color{BlueViolet}$\circ$}
+\setbeamertemplate{itemize subitem}{\color{BrickRed}$\triangleright$}
+\setbeamertemplate{itemize subsubitem}{$-$}
+
+% Reduce space before lists
+%\addtobeamertemplate{itemize/enumerate body begin}{}{\vspace*{-8pt}}
+
+\let\olditem\item
+\renewcommand{\item}{%
+  \olditem\vspace{4pt}
+}
+
+% decreasing space before and after level-2 bullet block
+%\addtobeamertemplate{itemize/enumerate subbody begin}{}{\vspace*{-3pt}}
+%\addtobeamertemplate{itemize/enumerate subbody end}{}{\vspace*{-3pt}}
+
+% decreasing space before and after level-3 bullet block
+%\addtobeamertemplate{itemize/enumerate subsubbody begin}{}{\vspace*{-2pt}}
+%\addtobeamertemplate{itemize/enumerate subsubbody end}{}{\vspace*{-2pt}}
+
+%Section numbering
+\setbeamertemplate{section page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=10pt,center,rounded=true,shadow=true]{section title}
+        \usebeamerfont{section title}\thesection~\insertsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\setbeamertemplate{subsection page}{%
+    \begingroup
+        \begin{beamercolorbox}[sep=6pt,center,rounded=true,shadow=true]{subsection title}
+        \usebeamerfont{subsection title}\thesection.\thesubsection~\insertsubsection\par
+        \end{beamercolorbox}
+    \endgroup
+}
+
+\end{comment}
+
+\title{Introduction to Multivariate Regression \& Econometrics}
+\subtitle{HED 612}
+\author{Lecture 12}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+\begin{frame}[fragile]{Prepare for class}
+\protect\hypertarget{prepare-for-class}{}
+
+We'll be using the ELS Data today; no need to re-download!
+
+\medskip
+
+\begin{enumerate}
+\tightlist
+\item
+  Download the Lecture 12 PDF and R files for this week
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Place all files in HED612\_SP21
+    \textgreater\textgreater\textgreater{} lectures
+    \textgreater\textgreater\textgreater{} lecture12
+  \end{itemize}
+\item
+  Open the RProject (should be in your main HED612\_SP21 folder)
+\item
+  Once the RStudio window opens, open the Lecture 12 R script by
+  clicking on:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    file \textgreater\textgreater\textgreater{} open file\ldots{}
+    \textgreater\textgreater\textgreater{} {[}navigate to lecture 12
+    folder{]} \textgreater\textgreater\textgreater{} lecture12\_v2.R
+  \end{itemize}
+\item
+  \textbf{Install the ``stargazer'' package in lecture12\_v2.R}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    If R prompts you to install \texttt{stargazer} and ``its
+    dependencies'', go ahead and click install
+  \item
+    If R doesn't prompt you, install via line 8
+    \texttt{install.packages("stargazer")}
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Finishing the Semester\ldots{}}
+\protect\hypertarget{finishing-the-semester}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Today, 4/14
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Linear Probability Models for 0/1 DV
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Exporting regression ``nearly-publication'' ready tables!
+    \end{itemize}
+  \item
+    Mini lesson on what each section of final project should accomplish!
+  \item
+    Finish Reviewing Powers(2004)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  4/21 {[}No Class/Reading Day{]}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Reading for 4/28
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Klasik, D., Blagg, K., \& Pekor, Z. (2018). Out of the Education
+      Desert: How Limited Local College Options are Associated with
+      Inequity in Postsecondary Opportunities. Social Sciences, 7(9),
+      2018.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  4/28
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Reviewing Empirical Research:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Klasik, D., Blagg, K., \& Pekor, Z. (2018). Out of the Education
+      Desert: How Limited Local College Options are Associated with
+      Inequity in Postsecondary Opportunities. Social Sciences, 7(9),
+      2018.\\
+    \end{itemize}
+  \item
+    Introduction to non-linear functions {[}we'll get as far as we
+    can\ldots{]}
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Last class session, 5/5
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Student presentations!
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Don't stress these; don't need to be perfect!
+    \item
+      Just an opportunity to learn from each other and get some practice
+      ``presenting''
+    \end{itemize}
+  \item
+    \textbf{Final paper is due on our ``final exam day/time'': 5/7/21 by
+    5:30pm}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{linear-probability-model}{%
+\section{Linear Probability Model}\label{linear-probability-model}}
+
+\begin{frame}{Linear Probability Model}
+\protect\hypertarget{linear-probability-model-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Binary Variables (i.e., dummies, indicators) as dependent variables
+  are very common in education research!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Y = Retention (0=dropped out, 1= persisted)
+  \item
+    Y = Graduation (0= did not graduate, 1= graduated)
+  \item
+    Y = Pass/Fail (0=Failed, Passed=1)
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Regression models with a binary dependent variable attempt to
+  interpret the effect of X on the \emph{probability} of ``success''
+  (Y=1)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Or in some cases the probability of ``failure''
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Most social science disciplines model binary dependent variables via
+  non-linear regression models
+
+  \begin{itemize}
+  \tightlist
+  \item
+    logistic regression {[}will cover in HED 649 Spring 2022{]}
+  \item
+    but interpretation can be difficult because its measured via odds
+    ratios\\
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Econometrics models binary dependent variables via \textbf{linear
+  probability model}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Population parameters can be estimated via OLS!
+  \item
+    Simple to estimate and interpret!
+  \item
+    Only ``tool'' that doesn't carry over? \(R^2\); but program
+    evaluation is less concerned with model fit than hypothesis testing
+    about the population parameter \(\beta_1\)
+  \item
+    It can ONLY be used for binary, categorical dependent variables
+
+    \begin{itemize}
+    \tightlist
+    \item
+      If more than two categories, then we have to use different models
+      covered in HED 649
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Linear Probability Model, with Continuous X}
+\protect\hypertarget{linear-probability-model-with-continuous-x}{}
+
+\begin{itemize}
+\tightlist
+\item
+  RQ: What is the effect of hours spent on homework on the probability
+  of attending college?
+\item
+  \textbf{Pop Reg Model: \(Yi = \beta_0 + \beta_1X_{1i} + ui\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Y = \texttt{college}(1= attended college, 0= did not attend college)
+  \item
+    X = average hours spent on homework per week
+  \end{itemize}
+\item
+  Run in R
+\item
+  \textbf{OLS Prediction Line}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    w/o estimates: \(Yi = \hat{\beta_0} + \hat{\beta_1}X_{1i}\)
+  \item
+    w estimates: \(Yi = -0.083759 + 0.019575*X_{1i}\)
+  \end{itemize}
+\item
+  \textbf{Interpretation of \(\hat{\beta_1}\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    General: On average, a one-unit increase in X is associated with a
+    \(\hat{\beta_1}*100\) percentage point change in the probability of
+    Y=1
+  \item
+    On average, a one-hour increase in average homework hours spent per
+    week is associated with a \textasciitilde2 \((~0.02*100)\)
+    percentage-point increase in the probability of going to college.
+  \end{itemize}
+\item
+  \textbf{Interpretation of \(\hat{\beta_1}\)} when you SCALE X
+
+  \begin{itemize}
+  \tightlist
+  \item
+    General: On average, a N-unit increase in X is associated with a
+    ((N-unit\(*\hat{\beta_1}\))*100) percentage point change in the
+    probability of Y=1
+  \item
+    On average, a five-hour increase in average homework hours spent per
+    week is associated with a 10 percentage-point increase
+    \(((5*0.02)*100)\) in the probability of going to college.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Linear Probability Model, with Categorical X}
+\protect\hypertarget{linear-probability-model-with-categorical-x}{}
+
+\begin{itemize}
+\tightlist
+\item
+  RQ: What is the effect of high school extracurricular participation on
+  the probability of attending college?
+\item
+  \textbf{Pop Reg Model:
+  \(Yi = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + ui\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Y = \texttt{college} (1= attended college, 0= did not attend
+    college)
+  \item
+    X1 = \texttt{excurr} (1= participated in extracurriculars, 0= did
+    not participate {[}reference group{]})
+  \item
+    X2 = average hours spent on homework per week
+  \end{itemize}
+\item
+  Run in R
+\item
+  \textbf{OLS Prediction Line}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    w/o estimates:
+    \(Yi = \hat{\beta_0} + \hat{\beta_1}X_{1i} + \hat{\beta_2}X_{2i}\)
+  \item
+    w estimates: \(Yi = -0.227656 + 0.350495*X_{1i} + 0.016144*X_{2i}\)
+  \end{itemize}
+\item
+  \textbf{Interpretation of \(\hat{\beta_1}\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    General: On average, being in the ``non-reference group'' as opposed
+    to the ``reference group'' is associated with a
+    100*\(\hat{\beta_1}\) percentage point change in the probability of
+    Y=1
+  \item
+    On average, participating in extracurriculars as opposed to not
+    participating in extracurriculars is associated with a 35
+    (0.350495*100) percentage point increase in the probability of
+    attending college, holding hours spent on homework constant
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{creating-nearly-publication-quality-regression-tables}{%
+\section{Creating (nearly!) Publication Quality Regression
+Tables}\label{creating-nearly-publication-quality-regression-tables}}
+
+\begin{frame}[fragile]{Stargazer Library}
+\protect\hypertarget{stargazer-library}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Need to install first via \texttt{install.packages("stargazer")}
+\item
+  Package used to create publication ready tables
+\item
+  Some resourses
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \href{https://cran.r-project.org/web/packages/stargazer/stargazer.pdf}{CRAN
+    Package Documentation}
+  \item
+    \href{https://cran.r-project.org/web/packages/stargazer/vignettes/stargazer.pdf}{CRAN
+    Package Vignettes}
+  \item
+    \href{https://www.princeton.edu/~otorres/NiceOutputR.pdf}{Helpful
+    Presentation \& Summary}
+  \item
+    Google! Google! Google!
+  \end{itemize}
+\item
+  Show in R!
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{final-projects}{%
+\section{Final Projects}\label{final-projects}}
+
+\begin{frame}{Approach to final projects\ldots{}}
+\protect\hypertarget{approach-to-final-projects}{}
+
+\begin{itemize}
+\tightlist
+\item
+  I'm super chill about final project! :)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    No pressure opportunity to learn and ``de-mystify'' the quant
+    research process!
+  \item
+    I know we're all running on fumes\ldots{}
+  \item
+    I just want you to get what you can out of the assignment given
+    space/time/energy you have!
+  \end{itemize}
+\item
+  ``Presentations'' on 5/5
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Do not need to be polished presentations
+  \item
+    Just a way to share with the class what you did
+  \item
+    We will learn from the process of putting together our own project
+    and from eachother's work too!
+  \item
+    No requirements in terms of ``structure'': power point; share screen
+    of your paper draft; run regression in RStudio for us, etc.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{No More Problem Sets, Working Towards Final Projects}
+\protect\hypertarget{no-more-problem-sets-working-towards-final-projects}{}
+
+\begin{itemize}
+\tightlist
+\item
+  By 4/21:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Finalize RQ
+  \item
+    Identify dataset, clean DV/IV\\
+  \item
+    Run bivariate regression/Interpret \(\hat{\beta_1}\)
+  \item
+    Identify 3-5 control variables that satisfy OVB
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Clean control variable(s) if available in your dataset (\& if you
+      have the time)
+    \item
+      Run multivariate regression/Interpret \(\hat{\beta_1}\)
+    \end{itemize}
+  \end{itemize}
+\item
+  By 4/28
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Write up methods section and results\\
+  \end{itemize}
+\item
+  By 5/5
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Read and summarize 5 empirical articles that belong in your
+    literature review
+  \item
+    Presentation does not need to be ``polished''; just sharing your RQ
+    and results!
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Final Project: Introduction}
+\protect\hypertarget{final-project-introduction}{}
+
+\begin{itemize}
+\tightlist
+\item
+  An introduction is (in my humble opinion) the hardest section to
+  write! Why?
+\item
+  It sets the tone for the entire study!
+\item
+  An introduction should:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Convince the reader of the significance and contributions of the
+    study via a ``hook'' (i.e., Who should care about this study? and
+    Why?)
+  \item
+    Present the research question
+  \item
+    Summarize what the study does
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Your final paper's introduction should (at least) present the
+  research question and summarize the study}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  If you want try to ``hook'' the reader, here are some strategies:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Actionable research: You can take results and \emph{directly} make
+    recommendations for changes to policy/practice
+  \item
+    Interesting research: New analyses on an important topic, resolving
+    scholarly/public debates, introduces new ways to looking at old
+    problems, has implications for theory
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Final Project: Sometimes you may have a ``background''
+section}
+\protect\hypertarget{final-project-sometimes-you-may-have-a-background-section}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Policy/Background sections are very common in econometrics research.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Because econometrics research usually focuses on understanding the
+    effect of some program/ policy /intervention etc.
+  \item
+    The background section introduces the reader to the history and
+    specific details of the program, policy, intervention being studied
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Powers 2004 summarized all the legal background and precedence of
+      the Williams v. State of CA case in this background section
+      (p.766)
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  For example, if you are studying the effect of participating in Upward
+  Bound, Gear Up, Head Start, College Prep Programs etc on some
+  outcome\ldots.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Assume the reader has NO KNOWLEDGE of the program
+  \item
+    What is the program?
+  \item
+    What are the goals of the program?
+  \item
+    When was it created and for who?
+  \item
+    How has the program changed over time (i.e., eligibility,
+    curriculum, financial support from government, etc.)
+  \end{itemize}
+\end{itemize}
+
+\medskip  \textbf{If your independent variable of interest is a program,
+policy, intervention, your final paper should include a background
+section describing the program, policy, or intervention}
+
+\end{frame}
+
+\begin{frame}{Final Project: Literature Review}
+\protect\hypertarget{final-project-literature-review}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Literature reviews should accomplish the following main tasks:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Reviewing previous literature in your study's area
+  \item
+    Identifying the ``gap'' in previous literature
+  \item
+    Addressing how your study fills that ``gap''
+  \end{itemize}
+\item
+  Literature reviews take a lot of time\ldots{}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    A lot of reading; but also really fun!
+  \end{itemize}
+\item
+  You of course won't have the time to write out a developed literature
+  review and I don't expect you to!
+\end{itemize}
+
+\medskip
+
+\textbf{For your final paper, I expect you to identify and briefly
+summarize 5 empirical, peer-reviewed articles that belong in a fully
+developed literature review. Explain WHY these belong in your literature
+review (i.e., what are their contributions)}
+
+\end{frame}
+
+\begin{frame}{Final Projects: Methods and Data}
+\protect\hypertarget{final-projects-methods-and-data}{}
+
+Methods sections are straightforward but technical\ldots{}
+
+\medskip
+
+\textbf{For your final paper, the Methods Section should have the
+following sections:}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Empirical Strategy}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Your aim is to analyze the effect of X on Y\ldots{}
+  \item
+    The gold standard of econometrics research is a randomized control
+    experiment; explain how YOUR independent variable of interest would
+    be hypothetically randomized/why it's not possible (e.g., financial
+    aid is awarded based on need, Upward Bound was created to serve
+    low-income students, etc)
+  \item
+    Thus, you are working with observational data and trying to get as
+    close as possible to a causal effect (all you can do is get as close
+    as possible to isolating the relationship of X on Y; but you can
+    claim a causal relationship) by using control variables that would
+    otherwise result in omitted variable bias (make sure you define
+    OVB!)
+  \item
+    Cite Stock and Watson textbook; Cite Cellini (2007)
+  \end{itemize}
+\item
+  \textbf{Data and Variables}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What data are you using? If NCES Survey, provide some details about
+    the survey, the sample, years conducted, etc.
+  \item
+    Provide detailed information about your independent variable of
+    interest (what was the survey question asked, how did you deal with
+    missing values, did you transform this variable in any other way)
+  \item
+    Provide detailed information about your dependent variable (what was
+    the survey question asked, how did you deal with missing values, did
+    you transform this variable in any other way)
+  \item
+    Identify 3-5 control variables. Explain WHY they should be included
+    in the model (i.e., how do they satisfy both conditions of OVB).
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Final Projects: Methods and Data}
+\protect\hypertarget{final-projects-methods-and-data-1}{}
+
+\textbf{Analytical Strategy}
+
+\begin{itemize}
+\tightlist
+\item
+  Because your DV is continuous, you will run an Ordinary Least Squares
+  Linear regression model
+
+  \begin{itemize}
+  \tightlist
+  \item
+    {[}or{]} Because your DV is binary, you will run a Linear
+    Probability regression model
+  \end{itemize}
+\item
+  Write out the population regression model and label what every piece
+  of the equation represents.
+\item
+  Specify that given your RQ, your focus is on analyzing \(\beta_1\)
+  because it represents the relationship between your X and Y
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The magnitude of the coefficient shows the magnitude of the
+    relationship:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      the average effect on Y for a one-unit increase in X (continuous
+      X, continuous Y)
+    \item
+      the average change in Y for the non-reference group in comparison
+      to reference group (categorical X, continuous Y)
+    \item
+      the change in probability for going from Y=0 to Y=1 for a one unit
+      increase in X (continuous X, binary Y)
+    \item
+      the change in probability for going from Y=0 to Y=1 for the
+      non-reference group in comparison to reference group (categorical
+      X, binary Y)
+    \end{itemize}
+  \item
+    The p-value of the hypothesis test on the coefficient shows the
+    statistical significance of the relationship.
+
+    \begin{itemize}
+    \tightlist
+    \item
+      State the Null and Alternative Hypotheses!
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+A great example of how to write this section that you can emulate
+{[}posted on D2L{]}:
+
+\begin{itemize}
+\tightlist
+\item
+  Nolan L. Cabrera, Jeffrey F. Milem, Ozan Jaquette, \& Roland W. Marx.
+  (2014). Missing the (Student Achievement) Forest for All the
+  (Political) Trees: Empiricism and the Mexican American Studies
+  Controversy in Tucson. American Educational Research Journal, 51(6),
+  1084--1118. \url{https://doi.org/10.3102/0002831214553705}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Final Projects: Findings}
+\protect\hypertarget{final-projects-findings}{}
+
+This section will actually be very short\ldots{}
+
+\begin{itemize}
+\tightlist
+\item
+  Start by describing the descriptive statistics of your indepedent and
+  dependent variable (mean, standard deviation, min, and max)
+\item
+  Interpret \(\hat{\beta_1}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    In words and state the statistical significance
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+Create and include two tables to show the results:
+
+\begin{itemize}
+\tightlist
+\item
+  Table 1 should include the mean, standard deviation, min, max (counts
+  and \% for categorical variables) for your independent variable of
+  interest and dependent variable
+\item
+  Table 2 should include results of the bivariate regression and
+  multivariate regression models
+\end{itemize}
+
+\end{frame}
+
+\hypertarget{min-break}{%
+\section{10 Min Break}\label{min-break}}
+
+\hypertarget{learning-to-read-quantitative-empirical-work}{%
+\section{Learning to Read Quantitative Empirical
+Work}\label{learning-to-read-quantitative-empirical-work}}
+
+\begin{frame}{Powers (2004): Overall RQ, Analytical and Writting
+Approach!}
+\protect\hypertarget{powers-2004-overall-rq-analytical-and-writting-approach}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Williams v. State of California}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Class action lawsuit against the State of California in 2000; public
+    school students represented by a coalition of law firms, civil
+    rights organizations
+  \item
+    Argued that if schools and students are judged on the basis of their
+    test scores (high stakes accountability policies), then students and
+    schools should be provided with equal access to school-related
+    resources needed for academic success
+  \item
+    Specifically addressed need for qualified teachers,
+    sufficient/up-to-date textbooks, and adequate/safe facilities
+  \end{itemize}
+\item
+  \textbf{Old legal approach to school financing}: focused on levels and
+  formulas of spending
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Didn't work because the state has minimal oversight of local
+    educational control/``property taxes''; caps were eliminated via
+    voter overrides; and the small proportion of state funding was given
+    ``equally''
+  \end{itemize}
+\item
+  \textbf{New legal approach to school financing}: \emph{Williams v.
+  State of California} reframed the issue of school financing around the
+  \emph{conditions} of education rather than funding formulas!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Worked because the state is responsible for ensuring resources are
+    used to produce desirable outcomes
+  \end{itemize}
+\item
+  State of California argued that there was little empirical support
+  that increased spending on resources identified in the case would
+  increase student achievement
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{RQ}: What is the relationship(s) between school and district
+    characteristics on school's academic performance?
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004): Overall RQ, Analytical and Writting
+Approach!}
+\protect\hypertarget{powers-2004-overall-rq-analytical-and-writting-approach-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Empirical Strategy}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Powers is not trying to establish a causal effect of school/resource
+    characteristics on API score explicitly (impossible given the
+    observational data)
+  \item
+    But she is trying to isolate the Williams Case variables
+    ``relationship'' on schools' academic performance by controlling for
+    other factors that may be driving variation in schools' academic
+    performance!
+
+    \begin{itemize}
+    \tightlist
+    \item
+      See on See pg.766 for rationale in including control variables
+    \item
+      ``To ensure the findings related to Williams variables are robust,
+      that is, they are not systematically related to student, school,
+      and district characteristics''
+    \end{itemize}
+  \item
+    But still analyzing ``descriptive relationships'', not ``causal
+    relationships''
+  \end{itemize}
+\item
+  \textbf{Literature Review Strategy}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    HOW you format your literature review depends on your RQ and what is
+    substantively important
+  \end{itemize}
+
+  \begin{enumerate}
+  [(1)]
+  \tightlist
+  \item
+    Focus on reviewing scholarship about your X (most econometrics
+    studies do this)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Ex: What is the effect of receiving a Pell Grant on achievement?;
+      review scholarship on the effect of Pell grants on all student
+      outcomes (GPA, graduation, labor market, etc.)
+    \end{itemize}
+  \item
+    Focus on reviewing scholarship about your Y (many
+    prediction/descriptive studies do this)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      EX: What is the (predicted) probability of a student persisting
+      into their 2nd year of college?; review scholarship on what we
+      know about persistence (more likely to persist if you're involved
+      on campus, live on campus, etc.)
+    \end{itemize}
+  \item
+    Focus on reviewing scholarship that specifically speaks to the
+    \emph{relationship} between X and Y
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Ex: POWERS (2004, p.772): What do we know about the relationship
+      between school resources and academic achievement
+    \end{itemize}
+  \end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Data}: California DOE Data, school-level; Census Data; Federal
+  School Data
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Dependent variable(s): ?
+  \item
+    Independent variable(s) of interest: ?
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Hint there are three groupings and they are related to the
+      Williams Case
+    \end{itemize}
+  \item
+    Control Variables: ?
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Hint there are two groupings!
+    \item
+      Some control variables left out due to ``collinearity''
+    \item
+      \textbf{Collinearity}: When two or more of your independent
+      variables are highly correlated; so correlated that adding just
+      one of them explains both of their ``effect'' on the dependent
+      variable. In other words including BOTH independent variables that
+      are highly correlated is redundant and takes up statistical power
+    \item
+      R will automatically drop variables if there is collinearity!
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Model}: OLS Linear Regression
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Powers doesn't write out the equation for the study!
+  \item
+    Let's write it ourselves! {[}at least for the three groups of
+    variables for Williams Case{]}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Table 2: Nested Regression Models Using 1999 API Index as DV, pg. 781
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The most ``standard way'' to format regression results
+  \item
+    You show the ``progression'' towards your final regression model via
+    multiple models
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Intercept-only model (no independent variables) {[}Powers didnt
+      show this{]}
+    \item
+      Model 1 can have your independent variable of interest (standard
+      for program eval) or some variables (Powers did student
+      characteristics)
+    \item
+      Models 2+\ldots{} shows the addition of control variables
+    \end{itemize}
+  \item
+    Shows beta coefficients, standard errors, and significant levels!
+  \end{itemize}
+\item
+  Does show model fit statistics!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Powers is not writing from a program evaluation standpoint
+  \item
+    Rather she's trying to show how variables from Williams Case explain
+    (predict!) API scores
+  \item
+    In this case, measures of model fit are important
+  \item
+    \(R^2\) increases from Model 1 to Model 2
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Change in \(R^2\) doesn't mean that Williams case IVs add
+      ``little'' explanation; see pg 782!
+    \end{itemize}
+  \item
+    In text, she mentions overall F-test is significant from Model 1 to
+    Model 2
+  \item
+    F-test is related to \(R^2\)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \(H_0\): model with no independent variables (or limited IVs) fits
+      the data just as well as model with full variables
+    \item
+      \(H_a\): model with more variables fits the data better than model
+      with no IVs
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-2}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Interpretation for Table 2 for Williams Case Variables
+\item
+  In text, she hardly interprets beta coefficients beyond ``significance
+  and direction''
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Only sometimes mentions the magnitude of the coefficient
+  \item
+    This approach is common in ``descriptive research''
+  \end{itemize}
+\item
+  \textbf{Teacher training} (reference group is fully credentialed
+  teachers)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Emergency Credentialed \(\hat{\beta}\) Coefficient: -1.12***
+    SE= 0.09}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``On average, one-percentage-point increase in a
+      school teaching staff's proportion of emergency credentialed
+      teachers (as opposed to fully credentialed teachers) is associated
+      with a 1.12 point decrease in API score, holding all covariates
+      constant''
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Teacher Experience}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Years teaching \(\hat{\beta}\) Coefficient: .80** SE= 0.26}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``A one year increase in a school teaching staff's
+      average years of experience, on average, is associated with a 0.80
+      point increase in API score, holding all covariates constant''\\
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Teacher Education} (reference group is less than M.A)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Greater than MA \(\hat{\beta}\) Coefficient: .42*** SE=
+    0.06}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``On average, a one-percentage-point increase in a
+      school teaching staff's proportion of teachers with greater than
+      MA degree (as opposed to lower than MA teachers) is associated
+      with a 0.42 point increase in API score, holding all covariates
+      constant''
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{School Calendar} (reference group is traditional year)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Concept 6 \(\hat{\beta}\) Coefficient: -34.46*** SE= 4.52}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``On average, being a school with a Concept 6
+      Calendar as opposed to a Traditional Calendar is associated with a
+      34.46 point decrease in API score, holding all covariates
+      constant''
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Textbooks}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Per-pupil textbook expenditures \(\hat{\beta}\) Coefficient:
+    .11*** SE=0.003}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Interpretation: ``A \$1 increase in per-pupil expenditures for
+      textbooks is associated with a 0.1 point increase in API score,
+      holding all covariates constant''\\
+    \item
+      Interpretation: ``A \$10 increase in per-pupil expenditures for
+      textbooks, on average, is associated with a 1 point increase in
+      API score, holding all covariates constant''\\
+    \item
+      Interpretation: ``A \$100 increase in per-pupil expenditures for
+      textbooks, on average, is associated with a 10 point increase in
+      API score, holding all covariates constant''
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Powers (2004)}
+\protect\hypertarget{powers-2004-3}{}
+
+Why do I like this piece of scholarship?
+
+\begin{itemize}
+\tightlist
+\item
+  The methods are simple!
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Impactful research does not need to have complex methods!
+  \item
+    Study does not use any analyses/methods beyond what we have learned
+    so far in an introductory regression class; yet it is published in
+    the AERA flagship journal
+  \end{itemize}
+\item
+  Example of how to deal with ``metrics'' that I fundamentally disagree
+  with but are part of our educational reality
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Metrics like SAT/ACT scores, standardized K-12 test, are ``firmly
+    entrenched part of the political landscape'' that schools and
+    students must navigate
+  \item
+    In many cases, they are institutionalized within federal, state, and
+    university/school policies
+  \item
+    ``Aim is to make a strong argument for equity by marshaling the very
+    data that dominate the political discourse'' (p.~765)
+  \end{itemize}
+\item
+  Direct response to policies
+\item
+  Cool understanding of legal logic when it comes to education finance!
+\end{itemize}
+
+\end{frame}
+
+\end{document}

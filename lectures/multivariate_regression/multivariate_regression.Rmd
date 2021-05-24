@@ -1682,4 +1682,121 @@ Interpretation for Table 2 for Williams Case Variables
 
 <br>
 
+# Linear Probability Model
+
+__Linear Probability Model__
+
+- Binary Variables (i.e., dummies, indicators) as dependent variables are very common in education research!
+  - Y = Retention (0=dropped out, 1= persisted)
+  - Y = Graduation (0= did not graduate, 1= graduated)
+  - Y = Pass/Fail (0=Failed, Passed=1)
+
+<br>
+  
+- Regression models with a binary dependent variable attempt to interpret the effect of X on the _probability_ of "success" (Y=1)
+  - Or in some cases the probability of "failure" 
+  
+<br>
+
+- Most social science disciplines model binary dependent variables via non-linear regression models
+  - most common model for 0/1 dependent variables is logistic regression, but interpretation can be difficult because coefficients measured in "log odds"
+
+<br>
+  
+  
+- Econometric models typically model binary dependent variables using __linear probability model__
+  - Population parameters can be estimated via OLS!
+  - Simple to estimate and interpret!
+  - Only "tool" that doesn't carry over? $R^2$; but program evaluation is less concerned with model fit than hypothesis testing about the population parameter $\beta_1$
+  - It can ONLY be used for binary, categorical dependent variables
+    - If more than two categories, then we have to use different models (e.g., multinomial logistic regression)
+
+  
+<br>
+
+Run regression model with participation in internship as Y-variable and following X-variables: 
+
+- high school reading score (continuous), parent income (continuous), sex (dichotomous categorical), race (categorical)
+```{r}
+intern_mod3 <- lm(formula = as.integer(f2intern0506) ~  bytxrstd + parent_income  + f1sex + f1race_v2, data = df_els_stu_fac %>% filter(f2enroll0506=='yes'))
+summary(intern_mod3)
+```
+<br>
+<br>
+
+- Population linear probability regression model (multivariate regression)
+  - $Y_i = \beta_0 + \beta_1 X_{1i}+ \beta_2 X_{2i}+ \beta_3 X_{3i}+ \beta_4 X_{4i}+ \beta_5 X_{5i}+ \beta_6 X_{6i}+ \beta_7 X_{7i}+ \beta_8 X_{8i}+ u_i$, where:
+    - $Y_i$: dichotomous measure of whether student $i$ in participated in internship/co-op in 2005-06
+    - $X_{1i}$: (continuous) high school reading test score
+    - $X_{2i}$: (continuous) measure of parental income
+    - $X_{3i}$: (dichotomous) student $i$ identifies as female
+    - $X_{4i}$: (dichotomous) student $i$ identifies as Asian or Pacific Islander (API)
+    - $X_{5i}$: (dichotomous) student $i$ identifies as Black 
+    - $X_{6i}$: (dichotomous) student $i$ identifies as Latinx
+    - $X_{7i}$: (dichotomous) student $i$ identifies as Native American
+    - $X_{8i}$: (dichotomous) student $i$ identifies as two or more races 
+    - $u_i$ is all variables that affect $Y_i$ but were not included in our model
+- OLS prediction line
+  - without estimates
+    - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}X_i + \hat{\beta_2} X_{2i}+ \hat{\beta_3} X_{3i}+ \hat{\beta_4} X_{4i}+ \hat{\beta_5} X_{5i}+ \hat{\beta_6} X_{6i}+ \hat{\beta_7} X_{7i}+ \hat{\beta_8} X_{8i}$
+  - with estimates
+    - $\hat{Y_i} =$  `r format(round(summary(intern_mod3)$coefficients[1,1], digits =4),big.mark = ',')` + `r format(round(summary(intern_mod3)$coefficients[2,1], digits =4),big.mark = ',')` $\times X_{1i}$ + `r format(round(summary(intern_mod3)$coefficients[3,1], digits =4),big.mark = ',')` $\times X_{2i}$ + `r format(round(summary(intern_mod3)$coefficients[4,1], digits =4),big.mark = ',')` $\times X_{3i}$ +  `r format(round(summary(intern_mod3)$coefficients[5,1], digits =4),big.mark = ',')` $\times X_{4i}$ + `r format(round(summary(intern_mod3)$coefficients[6,1], digits =4),big.mark = ',')`  $\times X_{5i}$ +  `r format(round(summary(intern_mod3)$coefficients[7,1], digits =4),big.mark = ',')` $\times X_{6i}$ + `r format(round(summary(intern_mod3)$coefficients[8,1], digits =4),big.mark = ',')`  $\times X_{7i}$ +  `r format(round(summary(intern_mod3)$coefficients[9,1], digits =4),big.mark = ',')` $\times X_{8i}$
+    
+<br>
+
+__Interpreting Linear Probability Model, Continuous X__
+
+- Dependent variable is a 0/1 measure of whether student participated in an internship
+- __Interpretation of $\hat{\beta_k}$__
+  - General: 
+    - On average, a one-unit increase in X is associated with a $\hat{\beta_k}*100$ percentage point change in the probability of Y=1
+  - Interpretation for $X_{1i}$ (high school reading test score); $\hat{\beta_1}=$ `r format(round(summary(intern_mod3)$coefficients[2,1], digits =4),big.mark = ',')`
+    - on average, a one-point increase in high school reading test score is associated with a `r format(round(summary(intern_mod3)$coefficients[2,1]*100, digits =4),big.mark = ',')` percentage-point change in the probability of having an internship.
+    - that is, this is a decline in probability of receiving an internship that is less than one percentage point.
+- __Interpretation of $\hat{\beta_k}$__ when you SCALE X
+  - General: 
+    On average, a N-unit increase in X is associated with a ((N-unit$*\hat{\beta_1}$)*100) percentage point change in the probability of Y=1
+  - Interpretation for a 10-point increase in $X_{1i}$ (high school reading test score); $\hat{\beta_1}=$  `r format(round(summary(intern_mod3)$coefficients[2,1], digits =4),big.mark = ',')`  
+    - on average, a 10-point increase in high school reading test score is associated with a `r format(round(summary(intern_mod3)$coefficients[2,1]*100*10, digits =4),big.mark = ',')` percentage-point change in the probability of having an internship.
+    - that is, this is about a 1.5 percentage point decline in probability of receiving an internship (e.g., from 50.0% to 48.5% probability of receiving an internship; or going from a 30% to 28.5% chance of receiving an internship.
+
+<br>
+
+__Linear Probability Model, with Categorical X__
+
+- Dependent variable is a 0/1 measure of whether student participated in an internship
+- __Interpretation of $\hat{\beta_1}$__
+  - General: being in the "non-reference group" as opposed to the "reference group" is, on average, associated with  a $100*\hat{\beta_1}$ percentage point change in the probability of Y=1
+- Interpretation for $X_{8i}$ (0/1 student identies as two or more races); $\hat{\beta_8}$ `r format(round(summary(intern_mod3)$coefficients[9,1], digits =4),big.mark = ',')`
+  - (reference group is "identifies as white")
+  - identifying as two-or-more races as opposed to identifying as white is, on avarage, associated with `r format(round(summary(intern_mod3)$coefficients[9,1]*100, digits =4),big.mark = ',')` percentage-point change in the probability of having an internship.
+  - that is, this about a 2.5% increase in the probability of having an internship (e.g., from 20% to 22.5% probability of having an internship)
+
+<br><br>
+
+__Interpretation of results from journal articles__
+
+<br>
+
+Cabrera, N. L., Milem, J. F., Jaquette, O., & Marx, R. (2014). Missing the (student achievement) forest for all the (political) trees: Empiricism and the Mexican American Studies controversy in Tucson. *American Educational Research Journal*, 51(6), 1084-1118.
+
+<br>
+
+
+Below is partial screenshot from Table 3 from, where:
+
+- $Y$ = 0/1 student graduated from high school
+- $X_1$ = 0/1 student participated in the Mexican American Studies (MAS) major
+
+![](mas_table3.png)
+
+<br>
+
+And below is text interpreting results 
+
+- note that the regression coefficient of `0.095` was interpreted as, participating in MAS as opposed to not participating in MAS was, on average, associated with a `9.5` percentage point increase in the probability of graduattion
+  - where the `9.5` is calculated as follows: $\hat{\beta_1}*100 = .0095 * 100 = 9.5$
+
+![](mas_table3_interpretation.png)
+
 # References

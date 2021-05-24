@@ -5,8 +5,7 @@
 options(scipen=999)
 
 #install new packages 
-#install.packages("RCurl") #we'll use this to calculate robust standard errors
-#install.packages("stargazer")
+install.packages("stargazer")
 
 # load the libraries we will use in this R script
 library(haven) 

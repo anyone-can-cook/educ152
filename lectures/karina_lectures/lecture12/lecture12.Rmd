@@ -1,55 +1,56 @@
 ---
-title: "Introduction to Multivariate Regression & Econometrics"
-author: 
+title: Introduction to Multivariate Regression & Econometrics # potentially push to header
+subtitle:  HED 612
+author: Lecture 12
 date: 
+classoption: dvipsnames  # for colors
+fontsize: 8pt
 urlcolor: blue
-output: 
-  html_document:
+output:
+  beamer_presentation:
+    keep_tex: true
     toc: true
-    toc_depth: 2
-    toc_float: true # toc_float option to float the table of contents to the left of the main document content. floating table of contents will always be visible even when the document is scrolled
-      #collapsed: false # collapsed (defaults to TRUE) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary
-      #smooth_scroll: true # smooth_scroll (defaults to TRUE) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks
-    number_sections: true
-    fig_caption: true # ? this option doesn't seem to be working for figure inserted below outside of r code chunk    
-    highlight: tango # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax    
-    theme: default # theme specifies the Bootstrap theme to use for the page. Valid themes include default, cerulean, journal, flatly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti.
-    df_print: tibble #options: default, tibble, paged
-
+    slide_level: 3
+    theme: default # AnnArbor # push to header?
+    #colortheme: "dolphin" # push to header?
+    #fonttheme: "structurebold"
+    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
+    df_print: tibble # push to header?    
+    latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
+    includes:
+      in_header: ../beamer_header.tex
+      #after_body: table-of-contents.txt 
 ---
+### Finishing the Semester....
 
-# Logistics
-
-## Classes for Fall 2020
-
-- HED 696C 005: Data management/manipulation in R
-  - Thursdays 4:15-6:45PM
-  
-- HED 696C 003: Finance, enrollment management, and recruiting
-  - Wednesdays 4:15-6:45PM
-
-
-
-## Where are we going....
-
-- This Lecture
-  - Introduction to non-linear functions
-    - Polynomials
+- Today, 4/14
   - Review:
     - Powers, J. M. (2004). High-Stakes Accountability and Equity: Using Evidence From California’s Public Schools Accountability Act to Address the Issues in Williams v. State of California. American Educational Research Journal, 41(4), 763–795.
+  - Linear Probability Models for 0/1 DV
+  - Mini lesson on what each section of final project should accomplish!
+  - Exporting regression "nearly-publication" ready tables!
+
+\medskip
+
+- Next Week, 4/21 [NO CLASS]
+  - Final Project Outline Due before 4/23 @ 5pm 
+    - Will discuss in detail the next slide
 
 
-- Next Lecture
-  - Non-linear functions cont. 
+\medskip
+
+- Next Lecture, 4/28
+  -  Introduction to non-linear functions
+    - Polynomials
     - Logs
-    - intro to interaction effects
+    - Intro to interaction effects
   - Mini lesson on what each section of manuscrupt should accomplish!
 
 
 
-# Introduction to non-linear functions: Polynomials
+# Introduction to non-linear functions
 
-## Linear vs Non-Linear Models
+### Linear vs Non-Linear Models
 - Non-linear relationships can be confusing and difficult to understand!
   - So far we have learned **linear** multiple regression model via OLS estimation
     - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + ... \beta_kX_{ki}$
@@ -65,7 +66,7 @@ output:
     - Exception if Y is a dummy variable (i.e., binary) then you can run a linear probability model
 
 
-## Nonlinear functions of the IVs, $X_{1i}, X_{2i}... X_{ki}$
+### Nonlinear functions of the IVs, $X_{1i}, X_{2i}... X_{ki}$
 
 - OLS linear regression can model nonlinear function of the independent variables $X_{1i}, X_{2i}... X_{ki}$ in two different ways!
 - __1. The effect of $X_{1i}$ on Y depends on $X_{1i}$__
@@ -78,7 +79,7 @@ output:
 
 ![](slope.jpg)
 
-## The effect of $X_{1i}$ on Y depends on $X_{1i}$
+### The effect of $X_{1i}$ on Y depends on $X_{1i}$
 
 - Let's investigate the effect of district average income (in per capita) on student test scores...
 - Do we think there's a positive or negative linear relationship? 
@@ -90,7 +91,7 @@ output:
 
 ![](linear.png)
 
-## Polynomials
+### Polynomials
 
 RQ: What is the effect of district income on average student test scores?
 
@@ -112,7 +113,7 @@ __Polynomials__
 
 
 
-## Polynomials: Equation
+### Polynomials: Equation
 
 RQ: What is the effect of district income on average student test scores?
 
@@ -135,7 +136,7 @@ Population regression model
     - Using `I()` tells R that we are using them arithmetically and that the operator should be passed "arithmetically" to the `formula` class object creaated via `lm()`
 
 
-## Polynomials: Interpretation
+### Polynomials: Interpretation
 
 - RQ: What is the effect of district income on average student test scores?
 - $Y_i = \beta_0 + \beta_1X_{1i} + \beta_2{X_1i}^2 + u_i$
@@ -151,7 +152,7 @@ Population regression model
 - $\beta_2$ p-value = 0.00000; reject the null in favor of the alternative. In other words, there is a significant, quadratic relationship between test scores and district income! 
 
 
-## Polynomials: Interpretation $\hat{\beta_1}$
+### Polynomials: Interpretation of $\hat{\beta_1}$
 
 - Plot data with a linear and quadratic line in R
 - How do we interpret our beta coefficients?
@@ -164,6 +165,7 @@ __$\hat{\beta_1}$__
   - Will show you how to do this by hand
   - Use `predict()` in R
 
+### Polynomials: Interpretation $\hat{\beta_1}$
 
 __Example 1: What is the change in average student test scores for change in \$10k to \$11k income__
 
@@ -184,7 +186,7 @@ __Example 2: What is the change in average student test scores for change in \$4
   - A change from \$40k to \$41k in average district income per capita is associated with a 0.4239 increase in average student test scores
 
 
-## Polynomials: Interpretation $\hat{\beta_2}$
+### Polynomials: Interpretation $\hat{\beta_2}$
 
 - How do we interpret our beta coefficients?
 
@@ -202,7 +204,7 @@ __$\hat{\beta_2}$__
 
 # Interpreting Regression Results in Journals
 
-## Powers (2004)
+### Powers (2004)
 
 - __RQ__: What is the relationship(s) between school and district characteristics on school's Academic Performance Index?
   - Old legal approach to school financing: focused on levels and patterns of spending
@@ -226,6 +228,8 @@ __$\hat{\beta_2}$__
 - __Model__: OLS Linear Regression 
 
 
+### Powers (2004)
+
 - Table 2:  Nested Regression Models Using 1999 API Index as DV, pg. 781
   - The most "standard way" to format regression results
   - You show the "progression" towards your final regression model via multiple models
@@ -245,6 +249,8 @@ __$\hat{\beta_2}$__
     - $H_0$: model with no independent variables (or limited IVs) fits the data just as well as model with full variables
     - $H_a$: model with more variables fits the data better than model with no IVs
 
+
+### Powers (2004)
 
 - Interpretation for Table 2 for Williams Case Variables
 - In text, she doesn't interpret them much beyond "significance and direction" 
@@ -269,6 +275,7 @@ __$\hat{\beta_2}$__
     - Interpretation: "A \$10 increase in per-pupil expenditures for textbooks, on average, is associated with a 1 point increase in API score, holding all covariates constant"  
     - Interpretation: "A \$100 increase in per-pupil expenditures for textbooks, on average, is associated with a 10 point increase in API score, holding all covariates constant"  
 
+### Powers (2004)
 
 - Why do I like this piece of scholarship?
 - Example of how to deal with "metrics" that I fundamentally disagree with but are part of our educational reality
