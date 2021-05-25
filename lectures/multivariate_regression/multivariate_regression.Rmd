@@ -1300,11 +1300,11 @@ Research question we will use to practice interpretation of multivariate regress
   - `filter(f2enroll0506=='yes')`
 
 <br>
-_Identify a couple of "control variables" (often referred to "covariates") to add to our model__ 
+__Identify a couple of "control variables" (often referred to "covariates") to add to our model__ 
 
 We want to recreate "experimental conditions" (students randomly assigned to internship)
 
-- Our goal is: after controlling for covariates, students who participate in internships are, on average, the same as students who do not participate in internships with respect to 2011 earnings, exepct for participation in internship
+- Our goal is: after controlling for covariates, students who participate in internships are, on average, the same as students who do not participate in internships with respect to 2011 earnings, except for participation in internship
 - We include control variables that we think (based on logical argument, past research, descriptive stats) satisfy both conditions of omitted variable bias:
   - For omitted variable bias to occur, the omitted variable “Z” must satisfy two conditions
     - (1) $Z$ affects value of Y (i.e. Z is part of $u_i$)
@@ -1501,7 +1501,7 @@ Interpretation of $\hat{\beta_k}$ (for categorical variable $X_k$)
 - $X_{4i}$ (identifies as Asian or Pacific Islander (API)); $\hat{\beta_4}=$ `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')`
   - being API as opposed to white is associated with a `r format(round(summary(intern_mod2)$coefficients[5,1], digits =0),big.mark = ',')` dollar change in 2011 earnings, holding the of value all other $X$ variables constant
 - $X_{5i}$ (identifies as Black); $\hat{\beta_5}=$ `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')`
-  - being Black as opposed to wrhite is associated with a `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')` dollar change in 2011 earnings, holding the of value all other $X$ variables constant
+  - being Black as opposed to white is associated with a `r format(round(summary(intern_mod2)$coefficients[6,1], digits =0),big.mark = ',')` dollar change in 2011 earnings, holding the of value all other $X$ variables constant
 - $X_{6i}$ (identifies as Latinx); $\hat{\beta_6}=$ `r format(round(summary(intern_mod2)$coefficients[7,1], digits =0),big.mark = ',')`
   - You do the rest!
 - $X_{7i}$ (identifies as Native American); $\hat{\beta_7}=$ `r format(round(summary(intern_mod2)$coefficients[8,1], digits =0),big.mark = ',')`
@@ -1553,7 +1553,7 @@ What is the predicted 2011 earnings for a student who participated in an interns
 
 
 <br>
-What is the predicted 2011 earnings for a student who participated in an internship ($X_{1i}=1$), who scored 45 on the high school reading test ($X_{2i}=65$) and who identifies as white, who identifies as male?
+What is the predicted 2011 earnings for a student who participated in an internship ($X_{1i}=1$), who scored 45 on the high school reading test ($X_{2i}=45$) and who identifies as white, who identifies as male?
 
 - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}\times 1 + \hat{\beta_2} \times 45 + \hat{\beta_3} \times 0 + \hat{\beta_4} \times 0+ \hat{\beta_5} \times 0+ \hat{\beta_6} \times 0 + \hat{\beta_7} \times 0 + \hat{\beta_8} \times 0$
 - $\hat{Y_i} = \hat{\beta_0} + \hat{\beta_1}\times 1 + \hat{\beta_2} \times 45$
