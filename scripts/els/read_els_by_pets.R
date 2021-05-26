@@ -84,9 +84,10 @@ library(labelled)
                 'f3tzrectrans','f3tzreqtrans','f3tzschtotal','f3tzps1sec','f3tzps1slc','f3tzps1start','f3tzhs2ps1',
                 'f3tzever2yr','f3tzever4yr','f3tzremtot','f3tzrempass','f3tzremengps','f3tzrementot','f3tzremmthps','f3tzremmttot',
                 'f3tzanydegre','f3tzhighdeg','F3TZCERT1DT','F3TZCRT1CIP2','F3TZASOC1DT','F3TZASC1CIP2','f3tzbach1dt','f3tzbch1cip2',
-                'f3stloanamt','f3stloanevr','f3stloanpay','F3ERN2011')
+                'f3stloanamt','f3stloanevr','f3stloanpay','F3ERN2011','F3TZPOSTATT','F3TZPOSTERN','F1RMAT_P')
               # drop these vars cuz suppressed "f3tzps1ctr"   "f3tzps1lvl" ;
 
+  
 
 
   keepvars_lower <- tolower(keepvars)
@@ -174,7 +175,21 @@ df_els_stu <- df_els_stu_all %>%
         f1race %in% c(4,5) ~ 4, # Hispanic
         f1race == 1 ~ 5, # Amer. Indian/Alaska Native, non-Hispanic
         f1race == 6 ~ 6 # multi
-      )
+      ),
+    # categorical math; convert zero to less than 2
+      hs_math_cred = if_else(as.numeric(f1rmat_p)==0,1,as.numeric(f1rmat_p)),
+    # create 0/1 indicator of whether student takes developmental math course in postsecondary education
+     dev_math_01 = case_when(
+      f3tzremmttot == 0 ~ 0, # 0 courses
+      f3tzremmttot >= 1 ~ 1, # 1+ courses
+    ),
+    # create categorical indicator of whether student takes developmental math course in postsecondary education
+     dev_math_cat = case_when(
+      f3tzremmttot == 0 ~ 1, # 0 courses
+      f3tzremmttot == 1 ~ 2, # 1+ courses
+      f3tzremmttot == 2 ~ 3, # 1+ courses
+      f3tzremmttot > 2 ~ 4, # 1+ courses
+    )    
   ) %>% 
   # add value labels to categorical variables you created
     set_value_labels(
@@ -182,10 +197,13 @@ df_els_stu <- df_els_stu_all %>%
       f2enroll0506 = c('no' = 0,'yes' = 1),
       f2intern0405 = c('no' = 0,'yes' = 1),
       f2intern0506 = c('no' = 0,'yes' = 1),
-      f1race_v2 = c('white'=1, 'api'=2, 'black'=3, 'latinx'=4, 'native'=5, 'multi'=6)
+      dev_math_01 =  c('no' = 0,'yes' = 1),
+      f1race_v2 = c('white'=1, 'api'=2, 'black'=3, 'latinx'=4, 'native'=5, 'multi'=6),
+      dev_math_cat =  c('0 courses' = 1,'1 course' = 2, '2 courses' = 3, '3+ courses' = 4),
       ) 
-  
-  
+  # assign attributes
+  attributes(df_els_stu$hs_math_cred) <- attributes(df_els_stu$f1rmat_p)
+
 # add variable labels
     var_label(df_els_stu[['f3totloan']]) <- 'total loans taken out to pay for postsecondary education as of f3 (2013)'
     var_label(df_els_stu[['f2enroll0405']]) <- '0/1 (no/yes) enrolled in 2004-05, based on student survey follow-up 2'
@@ -194,8 +212,21 @@ df_els_stu <- df_els_stu_all %>%
     var_label(df_els_stu[['f2intern0506']]) <- '0/1 (no/yes) held an internship or co-op in 2005-06; NA if not enrolled in postsecondary education in 2005-06'
     var_label(df_els_stu[['parent_income']]) <- 'continuous measure of base year parental household income, calculated from categorical variable byincome'
     var_label(df_els_stu[['f1race_v2']]) <- 'categorical measure of race based on variable f1race'
+    var_label(df_els_stu[['dev_math_01']]) <- 'dichotomous indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
+    var_label(df_els_stu[['dev_math_cat']]) <- 'categorical indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
 
-      
+
+# Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables    
+  df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
+  # convert continuous variables we know we want numeric back to numeric
+  for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal','f3tzpostern','f3tzpostatt',
+              'f3tzremtot','f3tzrempass','f3tzremengps','f3tzrementot','f3tzremmthps','f3tzremmttot','f3tzps1start')) {
+    df_els_stu_fac[[v]] <- df_els_stu[[v]]  
+  }
+
+
+
+  
 
 # save file to disk
 #save(df_els_stu, file = file.path(output_data_dir, 'els_stu.RData'))
