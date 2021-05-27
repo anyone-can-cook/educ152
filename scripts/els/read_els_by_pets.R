@@ -183,13 +183,19 @@ df_els_stu <- df_els_stu_all %>%
       f3tzremmttot == 0 ~ 0, # 0 courses
       f3tzremmttot >= 1 ~ 1, # 1+ courses
     ),
-    # create categorical indicator of whether student takes developmental math course in postsecondary education
-     dev_math_cat = case_when(
+    # create 4 category indicator of whether student takes developmental math course in postsecondary education
+     dev_math_cat4 = case_when(
+      f3tzremmttot == 0 ~ 1, # 0 courses
+      f3tzremmttot == 1 ~ 2, # 1 courses
+      f3tzremmttot == 2 ~ 3, # 2 courses
+      f3tzremmttot > 2 ~ 4, # 3+ courses
+    ),
+    # create 3 category indicator of whether student takes developmental math course in postsecondary education
+     dev_math_cat3 = case_when(
       f3tzremmttot == 0 ~ 1, # 0 courses
       f3tzremmttot == 1 ~ 2, # 1+ courses
-      f3tzremmttot == 2 ~ 3, # 1+ courses
-      f3tzremmttot > 2 ~ 4, # 1+ courses
-    )    
+      f3tzremmttot > 1 ~ 3, # 2+ courses
+    )        
   ) %>% 
   # add value labels to categorical variables you created
     set_value_labels(
@@ -199,7 +205,8 @@ df_els_stu <- df_els_stu_all %>%
       f2intern0506 = c('no' = 0,'yes' = 1),
       dev_math_01 =  c('no' = 0,'yes' = 1),
       f1race_v2 = c('white'=1, 'api'=2, 'black'=3, 'latinx'=4, 'native'=5, 'multi'=6),
-      dev_math_cat =  c('0 courses' = 1,'1 course' = 2, '2 courses' = 3, '3+ courses' = 4),
+      dev_math_cat4 =  c('0 courses' = 1,'1 course' = 2, '2 courses' = 3, '3+ courses' = 4),
+      dev_math_cat3 =  c('0 courses' = 1,'1 course' = 2, '2+ courses' = 3)
       ) 
   # assign attributes
   attributes(df_els_stu$hs_math_cred) <- attributes(df_els_stu$f1rmat_p)
@@ -213,7 +220,8 @@ df_els_stu <- df_els_stu_all %>%
     var_label(df_els_stu[['parent_income']]) <- 'continuous measure of base year parental household income, calculated from categorical variable byincome'
     var_label(df_els_stu[['f1race_v2']]) <- 'categorical measure of race based on variable f1race'
     var_label(df_els_stu[['dev_math_01']]) <- 'dichotomous indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
-    var_label(df_els_stu[['dev_math_cat']]) <- 'categorical indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
+    var_label(df_els_stu[['dev_math_cat4']]) <- 'four category indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
+    var_label(df_els_stu[['dev_math_cat3']]) <- 'three category indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
 
 
 # Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables    
