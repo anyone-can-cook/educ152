@@ -387,11 +387,11 @@ df_mba %>% glimpse()
       #list.files(path = file.path('.','..','..','scripts','els'))
 
 # Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables
-  df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
+  #df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
   # convert continuous variables we know we want numeric back to numeric
-  for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal')) {
-    df_els_stu_fac[[v]] <- df_els_stu[[v]]  
-  }
+  #for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal')) {
+  #  df_els_stu_fac[[v]] <- df_els_stu[[v]]  
+  #}
 ```
 
 
@@ -1714,6 +1714,27 @@ __Linear Probability Model__
   
 <br>
 
+## Interpretation of $\hat{\beta_k}$
+
+<br>
+
+__"percentage point change" vs. "percentage change"__
+
+- When interpreting $\hat{\beta_k}$ for the linear probability model (below) we refer to a "percentage point change in the probability that $Y=1$"
+- "Percentage point change" is percentage *A* minus percentage *B* (or vice versa)
+  - Example, using Mexican American Studies (MAS) program offered by Tucson Unified School District
+    - Imagine that high school students who participate in the Mexican American Studies (MAS) program have a 68% probability of graduating from high school and students who do not participate in MAS have a 60% probability of graduating from high school. 
+    - The "percentage point change" in the probability of graduating from high school associated with participating in MAS is: $68\% - 60\%= 8\%$
+- "percentage change" expresses the difference between final and initial values
+  - imagine that $Y_1$ and $Y_2$ are two different values of some variable
+  - percentage change is calculated as $\frac{Y_2 - Y_1}{Y_1} \times 100$
+  - Example:
+    - imagine that $Y_1= \$4.00$ is the price of one gallone of gas last year and $Y_2= \$6.00$ is the price of a gallon of gas this year
+    - the percentage change is $\frac{Y_2 - Y_1}{Y_1} \times 100 = \frac{6 - 4}{4} \times 100 =50$
+    - we would say, the price of gas has increased by 50% from last year to this year
+- For interpretation of the linear probability model we use **percentage point change** rather than **percentage change**
+
+
 Run regression model with participation in internship as Y-variable and following X-variables: 
 
 - high school reading score (continuous), parent income (continuous), sex (dichotomous categorical), race (categorical)
@@ -1748,14 +1769,14 @@ __Interpreting Linear Probability Model, Continuous X__
 
 - Dependent variable is a 0/1 measure of whether student participated in an internship
 - __Interpretation of $\hat{\beta_k}$__
-  - General: 
+  - Generic: 
     - On average, a one-unit increase in X is associated with a $\hat{\beta_k}*100$ percentage point change in the probability of Y=1
   - Interpretation for $X_{1i}$ (high school reading test score); $\hat{\beta_1}=$ `r format(round(summary(intern_mod3)$coefficients[2,1], digits =4),big.mark = ',')`
     - on average, a one-point increase in high school reading test score is associated with a `r format(round(summary(intern_mod3)$coefficients[2,1]*100, digits =4),big.mark = ',')` percentage-point change in the probability of having an internship.
     - that is, this is a decline in probability of receiving an internship that is less than one percentage point.
 - __Interpretation of $\hat{\beta_k}$__ when you SCALE X
-  - General: 
-    On average, a N-unit increase in X is associated with a ((N-unit$*\hat{\beta_1}$)*100) percentage point change in the probability of Y=1
+  - Generic: 
+    - On average, a N-unit increase in X is associated with a ((N-unit$*\hat{\beta_1}$)*100) percentage point change in the probability of Y=1
   - Interpretation for a 10-point increase in $X_{1i}$ (high school reading test score); $\hat{\beta_1}=$  `r format(round(summary(intern_mod3)$coefficients[2,1], digits =4),big.mark = ',')`  
     - on average, a 10-point increase in high school reading test score is associated with a `r format(round(summary(intern_mod3)$coefficients[2,1]*100*10, digits =4),big.mark = ',')` percentage-point change in the probability of having an internship.
     - that is, this is about a 1.5 percentage point decline in probability of receiving an internship (e.g., from 50.0% to 48.5% probability of receiving an internship; or going from a 30% to 28.5% chance of receiving an internship.
@@ -1766,7 +1787,7 @@ __Linear Probability Model, with Categorical X__
 
 - Dependent variable is a 0/1 measure of whether student participated in an internship
 - __Interpretation of $\hat{\beta_1}$__
-  - General: being in the "non-reference group" as opposed to the "reference group" is, on average, associated with  a $100*\hat{\beta_1}$ percentage point change in the probability of Y=1
+  - Generic: being in the "non-reference group" as opposed to the "reference group" is, on average, associated with  a $100*\hat{\beta_1}$ percentage point change in the probability of Y=1
 - Interpretation for $X_{8i}$ (0/1 student identies as two or more races); $\hat{\beta_8}$ `r format(round(summary(intern_mod3)$coefficients[9,1], digits =4),big.mark = ',')`
   - (reference group is "identifies as white")
   - identifying as two-or-more races as opposed to identifying as white is, on avarage, associated with `r format(round(summary(intern_mod3)$coefficients[9,1]*100, digits =4),big.mark = ',')` percentage-point change in the probability of having an internship.
