@@ -220,7 +220,7 @@ df_els_stu <- df_els_stu_all %>%
   df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
   # convert continuous variables we know we want numeric back to numeric
   for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal','f3tzpostern','f3tzpostatt',
-              'f3tzremtot','f3tzrempass','f3tzremengps','f3tzrementot','f3tzremmthps','f3tzremmttot','f3tzps1start')) {
+              'f3tzremtot','f3tzrempass','f3tzremengps','f3tzrementot','f3tzremmthps','f3tzremmttot','f3tzps1start','f3hscpdr')) {
     df_els_stu_fac[[v]] <- df_els_stu[[v]]  
   }
 

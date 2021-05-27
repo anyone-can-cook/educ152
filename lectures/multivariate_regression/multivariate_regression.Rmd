@@ -460,7 +460,7 @@ useful to use `lookfor()` to query the dataset `df_els_stu_all` because this dat
 ```{r}
 
 # query data frame df_els_stu_all
-  lookfor(data=df_els_stu_all, 'internship',labels = TRUE, ignore.case = TRUE, details = TRUE)
+  lookfor(data=df_els_stu_all, 'how far in school',labels = TRUE, ignore.case = TRUE, details = TRUE)
 
 
 # query data frame df_els_stu
