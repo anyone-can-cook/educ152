@@ -1816,7 +1816,7 @@ Below is partial screenshot from Table 3 from, where:
 And below is text interpreting results 
 
 - note that the regression coefficient of `0.095` was interpreted as, participating in MAS as opposed to not participating in MAS was, on average, associated with a `9.5` percentage point increase in the probability of graduattion
-  - where the `9.5` is calculated as follows: $\hat{\beta_1}*100 = .0095 * 100 = 9.5$
+  - where the `9.5` is calculated as follows: $\hat{\beta_1}*100 = .095 * 100 = 9.5$
 
 ![](mas_table3_interpretation.png)
 
