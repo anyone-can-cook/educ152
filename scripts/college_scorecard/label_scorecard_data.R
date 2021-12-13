@@ -81,3 +81,5 @@ var_label(df_debt_earn_panel_labelled)
 val_labels(df_debt_earn_panel_labelled)
 
 save(df_debt_earn_panel_labelled, file = file.path(data_dir, 'df_debt_earn_panel_labelled.RData'))
+
+df_debt_earn_panel_labelled %>% glimpse()

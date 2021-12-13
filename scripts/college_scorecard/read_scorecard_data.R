@@ -181,20 +181,21 @@ read_scorecard <- function(file_name) {
   # left join with x=df_field_panel and y = df_inst_recent
     # keep only main campuses
 
-  df_debt_earn_panel <- df_field_panel %>% 
+  df_debt_earn_panel <- df_field_panel  %>%
     # keep only main campuses
     filter(main ==1) %>%
     # select vars to keep from inst-field level data
     select(-main,-contains('male'),-contains('pell'),-starts_with('bbrr'),-contains('nwne'),-contains('cntover150')) %>% 
     # left join
-    left_join(y=df_inst_somevars, by = 'unitid') %>% 
+    left_join(y=df_inst_somevars %>% mutate(unitid = as.character(unitid)), by = 'unitid') %>% 
     # order of variables
     relocate(opeid6,unitid,instnm,control,ccbasic,stabbr,city,cipcode,cipdesc,credlev,creddesc,field_ay,ipedscount1,ipedscount2,
       contains('stgp'),contains('_pp'),starts_with('earn'),
-      main,numbranch,accredagency,highdeg,st_fips,region,zip,locale,locale2,latitude,longitude,relaffil,hbcu,annhi,tribal,aanapii,hsi,nanti)
-
+      main,numbranch,accredagency,highdeg,st_fips,region,zip,locale,locale2,latitude,longitude,relaffil,hbcu,annhi,tribal,aanapii,hsi,nanti) %>% 
+    mutate(unitid = as.numeric(unitid))      
+    
   df_debt_earn_panel %>% glimpse()
-  rm(df_debt_earn_panel)
+  #rm(df_debt_earn_panel)
   
   
 # save institution-field level panel dataset as .RDS file
@@ -205,9 +206,6 @@ read_scorecard <- function(file_name) {
   load(file = file.path(output_data_dir, 'df_debt_earn_panel.RData'))
   
   # load data from github
-  
-  
-  
   load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/college_scorecard/output_data/df_debt_earn_panel.RData'))
 
   
