@@ -242,6 +242,7 @@ save(df_els_stu, file = file.path(output_data_dir, 'els_stu.RData'))
 #opening data
 
 load(file = file.path(output_data_dir, 'els_stu.RData'))
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/els/output_data/els_stu.RData'))
 
 #load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/star/star_panel_data.RData'))
 
