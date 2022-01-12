@@ -190,31 +190,39 @@ df_els_stu_allobs <- df_els_stu_all %>%
       dev_math_cat3 =  c('0 courses' = 1,'1 course' = 2, '2+ courses' = 3)
       ) 
   # assign attributes
-  attributes(df_els_stu$hs_math_cred) <- attributes(df_els_stu$f1rmat_p)
+  attributes(df_els_stu_allobs$hs_math_cred) <- attributes(df_els_stu_allobs$f1rmat_p)
 
 # add variable labels
-    var_label(df_els_stu[['f3totloan']]) <- 'total loans taken out to pay for postsecondary education as of f3 (2013)'
-    var_label(df_els_stu[['f2enroll0405']]) <- '0/1 (no/yes) enrolled in 2004-05, based on student survey follow-up 2'
-    var_label(df_els_stu[['f2enroll0506']]) <- '0/1 (no/yes) enrolled in 2005-06, based on student survey follow-up 2'
-    var_label(df_els_stu[['f2intern0405']]) <- '0/1 (no/yes) held an internship or co-op in 2004-05; NA if not enrolled in postsecondary education in 2004-05'
-    var_label(df_els_stu[['f2intern0506']]) <- '0/1 (no/yes) held an internship or co-op in 2005-06; NA if not enrolled in postsecondary education in 2005-06'
-    var_label(df_els_stu[['parent_income']]) <- 'continuous measure of base year parental household income, calculated from categorical variable byincome'
-    var_label(df_els_stu[['f1race_v2']]) <- 'categorical measure of race based on variable f1race'
-    var_label(df_els_stu[['dev_math_01']]) <- 'dichotomous indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
-    var_label(df_els_stu[['dev_math_cat4']]) <- 'four category indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
-    var_label(df_els_stu[['dev_math_cat3']]) <- 'three category indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
+    var_label(df_els_stu_allobs[['f3totloan']]) <- 'total loans taken out to pay for postsecondary education as of f3 (2013)'
+    var_label(df_els_stu_allobs[['f2enroll0405']]) <- '0/1 (no/yes) enrolled in 2004-05, based on student survey follow-up 2'
+    var_label(df_els_stu_allobs[['f2enroll0506']]) <- '0/1 (no/yes) enrolled in 2005-06, based on student survey follow-up 2'
+    var_label(df_els_stu_allobs[['f2intern0405']]) <- '0/1 (no/yes) held an internship or co-op in 2004-05; NA if not enrolled in postsecondary education in 2004-05'
+    var_label(df_els_stu_allobs[['f2intern0506']]) <- '0/1 (no/yes) held an internship or co-op in 2005-06; NA if not enrolled in postsecondary education in 2005-06'
+    var_label(df_els_stu_allobs[['parent_income']]) <- 'continuous measure of base year parental household income, calculated from categorical variable byincome'
+    var_label(df_els_stu_allobs[['f1race_v2']]) <- 'categorical measure of race based on variable f1race'
+    var_label(df_els_stu_allobs[['dev_math_01']]) <- 'dichotomous indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
+    var_label(df_els_stu_allobs[['dev_math_cat4']]) <- 'four category indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
+    var_label(df_els_stu_allobs[['dev_math_cat3']]) <- 'three category indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
 
-    
-  
+    glimpse(df_els_stu_allobs)
+
+  df_els_stu_allobs_fac <- as_factor(df_els_stu_allobs, only_labelled = TRUE)
+  glimpse(df_els_stu_allobs_fac)
+  # convert continuous variables we know we want numeric back to numeric
+  for (v in c('bytxmstd','bytxrstd','bynels2m','bys34a','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal','f3tzpostern','f3tzpostatt',
+              'f3tzremtot','f3tzrempass','f3tzremengps','f3tzrementot','f3tzremmthps','f3tzremmttot','f3tzps1start','f3hscpdr')) {
+    df_els_stu_allobs_fac[[v]] <- df_els_stu_allobs[[v]]  
+  }
+  glimpse(df_els_stu_allobs_fac)    
 
 # save file with all observations to disk
-save(df_els_stu_allobs, file = file.path(output_data_dir, 'els_stu.RData'))
+save(df_els_stu_allobs,df_els_stu_allobs_fac, file = file.path(output_data_dir, 'els_stu.RData'))
 
 #opening data
 #rm(df_els_stu_allobs)
 load(file = file.path(output_data_dir, 'els_stu.RData'))
 load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/els/output_data/els_stu.RData'))
-    
+  
     
 # create data frame that removes students that did not attend postsecondary education    
 df_els_stu <- df_els_stu_allobs %>%
@@ -237,12 +245,13 @@ df_els_stu <- df_els_stu_allobs %>%
   filter(f3tztranresp==1) %>%
   # keep if f3tzanydegre is not missing []
   filter(f3tzanydegre!=-9) 
-    
+
+  rm(df_els_stu_allobs)    
 
 # Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables    
   df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
   # convert continuous variables we know we want numeric back to numeric
-  for (v in c('bytxmstd','bytxrstd','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal','f3tzpostern','f3tzpostatt',
+  for (v in c('bytxmstd','bytxrstd','bynels2m','bys34a','f1txmstd','f3stloanamt','f3stloanpay','f3ern2011','f3tzrectrans','f3tzreqtrans','f3tzschtotal','f3tzpostern','f3tzpostatt',
               'f3tzremtot','f3tzrempass','f3tzremengps','f3tzrementot','f3tzremmthps','f3tzremmttot','f3tzps1start','f3hscpdr')) {
     df_els_stu_fac[[v]] <- df_els_stu[[v]]  
   }
