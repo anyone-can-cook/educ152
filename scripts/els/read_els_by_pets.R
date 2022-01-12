@@ -34,9 +34,9 @@ library(labelled)
 #input_data_dir
 #list.files(path = input_data_dir)
 
-#output_data_dir <- file.path('.','data','els','output_data')
-#output_data_dir
-#list.files(path = output_data_dir)
+output_data_dir <- file.path('.','data','els','output_data')
+output_data_dir
+list.files(path = output_data_dir)
 
 ## ---------------------------
 ## Read els data from Stata
@@ -73,8 +73,8 @@ library(labelled)
   
   
 # create vector of variable names to keep, and create upper case and lower case versions of this vector  
-  keepvars <- c('stu_id','sch_id','strat_id','psu','f3univ','g10cohrt','f1pared','byincome','bystexp','byparasp','bytxstat','bypqstat','bytxmstd',
-                'bytxrstd','bysctrl','byurban','byregion','byfcomp','bysibhom','f1sex','f1race','f1stlang','f1homlng','f1mothed','f1fathed','f1ses1',
+  keepvars <- c('stu_id','sch_id','strat_id','psu','f3univ','g10cohrt','f1pared','byincome','bystexp','byparasp','bytxstat','bypqstat','bytxmstd','bynels2m',
+                'bytxrstd','bysctrl','byurban','byregion','byfcomp','bysibhom','bys34a','f1sex','f1race','f1stlang','f1homlng','f1mothed','f1fathed','f1ses1',
                 'f1ses1qu','f1stexp','f1txmstd','f1rgpp2','f1s24cc','f1s24bc','f2everdo','f2dostat',
                 'F2EVRATT','F2PS1','F2PS1LVL','F2PS1CTR','F2PS1SEC','F2PS1SLC',
                 'f2rtype','f2c01','f2c24_p','f2c25a','f2c25a','f2c29_p','f2c30a',
@@ -237,11 +237,11 @@ df_els_stu <- df_els_stu_all %>%
   
 
 # save file to disk
-#save(df_els_stu, file = file.path(output_data_dir, 'els_stu.RData'))
+save(df_els_stu, file = file.path(output_data_dir, 'els_stu.RData'))
 
 #opening data
 
-#load(file = file.path(star_dir, 'star_panel_data.RData'))
+load(file = file.path(output_data_dir, 'els_stu.RData'))
 
 #load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/star/star_panel_data.RData'))
 
