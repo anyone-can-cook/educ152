@@ -98,27 +98,8 @@ list.files(path = output_data_dir)
 
 # create dataset with subset of variables
 
-df_els_stu <- df_els_stu_all %>%
+df_els_stu_allobs <- df_els_stu_all %>%
   select(keepvars_lower) %>%
-  # keep students who:
-    # completed by, f1, f2, and f3 surveys [f3univ]
-    # ever attended postsecondary education as of f3 [f3evratt]
-    # received hs diploma with known date, or received GED [f3hsstat]
-    # hs completion date known [f3hscpdr]
-  filter(f3univ=='1111', f3evratt ==1, f3hsstat %in% c(1,2,3,6), !(f3hscpdr %in% c(-9,-3))) %>%
-  # keep students whose enrollment in first postsecondary institution started same year of hs graduation or after hs graduation or year of first postsecondary institution unkown 
-    # (i.e, drop students who enrolled in first postsecondary institution prior to high school graduation year) 
-      #df_els_stu %>% filter(f3ps1start<f3hscpdr & f3ps1start !=-9) %>% count(f3ps1start)
-      #df_els_stu %>% filter(f3ps1start<f3hscpdr & f3ps1start !=-9) %>% count(f3hscpdr)
-  filter(f3ps1start>=f3hscpdr | f3ps1start ==-9) %>%
-  # keep students whose first self-reported postsecondary institution is not a 4yr public or 4yr private non-profit or missing
-  #filter(!(f3ps1sec %in% c(-9,1,2))) %>% 
-  # keep students whose first postsecondary institution based on transcript data is not a 4yr public or 4yr private non-profit or missing
-  #filter(!(f3tzps1sec %in% c(-9,1,2))) %>% 
-  # keep students who reported attending postsecondary education and who are "transcript respondents" [f3tztranresp]
-  filter(f3tztranresp==1) %>%
-  # keep if f3tzanydegre is not missing []
-  filter(f3tzanydegre!=-9) %>%
   # create new variables
   mutate(
     # create continuous measure of loans
@@ -223,6 +204,40 @@ df_els_stu <- df_els_stu_all %>%
     var_label(df_els_stu[['dev_math_cat4']]) <- 'four category indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
     var_label(df_els_stu[['dev_math_cat3']]) <- 'three category indicator of whether student took any developmental math courses in postsecondary education (based on f3tzremmttot)'
 
+    
+  
+
+# save file with all observations to disk
+save(df_els_stu_allobs, file = file.path(output_data_dir, 'els_stu.RData'))
+
+#opening data
+#rm(df_els_stu_allobs)
+load(file = file.path(output_data_dir, 'els_stu.RData'))
+load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/els/output_data/els_stu.RData'))
+    
+    
+# create data frame that removes students that did not attend postsecondary education    
+df_els_stu <- df_els_stu_allobs %>%
+  # keep students who:
+    # completed by, f1, f2, and f3 surveys [f3univ]
+    # ever attended postsecondary education as of f3 [f3evratt]
+    # received hs diploma with known date, or received GED [f3hsstat]
+    # hs completion date known [f3hscpdr]
+  filter(f3univ=='1111', f3evratt ==1, f3hsstat %in% c(1,2,3,6), !(f3hscpdr %in% c(-9,-3))) %>%
+  # keep students whose enrollment in first postsecondary institution started same year of hs graduation or after hs graduation or year of first postsecondary institution unkown 
+    # (i.e, drop students who enrolled in first postsecondary institution prior to high school graduation year) 
+      #df_els_stu %>% filter(f3ps1start<f3hscpdr & f3ps1start !=-9) %>% count(f3ps1start)
+      #df_els_stu %>% filter(f3ps1start<f3hscpdr & f3ps1start !=-9) %>% count(f3hscpdr)
+  filter(f3ps1start>=f3hscpdr | f3ps1start ==-9) %>%
+  # keep students whose first self-reported postsecondary institution is not a 4yr public or 4yr private non-profit or missing
+  #filter(!(f3ps1sec %in% c(-9,1,2))) %>% 
+  # keep students whose first postsecondary institution based on transcript data is not a 4yr public or 4yr private non-profit or missing
+  #filter(!(f3tzps1sec %in% c(-9,1,2))) %>% 
+  # keep students who reported attending postsecondary education and who are "transcript respondents" [f3tztranresp]
+  filter(f3tztranresp==1) %>%
+  # keep if f3tzanydegre is not missing []
+  filter(f3tzanydegre!=-9) 
+    
 
 # Create a dataframe df_els_stu_fac that has categorical variables as factor class variables rather than labelled class variables    
   df_els_stu_fac <- as_factor(df_els_stu, only_labelled = TRUE)
@@ -232,19 +247,6 @@ df_els_stu <- df_els_stu_all %>%
     df_els_stu_fac[[v]] <- df_els_stu[[v]]  
   }
 
-
-
-  
-
-# save file to disk
-save(df_els_stu, file = file.path(output_data_dir, 'els_stu.RData'))
-
-#opening data
-
-load(file = file.path(output_data_dir, 'els_stu.RData'))
-load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/els/output_data/els_stu.RData'))
-
-#load(file = url('https://github.com/anyone-can-cook/educ152/raw/main/data/star/star_panel_data.RData'))
 
 ## -----------------------------------------------------------------------------
 ## END SCRIPT
